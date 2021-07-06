@@ -4,7 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-/frontend/node_modules/
 
 ### STS ###
 .apt_generated
@@ -29,5 +28,7 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
-.vscode/
+### Frontend ###
+node_modules
+dist
+.DS_Store
