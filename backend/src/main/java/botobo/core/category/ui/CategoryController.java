@@ -1,7 +1,7 @@
 package botobo.core.category.ui;
 
 import botobo.core.category.application.CategoryService;
-import botobo.core.category.dto.CategoryDto;
+import botobo.core.category.dto.CategoryResponse;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +19,9 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> findAllCategories() {
-        List<CategoryDto> categoryDtos = categoryService.findAll();
+    public ResponseEntity<List<CategoryResponse>> findAllCategories() {
+        List<CategoryResponse> categoryResponses = categoryService.findAll();
 
-        return ResponseEntity.ok(categoryDtos);
+        return ResponseEntity.ok(categoryResponses);
     }
 }
