@@ -15,12 +15,10 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Quiz 인수 테스트")
-@Sql("classpath:data.sql")
 public class QuizAcceptanceTest extends AcceptanceTest {
 
     @Test

@@ -33,10 +33,11 @@ public class Card {
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
-    public Card(Long id, String question, boolean isDeleted, Category category) {
+    public Card(Long id, String question, boolean isDeleted, Category category, List<Answer> answers) {
         this.id = id;
         this.question = question;
         this.isDeleted = isDeleted;
         this.category = category;
+        this.answers = answers;
     }
 }

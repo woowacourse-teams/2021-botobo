@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,7 +23,6 @@ public class QuizService {
         this.categoryRepository = categoryRepository;
     }
 
-    @Transactional
     public List<QuizResponse> createQuiz(List<Long> ids) {
         List<Card> quizzes = new ArrayList<>();
         for (Long id : ids) {
@@ -32,9 +30,9 @@ public class QuizService {
                     .orElseThrow(CategoryNotFoundException::new);
             quizzes.addAll(category.getCards());
         }
+        int maxLimit = Math.min(quizzes.size(), 10);
         Collections.shuffle(quizzes);
-        return IntStream.range(0, 10)
-                .mapToObj(quizzes::get)
+        return quizzes.stream().limit(maxLimit)
                 .map(QuizResponse::of)
                 .collect(Collectors.toList());
     }
