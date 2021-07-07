@@ -25,10 +25,10 @@ public class Category {
     private boolean isDelete;
 
     @Column(length = 100)
-    private String logoUrl="";
+    private String logoUrl = "";
 
     @Column
-    private String description="";
+    private String description = "";
 
     @Builder
     public Category(Long id, String name, boolean isDelete, String logoUrl,
@@ -37,6 +37,10 @@ public class Category {
         this.name = name;
         this.isDelete = isDelete;
         this.logoUrl = logoUrl;
+        this.description = description;
+    }
+
+    public void updateDescription(String description) {
         this.description = description;
     }
 }
