@@ -1,8 +1,5 @@
 package botobo.core.category.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import javax.validation.ConstraintViolationException;
+
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 class CategoryRepositoryTest {
@@ -22,11 +24,6 @@ class CategoryRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager;
-
-    @AfterEach
-    void tearDown() {
-        testEntityManager.flush();
-    }
 
     @Test
     @DisplayName("Category를 저장 - 성공")
@@ -43,12 +40,14 @@ class CategoryRepositoryTest {
         Category savedCategory = categoryRepository.save(category);
 
         // then
+        assertThat(category.getId()).isNotNull();
         assertThat(savedCategory).extracting("id").isNotNull();
         assertThat(savedCategory).isSameAs(category);
+        testEntityManager.flush();
     }
 
     @Test
-    @DisplayName("name이 null이면 비어있는 문자열의 이름으로 생성 - 성공")
+    @DisplayName("name에 null을 넣는다. - 실패, name은 null이 될 수 없다.")
     void saveWithNullName() {
         // given
         Category nullNameCategory = Category.builder()
@@ -59,14 +58,12 @@ class CategoryRepositoryTest {
                 .build();
 
         // when
-        Category savedCategory = categoryRepository.save(nullNameCategory);
-
-        // then
-        assertThat(savedCategory.getName()).isEqualTo("");
+        assertThatCode(() -> categoryRepository.save(nullNameCategory))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    @DisplayName("Category 저장 - 실패, 이름이 이미 존재")
+    @DisplayName("동일한 이름으로 Category 저장 - 실패, 이름이 이미 존재")
     void saveWithExistentName() {
         // given
         Category category = Category.builder()
@@ -75,10 +72,19 @@ class CategoryRepositoryTest {
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
+        categoryRepository.save(category);
+        testEntityManager.flush();
 
-        // when, then
-        assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataAccessException.class);
+        Category duplicatedNameCategory = Category.builder()
+                .name("card")
+                .isDelete(false)
+                .logoUrl("botobo.io.io")
+                .description("~")
+                .build();
+
+        // when
+        assertThatCode(() ->categoryRepository.save(duplicatedNameCategory))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
@@ -98,7 +104,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("100이상의 길이를 갖는 logo Url로 Category를 생성 - 실패")
+    @DisplayName("Category를 생성 - 실패, logoUrl은 최대 100의 길이를 갖는다.")
     void saveWithLongLogoUrl() {
         // given
         Category category = Category.builder()
@@ -114,28 +120,22 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("Description에 update 쿼리로 null을 넣는다.공성")
+    @DisplayName("description에 null을 입력 - 실패, description은 null이 될 수 없다.")
     void updateDescriptionWithNull() {
         // given
         Category category = Category.builder()
                 .name("java")
                 .isDelete(false)
                 .logoUrl("botobo.io")
+                .description(null)
                 .build();
-        Category saveCategory = categoryRepository.save(category);
-        Long id = saveCategory.getId();
 
-        // when
-        category.updateDescription(null);
-
-        // then
-        Optional<Category> findCategory = categoryRepository.findById(id);
-        assertThat(findCategory.get().getDescription()).isNotNull();
-        assertThat(findCategory.get().getDescription()).isEmpty();
+        assertThatCode(() -> categoryRepository.save(category))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    @DisplayName("Category를 id로 조회")
+    @DisplayName("Category를 id로 조회 - 성공")
     void findById() {
         // given
         Category category = Category.builder()

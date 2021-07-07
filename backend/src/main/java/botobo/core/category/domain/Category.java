@@ -1,13 +1,11 @@
 package botobo.core.category.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @NoArgsConstructor
 @Getter
@@ -24,11 +22,11 @@ public class Category {
     @Column(nullable = false)
     private boolean isDelete;
 
-    @Column(length = 100)
-    private String logoUrl = "";
+    @Column(columnDefinition = "varchar(100) default ''")
+    private String logoUrl;
 
-    @Column
-    private String description = "";
+    @Column(nullable = false, columnDefinition = "varchar(255) default ''")
+    private String description;
 
     @Builder
     public Category(Long id, String name, boolean isDelete, String logoUrl,
