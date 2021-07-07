@@ -22,11 +22,11 @@ public class Category {
     @Column(nullable = false)
     private boolean isDelete;
 
-    @Column(columnDefinition = "varchar(100) default ''")
-    private String logoUrl;
+    @Column(nullable = false, length = 100)
+    private String logoUrl = "";
 
-    @Column(nullable = false, columnDefinition = "varchar(255) default ''")
-    private String description;
+    @Column(nullable = false)
+    private String description = "";
 
     @Builder
     public Category(Long id, String name, boolean isDelete, String logoUrl,

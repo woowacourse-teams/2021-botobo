@@ -72,8 +72,8 @@ class CategoryRepositoryTest {
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
+
         categoryRepository.save(category);
-        testEntityManager.flush();
 
         Category duplicatedNameCategory = Category.builder()
                 .name("card")
@@ -100,7 +100,7 @@ class CategoryRepositoryTest {
 
         // when, then
         assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataAccessException.class);
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
@@ -116,7 +116,23 @@ class CategoryRepositoryTest {
 
         // when, then
         assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataAccessException.class);
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    @DisplayName("logoUrl에 null을 입력 - 실패, logoUrl은 null이 될 수 없다. ")
+    void saveWithNullLogoUrl() {
+        // given
+        Category category = Category.builder()
+                .name("java")
+                .isDelete(false)
+                .logoUrl(null)
+                .description("~")
+                .build();
+
+        // when, then
+        assertThatThrownBy(() -> categoryRepository.save(category))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
