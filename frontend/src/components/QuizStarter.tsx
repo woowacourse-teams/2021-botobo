@@ -3,6 +3,7 @@ import React from 'react';
 
 import quizStarterImage from '../assets/design-thinking.png';
 import { Flex } from '../styles';
+import Button from './Button';
 
 const QuizStarter = () => (
   <Container>
@@ -11,7 +12,7 @@ const QuizStarter = () => (
         이제까지 정리한 <br />
         지식을 검증해보고 싶다면?
       </span>
-      <Button>퀴즈 풀러 가기</Button>
+      <Button backgroundColor="pink">퀴즈 풀러 가기</Button>
     </Content>
     <ImageWrapper>
       <Image src={quizStarterImage} />
@@ -31,12 +32,10 @@ const Container = styled.div`
 const Content = styled.div`
   ${Flex({ direction: 'column', justify: 'center' })}
   width: 70%;
-`;
 
-const Button = styled.button`
-  background-color: ${({ theme }) => theme.color.pink};
-  margin-top: 1rem;
-  width: 6.25rem;
+  & > span {
+    margin-bottom: 1rem;
+  }
 `;
 
 const ImageWrapper = styled.div`

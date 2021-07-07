@@ -28,6 +28,7 @@ declare module '@emotion/react' {
 
   interface BoxShadow {
     card: string;
+    button: string;
   }
 
   interface BorderRadius {
