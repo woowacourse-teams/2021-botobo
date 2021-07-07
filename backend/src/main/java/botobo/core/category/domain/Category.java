@@ -35,12 +35,13 @@ public class Category {
 
     @Builder
     public Category(Long id, String name, boolean isDeleted, String logoUrl,
-                    String description) {
+                    String description, List<Card> cards) {
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
         this.logoUrl = logoUrl;
         this.description = description;
+        this.cards = cards;
     }
 
     public void updateDescription(String description) {
