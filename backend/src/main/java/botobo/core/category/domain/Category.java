@@ -1,13 +1,13 @@
 package botobo.core.category.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import botobo.core.card.domain.Card;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -29,6 +29,9 @@ public class Category {
 
     @Column(nullable = false)
     private String description = "";
+
+    @OneToMany(mappedBy = "category")
+    private List<Card> cards = new ArrayList<>();
 
     @Builder
     public Category(Long id, String name, boolean isDeleted, String logoUrl,
