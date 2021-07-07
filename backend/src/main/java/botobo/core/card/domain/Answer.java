@@ -24,8 +24,7 @@ public class Answer {
 
     @Lob
     @Column(nullable = false)
-    @ColumnDefault("")
-    private String content;
+    private String content = "";
 
     @Column(nullable = false)
     private boolean isDeleted;

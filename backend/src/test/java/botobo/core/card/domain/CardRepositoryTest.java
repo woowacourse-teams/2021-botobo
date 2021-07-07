@@ -8,6 +8,7 @@ import botobo.core.category.domain.Category;
 import botobo.core.category.domain.CategoryRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +28,23 @@ class CardRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
-    @AfterEach
-    void tearDown() {
-        testEntityManager.flush();
-    }
+    private Category category;
 
-    @Test
-    @DisplayName("Card 저장 - 성공")
-    void save() {
-        // given
-        Category category = Category.builder()
+    @BeforeEach
+    void setUp() {
+        category = Category.builder()
                 .name("java")
                 .isDelete(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
         categoryRepository.save(category);
+    }
 
+    @Test
+    @DisplayName("Card 저장 - 성공")
+    void save() {
+        // given
         Card card = Card.builder()
                 .question("질문")
                 .category(category)
@@ -51,13 +52,14 @@ class CardRepositoryTest {
 
         // when
         Card savedCard = cardRepository.save(card);
+        testEntityManager.flush();
 
         // then
         assertThat(savedCard.getId()).isNotNull();
     }
 
     @Test
-    @DisplayName("Card 저장 - 실패, 카테고리 없음")
+    @DisplayName("Card 저장 - 실패, 카테고리는 null이 될 수 없다.")
     void saveWithNullCategory() {
         // given
         Card card = Card.builder()
@@ -65,33 +67,23 @@ class CardRepositoryTest {
                 .category(null)
                 .build();
 
-//        cardRepository.save(card);
-
         // when, then
-//        assertThatThrownBy(() -> cardRepository.save(card))
-//                .isInstanceOf(Null.class);
+        assertThatThrownBy(() -> cardRepository.save(card))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    @DisplayName("Card 저장 - 실패, 질문 없음")
+    @DisplayName("Card 저장 - 실패, question은 null이 될 수 없다.")
     void saveWithNullQuestion() {
         // given
-        Category category = Category.builder()
-                .name("java")
-                .isDelete(false)
-                .logoUrl("botobo.io")
-                .description("~")
-                .build();
-        categoryRepository.save(category);
-
         Card card = Card.builder()
                 .question(null)
                 .category(category)
                 .build();
 
         // when, then
-//        assertThatThrownBy(() -> cardRepository.save(card))
-//                .isInstanceOf();
+        assertThatThrownBy(() -> cardRepository.save(card))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
@@ -100,7 +92,7 @@ class CardRepositoryTest {
         // given
         Card card = Card.builder()
                 .question("질문")
-                .category(new Category())
+                .category(category)
                 .build();
 
         // when
@@ -111,5 +103,21 @@ class CardRepositoryTest {
         assertThat(findCard).containsSame(savedCard);
     }
 
+    @Test
+    @DisplayName("Card 추가 시, 카테고리도 함께 추가 - 성공")
+    void checkCategoryIsSaved() {
+        // given
+        Card card = Card.builder()
+                .question("질문")
+                .category(category)
+                .build();
+        final Card savedCard = cardRepository.save(card);
 
+        // when
+        final Optional<Card> findCard = cardRepository.findById(savedCard.getId());
+
+        // then
+        assertThat(findCard).isPresent();
+        assertThat(findCard.get().getCategory()).isNotNull();
+    }
 }
