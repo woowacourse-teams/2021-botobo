@@ -18,6 +18,15 @@ const theme: Theme = {
     green: '#00d344',
     indigo: '#29386b',
   },
+  boxShadow: {
+    card: `rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;`,
+  },
+  borderRadius: {
+    circle: '50%',
+    square_1: '8px',
+    square_2: '12px',
+  },
 };
 
 export default theme;

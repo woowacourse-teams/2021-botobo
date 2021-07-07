@@ -13,17 +13,12 @@ interface Props {
   wrap?: 'nowrap' | 'wrap';
 }
 
-const Flex = ({
-  direction = 'row',
-  justify = 'flex-start',
-  items = 'stretch',
-  wrap = 'nowrap',
-}: Props) => css`
+const Flex = ({ direction, justify, items, wrap }: Props = {}) => css`
   display: flex;
-  flex-direction: ${direction};
-  justify-content: ${justify};
-  align-items: ${items};
-  flex-wrap: ${wrap};
+  flex-direction: ${direction ?? 'row'};
+  justify-content: ${justify ?? 'flex-start'};
+  align-items: ${items ?? 'stretch'};
+  flex-wrap: ${wrap ?? 'nowrap'};
 `;
 
 export default Flex;

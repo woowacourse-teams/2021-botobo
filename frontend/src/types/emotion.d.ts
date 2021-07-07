@@ -3,6 +3,8 @@ import '@emotion/react';
 declare module '@emotion/react' {
   export interface Theme {
     color: Readonly<Color>;
+    boxShadow: Readonly<BoxShadow>;
+    borderRadius: Readonly<BorderRadius>;
   }
 
   interface Color {
@@ -21,5 +23,15 @@ declare module '@emotion/react' {
     pink: string;
     green: string;
     indigo: string;
+  }
+
+  interface BoxShadow {
+    card: string;
+  }
+
+  interface BorderRadius {
+    circle: string;
+    square_1: string;
+    square_2: string;
   }
 }
