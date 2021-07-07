@@ -19,7 +19,7 @@ const Header = () => (
 const StyledHeader = styled.header`
   ${Flex({ justify: 'space-between', items: 'center' })}
   background-color: ${({ theme }) => theme.color.white};
-  height: 60px;
+  height: 3.75rem;
   padding: 0 0.75rem;
 `;
 
@@ -31,7 +31,7 @@ const Profile = styled.div``;
 
 const Avatar = styled.img`
   height: 2rem;
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.borderRadius.circle};
 `;
 
 export default Header;

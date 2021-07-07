@@ -5,6 +5,7 @@ declare module '@emotion/react' {
     color: Readonly<Color>;
     boxShadow: Readonly<BoxShadow>;
     borderRadius: Readonly<BorderRadius>;
+    fontSize: Readonly<FontSize>;
   }
 
   interface Color {
@@ -33,5 +34,12 @@ declare module '@emotion/react' {
     circle: string;
     square_1: string;
     square_2: string;
+  }
+
+  interface FontSize {
+    default: string;
+    medium: string;
+    semiLarge: string;
+    large: string;
   }
 }

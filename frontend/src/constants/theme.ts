@@ -27,6 +27,12 @@ const theme: Theme = {
     square_1: '8px',
     square_2: '12px',
   },
+  fontSize: {
+    default: '1rem',
+    medium: '1.2rem',
+    semiLarge: '1.4rem',
+    large: '1.6rem',
+  },
 };
 
 export default theme;
