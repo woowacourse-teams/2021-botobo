@@ -22,7 +22,7 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
-    private boolean isDelete;
+    private boolean isDeleted;
 
     @Column(nullable = false, length = 100)
     private String logoUrl = "";
@@ -31,11 +31,11 @@ public class Category {
     private String description = "";
 
     @Builder
-    public Category(Long id, String name, boolean isDelete, String logoUrl,
+    public Category(Long id, String name, boolean isDeleted, String logoUrl,
                     String description) {
         this.id = id;
         this.name = name;
-        this.isDelete = isDelete;
+        this.isDeleted = isDeleted;
         this.logoUrl = logoUrl;
         this.description = description;
     }

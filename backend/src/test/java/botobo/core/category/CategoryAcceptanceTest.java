@@ -2,7 +2,7 @@ package botobo.core.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import botobo.AcceptanceTest;
+import botobo.core.AcceptanceTest;
 import botobo.core.category.dto.CategoryResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
