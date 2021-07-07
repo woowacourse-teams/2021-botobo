@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
 
 @DisplayName("퀴즈 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -65,26 +66,34 @@ class QuizServiceTest {
     void createQuiz() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(categoryRepository.findById(1L)).willReturn(Optional.of(category));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
 
         // when
         final List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
+
+        then(categoryRepository)
+                .should(times(1))
+                .findById(anyLong());
     }
 
     @Test
     @DisplayName("카테고리 id(Long)를 이용해서 1개의 카드가 담긴 퀴즈 생성 - 성공")
     void createQuizWithOneCards() {
         // given
-        List<Long> ids = Collections.singletonList(1L);
-        given(categoryRepository.findById(1L)).willReturn(Optional.of(categoryWithOneCards));
+        List<Long> ids = Arrays.asList(1L, 2L);
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(categoryWithOneCards));
 
         // when
         final List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
-        assertThat(quizResponses.size()).isEqualTo(1);
+        assertThat(quizResponses.size()).isEqualTo(2);
+
+        then(categoryRepository)
+                .should(times(2))
+                .findById(anyLong());
     }
 }
