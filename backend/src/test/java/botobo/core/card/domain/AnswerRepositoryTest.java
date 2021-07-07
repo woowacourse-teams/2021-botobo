@@ -39,7 +39,7 @@ class AnswerRepositoryTest {
     void setUp() {
         category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();

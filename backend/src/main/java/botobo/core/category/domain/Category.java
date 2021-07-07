@@ -1,11 +1,13 @@
 package botobo.core.category.domain;
 
-import javax.persistence.*;
-
+import botobo.core.card.domain.Card;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -20,7 +22,7 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
-    private boolean isDelete;
+    private boolean isDeleted = false;
 
     @Column(nullable = false, length = 100)
     private String logoUrl = "";
@@ -28,12 +30,15 @@ public class Category {
     @Column(nullable = false)
     private String description = "";
 
+    @OneToMany(mappedBy = "category")
+    private List<Card> cards = new ArrayList<>();
+
     @Builder
-    public Category(Long id, String name, boolean isDelete, String logoUrl,
+    public Category(Long id, String name, boolean isDeleted, String logoUrl,
                     String description) {
         this.id = id;
         this.name = name;
-        this.isDelete = isDelete;
+        this.isDeleted = isDeleted;
         this.logoUrl = logoUrl;
         this.description = description;
     }
