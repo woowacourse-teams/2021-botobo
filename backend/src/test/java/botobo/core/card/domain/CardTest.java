@@ -1,10 +1,10 @@
 package botobo.core.card.domain;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-
 import botobo.core.category.domain.Category;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 class CardTest {
 
@@ -21,11 +21,11 @@ class CardTest {
 
         // when, then
         assertThatCode(() -> Card.builder()
-                        .id(1L)
-                        .question("질문")
-                        .category(java)
-                        .isDeleted(false)
-                        .build()
+                .id(1L)
+                .question("질문")
+                .category(java)
+                .isDeleted(false)
+                .build()
         ).doesNotThrowAnyException();
     }
 

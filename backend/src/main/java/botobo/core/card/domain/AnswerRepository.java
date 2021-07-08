@@ -1,9 +1,8 @@
 package botobo.core.card.domain;
 
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+import java.util.Optional;
 
-    Optional<Answer> findByContent(String content);
+public interface AnswerRepository extends JpaRepository<Answer, Long> {
 }
