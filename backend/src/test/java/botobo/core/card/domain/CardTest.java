@@ -14,7 +14,7 @@ class CardTest {
         // given
         Category java = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();

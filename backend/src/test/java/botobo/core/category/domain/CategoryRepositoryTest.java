@@ -31,7 +31,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
@@ -52,7 +52,7 @@ class CategoryRepositoryTest {
         // given
         Category nullNameCategory = Category.builder()
                 .name(null)
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
@@ -68,7 +68,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("card")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
@@ -77,7 +77,7 @@ class CategoryRepositoryTest {
 
         Category duplicatedNameCategory = Category.builder()
                 .name("card")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io.io")
                 .description("~")
                 .build();
@@ -93,7 +93,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
@@ -109,7 +109,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl(longStringGenerator())
                 .description("~")
                 .build();
@@ -125,7 +125,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl(null)
                 .description("~")
                 .build();
@@ -141,7 +141,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description(null)
                 .build();
@@ -156,7 +156,7 @@ class CategoryRepositoryTest {
         // given
         Category category = Category.builder()
                 .name("java")
-                .isDelete(false)
+                .isDeleted(false)
                 .logoUrl("botobo.io")
                 .description("~")
                 .build();
