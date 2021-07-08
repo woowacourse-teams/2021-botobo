@@ -6,23 +6,27 @@ import { Flex } from '../styles';
 interface Props {
   name: string;
   cardCount: number;
+  isChecked?: boolean;
 }
 
-const Category = ({ name, cardCount }: Props) => (
-  <Container>
+const Category = ({ name, cardCount, isChecked }: Props) => (
+  <Container isChecked={isChecked}>
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 문제</CardCount>
   </Container>
 );
 
-const Container = styled.div`
+const Container = styled.div<Pick<Props, 'isChecked'>>`
   ${Flex({ direction: 'column' })}
   cursor: pointer;
   background-color: ${({ theme }) => theme.color.white};
   padding: 1rem;
   height: 100%;
   border-radius: ${({ theme }) => theme.borderRadius.square};
-  box-shadow: ${({ theme }) => theme.boxShadow.card};
+  box-shadow: ${({ theme, isChecked }) =>
+    isChecked
+      ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
+      : theme.boxShadow.card};
 `;
 
 const Name = styled.strong`

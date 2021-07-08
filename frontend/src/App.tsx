@@ -5,7 +5,7 @@ import React from 'react';
 import { Header } from './components';
 import { theme } from './constants';
 import GlobalStyle from './GlobalStyle';
-import MainPage from './pages/MainPage';
+import { MainPage, QuizSettingPage } from './pages';
 
 const App = () => (
   <ThemeProvider theme={theme}>
@@ -13,6 +13,7 @@ const App = () => (
     <Header />
     <PageWrapper>
       <MainPage />
+      <QuizSettingPage />
     </PageWrapper>
   </ThemeProvider>
 );

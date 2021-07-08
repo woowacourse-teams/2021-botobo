@@ -1,5 +1,7 @@
 import '@emotion/react';
 
+declare module '*.png';
+
 declare module '@emotion/react' {
   export interface Theme {
     color: Readonly<Color>;
@@ -29,6 +31,7 @@ declare module '@emotion/react' {
   interface BoxShadow {
     card: string;
     button: string;
+    inset: string;
   }
 
   interface BorderRadius {
