@@ -1,7 +1,3 @@
--- 카테고리 삽입 3개
--- 카드 10개 (카테고리 당 카드 10개)
--- 답안 30개 (카드질문 당 답 1개)
-
 INSERT INTO category(name, is_deleted, logo_url, description) VALUES ('JAVA', false, 'logo1', 'java입니다.');
 INSERT INTO category(name, is_deleted, logo_url, description) VALUES ('Javascript', false, 'logo2', 'javascript 입니다');
 INSERT INTO category(name, is_deleted, logo_url, description) VALUES ('Spring', false, 'logo3', 'Spring입니다.');
