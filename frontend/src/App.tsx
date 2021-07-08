@@ -1,9 +1,10 @@
 import { ThemeProvider } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { Header } from './components';
-import { theme } from './constants';
+import { ROUTE, theme } from './constants';
 import GlobalStyle from './GlobalStyle';
 import { MainPage, QuizSettingPage } from './pages';
 
@@ -12,8 +13,16 @@ const App = () => (
     <GlobalStyle />
     <Header />
     <PageWrapper>
-      <MainPage />
-      <QuizSettingPage />
+      <BrowserRouter>
+        <Switch>
+          <Route exact path={ROUTE.HOME}>
+            <MainPage />
+          </Route>
+          <Route exact path={ROUTE.QUIZ_SETTING}>
+            <QuizSettingPage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </PageWrapper>
   </ThemeProvider>
 );
