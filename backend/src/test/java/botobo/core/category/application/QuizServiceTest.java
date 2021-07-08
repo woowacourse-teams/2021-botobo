@@ -69,7 +69,7 @@ class QuizServiceTest {
         given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
 
         // when
-        final List<QuizResponse> quizResponses = quizService.createQuiz(ids);
+        List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
@@ -87,7 +87,7 @@ class QuizServiceTest {
         given(categoryRepository.findById(anyLong())).willReturn(Optional.of(categoryWithOneCards));
 
         // when
-        final List<QuizResponse> quizResponses = quizService.createQuiz(ids);
+        List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
         assertThat(quizResponses.size()).isEqualTo(2);

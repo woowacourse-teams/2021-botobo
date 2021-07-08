@@ -24,10 +24,11 @@ public class QuizResponse {
 
     public static QuizResponse of(Card card) {
         final Category category = card.getCategory();
+        final String answer = card.getAnswers().get(0).getContent();
         return QuizResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())
-                .answer(card.getAnswers().get(0).getContent())
+                .answer(answer)
                 .categoryName(category.getName())
                 .build();
     }

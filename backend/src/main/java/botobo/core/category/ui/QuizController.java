@@ -22,6 +22,6 @@ public class QuizController {
     @PostMapping("/quizzes")
     public ResponseEntity<List<QuizResponse>> createQuiz(@RequestBody CategoryIdsRequest categoryIdsRequest) {
         List<QuizResponse> quizResponses = quizService.createQuiz(categoryIdsRequest.getCategoryIds());
-        return ResponseEntity.ok().body(quizResponses);
+        return ResponseEntity.ok(quizResponses);
     }
 }
