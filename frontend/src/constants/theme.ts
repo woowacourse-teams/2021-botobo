@@ -16,7 +16,7 @@ const theme: Theme = {
     black: '#000000',
     pink: '#ff73c9',
     green: '#00d344',
-    indigo: '#29386b',
+    indigo: '#4257B2',
   },
   boxShadow: {
     card: `rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
@@ -31,6 +31,7 @@ const theme: Theme = {
     square_2: '16px',
   },
   fontSize: {
+    small: '0.8rem',
     default: '1rem',
     medium: '1.2rem',
     semiLarge: '1.4rem',

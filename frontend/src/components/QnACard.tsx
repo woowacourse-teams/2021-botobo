@@ -56,6 +56,7 @@ const QnACard = ({
 
 const Container = styled.div`
   height: 12.5rem;
+  width: 100%;
   perspective: 50rem;
 `;
 

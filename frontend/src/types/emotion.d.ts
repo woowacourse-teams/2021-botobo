@@ -40,6 +40,7 @@ declare module '@emotion/react' {
   }
 
   interface FontSize {
+    small: string;
     default: string;
     medium: string;
     semiLarge: string;
