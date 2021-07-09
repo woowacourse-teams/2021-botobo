@@ -25,7 +25,7 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.white};
   height: 10rem;
   padding: 0 0.75rem;
-  border-radius: ${({ theme }) => theme.borderRadius.square_1};
+  border-radius: ${({ theme }) => theme.borderRadius.square};
   box-shadow: ${({ theme }) => theme.boxShadow.card};
 `;
 

@@ -1,46 +1,76 @@
-import { css } from '@emotion/react';
+import { Color, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-interface Props {
-  children: string;
-  backgroundColor?: 'pink';
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: string | React.ReactElement;
+  backgroundColor?: keyof Color;
   hasShadow?: boolean;
   size?: keyof typeof buttonSize;
+  shape?: 'circle' | 'square';
 }
 
-const buttonSize = {
-  default: 'max-content',
-  full: '100%',
-};
+type StyledProps = Required<
+  Pick<Props, 'backgroundColor' | 'hasShadow' | 'size' | 'shape'>
+>;
 
 const Button = ({
   children,
-  backgroundColor,
-  hasShadow,
+  hasShadow = false,
+  backgroundColor = 'pink',
   size = 'default',
+  shape = 'square',
+  ...props
 }: Props) => (
   <StyledButton
     backgroundColor={backgroundColor}
     hasShadow={hasShadow}
     size={size}
+    shape={shape}
+    {...props}
   >
     {children}
   </StyledButton>
 );
 
-const StyledButton = styled.button<Omit<Props, 'children'>>`
+const buttonSize = {
+  default: {
+    square: css`
+      width: max-content;
+    `,
+    circle: css`
+      width: 40px;
+      height: 40px;
+    `,
+  },
+  full: {
+    square: css`
+      width: 100%;
+    `,
+    circle: null,
+  },
+};
+
+const StyledButton = styled.button<StyledProps>`
   font-size: 1rem;
+  line-height: 1rem;
+
   padding: 0.5rem;
-  width: ${({ size }) => size && buttonSize[size]};
-  box-shadow: ${({ hasShadow, theme }) => hasShadow && theme.boxShadow.button};
-  border-radius: ${({ theme }) => theme.borderRadius.square_1};
-  ${({ backgroundColor, theme }) =>
-    backgroundColor &&
-    css`
-      color: ${theme.color.white};
-      background-color: ${theme.color.pink};
-    `}
+
+  box-shadow: ${({ hasShadow, theme }) =>
+    hasShadow ? theme.boxShadow.button : ''};
+
+  ${({ theme, shape, backgroundColor, size }) => css`
+    background-color: ${theme.color[backgroundColor]};
+
+    border-radius: ${theme.borderRadius[shape]};
+
+    color: ${backgroundColor === 'white'
+      ? theme.color.green
+      : theme.color.white};
+
+    ${buttonSize[size][shape]};
+  `}
 `;
 
 export default Button;

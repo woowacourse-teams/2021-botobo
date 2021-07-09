@@ -25,8 +25,9 @@ const theme: Theme = {
   },
   borderRadius: {
     circle: '50%',
-    square_1: '8px',
-    square_2: '12px',
+    square: '8px',
+    square_1: '12px',
+    square_2: '16px',
   },
   fontSize: {
     default: '1rem',
