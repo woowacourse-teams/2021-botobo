@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Category, QuizStarter } from '../components';
+import { Button, Category, QuizStarter } from '../components';
+import { Flex } from '../styles';
 
 const categories = [
   { id: 1, name: 'Java', cardCount: 3 },
@@ -12,7 +13,12 @@ const categories = [
 const MainPage = () => (
   <>
     <QuizStarter />
-    <EntireCategory>전체 카테고리</EntireCategory>
+    <CategoryWrapper>
+      <CategoryTitle>전체 카테고리</CategoryTitle>
+      <Button shape="circle" backgroundColor="white" hasShadow={true}>
+        <i className="fas fa-plus"></i>
+      </Button>
+    </CategoryWrapper>
     <CategoryList>
       {categories.map(({ id, name, cardCount }) => (
         <li key={id}>
@@ -23,9 +29,13 @@ const MainPage = () => (
   </>
 );
 
-const EntireCategory = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.semiLarge};
+const CategoryWrapper = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })}
   margin-top: 3rem;
+`;
+
+const CategoryTitle = styled.h2`
+  font-size: ${({ theme }) => theme.fontSize.semiLarge};
 `;
 
 const CategoryList = styled.ul`
