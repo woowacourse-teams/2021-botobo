@@ -1,24 +1,35 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import quizStarterImage from '../assets/design-thinking.png';
+import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 import Button from './Button';
 
-const QuizStarter = () => (
-  <Container>
-    <Content>
-      <span>
-        이제까지 정리한 <br />
-        지식을 검증해보고 싶다면?
-      </span>
-      <Button backgroundColor="pink">퀴즈 풀러 가기</Button>
-    </Content>
-    <ImageWrapper>
-      <Image src={quizStarterImage} />
-    </ImageWrapper>
-  </Container>
-);
+const QuizStarter = () => {
+  const history = useHistory();
+
+  return (
+    <Container>
+      <Content>
+        <span>
+          이제까지 정리한 <br />
+          지식을 검증해보고 싶다면?
+        </span>
+        <Button
+          backgroundColor="pink"
+          onClick={() => history.push(ROUTE.QUIZ_SETTING)}
+        >
+          퀴즈 풀러 가기
+        </Button>
+      </Content>
+      <ImageWrapper>
+        <Image src={quizStarterImage} />
+      </ImageWrapper>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   ${Flex()}
