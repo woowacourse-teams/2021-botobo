@@ -1,8 +1,7 @@
 package botobo.core.admin.ui;
 
 import botobo.core.admin.application.AdminService;
-import botobo.core.admin.dto.AdminCategoryRequest;
-import botobo.core.admin.dto.AdminCategoryResponse;
+import botobo.core.admin.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,5 +24,17 @@ public class AdminController {
     public ResponseEntity<AdminCategoryResponse> createCategory(@RequestBody AdminCategoryRequest adminCategoryRequest) {
         AdminCategoryResponse adminCategoryResponse = adminService.createCategory(adminCategoryRequest);
         return ResponseEntity.created(URI.create("/admin/categories/" + adminCategoryResponse.getId())).body(adminCategoryResponse);
+    }
+
+    @PostMapping("/cards")
+    public ResponseEntity<AdminCardResponse> createCard(@RequestBody AdminCardRequest adminCardRequest) {
+        AdminCardResponse adminCardResponse = adminService.createCard(adminCardRequest);
+        return ResponseEntity.created(URI.create("/admin/cards/" + adminCardResponse.getId())).body(adminCardResponse);
+    }
+
+    @PostMapping("/answers")
+    public ResponseEntity<AdminAnswerResponse> createAnswer(@RequestBody AdminAnswerRequest adminAnswerRequest) {
+        AdminAnswerResponse adminAnswerResponse = adminService.createAnswer(adminAnswerRequest);
+        return ResponseEntity.created(URI.create("/admin/answers/" + adminAnswerResponse.getId())).body(adminAnswerResponse);
     }
 }
