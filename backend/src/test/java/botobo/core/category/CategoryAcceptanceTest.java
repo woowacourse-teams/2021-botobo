@@ -18,7 +18,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("카레고리 전체 조회 - 성공")
-    void createStation() {
+    void createCategory() {
         // given
         final ExtractableResponse<Response> response =
             RestAssured.given().log().all()
