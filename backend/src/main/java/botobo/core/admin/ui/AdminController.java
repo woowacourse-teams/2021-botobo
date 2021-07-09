@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -21,19 +22,19 @@ public class AdminController {
     }
 
     @PostMapping("/categories")
-    public ResponseEntity<AdminCategoryResponse> createCategory(@RequestBody AdminCategoryRequest adminCategoryRequest) {
+    public ResponseEntity<AdminCategoryResponse> createCategory(@Valid @RequestBody AdminCategoryRequest adminCategoryRequest) {
         AdminCategoryResponse adminCategoryResponse = adminService.createCategory(adminCategoryRequest);
         return ResponseEntity.created(URI.create("/admin/categories/" + adminCategoryResponse.getId())).body(adminCategoryResponse);
     }
 
     @PostMapping("/cards")
-    public ResponseEntity<AdminCardResponse> createCard(@RequestBody AdminCardRequest adminCardRequest) {
+    public ResponseEntity<AdminCardResponse> createCard(@Valid @RequestBody AdminCardRequest adminCardRequest) {
         AdminCardResponse adminCardResponse = adminService.createCard(adminCardRequest);
         return ResponseEntity.created(URI.create("/admin/cards/" + adminCardResponse.getId())).body(adminCardResponse);
     }
 
     @PostMapping("/answers")
-    public ResponseEntity<AdminAnswerResponse> createAnswer(@RequestBody AdminAnswerRequest adminAnswerRequest) {
+    public ResponseEntity<AdminAnswerResponse> createAnswer(@Valid @RequestBody AdminAnswerRequest adminAnswerRequest) {
         AdminAnswerResponse adminAnswerResponse = adminService.createAnswer(adminAnswerRequest);
         return ResponseEntity.created(URI.create("/admin/answers/" + adminAnswerResponse.getId())).body(adminAnswerResponse);
     }

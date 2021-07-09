@@ -1,8 +1,10 @@
 package botobo.core.category.dto;
 
 import botobo.core.category.domain.Category;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,16 +26,16 @@ public class CategoryResponse {
 
     public static CategoryResponse of(Category category) {
         return new CategoryResponse(
-            category.getId(),
-            category.getName(),
-            category.getLogoUrl(),
-            category.getDescription()
+                category.getId(),
+                category.getName(),
+                category.getLogoUrl(),
+                category.getDescription()
         );
     }
 
     public static List<CategoryResponse> listOf(List<Category> categories) {
         return categories.stream()
-            .map(CategoryResponse::of)
-            .collect(Collectors.toList());
+                .map(CategoryResponse::of)
+                .collect(Collectors.toList());
     }
 }

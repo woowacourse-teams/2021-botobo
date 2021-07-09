@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
-class CategoryRepositoryTest {
+public class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -107,7 +107,7 @@ class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl(longStringGenerator())
+                .logoUrl(longStringGenerator(101))
                 .description("~")
                 .build();
 
@@ -164,8 +164,8 @@ class CategoryRepositoryTest {
         assertThat(findCategory).containsSame(savedCategory);
     }
 
-    private String longStringGenerator() {
-        return IntStream.range(1, 110)
+    public static String longStringGenerator(int max) {
+        return IntStream.rangeClosed(1, max)
                 .mapToObj(i -> "x")
                 .collect(Collectors.joining());
     }
