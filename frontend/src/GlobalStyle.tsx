@@ -7,8 +7,10 @@ const GlobalStyle = () => {
   return (
     <Global
       styles={css`
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
         * {
-          /* font-family: 'Noto Sans KR', sans-serif; */
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+          font-family: 'Roboto', sans-serif;
           box-sizing: border-box;
           margin: 0;
           padding: 0;
@@ -16,9 +18,8 @@ const GlobalStyle = () => {
         html,
         body {
           cursor: default;
-          background-color: ${theme.color.gray_2};
+          background-color: ${theme.color.gray_0};
         }
-
         a {
           text-decoration: none;
           outline: none;

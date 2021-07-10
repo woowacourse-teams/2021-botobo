@@ -40,13 +40,13 @@ const Container = styled.div<ContainerStyleProps>`
 `;
 
 const CategoryName = styled.span`
-  font-weight: bold;
   display: block;
   margin-bottom: 1rem;
 
   ${({ theme }) => css`
     color: ${theme.color.pink};
     font-size: ${theme.fontSize.small};
+    font-weight: ${theme.fontWeight.bold};
   `};
 `;
 

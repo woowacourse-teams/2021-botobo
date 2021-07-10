@@ -24,7 +24,7 @@ const QuizSettingPage = () => {
       </CategoryWrapper>
       <Button
         onClick={() => history.push(ROUTE.QUIZ)}
-        backgroundColor="pink"
+        backgroundColor="green"
         size="full"
       >
         시작!
