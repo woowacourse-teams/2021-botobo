@@ -18,7 +18,7 @@ const QuizStarter = () => {
           지식을 검증해보고 싶다면?
         </span>
         <Button
-          backgroundColor="pink"
+          backgroundColor="green"
           onClick={() => history.push(ROUTE.QUIZ_SETTING)}
         >
           퀴즈 풀러 가기

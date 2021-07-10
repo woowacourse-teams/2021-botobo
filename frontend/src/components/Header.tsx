@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -18,9 +19,13 @@ const Header = () => (
 
 const StyledHeader = styled.header`
   ${Flex({ justify: 'space-between', items: 'center' })}
-  background-color: ${({ theme }) => theme.color.white};
   height: 3.75rem;
   padding: 0 0.75rem;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.white};
+    box-shadow: ${theme.boxShadow.header};
+  `};
 `;
 
 const Logo = styled.img`

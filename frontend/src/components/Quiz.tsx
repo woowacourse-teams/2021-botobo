@@ -71,7 +71,6 @@ const Card = styled.div<CardStyleProps>`
 `;
 
 const CategoryName = styled.span`
-  font-weight: bold;
   position: absolute;
   top: 1rem;
   left: 1rem;
@@ -81,6 +80,7 @@ const CategoryName = styled.span`
   ${({ theme }) => css`
     color: ${theme.color.pink};
     font-size: ${theme.fontSize.default};
+    font-weight: ${theme.fontWeight.bold};
   `}
 `;
 
