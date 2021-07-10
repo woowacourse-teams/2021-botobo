@@ -58,6 +58,7 @@ const PageNation = styled.div`
   margin-top: 5rem;
 
   & > button {
+    background-color: transparent;
     ${({ theme }) =>
       css`
         font-size: ${theme.fontSize.medium};
