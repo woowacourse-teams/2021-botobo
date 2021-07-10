@@ -7,7 +7,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   backgroundColor?: keyof Color;
   hasShadow?: boolean;
   size?: keyof typeof buttonSize;
-  shape?: 'circle' | 'square';
+  shape?: 'circle' | 'square' | 'rectangle';
 }
 
 type StyledProps = Required<
@@ -35,17 +35,25 @@ const Button = ({
 
 const buttonSize = {
   default: {
+    rectangle: css`
+      width: max-content;
+    `,
     square: css`
       width: max-content;
     `,
     circle: css`
-      width: 40px;
-      height: 40px;
+      width: 2.5rem;
+      height: 2.5rem;
     `,
   },
   full: {
+    rectangle: css`
+      width: 100%;
+      height: 3rem;
+    `,
     square: css`
       width: 100%;
+      height: 3rem;
     `,
     circle: null,
   },
