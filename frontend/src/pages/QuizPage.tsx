@@ -63,17 +63,21 @@ const QuizPage = () => {
 
   return (
     <Container>
-      <Tooltip>
-        <TooltipDescription>
-          카드를 클릭해 질문과 정답을 확인할 수 있어요.
-        </TooltipDescription>
-      </Tooltip>
-      <Quiz
-        id={id}
-        question={question}
-        answer={answer}
-        categoryName={categoryName}
-      />
+      <QuizWrapper>
+        {quizIndex === 0 && (
+          <Tooltip>
+            <TooltipDescription>
+              카드를 클릭해 질문과 정답을 확인할 수 있어요.
+            </TooltipDescription>
+          </Tooltip>
+        )}
+        <Quiz
+          id={id}
+          question={question}
+          answer={answer}
+          categoryName={categoryName}
+        />
+      </QuizWrapper>
       <PageNation>
         <button onClick={showPrevQuiz}>
           <i className="fas fa-arrow-left"></i>
@@ -100,10 +104,17 @@ const Container = styled.div`
     `}
 `;
 
+const QuizWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 const Tooltip = styled.div`
   ${Flex({ justify: 'center', items: 'center' })};
+  position: absolute;
   width: 100%;
   height: 2.5rem;
+  top: -3rem;
   margin-bottom: 0.5rem;
   ${({ theme }) => css`
     background-color: ${theme.color.indigo};
