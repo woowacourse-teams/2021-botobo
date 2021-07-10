@@ -31,8 +31,13 @@ const QuizPage = () => (
 
 const Container = styled.div`
   ${Flex({ justify: 'center', items: 'center', direction: 'column' })};
-  height: 100%;
   width: 100%;
+
+  ${({ theme }) =>
+    css`
+      padding: ${theme.pageSize.padding};
+      height: ${theme.pageSize.height};
+    `}
 `;
 
 const Tooltip = styled.div`

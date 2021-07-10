@@ -38,6 +38,10 @@ const theme: Theme = {
     semiLarge: '1.4rem',
     large: '1.6rem',
   },
+  pageSize: {
+    padding: '2rem 1.25rem',
+    height: 'calc(100vh - 3.75rem)',
+  },
 };
 
 export default theme;

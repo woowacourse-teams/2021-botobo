@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -99,6 +100,10 @@ const QuizResultPage = () => {
 
 const Container = styled.div`
   margin-bottom: 3rem;
+  ${({ theme }) =>
+    css`
+      padding: ${theme.pageSize.padding};
+    `}
 `;
 
 const QuizResultList = styled.ul`
