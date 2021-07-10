@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -29,7 +30,7 @@ const categories = [
 ];
 
 const MainPage = () => (
-  <>
+  <Container>
     <QuizStarter />
     <section>
       <CategoryWrapper>
@@ -40,8 +41,16 @@ const MainPage = () => (
       </CategoryWrapper>
       {categories && <CategoryList categories={categories} />}
     </section>
-  </>
+  </Container>
 );
+
+const Container = styled.div`
+  ${({ theme }) =>
+    css`
+      padding: ${theme.pageSize.padding};
+      height: ${theme.pageSize.height};
+    `}
+`;
 
 const CategoryWrapper = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })}

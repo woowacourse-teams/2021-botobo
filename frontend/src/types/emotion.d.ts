@@ -6,6 +6,7 @@ declare module '@emotion/react' {
     boxShadow: Readonly<BoxShadow>;
     borderRadius: Readonly<BorderRadius>;
     fontSize: Readonly<FontSize>;
+    pageSize: Readonly<PageSize>;
   }
 
   interface Color {
@@ -46,5 +47,10 @@ declare module '@emotion/react' {
     medium: string;
     semiLarge: string;
     large: string;
+  }
+
+  interface PageSize {
+    padding: string;
+    height: string;
   }
 }

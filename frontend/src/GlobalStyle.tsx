@@ -15,13 +15,10 @@ const GlobalStyle = () => {
         }
         html,
         body {
-          min-height: 100%;
           cursor: default;
           background-color: ${theme.color.gray_2};
         }
-        #root {
-          height: 100%;
-        }
+
         a {
           text-decoration: none;
           outline: none;

@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -15,7 +16,7 @@ const QuizSettingPage = () => {
   const history = useHistory();
 
   return (
-    <>
+    <Container>
       <Title>퀴즈 설정</Title>
       <span>어떤 문제를 풀어볼까요?</span>
       <CategoryWrapper>
@@ -28,9 +29,16 @@ const QuizSettingPage = () => {
       >
         시작!
       </Button>
-    </>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  ${({ theme }) =>
+    css`
+      padding: ${theme.pageSize.padding};
+    `}
+`;
 
 const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSize.semiLarge};

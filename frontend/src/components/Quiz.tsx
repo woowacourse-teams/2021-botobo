@@ -1,21 +1,23 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Flex } from '../styles';
 import { QuizResponse } from '../types/api';
-
-type Props = Omit<QuizResponse, 'id'>;
 
 interface CardStyleProps {
   isFlipped: boolean;
 }
 
-const QnACard = ({ question, answer, categoryName }: Props) => {
+const QnACard = ({ id, question, answer, categoryName }: QuizResponse) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  useEffect(() => {
+    setIsFlipped(false);
+  }, [id]);
+
   return (
-    <Container onClick={() => setIsFlipped(!isFlipped)}>
+    <Container onClick={() => setIsFlipped((prevValue) => !prevValue)}>
       <Card isFlipped={isFlipped}>
         <Question>
           <CategoryName>{categoryName}</CategoryName>
