@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Header } from './components';
 import { ROUTE, theme } from './constants';
 import GlobalStyle from './GlobalStyle';
-import { MainPage, QuizPage, QuizSettingPage } from './pages';
+import { MainPage, QuizPage, QuizResultPage, QuizSettingPage } from './pages';
 
 const App = () => (
   <ThemeProvider theme={theme}>
@@ -23,6 +23,9 @@ const App = () => (
           </Route>
           <Route exact path={ROUTE.QUIZ}>
             <QuizPage />
+          </Route>
+          <Route exact path={ROUTE.QUIZ_RESULT}>
+            <QuizResultPage />
           </Route>
         </Switch>
       </BrowserRouter>
