@@ -5,48 +5,24 @@ import React, { useState } from 'react';
 import { Flex } from '../styles';
 import { QuizResponse } from '../types/api';
 
-interface Props extends Omit<QuizResponse, 'id'> {
-  isChecked?: boolean;
-  setIsChecked?: () => void;
-}
+type Props = Omit<QuizResponse, 'id'>;
 
 interface CardStyleProps {
   isFlipped: boolean;
 }
 
-interface CheckStyleProps {
-  isChecked: boolean;
-}
-
-const QnACard = ({
-  question,
-  answer,
-  categoryName,
-  isChecked,
-  setIsChecked,
-}: Props) => {
+const QnACard = ({ question, answer, categoryName }: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <Container
-      onClick={() => (setIsChecked ? setIsChecked() : setIsFlipped(!isFlipped))}
-    >
+    <Container onClick={() => setIsFlipped(!isFlipped)}>
       <Card isFlipped={isFlipped}>
         <Question>
-          <CardHeader>
-            <CategoryName>{categoryName}</CategoryName>
-            {isChecked !== undefined && (
-              <Check isChecked={isChecked}>
-                <i className="fas fa-check"></i>
-              </Check>
-            )}
-          </CardHeader>
+          <CategoryName>{categoryName}</CategoryName>
           <span>Q. {question}</span>
         </Question>
         <Answer>
-          <CardHeader>
-            <CategoryName>{categoryName}</CategoryName>
-          </CardHeader>
+          <CategoryName>{categoryName}</CategoryName>
           <span>A. {answer}</span>
         </Answer>
       </Card>
@@ -94,6 +70,11 @@ const Card = styled.div<CardStyleProps>`
 
 const CategoryName = styled.span`
   font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   ${({ theme }) => css`
     color: ${theme.color.pink};
@@ -101,23 +82,10 @@ const CategoryName = styled.span`
   `}
 `;
 
-const Check = styled.span<CheckStyleProps>`
-  ${({ theme, isChecked }) => css`
-    color: ${isChecked ? theme.color.green : theme.color.gray_4};
-  `};
-`;
-
 const Question = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `}
-`;
-
-const CardHeader = styled.div`
-  ${Flex({ justify: 'space-between', items: 'center' })};
-  position: absolute;
-  top: 1rem;
-  width: 90%;
 `;
 
 const Answer = styled.div`

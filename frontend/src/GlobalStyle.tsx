@@ -15,7 +15,7 @@ const GlobalStyle = () => {
         }
         html,
         body {
-          height: 100%;
+          min-height: 100%;
           cursor: default;
           background-color: ${theme.color.gray_2};
         }

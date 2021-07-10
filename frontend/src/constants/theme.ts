@@ -26,6 +26,7 @@ const theme: Theme = {
   },
   borderRadius: {
     circle: '50%',
+    rectangle: '0',
     square: '8px',
     square_1: '12px',
     square_2: '16px',

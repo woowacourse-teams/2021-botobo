@@ -34,6 +34,7 @@ declare module '@emotion/react' {
 
   interface BorderRadius {
     circle: string;
+    rectangle: string;
     square: string;
     square_1: string;
     square_2: string;
