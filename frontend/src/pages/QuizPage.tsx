@@ -2,8 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Quiz } from '../components';
+import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
 const quizzes = [
@@ -47,6 +49,8 @@ const quizzes = [
 
 const QuizPage = () => {
   const [quizIndex, setQuizIndex] = useState(0);
+  const history = useHistory();
+
   const { id, question, answer, categoryName } = quizzes[quizIndex];
 
   const showPrevQuiz = () => {
@@ -56,7 +60,11 @@ const QuizPage = () => {
   };
 
   const showNextQuiz = () => {
-    if (quizIndex === quizzes.length - 1) return;
+    if (quizIndex === quizzes.length - 1) {
+      history.push(ROUTE.QUIZ_RESULT);
+
+      return;
+    }
 
     setQuizIndex((prevValue) => prevValue + 1);
   };
