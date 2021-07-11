@@ -1,6 +1,7 @@
 package botobo.core.category.dto;
 
 import botobo.core.category.domain.Category;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class CategoryResponse {
     private int cardCount;
     private String logoUrl;
 
+    @Builder
     private CategoryResponse(Long id, String name, String description, int cardCount, String logoUrl) {
         this.id = id;
         this.name = name;
