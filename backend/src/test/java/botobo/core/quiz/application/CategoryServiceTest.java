@@ -1,6 +1,5 @@
 package botobo.core.quiz.application;
 
-import botobo.core.quiz.application.CategoryService;
 import botobo.core.quiz.domain.category.Category;
 import botobo.core.quiz.domain.category.CategoryRepository;
 import botobo.core.quiz.dto.CategoryResponse;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.*;
 
+@DisplayName("카테고리 서비스 테스트")
 @MockitoSettings
 class CategoryServiceTest {
 

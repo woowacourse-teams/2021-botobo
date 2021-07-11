@@ -1,6 +1,5 @@
 package botobo.core.quiz.application;
 
-import botobo.core.quiz.application.QuizService;
 import botobo.core.quiz.domain.answer.Answer;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.category.Category;
