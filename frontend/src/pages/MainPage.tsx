@@ -1,48 +1,30 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Button, CategoryList, QuizStarter } from '../components';
+import { categoryState } from '../recoil/categoryState';
 import { Flex } from '../styles';
 
-const categories = [
-  {
-    id: 1,
-    name: 'Java',
-    description: '',
-    cardCount: 2,
-    logoUrl: '',
-  },
-  {
-    id: 2,
-    name: 'React',
-    description: '',
-    cardCount: 12,
-    logoUrl: '',
-  },
-  {
-    id: 3,
-    name: 'JS',
-    description: '',
-    cardCount: 34,
-    logoUrl: '',
-  },
-];
+const MainPage = () => {
+  const categories = useRecoilValue(categoryState);
 
-const MainPage = () => (
-  <Container>
-    <QuizStarter />
-    <section>
-      <CategoryWrapper>
-        <CategoryTitle>전체 카테고리</CategoryTitle>
-        <Button shape="circle" backgroundColor="white" hasShadow={true}>
-          <i className="fas fa-plus"></i>
-        </Button>
-      </CategoryWrapper>
-      {categories && <CategoryList categories={categories} />}
-    </section>
-  </Container>
-);
+  return (
+    <Container>
+      <QuizStarter />
+      <section>
+        <CategoryWrapper>
+          <CategoryTitle>전체 카테고리</CategoryTitle>
+          <Button shape="circle" backgroundColor="white" hasShadow={true}>
+            <i className="fas fa-plus"></i>
+          </Button>
+        </CategoryWrapper>
+        {categories && <CategoryList categories={categories} />}
+      </section>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   ${({ theme }) =>
