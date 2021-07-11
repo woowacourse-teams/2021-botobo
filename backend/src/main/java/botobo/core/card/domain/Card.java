@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
@@ -37,7 +38,15 @@ public class Card {
         this.id = id;
         this.question = question;
         this.isDeleted = isDeleted;
-        this.category = category;
+        setCategory(category);
         this.answers = answers;
+    }
+
+    private void setCategory(Category category) {
+        if (Objects.nonNull(category)) {
+            category.getCards().remove(this);
+        }
+        this.category = category;
+        category.getCards().add(this);
     }
 }
