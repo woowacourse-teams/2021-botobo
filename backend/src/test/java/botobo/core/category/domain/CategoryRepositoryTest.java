@@ -22,6 +22,12 @@ public class CategoryRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
+    public static String longStringGenerator(int max) {
+        return IntStream.rangeClosed(1, max)
+                .mapToObj(i -> "x")
+                .collect(Collectors.joining());
+    }
+
     @Test
     @DisplayName("Category를 저장 - 성공")
     void save() {
@@ -137,11 +143,5 @@ public class CategoryRepositoryTest {
         // when, then
         Optional<Category> findCategory = categoryRepository.findById(savedCategory.getId());
         assertThat(findCategory).containsSame(savedCategory);
-    }
-
-    public static String longStringGenerator(int max) {
-        return IntStream.rangeClosed(1, max)
-                .mapToObj(i -> "x")
-                .collect(Collectors.joining());
     }
 }

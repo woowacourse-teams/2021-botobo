@@ -1,9 +1,7 @@
 package botobo.core.category.application;
 
 import botobo.core.card.domain.Answer;
-import botobo.core.card.domain.Answers;
 import botobo.core.card.domain.Card;
-import botobo.core.card.domain.Cards;
 import botobo.core.category.domain.Category;
 import botobo.core.category.domain.CategoryRepository;
 import botobo.core.category.dto.QuizResponse;

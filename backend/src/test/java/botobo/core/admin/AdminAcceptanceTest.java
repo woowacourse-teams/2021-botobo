@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static botobo.core.category.domain.CategoryRepositoryTest.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +31,17 @@ public class AdminAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static void 여러개_카테고리_생성_요청(List<AdminCategoryRequest> requests) {
+        for (AdminCategoryRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().post("/admin/categories")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
     public static ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -38,6 +51,17 @@ public class AdminAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
+        for (AdminCardRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().post("/admin/cards")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
     public static ExtractableResponse<Response> 답변_생성_요청(AdminAnswerRequest adminAnswerRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,6 +69,16 @@ public class AdminAcceptanceTest extends AcceptanceTest {
                 .when().post("/admin/answers")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 여러개_답변_생성_요청(List<AdminAnswerRequest> requests) {
+        for (AdminAnswerRequest request : requests)
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().post("/admin/answers")
+                    .then().log().all()
+                    .extract();
     }
 
     @Test
@@ -181,7 +215,6 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("설명은 최대 255글자까지 가능합니다.");
     }
-
 
 
     @Test

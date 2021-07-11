@@ -3,7 +3,8 @@ package botobo.core.category.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CategoryTest {
 
@@ -26,11 +27,11 @@ class CategoryTest {
     void createWithNullName() {
         // given
         assertThatThrownBy(() -> Category.builder()
-                        .name(null)
-                        .isDeleted(false)
-                        .logoUrl("botobo.io")
-                        .description("~")
-                        .build())
+                .name(null)
+                .isDeleted(false)
+                .logoUrl("botobo.io")
+                .description("~")
+                .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
