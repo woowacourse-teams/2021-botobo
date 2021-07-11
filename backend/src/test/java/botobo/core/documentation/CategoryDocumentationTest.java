@@ -33,7 +33,7 @@ public class CategoryDocumentationTest {
 
     @Test
     @DisplayName("카레고리 전체 조회 - 성공")
-    void createCategory() throws Exception {
+    void findAllCategories() throws Exception {
         // given
         given(categoryService.findAll()).willReturn(generateCategoryResponse());
 
