@@ -5,54 +5,11 @@ import { useHistory } from 'react-router-dom';
 
 import { Button, QuizResult } from '../components';
 import { ROUTE } from '../constants';
+import useQuizResult from '../hooks/useQuizResult';
 import { Flex } from '../styles';
 
-const quizzes = [
-  {
-    id: 1,
-    question: '하하하하하하하하하하하하하하하하하하하하하하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: false,
-  },
-  {
-    id: 2,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: true,
-  },
-  {
-    id: 4,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: false,
-  },
-  {
-    id: 5,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: false,
-  },
-  {
-    id: 6,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: true,
-  },
-  {
-    id: 7,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-    isChecked: true,
-  },
-];
-
 const QuizResultPage = () => {
+  const { quizResults, checkQuizResult } = useQuizResult();
   const history = useHistory();
 
   return (
@@ -60,22 +17,18 @@ const QuizResultPage = () => {
       <span>총 7문제를 푸셨네요!</span>
       <br />
       <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
-      {quizzes && (
-        <QuizResultList>
-          {quizzes.map(({ id, question, categoryName, isChecked }) => (
-            <li key={id}>
-              <QuizResult
-                question={question}
-                categoryName={categoryName}
-                isChecked={isChecked}
-                setIsChecked={() => {
-                  console.log();
-                }}
-              />
-            </li>
-          ))}
-        </QuizResultList>
-      )}
+      <QuizResultList>
+        {quizResults.map(({ id, question, categoryName, isChecked }) => (
+          <li key={id}>
+            <QuizResult
+              question={question}
+              categoryName={categoryName}
+              isChecked={isChecked}
+              onClick={() => checkQuizResult(id)}
+            />
+          </li>
+        ))}
+      </QuizResultList>
       <ButtonWrapper>
         <Button
           size="full"

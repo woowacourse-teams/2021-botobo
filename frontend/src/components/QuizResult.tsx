@@ -6,20 +6,15 @@ import { QuizResponse } from '../types';
 
 interface Props extends Omit<QuizResponse, 'id' | 'answer'> {
   isChecked: boolean;
-  setIsChecked: () => void;
+  onClick: () => void;
 }
 
 interface ContainerStyleProps {
   isChecked: boolean;
 }
 
-const QuizResult = ({
-  question,
-  categoryName,
-  isChecked,
-  setIsChecked,
-}: Props) => (
-  <Container isChecked={isChecked} onClick={setIsChecked}>
+const QuizResult = ({ question, categoryName, isChecked, onClick }: Props) => (
+  <Container isChecked={isChecked} onClick={onClick}>
     <CategoryName>{categoryName}</CategoryName>
     <span>Q. {question}</span>
   </Container>
