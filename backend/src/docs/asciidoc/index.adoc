@@ -5,4 +5,6 @@
 :toc: left
 :toclevels: 2
 
-include::category.adoc[]
+include::categories.adoc[]
+
+include::quizzes.adoc[]

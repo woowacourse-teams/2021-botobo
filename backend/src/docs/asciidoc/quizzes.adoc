@@ -1,0 +1,9 @@
+== 퀴즈 API
+
+=== 퀴즈 생성하기
+include::{snippets}/quizzes-post-success/http-request.adoc[]
+include::{snippets}/quizzes-post-success/http-response.adoc[]
+
+=== 퀴즈 생성 실패 - 존재하지 않는 카테고리 id
+include::{snippets}/quizzes-post-fail-invalid-category-id/http-request.adoc[]
+include::{snippets}/quizzes-post-fail-invalid-category-id/http-response.adoc[]

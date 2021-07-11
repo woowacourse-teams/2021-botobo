@@ -442,6 +442,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_카테고리_전체_보기">카테고리 전체 보기</a></li>
 </ul>
 </li>
+<li><a href="#_퀴즈_api">퀴즈 API</a>
+<ul class="sectlevel2">
+<li><a href="#_퀴즈_생성하기">퀴즈 생성하기</a></li>
+<li><a href="#_퀴즈_생성_실패_존재하지_않는_카테고리_id">퀴즈 생성 실패 - 존재하지 않는 카테고리 id</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -487,10 +493,117 @@ Content-Length: 430
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_퀴즈_api">퀴즈 API</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_퀴즈_생성하기">퀴즈 생성하기</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /quizzes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Content-Length: 33
+Host: localhost:8080
+
+{
+  "categoryIds" : [ 1, 2, 3 ]
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1113
+
+[ {
+  "id" : 3,
+  "question" : "Javascript 질문 2",
+  "answer" : "Javascript 답 2",
+  "categoryName" : "Javascript"
+}, {
+  "id" : 10,
+  "question" : "Java 질문 1",
+  "answer" : "Java 답 1",
+  "categoryName" : "JAVA"
+}, {
+  "id" : 2,
+  "question" : "Java 질문 3",
+  "answer" : "Java 답 3",
+  "categoryName" : "JAVA"
+}, {
+  "id" : 11,
+  "question" : "Spring 질문 1",
+  "answer" : "Java 답 1",
+  "categoryName" : "JAVA"
+}, {
+  "id" : 1,
+  "question" : "Java 질문 2",
+  "answer" : "Java 답 2",
+  "categoryName" : "JAVA"
+}, {
+  "id" : 4,
+  "question" : "Spring 질문 6",
+  "answer" : "Spring 답 6",
+  "categoryName" : "Spring"
+}, {
+  "id" : 7,
+  "question" : "Javascript 질문 9",
+  "answer" : "Javascript 답 9",
+  "categoryName" : "Javascript"
+}, {
+  "id" : 21,
+  "question" : "Spring 질문 3",
+  "answer" : "Spring 답 3",
+  "categoryName" : "Spring"
+}, {
+  "id" : 17,
+  "question" : "Javascript 질문 4",
+  "answer" : "Javascript 답 4",
+  "categoryName" : "Javascript"
+}, {
+  "id" : 14,
+  "question" : "Javascript 질문 1",
+  "answer" : "Javascript 답 1",
+  "categoryName" : "Javascript"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_퀴즈_생성_실패_존재하지_않는_카테고리_id">퀴즈 생성 실패 - 존재하지 않는 카테고리 id</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /quizzes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Content-Length: 36
+Host: localhost:8080
+
+{
+  "categoryIds" : [ 1, 2, 1000 ]
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Content-Type: application/json
+Content-Length: 67
+
+{
+  "message" : "해당 카테고리를 찾을 수 없습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-07-11 16:28:40 +0900
+Last updated 2021-07-11 17:13:46 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
