@@ -1,6 +1,6 @@
 package botobo.core.admin.dto;
 
-import botobo.core.card.domain.Answer;
+import botobo.core.quiz.domain.answer.Answer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

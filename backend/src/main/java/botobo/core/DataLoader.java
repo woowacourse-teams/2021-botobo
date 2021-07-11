@@ -1,8 +1,8 @@
 package botobo.core;
 
-import botobo.core.card.domain.AnswerRepository;
-import botobo.core.card.domain.CardRepository;
-import botobo.core.category.domain.CategoryRepository;
+import botobo.core.quiz.domain.answer.AnswerRepository;
+import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.category.CategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 
 // 더미 데이터 삽입 시에 사용될 DataLoader 뼈대 코드

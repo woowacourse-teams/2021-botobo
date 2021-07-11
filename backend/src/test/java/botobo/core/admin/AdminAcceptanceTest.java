@@ -13,13 +13,13 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static botobo.core.category.domain.CategoryRepositoryTest.longStringGenerator;
+import static botobo.core.quiz.domain.CategoryRepositoryTest.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
 public class AdminAcceptanceTest extends AcceptanceTest {
 
-    private static AdminCategoryRequest ADMIN_CATEGORY_REQUEST =
+    private static final AdminCategoryRequest ADMIN_CATEGORY_REQUEST =
             new AdminCategoryRequest("Category", "botobo.io", "this is category.");
 
     public static ExtractableResponse<Response> 카테고리_생성_요청(AdminCategoryRequest adminCategoryRequest) {
