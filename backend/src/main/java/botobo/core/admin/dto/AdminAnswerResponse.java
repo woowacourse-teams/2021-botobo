@@ -11,7 +11,7 @@ public class AdminAnswerResponse {
     private String content;
     private Long cardId;
 
-    public AdminAnswerResponse(Long id, String content, Long cardId) {
+    private AdminAnswerResponse(Long id, String content, Long cardId) {
         this.id = id;
         this.content = content;
         this.cardId = cardId;
