@@ -22,7 +22,7 @@ class CategoryTest {
     }
 
     @Test
-    @DisplayName("파라미터 없는 생성자로 객체 생성 - 생성")
+    @DisplayName("파라미터 없는 생성자로 객체 생성 - 성공")
     void createWithNoArgsConstructor() {
         // when, then
         assertThatCode(Category::new)
