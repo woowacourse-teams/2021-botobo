@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AnswerTest {
 
@@ -29,10 +30,34 @@ class AnswerTest {
     }
 
     @Test
-    @DisplayName("파라미터 없는 생성자로 객체 생성 - 생성")
-    void createWithNoArgsConstructor() {
+    @DisplayName("Content가 null인 Answer 객체 생성 - 실패")
+    void createWithNullContent() {
+        // given
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .category(new Category())
+                .isDeleted(false)
+                .build();
+
         // when, then
-        assertThatCode(Answer::new)
-                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> Answer.builder()
+                .content(null)
+                .isDeleted(false)
+                .card(card)
+                .build()
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Card가 null인 Answer 객체 생성 - 실패")
+    void createWithNullCard() {
+        // when, then
+        assertThatThrownBy(() -> Answer.builder()
+                .content("정답입니다.")
+                .isDeleted(false)
+                .card(null)
+                .build()
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }

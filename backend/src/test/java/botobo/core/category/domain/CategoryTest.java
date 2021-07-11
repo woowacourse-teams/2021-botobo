@@ -3,7 +3,7 @@ package botobo.core.category.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 
 class CategoryTest {
 
@@ -22,10 +22,41 @@ class CategoryTest {
     }
 
     @Test
-    @DisplayName("파라미터 없는 생성자로 객체 생성 - 성공")
-    void createWithNoArgsConstructor() {
-        // when, then
-        assertThatCode(Category::new)
-                .doesNotThrowAnyException();
+    @DisplayName("Builder를 이용한 카테고리 생성 - 실패, name은 null이 될 수 없다.")
+    void createWithNullName() {
+        // given
+        assertThatThrownBy(() -> Category.builder()
+                        .name(null)
+                        .isDeleted(false)
+                        .logoUrl("botobo.io")
+                        .description("~")
+                        .build())
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Builder를 이용한 카테고리 생성 - 실패, logoUrl은 null이 될 수 없다.")
+    void createWithNullLogoUrl() {
+        // given
+        assertThatThrownBy(() -> Category.builder()
+                .name("js")
+                .isDeleted(false)
+                .logoUrl(null)
+                .description("~")
+                .build())
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Builder를 이용한 카테고리 생성 - 실패, description은 null이 될 수 없다.")
+    void createWithNullDescription() {
+        // given
+        assertThatThrownBy(() -> Category.builder()
+                .name("js")
+                .isDeleted(false)
+                .logoUrl("botobo.io")
+                .description(null)
+                .build())
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

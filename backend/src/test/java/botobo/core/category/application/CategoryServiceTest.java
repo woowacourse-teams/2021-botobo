@@ -31,9 +31,9 @@ class CategoryServiceTest {
     void findAllWithMock() {
         // given
         List<Category> categories = Arrays.asList(
-                Category.builder().id(1L).cards(Collections.emptyList()).build(),
-                Category.builder().id(2L).cards(Collections.emptyList()).build(),
-                Category.builder().id(3L).cards(Collections.emptyList()).build()
+            Category.builder().id(1L).name("a").logoUrl("").isDeleted(false).description("").build(),
+            Category.builder().id(2L).name("b").logoUrl("").isDeleted(false).description("").build(),
+            Category.builder().id(3L).name("c").logoUrl("").isDeleted(false).description("").build()
         );
         given(categoryRepository.findAll()).willReturn(categories);
 

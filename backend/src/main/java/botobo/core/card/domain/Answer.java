@@ -29,18 +29,28 @@ public class Answer {
 
     @Builder
     public Answer(Long id, String content, boolean isDeleted, Card card) {
+        validateNull(content, card);
         this.id = id;
         this.content = content;
         this.isDeleted = isDeleted;
         setCard(card);
     }
 
+    private void validateNull(String content, Card card) {
+        if (Objects.isNull(content)) {
+            throw new IllegalArgumentException("Answer의 Content는 null이 될 수 없습니다.");
+        }
+        if (Objects.isNull(card)) {
+            throw new IllegalArgumentException("Answer의 card는 null이 될 수 없습니다.");
+        }
+    }
+
     private void setCard(Card card) {
         if (Objects.nonNull(card)) {
-            card.getAnswers().remove(this);
+            card.getAnswers().removeAnswer(this);
         }
         this.card = card;
-        card.getAnswers().add(this);
+        card.getAnswers().addAnswer(this);
     }
 
 }

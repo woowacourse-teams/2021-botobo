@@ -71,33 +71,6 @@ class AnswerRepositoryTest {
     }
 
     @Test
-    @DisplayName("Card에 null을 입력 - 실패, Card는 null이 될 수 없다.")
-    void saveWithNullCard() {
-        // given
-        Answer answer = Answer.builder()
-                .card(null)
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> answerRepository.save(answer))
-                .isInstanceOf(DataAccessException.class);
-    }
-
-    @Test
-    @DisplayName("content에 null 입력 - 실패, content는 null이 될 수 없다.")
-    void saveWithNullContent() {
-        // given
-        Answer answer = Answer.builder()
-                .content(null)
-                .card(card)
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> answerRepository.save(answer))
-                .isInstanceOf(DataAccessException.class);
-    }
-
-    @Test
     @DisplayName("Id로 Answer 찾기 - 성공")
     void findById() {
         // given

@@ -24,7 +24,7 @@ public class QuizResponse {
 
     public static QuizResponse of(Card card) {
         final Category category = card.getCategory();
-        final String answer = card.getAnswers().get(0).getContent();
+        final String answer = card.getFirstAnswerContent();
         return QuizResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())

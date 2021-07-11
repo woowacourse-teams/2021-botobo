@@ -1,14 +1,14 @@
 package botobo.core.category.domain;
 
 import botobo.core.card.domain.Card;
+import botobo.core.card.domain.Cards;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
@@ -31,22 +31,38 @@ public class Category {
     @Column(nullable = false)
     private String description = "";
 
-    @OneToMany(mappedBy = "category")
-    private List<Card> cards = new ArrayList<>();
+    @Embedded
+    private Cards cards = new Cards();
 
     @Builder
     public Category(Long id, String name, boolean isDeleted, String logoUrl,
-                    String description, List<Card> cards) {
+                    String description) {
+        validateNull(name, logoUrl, description);
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
         this.logoUrl = logoUrl;
         this.description = description;
-        this.cards = cards;
+    }
+
+    private void validateNull(String name, String logoUrl, String description) {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException("Category의 Name에는 null이 들어갈 수 없습니다.");
+        }
+        if (Objects.isNull(logoUrl)) {
+            throw new IllegalArgumentException("Category의 LogoUrl에는 null이 들어갈 수 없습니다.");
+        }
+        if (Objects.isNull(description)) {
+            throw new IllegalArgumentException("Category의 Description에는 null이 들어갈 수 없습니다.");
+        }
     }
 
     public int cardCount() {
         return cards.size();
+    }
+
+    public List<Card> getAllCards() {
+        return cards.getCards();
     }
 }
 

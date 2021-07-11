@@ -58,34 +58,6 @@ class CardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Card 저장 - 실패, 카테고리는 null이 될 수 없다.")
-    void saveWithNullCategory() {
-        // given
-        Card card = Card.builder()
-                .question("질문")
-                .category(null)
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> cardRepository.save(card))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
-    @DisplayName("Card 저장 - 실패, question은 null이 될 수 없다.")
-    void saveWithNullQuestion() {
-        // given
-        Card card = Card.builder()
-                .question(null)
-                .category(category)
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> cardRepository.save(card))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
     @DisplayName("Id로 Card 찾기 - 성공")
     void findById() {
         // given

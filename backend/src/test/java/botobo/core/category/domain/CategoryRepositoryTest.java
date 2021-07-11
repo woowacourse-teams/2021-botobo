@@ -44,22 +44,6 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("name에 null을 넣는다. - 실패, name은 null이 될 수 없다.")
-    void saveWithNullName() {
-        // given
-        Category nullNameCategory = Category.builder()
-                .name(null)
-                .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
-                .build();
-
-        // when
-        assertThatCode(() -> categoryRepository.save(nullNameCategory))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
     @DisplayName("동일한 이름으로 Category 저장 - 실패, 이름이 이미 존재")
     void saveWithExistentName() {
         // given
@@ -101,6 +85,28 @@ public class CategoryRepositoryTest {
     }
 
     @Test
+    @DisplayName("Category를 생성 - 성공")
+    void saveWithLogoUrl() {
+        // given
+        Category category = Category.builder()
+                .name("java")
+                .isDeleted(false)
+                .logoUrl("")
+                .description("~")
+                .build();
+
+        // when, then
+        // when
+        Category savedCategory = categoryRepository.save(category);
+
+        // then
+        assertThat(category.getId()).isNotNull();
+        assertThat(savedCategory).extracting("id").isNotNull();
+        assertThat(savedCategory).isSameAs(category);
+        testEntityManager.flush();
+    }
+
+    @Test
     @DisplayName("Category를 생성 - 실패, logoUrl은 최대 100의 길이를 갖는다.")
     void saveWithLongLogoUrl() {
         // given
@@ -113,37 +119,6 @@ public class CategoryRepositoryTest {
 
         // when, then
         assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
-    @DisplayName("logoUrl에 null을 입력 - 실패, logoUrl은 null이 될 수 없다. ")
-    void saveWithNullLogoUrl() {
-        // given
-        Category category = Category.builder()
-                .name("java")
-                .isDeleted(false)
-                .logoUrl(null)
-                .description("~")
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
-    @DisplayName("description에 null을 입력 - 실패, description은 null이 될 수 없다.")
-    void updateDescriptionWithNull() {
-        // given
-        Category category = Category.builder()
-                .name("java")
-                .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description(null)
-                .build();
-
-        assertThatCode(() -> categoryRepository.save(category))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

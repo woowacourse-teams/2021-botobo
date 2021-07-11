@@ -30,23 +30,36 @@ public class Card {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "card")
-    private List<Answer> answers = new ArrayList<>();
+    @Embedded
+    private Answers answers = new Answers();
 
     @Builder
-    public Card(Long id, String question, boolean isDeleted, Category category, List<Answer> answers) {
+    public Card(Long id, String question, boolean isDeleted, Category category) {
+        validateNull(question, category);
         this.id = id;
         this.question = question;
         this.isDeleted = isDeleted;
         setCategory(category);
-        this.answers = answers;
+    }
+
+    private void validateNull(String question, Category category) {
+        if (Objects.isNull(question)) {
+            throw new IllegalArgumentException("Card의 Question에는 null이 들어갈 수 없습니다.");
+        }
+        if (Objects.isNull(category)) {
+            throw new IllegalArgumentException("Card의 Category에는 null이 들어갈 수 없습니다.");
+        }
     }
 
     private void setCategory(Category category) {
         if (Objects.nonNull(category)) {
-            category.getCards().remove(this);
+            category.getCards().removeCard(this);
         }
         this.category = category;
-        category.getCards().add(this);
+        category.getCards().addCard(this);
+    }
+
+    public String getFirstAnswerContent() {
+        return answers.getFirstAnswerContent();
     }
 }

@@ -28,9 +28,9 @@ public class QuizService {
         for (Long id : ids) {
             final Category category = categoryRepository.findCategoryAndCardsByIdJoinFetch(id)
                     .orElseThrow(CategoryNotFoundException::new);
-            quizzes.addAll(category.getCards());
+            quizzes.addAll(category.getAllCards());
         }
-        int maxLimit = Math.min(quizzes.size(), 10);
+        final int maxLimit = Math.min(quizzes.size(), 10);
         Collections.shuffle(quizzes);
         return quizzes.stream().limit(maxLimit)
                 .map(QuizResponse::of)

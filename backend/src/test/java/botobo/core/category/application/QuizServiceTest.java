@@ -1,7 +1,9 @@
 package botobo.core.category.application;
 
 import botobo.core.card.domain.Answer;
+import botobo.core.card.domain.Answers;
 import botobo.core.card.domain.Card;
+import botobo.core.card.domain.Cards;
 import botobo.core.category.domain.Category;
 import botobo.core.category.domain.CategoryRepository;
 import botobo.core.category.dto.QuizResponse;
@@ -37,54 +39,67 @@ class QuizServiceTest {
 
     @BeforeEach
     void setUp() {
-        Answer answer = Answer.builder()
-                .content("content")
-                .build();
-
-        Card card = Card.builder()
-                .id(1L)
-                .question("question")
-                .category(Category.builder().name("name").build())
-                .answers(Arrays.asList(answer))
-                .build();
-
-        List<Card> cards = Arrays.asList(card, card, card, card, card, card, card, card, card, card, card);
-
         category = Category.builder()
-                .cards(cards)
                 .name("name")
+                .logoUrl("")
+                .description("")
+                .isDeleted(false)
                 .build();
 
         categoryWithOneCards = Category.builder()
-                .cards(Arrays.asList(card))
                 .name("name")
+                .logoUrl("")
+                .description("")
+                .isDeleted(false)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("question")
+                .category(category)
+                .build();
+
+        Card card2 = Card.builder()
+                .id(2L)
+                .question("question")
+                .category(categoryWithOneCards)
+                .build();
+
+        Answer answer1 = Answer.builder()
+                .content("content")
+                .card(card1)
+                .build();
+
+        Answer answer2 = Answer.builder()
+                .content("content")
+                .card(card2)
                 .build();
     }
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
+    @DisplayName("카테고리 id(Long)를 이용해서 1개의 카드가 담긴 퀴즈 생성 - 성공")
     void createQuiz() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
+        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(category));
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
-        assertThat(quizResponses.size()).isEqualTo(10);
+        assertThat(quizResponses.size()).isEqualTo(1);
 
         then(categoryRepository)
                 .should(times(1))
-                .findById(anyLong());
+                .findCategoryAndCardsByIdJoinFetch(anyLong());
     }
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 1개의 카드가 담긴 퀴즈 생성 - 성공")
+    @DisplayName("카테고리 두 개의 id(Long)를 이용해서 2개의 카드가 담긴 퀴즈 생성 - 성공")
     void createQuizWithOneCards() {
         // given
         List<Long> ids = Arrays.asList(1L, 2L);
-        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(categoryWithOneCards));
+        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(categoryWithOneCards));
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -94,6 +109,6 @@ class QuizServiceTest {
 
         then(categoryRepository)
                 .should(times(2))
-                .findById(anyLong());
+                .findCategoryAndCardsByIdJoinFetch(anyLong());
     }
 }
