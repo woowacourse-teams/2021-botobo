@@ -44,8 +44,8 @@ public class Category {
         this.cards = cards;
     }
 
-    public void updateDescription(String description) {
-        this.description = description;
+    public int cardCount() {
+        return cards.size();
     }
 }
 
