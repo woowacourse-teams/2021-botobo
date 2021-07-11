@@ -5,16 +5,20 @@ import React, { useEffect, useState } from 'react';
 import { Flex } from '../styles';
 import { QuizResponse } from '../types/api';
 
+interface Props extends Omit<QuizResponse, 'id'> {
+  isChanged: boolean;
+}
+
 interface CardStyleProps {
   isFlipped: boolean;
 }
 
-const QnACard = ({ id, question, answer, categoryName }: QuizResponse) => {
+const Quiz = ({ question, answer, categoryName, isChanged }: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
     setIsFlipped(false);
-  }, [id]);
+  }, [isChanged]);
 
   return (
     <Container onClick={() => setIsFlipped((prevValue) => !prevValue)}>
@@ -98,4 +102,4 @@ const Answer = styled.div`
   `}
 `;
 
-export default QnACard;
+export default Quiz;
