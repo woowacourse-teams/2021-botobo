@@ -1,21 +1,27 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import logo from '../assets/logo.png';
 import noUserImage from '../assets/no_user_image.png';
+import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
-const Header = () => (
-  <StyledHeader>
-    <div>
-      <Logo src={logo} alt="로고" />
-    </div>
-    <Profile>
-      <Avatar src={noUserImage} alt="유저 프로필" />
-    </Profile>
-  </StyledHeader>
-);
+const Header = () => {
+  const history = useHistory();
+
+  return (
+    <StyledHeader>
+      <div onClick={() => history.push(ROUTE.HOME)}>
+        <Logo src={logo} alt="로고" />
+      </div>
+      <Profile>
+        <Avatar src={noUserImage} alt="유저 프로필" />
+      </Profile>
+    </StyledHeader>
+  );
+};
 
 const StyledHeader = styled.header`
   ${Flex({ justify: 'space-between', items: 'center' })}

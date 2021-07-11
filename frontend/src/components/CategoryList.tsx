@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { CategoryResponse } from '../types/api';
+import { CategoryResponse } from '../types';
 import Category from './Category';
 
 interface CategoryProp extends CategoryResponse {
@@ -10,13 +10,19 @@ interface CategoryProp extends CategoryResponse {
 
 interface Props {
   categories: CategoryProp[];
+  onClickCategory: (id: number) => void;
 }
 
-const CategoryList = ({ categories }: Props) => (
+const CategoryList = ({ categories, onClickCategory }: Props) => (
   <StyledUl>
-    {categories.map(({ id, name, cardCount }) => (
+    {categories.map(({ id, name, cardCount, isChecked }) => (
       <li key={id}>
-        <Category name={name} cardCount={cardCount} isChecked={false} />
+        <Category
+          name={name}
+          cardCount={cardCount}
+          isChecked={isChecked}
+          onClick={() => onClickCategory(id)}
+        />
       </li>
     ))}
   </StyledUl>

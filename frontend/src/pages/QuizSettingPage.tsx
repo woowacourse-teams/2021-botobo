@@ -5,14 +5,10 @@ import { useHistory } from 'react-router-dom';
 
 import { Button, CategoryList } from '../components';
 import { ROUTE } from '../constants';
-
-const categories = [
-  { id: 1, name: 'Java', description: '', cardCount: 2, logoUrl: '' },
-  { id: 2, name: 'React', description: '', cardCount: 12, logoUrl: '' },
-  { id: 3, name: 'JS', description: '', cardCount: 34, logoUrl: '' },
-];
+import { useQuizSetting } from '../hooks';
 
 const QuizSettingPage = () => {
+  const { categories, checkCategory } = useQuizSetting();
   const history = useHistory();
 
   return (
@@ -20,7 +16,7 @@ const QuizSettingPage = () => {
       <Title>퀴즈 설정</Title>
       <span>어떤 문제를 풀어볼까요?</span>
       <CategoryWrapper>
-        {categories && <CategoryList categories={categories} />}
+        <CategoryList categories={categories} onClickCategory={checkCategory} />
       </CategoryWrapper>
       <Button
         onClick={() => history.push(ROUTE.QUIZ)}

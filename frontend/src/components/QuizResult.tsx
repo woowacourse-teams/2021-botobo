@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { QuizResponse } from '../types/api';
+import { QuizResponse } from '../types';
 
 interface Props extends Omit<QuizResponse, 'id' | 'answer'> {
   isChecked: boolean;

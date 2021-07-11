@@ -12,3 +12,7 @@ export interface QuizResponse {
   answer: string;
   categoryName: string;
 }
+
+export interface QuizSetting extends CategoryResponse {
+  isChecked: boolean;
+}

@@ -4,14 +4,14 @@ import React from 'react';
 
 import { Flex } from '../styles';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   name: string;
   cardCount: number;
   isChecked?: boolean;
 }
 
-const Category = ({ name, cardCount, isChecked }: Props) => (
-  <Container isChecked={isChecked}>
+const Category = ({ name, cardCount, isChecked, ...props }: Props) => (
+  <Container isChecked={isChecked} {...props}>
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 문제</CardCount>
   </Container>
