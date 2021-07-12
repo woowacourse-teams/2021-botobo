@@ -35,5 +35,5 @@ dist
 .DS_Store
 
 ### Log ###
-logs/**
-logs
+backend/logs/**
+backend/logs
