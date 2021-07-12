@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
 import { Flex } from '../styles';
-import { QuizResponse } from '../types/api';
+import { QuizResponse } from '../types';
 
 interface Props extends Omit<QuizResponse, 'id'> {
   isChanged: boolean;

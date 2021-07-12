@@ -1,11 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Quiz } from '../components';
-import { ROUTE } from '../constants';
+import { useQuiz } from '../hooks';
 import { Flex } from '../styles';
 
 interface TooltipProps {
@@ -20,68 +18,9 @@ interface QuizItemProps {
   quizIndex: number;
 }
 
-const quizzes = [
-  {
-    id: 1,
-    question: '하하하하하하하하하하하하하하하하하하하하하하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-  {
-    id: 2,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-  {
-    id: 4,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-  {
-    id: 5,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-  {
-    id: 6,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-  {
-    id: 7,
-    question: '하하하',
-    answer: '호호호',
-    categoryName: '카테고리',
-  },
-];
-
 const QuizPage = () => {
-  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
-  const [prevQuizId, setPrevQuizId] = useState<number | null>(null);
-
-  const history = useHistory();
-
-  const showPrevQuiz = () => {
-    if (currentQuizIndex === 0) return;
-
-    setPrevQuizId(quizzes[currentQuizIndex].id);
-    setCurrentQuizIndex((prevValue) => prevValue - 1);
-  };
-
-  const showNextQuiz = () => {
-    if (currentQuizIndex === quizzes.length - 1) {
-      history.push(ROUTE.QUIZ_RESULT);
-
-      return;
-    }
-
-    setPrevQuizId(quizzes[currentQuizIndex].id);
-    setCurrentQuizIndex((prevValue) => prevValue + 1);
-  };
+  const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
+    useQuiz();
 
   return (
     <Container>

@@ -12,11 +12,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif)$/i,
-        loader: 'file-loader',
-        options: {
-          name: '[path][name].[ext]',
-        },
+        test: /\.png/,
+        type: 'asset/resource',
       },
       {
         test: /\.(js|ts)x?$/,
@@ -25,7 +22,6 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-typescript',
               [
                 '@babel/preset-env',
                 {
@@ -34,6 +30,7 @@ module.exports = {
                 },
               ],
               '@babel/preset-react',
+              '@babel/preset-typescript',
             ],
             plugins: [
               '@babel/proposal-class-properties',
