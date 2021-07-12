@@ -1,14 +1,14 @@
 package botobo.core.admin.application;
 
 import botobo.core.admin.dto.*;
-import botobo.core.card.domain.Answer;
-import botobo.core.card.domain.AnswerRepository;
-import botobo.core.card.domain.Card;
-import botobo.core.card.domain.CardRepository;
-import botobo.core.card.exception.CardNotFoundException;
-import botobo.core.category.domain.Category;
-import botobo.core.category.domain.CategoryRepository;
-import botobo.core.category.exception.CategoryNotFoundException;
+import botobo.core.quiz.domain.answer.Answer;
+import botobo.core.quiz.domain.answer.AnswerRepository;
+import botobo.core.quiz.domain.card.Card;
+import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.category.Category;
+import botobo.core.quiz.domain.category.CategoryRepository;
+import botobo.core.quiz.exception.CardNotFoundException;
+import botobo.core.quiz.exception.CategoryNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,6 @@
 package botobo.core.admin.dto;
 
-import botobo.core.category.domain.Category;
+import botobo.core.quiz.domain.category.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;

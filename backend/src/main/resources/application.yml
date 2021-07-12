@@ -30,6 +30,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+    root: INFO
 
 ---
 
@@ -58,3 +59,4 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+    root: INFO

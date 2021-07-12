@@ -33,3 +33,7 @@ out/
 node_modules
 dist
 .DS_Store
+
+### Log ###
+backend/logs/**
+backend/logs
