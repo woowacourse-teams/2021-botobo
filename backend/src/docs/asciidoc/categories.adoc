@@ -1,0 +1,5 @@
+== 카테고리 API
+
+=== 카테고리 전체 보기
+include::{snippets}/categories-get-success/http-request.adoc[]
+include::{snippets}/categories-get-success/http-response.adoc[]

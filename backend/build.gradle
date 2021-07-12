@@ -45,7 +45,6 @@ dependencies {
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 }
 
-
 ext {
     snippetsDir = file('build/generated-snippets')
 }
@@ -54,8 +53,11 @@ test {
     useJUnitPlatform()
 }
 
-asciidoctor {
+asciidoctor.doFirst {
     delete file('src/main/resources/static/docs')
+}
+
+asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }

@@ -10,9 +10,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.times;
 
 @DisplayName("카테고리 서비스 테스트")
 @MockitoSettings
