@@ -4,7 +4,7 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { Button, CategoryList, QuizStarter } from '../components';
-import { categoryState } from '../recoil/categoryState';
+import { categoryState } from '../recoil';
 import { Flex } from '../styles';
 
 const MainPage = () => {
@@ -14,13 +14,18 @@ const MainPage = () => {
     <Container>
       <QuizStarter />
       <section>
-        <CategoryWrapper>
+        <CategoryHeader>
           <CategoryTitle>전체 카테고리</CategoryTitle>
           <Button shape="circle" backgroundColor="white" hasShadow={true}>
             <i className="fas fa-plus"></i>
           </Button>
-        </CategoryWrapper>
-        {categories && <CategoryList categories={categories} />}
+        </CategoryHeader>
+        <CategoryList
+          categories={categories}
+          onClickCategory={() => {
+            console.log('hi');
+          }}
+        />
       </section>
     </Container>
   );
@@ -33,7 +38,7 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryWrapper = styled.div`
+const CategoryHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })}
   margin-top: 3rem;
 `;

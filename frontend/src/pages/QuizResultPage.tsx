@@ -14,7 +14,7 @@ const QuizResultPage = () => {
 
   return (
     <Container>
-      <span>총 7문제를 푸셨네요!</span>
+      <span>총 {quizResults.length}문제를 푸셨네요!</span>
       <br />
       <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
       <QuizResultList>

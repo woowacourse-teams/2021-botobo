@@ -1,15 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Button, CategoryList } from '../components';
-import { ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
 
 const QuizSettingPage = () => {
-  const { categories, checkCategory } = useQuizSetting();
-  const history = useHistory();
+  const { categories, checkCategory, startQuiz } = useQuizSetting();
 
   return (
     <Container>
@@ -18,11 +15,7 @@ const QuizSettingPage = () => {
       <CategoryWrapper>
         <CategoryList categories={categories} onClickCategory={checkCategory} />
       </CategoryWrapper>
-      <Button
-        onClick={() => history.push(ROUTE.QUIZ)}
-        backgroundColor="green"
-        size="full"
-      >
+      <Button onClick={startQuiz} backgroundColor="green" size="full">
         시작!
       </Button>
     </Container>

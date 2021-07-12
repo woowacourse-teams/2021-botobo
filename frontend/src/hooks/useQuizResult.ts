@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { quizResultState } from '../recoil';
+import { quizState } from '../recoil';
 
 const useQuizResult = () => {
   const [quizResults, setQuizResults] = useState(
-    useRecoilValue(quizResultState)
+    useRecoilValue(quizState).map((quizResult) => ({
+      ...quizResult,
+      isChecked: false,
+    }))
   );
 
   const checkQuizResult = (id: number) => {

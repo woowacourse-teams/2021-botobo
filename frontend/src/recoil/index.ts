@@ -1,2 +1,2 @@
-export { categoryState, quizSettingState } from './categoryState';
-export { quizState, quizResultState } from './quizState';
+export { categoryState } from './categoryState';
+export { quizState } from './quizState';

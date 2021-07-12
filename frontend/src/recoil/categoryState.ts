@@ -1,42 +1,12 @@
-import { selector } from 'recoil';
+import { atom, selector } from 'recoil';
 
-import { CategoryResponse, QuizSetting } from '../types';
+import { getCategoriesAsync } from '../api';
+import { CategoryResponse } from '../types';
 
-const dummy = [
-  {
-    id: 1,
-    name: 'Java',
-    description: '',
-    cardCount: 2,
-    logoUrl: '',
-  },
-  {
-    id: 2,
-    name: 'React',
-    description: '',
-    cardCount: 12,
-    logoUrl: '',
-  },
-  {
-    id: 3,
-    name: 'JS',
-    description: '',
-    cardCount: 34,
-    logoUrl: '',
-  },
-];
-
-export const categoryState = selector<CategoryResponse[]>({
+export const categoryState = atom<CategoryResponse[]>({
   key: 'categoryState',
-  get: () => dummy,
-});
-
-export const quizSettingState = selector<QuizSetting[]>({
-  key: 'quizSettingState',
-  get: ({ get }) => {
-    return get(categoryState).map((category) => ({
-      ...category,
-      isChecked: false,
-    }));
-  },
+  default: selector({
+    key: 'categoryRequest',
+    get: () => getCategoriesAsync(),
+  }),
 });
