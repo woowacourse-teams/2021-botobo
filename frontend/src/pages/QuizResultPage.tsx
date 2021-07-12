@@ -41,7 +41,6 @@ const QuizResultPage = () => {
         </Button>
         <Button
           size="full"
-          backgroundColor="green"
           shape="rectangle"
           onClick={() => history.push(ROUTE.HOME)}
         >

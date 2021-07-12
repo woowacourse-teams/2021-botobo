@@ -15,7 +15,7 @@ const QuizSettingPage = () => {
       <CategoryWrapper>
         <CategoryList categories={categories} onClickCategory={checkCategory} />
       </CategoryWrapper>
-      <Button onClick={startQuiz} backgroundColor="green" size="full">
+      <Button onClick={startQuiz} size="full">
         시작!
       </Button>
     </Container>
