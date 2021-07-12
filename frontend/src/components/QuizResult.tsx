@@ -6,7 +6,7 @@ import { QuizResponse } from '../types';
 
 interface Props extends Omit<QuizResponse, 'id' | 'answer'> {
   isChecked: boolean;
-  onClick: () => void;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 interface ContainerStyleProps {
@@ -21,6 +21,7 @@ const QuizResult = ({ question, categoryName, isChecked, onClick }: Props) => (
 );
 
 const Container = styled.div<ContainerStyleProps>`
+  cursor: pointer;
   height: 7rem;
   padding: 1rem;
 

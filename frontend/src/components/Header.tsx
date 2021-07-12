@@ -35,6 +35,7 @@ const StyledHeader = styled.header`
 `;
 
 const Logo = styled.img`
+  cursor: pointer;
   height: 2rem;
 `;
 

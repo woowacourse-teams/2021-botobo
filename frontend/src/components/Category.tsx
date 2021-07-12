@@ -3,12 +3,13 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Flex } from '../styles';
+import { CategoryResponse } from '../types';
 
-interface Props {
-  name: string;
-  cardCount: number;
+type PickedCategory = Pick<CategoryResponse, 'name' | 'cardCount'>;
+
+interface Props extends PickedCategory {
   isChecked?: boolean;
-  onClick: () => void;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const Category = ({ name, cardCount, isChecked, onClick }: Props) => (

@@ -12,11 +12,3 @@ export interface QuizResponse {
   answer: string;
   categoryName: string;
 }
-
-export interface QuizSetting extends CategoryResponse {
-  isChecked: boolean;
-}
-
-export interface QuizResult extends QuizResponse {
-  isChecked: boolean;
-}
