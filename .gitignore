@@ -33,3 +33,6 @@ out/
 node_modules
 dist
 .DS_Store
+
+### API Documentation ###
+backend/src/main/resources/static/docs/**

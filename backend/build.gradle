@@ -42,7 +42,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-
 ext {
     snippetsDir = file('build/generated-snippets')
 }
@@ -51,8 +50,11 @@ test {
     useJUnitPlatform()
 }
 
-asciidoctor {
+asciidoctor.doFirst {
     delete file('src/main/resources/static/docs')
+}
+
+asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }
