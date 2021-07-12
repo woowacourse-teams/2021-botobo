@@ -1,8 +1,8 @@
 package botobo.core.documentation;
 
-import botobo.core.category.application.CategoryService;
-import botobo.core.category.dto.CategoryResponse;
-import botobo.core.category.ui.CategoryController;
+import botobo.core.quiz.application.CategoryService;
+import botobo.core.quiz.dto.CategoryResponse;
+import botobo.core.quiz.ui.CategoryController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("카테고리 문서화 테스트")
 @WebMvcTest(CategoryController.class)
 @AutoConfigureRestDocs
 public class CategoryDocumentationTest {
@@ -33,7 +34,7 @@ public class CategoryDocumentationTest {
 
     @Test
     @DisplayName("카레고리 전체 조회 - 성공")
-    void createCategory() throws Exception {
+    void findAllCategories() throws Exception {
         // given
         given(categoryService.findAll()).willReturn(generateCategoryResponse());
 

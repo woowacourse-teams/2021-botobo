@@ -1,10 +1,10 @@
 package botobo.core.documentation;
 
-import botobo.core.category.application.QuizService;
-import botobo.core.category.dto.CategoryIdsRequest;
-import botobo.core.category.dto.QuizResponse;
-import botobo.core.category.exception.CategoryNotFoundException;
-import botobo.core.category.ui.QuizController;
+import botobo.core.quiz.application.QuizService;
+import botobo.core.quiz.dto.CategoryIdsRequest;
+import botobo.core.quiz.dto.QuizResponse;
+import botobo.core.quiz.exception.CategoryNotFoundException;
+import botobo.core.quiz.ui.QuizController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import java.util.List;
 import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
 import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

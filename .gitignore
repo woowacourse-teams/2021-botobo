@@ -34,5 +34,9 @@ node_modules
 dist
 .DS_Store
 
+### Log ###
+backend/logs/**
+backend/logs
+
 ### API Documentation ###
 backend/src/main/resources/static/docs/**
