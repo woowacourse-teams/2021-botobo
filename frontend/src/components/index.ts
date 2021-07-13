@@ -5,3 +5,4 @@ export { default as CategoryList } from './CategoryList';
 export { default as Button } from './Button';
 export { default as Quiz } from './Quiz';
 export { default as QuizResult } from './QuizResult';
+export { default as QnACard } from './QnACard';

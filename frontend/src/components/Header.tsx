@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../assets/logo.png';
-import noUserImage from '../assets/no_user_image.png';
+import logo from '../assets/logo.svg';
+import noUserImage from '../assets/no-user.svg';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
@@ -16,9 +16,7 @@ const Header = () => {
       <div onClick={() => history.push(ROUTE.HOME)}>
         <Logo src={logo} alt="로고" />
       </div>
-      <Profile>
-        <Avatar src={noUserImage} alt="유저 프로필" />
-      </Profile>
+      <Avatar src={noUserImage} alt="유저 프로필" />
     </StyledHeader>
   );
 };
@@ -36,14 +34,16 @@ const StyledHeader = styled.header`
 
 const Logo = styled.img`
   cursor: pointer;
-  height: 2rem;
+  height: 1.5rem;
 `;
 
-const Profile = styled.div``;
-
 const Avatar = styled.img`
-  height: 2rem;
-  border-radius: ${({ theme }) => theme.borderRadius.circle};
+  width: 1.5rem;
+  height: 1.5rem;
+
+  ${({ theme }) => css`
+    border-radius: ${theme.borderRadius.circle};
+  `}
 `;
 
 export default Header;
