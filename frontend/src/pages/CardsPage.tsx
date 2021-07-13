@@ -4,8 +4,39 @@ import React, { useState } from 'react';
 
 import searchCloseImage from '../assets/cross-mark.svg';
 import searchImage from '../assets/search.svg';
-import { Button } from '../components';
+import { Button, QnACard } from '../components';
 import { Flex } from '../styles';
+
+const data = {
+  categoryName: '자바스크립트',
+  cards: [
+    {
+      id: 1,
+      question: '클로저란 무엇인가요 무엇인가요 무엇인가요 무엇인가요?',
+      answer: '클로저란 어쩌고 저쩌고 입니다.',
+      isBookmark: false,
+    },
+    {
+      id: 2,
+      question: '클로저란 무엇인가요?',
+      answer: '클로저란 어쩌고 저쩌고 입니다.',
+      isBookmark: true,
+    },
+    {
+      id: 3,
+      question: '클로저란 무엇인가요?',
+      answer:
+        '클로저란 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 입니다.',
+      isBookmark: true,
+    },
+    {
+      id: 4,
+      question: '클로저란 무엇인가요?',
+      answer: '클로저란 어쩌고 저쩌고 입니다.',
+      isBookmark: false,
+    },
+  ],
+};
 
 const filters = [
   { id: 1, name: '최신순' },
@@ -25,9 +56,9 @@ const CardsPage = () => {
           <SearchBar>
             <SearchImage src={searchImage} alt="검색 버튼" />
             <SearchInput />
-            <IconButton onClick={() => setIsSearchMode(false)}>
+            <button onClick={() => setIsSearchMode(false)}>
               <SearchCloseImage src={searchCloseImage} alt="검색창 닫기 버튼" />
-            </IconButton>
+            </button>
           </SearchBar>
         ) : (
           <>
@@ -44,13 +75,24 @@ const CardsPage = () => {
                 </Button>
               ))}
             </Filter>
-            <IconButton onClick={() => setIsSearchMode(true)}>
+            <button onClick={() => setIsSearchMode(true)}>
               <SearchImage src={searchImage} alt="검색" />
-            </IconButton>
+            </button>
           </>
         )}
       </Controller>
       <Button size="full">새로운 카드 추가하기</Button>
+      <ul>
+        {data.cards.map(({ id, question, answer, isBookmark }) => (
+          <li key={id}>
+            <QnACard
+              question={question}
+              answer={answer}
+              isBookmark={isBookmark}
+            />
+          </li>
+        ))}
+      </ul>
     </Container>
   );
 };
@@ -77,10 +119,6 @@ const Filter = styled.div`
   & > button {
     margin-right: 0.8rem;
   }
-`;
-
-const IconButton = styled.button`
-  background-color: transparent;
 `;
 
 const SearchBar = styled.div`
