@@ -1,5 +1,3 @@
-import '@fortawesome/fontawesome-free/js/all.js';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 

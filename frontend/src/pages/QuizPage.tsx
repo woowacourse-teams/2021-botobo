@@ -44,15 +44,11 @@ const QuizPage = () => {
         )}
       </QuizWrapper>
       <PageNation>
-        <button onClick={showPrevQuiz}>
-          <i className="fas fa-arrow-left"></i>
-        </button>
+        <button onClick={showPrevQuiz}></button>
         <Page>
           {currentQuizIndex + 1} / {quizzes.length}
         </Page>
-        <button onClick={showNextQuiz}>
-          <i className="fas fa-arrow-right"></i>
-        </button>
+        <button onClick={showNextQuiz}></button>
       </PageNation>
     </Container>
   );
