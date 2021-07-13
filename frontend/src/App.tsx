@@ -23,7 +23,7 @@ const App = () => (
         <BrowserRouter>
           <Header />
           <Switch>
-            {/* <Route exact path={ROUTE.HOME}>
+            <Route exact path={ROUTE.HOME}>
               <MainPage />
             </Route>
             <Route exact path={ROUTE.QUIZ_SETTING}>
@@ -34,8 +34,8 @@ const App = () => (
             </Route>
             <Route exact path={ROUTE.QUIZ_RESULT}>
               <QuizResultPage />
-            </Route> */}
-            <Route exact path={ROUTE.HOME}>
+            </Route>
+            <Route exact path={`/:categoryId${ROUTE.CARDS}`}>
               <CardsPage />
             </Route>
             <Route exact path={ROUTE.SEARCH}>
