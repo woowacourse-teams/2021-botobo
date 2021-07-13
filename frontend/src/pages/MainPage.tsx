@@ -1,14 +1,17 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { Button, CategoryList, QuizStarter } from '../components';
+import { ROUTE } from '../constants';
 import { categoryState } from '../recoil';
 import { Flex } from '../styles';
 
 const MainPage = () => {
   const categories = useRecoilValue(categoryState);
+  const history = useHistory();
 
   return (
     <Container>
@@ -16,15 +19,20 @@ const MainPage = () => {
       <section>
         <CategoryHeader>
           <CategoryTitle>전체 카테고리</CategoryTitle>
-          <Button shape="circle" backgroundColor="white" hasShadow={true}>
+          <Button
+            shape="circle"
+            backgroundColor="white"
+            color="green"
+            hasShadow={true}
+          >
             <i className="fas fa-plus"></i>
           </Button>
         </CategoryHeader>
         <CategoryList
           categories={categories}
-          onClickCategory={() => {
-            console.log('hi');
-          }}
+          onClickCategory={(categoryId) =>
+            history.push(`/${categoryId}${ROUTE.CARDS}`)
+          }
         />
       </section>
     </Container>

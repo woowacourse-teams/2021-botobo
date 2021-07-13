@@ -1,8 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
 import { Button, QnACard } from '../components';
+import { cardState } from '../recoil';
 import { CardResponse } from '../types';
 
 const data = {
@@ -59,6 +62,10 @@ const filters = [
 
 const CardsPage = () => {
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
+  const { pathname } = useLocation();
+  const categoryId = Number(pathname.split('/')[0]);
+  const _cards = useRecoilValue(cardState(categoryId));
+
   const { categoryName, cards } = data;
 
   return (
