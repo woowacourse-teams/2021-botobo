@@ -8,3 +8,5 @@
 include::categories.adoc[]
 
 include::quizzes.adoc[]
+
+include::admin.adoc[]
