@@ -1,6 +1,7 @@
 package botobo.core.admin.dto;
 
 import botobo.core.quiz.domain.category.Category;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ public class AdminCategoryResponse {
     private String logoUrl;
     private String description;
 
+    @Builder
     private AdminCategoryResponse(Long id, String name, String logoUrl, String description) {
         this.id = id;
         this.name = name;

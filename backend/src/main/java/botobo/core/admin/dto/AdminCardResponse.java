@@ -1,6 +1,7 @@
 package botobo.core.admin.dto;
 
 import botobo.core.quiz.domain.card.Card;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ public class AdminCardResponse {
     private String question;
     private Long categoryId;
 
+    @Builder
     private AdminCardResponse(Long id, String question, Long categoryId) {
         this.id = id;
         this.question = question;
