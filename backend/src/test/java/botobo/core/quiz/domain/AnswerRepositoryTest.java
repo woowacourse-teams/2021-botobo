@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +71,8 @@ class AnswerRepositoryTest {
         // then
         assertThat(savedAnswer).extracting("id").isNotNull();
         assertThat(savedAnswer).isSameAs(answer);
+        assertThat(savedAnswer.getCreatedAt()).isNotNull();
+        assertThat(savedAnswer.getUpdatedAt()).isNotNull();
     }
 
     @Test

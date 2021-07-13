@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -48,6 +49,8 @@ public class CategoryRepositoryTest {
         assertThat(category.getId()).isNotNull();
         assertThat(savedCategory).extracting("id").isNotNull();
         assertThat(savedCategory).isSameAs(category);
+        assertThat(savedCategory.getCreatedAt()).isNotNull();
+        assertThat(savedCategory.getUpdatedAt()).isNotNull();
         testEntityManager.flush();
     }
 
