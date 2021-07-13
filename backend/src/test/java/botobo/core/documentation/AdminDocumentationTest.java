@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("관리자용 API 문서화 테스트")
 @WebMvcTest(AdminController.class)
 @AutoConfigureRestDocs
+@MockBean(JpaMetamodelMappingContext.class)
 public class AdminDocumentationTest {
 
     @Autowired
