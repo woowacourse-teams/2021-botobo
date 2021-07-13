@@ -25,6 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("퀴즈 문서화 테스트")
 @WebMvcTest(QuizController.class)
 @AutoConfigureRestDocs
 public class QuizDocumentationTest {

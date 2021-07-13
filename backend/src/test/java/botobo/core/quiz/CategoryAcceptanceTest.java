@@ -14,7 +14,9 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.Fixture.*;
+import static botobo.core.Fixture.CATEGORY_REQUEST_1;
+import static botobo.core.Fixture.CATEGORY_REQUEST_2;
+import static botobo.core.Fixture.CATEGORY_REQUEST_3;
 import static botobo.core.admin.AdminAcceptanceTest.여러개_카테고리_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
