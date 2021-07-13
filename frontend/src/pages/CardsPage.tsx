@@ -6,6 +6,7 @@ import searchCloseImage from '../assets/cross-mark.svg';
 import searchImage from '../assets/search.svg';
 import { Button, QnACard } from '../components';
 import { Flex } from '../styles';
+import { CardResponse } from '../types';
 
 const data = {
   categoryName: '자바스크립트',
@@ -38,6 +39,22 @@ const data = {
   ],
 };
 
+interface Filter {
+  [key: number]: (cards: CardResponse[]) => CardResponse[];
+}
+
+const filterByLatest = (cards: CardResponse[]) => cards;
+
+const filterByBookMark = (cards: CardResponse[]) =>
+  [...cards].sort((card1, card2) =>
+    card1.isBookmark === card2.isBookmark ? 0 : card1.isBookmark ? -1 : 1
+  );
+
+const filter: Filter = {
+  1: filterByLatest,
+  2: filterByBookMark,
+};
+
 const filters = [
   { id: 1, name: '최신순' },
   { id: 2, name: '즐겨찾기 순' },
@@ -46,11 +63,12 @@ const filters = [
 const CardsPage = () => {
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
   const [isSearchMode, setIsSearchMode] = useState(false);
+  const { categoryName, cards } = data;
 
   return (
     <Container>
-      <CategoryName>자바스크립트</CategoryName>
-      <span>3개의 카드를 학습 중이에요.</span>
+      <CategoryName>{categoryName}</CategoryName>
+      <span>{cards.length}개의 카드를 학습 중이에요.</span>
       <Controller>
         {isSearchMode ? (
           <SearchBar>
@@ -83,15 +101,17 @@ const CardsPage = () => {
       </Controller>
       <Button size="full">새로운 카드 추가하기</Button>
       <ul>
-        {data.cards.map(({ id, question, answer, isBookmark }) => (
-          <li key={id}>
-            <QnACard
-              question={question}
-              answer={answer}
-              isBookmark={isBookmark}
-            />
-          </li>
-        ))}
+        {filter[currentFilterId](cards).map(
+          ({ id, question, answer, isBookmark }) => (
+            <li key={id}>
+              <QnACard
+                question={question}
+                answer={answer}
+                isBookmark={isBookmark}
+              />
+            </li>
+          )
+        )}
       </ul>
     </Container>
   );
