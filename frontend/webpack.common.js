@@ -25,8 +25,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.png/,
-        type: 'asset/resource',
+        test: /\.svg/,
+        type: 'asset/inline',
       },
       {
         test: /\.(js|ts)x?$/,
