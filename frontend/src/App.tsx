@@ -12,6 +12,7 @@ import {
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
+  SearchPage,
 } from './pages';
 
 const App = () => (
@@ -36,6 +37,9 @@ const App = () => (
             </Route> */}
             <Route exact path={ROUTE.HOME}>
               <CardsPage />
+            </Route>
+            <Route exact path={ROUTE.SEARCH}>
+              <SearchPage />
             </Route>
           </Switch>
         </BrowserRouter>
