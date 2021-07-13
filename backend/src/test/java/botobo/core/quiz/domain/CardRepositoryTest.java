@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,6 +56,9 @@ class CardRepositoryTest {
 
         // then
         assertThat(savedCard.getId()).isNotNull();
+        assertThat(savedCard).isSameAs(card);
+        assertThat(savedCard.getCreatedAt()).isNotNull();
+        assertThat(savedCard.getUpdatedAt()).isNotNull();
     }
 
     @Test

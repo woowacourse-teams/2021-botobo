@@ -1,5 +1,6 @@
 package botobo.core.quiz.domain.category;
 
+import botobo.core.quiz.domain.BaseEntity;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
 import lombok.Builder;
@@ -13,11 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Category extends BaseEntity {
 
     @Column(nullable = false, length = 30, unique = true)
     private String name;
