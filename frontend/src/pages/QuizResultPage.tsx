@@ -53,6 +53,7 @@ const QuizResultPage = () => {
 
 const Container = styled.div`
   margin-bottom: 3rem;
+
   ${({ theme }) =>
     css`
       padding: ${theme.pageSize.padding};
