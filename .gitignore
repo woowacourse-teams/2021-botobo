@@ -37,6 +37,11 @@ dist
 ### Log ###
 backend/logs/**
 backend/logs
+logs/**
+
 
 ### API Documentation ###
 backend/src/main/resources/static/docs/**
+
+### Secret files ###
+backend/src/main/resources/application-dev.yml
