@@ -21,7 +21,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(UnauthorizedException e) {
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
         log.error("UnauthorizedException", e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
     }
