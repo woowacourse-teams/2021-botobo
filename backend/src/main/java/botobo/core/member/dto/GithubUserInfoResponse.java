@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GithubUserInfoResponse {
+
     @JsonProperty("login")
     private String userName;
     private Long id;
