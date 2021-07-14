@@ -60,3 +60,17 @@ logging:
             sql:
               BasicBinder: TRACE
     root: INFO
+
+github:
+  client:
+    id: a
+    secret: a
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com/user
+
+security:
+  jwt:
+    token:
+      secret-key: s
+      expire-length: 3600000
