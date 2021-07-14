@@ -13,7 +13,7 @@ public class GithubUserInfoResponse {
     @JsonProperty("avatar_url")
     private String profileUrl;
 
-    public GithubUserInfoResponse(final String userName, final Long id, final String profileUrl) {
+    public GithubUserInfoResponse(String userName, Long id, String profileUrl) {
         this.userName = userName;
         this.id = id;
         this.profileUrl = profileUrl;
