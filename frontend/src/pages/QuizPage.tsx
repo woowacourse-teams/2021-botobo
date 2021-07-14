@@ -2,6 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import LeftArrowIcon from '../assets/arrow-left.svg';
+import RightArrowIcon from '../assets/arrow-right.svg';
 import { Quiz } from '../components';
 import { useQuiz } from '../hooks';
 import { Flex } from '../styles';
@@ -44,11 +46,15 @@ const QuizPage = () => {
         )}
       </QuizWrapper>
       <PageNation>
-        <button onClick={showPrevQuiz}></button>
+        <ArrowButton onClick={showPrevQuiz}>
+          <LeftArrowIcon width="1rem" height="1rem" />
+        </ArrowButton>
         <Page>
           {currentQuizIndex + 1} / {quizzes.length}
         </Page>
-        <button onClick={showNextQuiz}></button>
+        <ArrowButton onClick={showNextQuiz}>
+          <RightArrowIcon width="1rem" height="1rem" />
+        </ArrowButton>
       </PageNation>
     </Container>
   );
@@ -81,7 +87,7 @@ const Tooltip = styled.div<TooltipProps>`
   transition: opacity 0.1s ease;
 
   ${({ theme, isTooltipVisible }) => css`
-    background-color: ${theme.color.indigo};
+    background-color: ${theme.color.blue};
     border-radius: ${theme.borderRadius.square};
     opacity: ${isTooltipVisible ? 1 : 0};
     font-size: ${theme.fontSize.small};
@@ -114,21 +120,21 @@ const QuizItem = styled.li<QuizItemProps>`
 const PageNation = styled.div`
   ${Flex({ items: 'center' })};
   margin-top: 5rem;
+  height: 1.25rem;
+`;
 
-  & > button {
-    ${({ theme }) =>
-      css`
-        font-size: ${theme.fontSize.medium};
-      `}
-  }
+const ArrowButton = styled.button`
+  height: 100%;
 
-  svg {
-    height: inherit;
-  }
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.medium};
+    `}
 `;
 
 const Page = styled.span`
   margin: 0 1.5rem;
+  height: 100%;
 `;
 
 export default QuizPage;

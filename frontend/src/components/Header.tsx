@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../assets/logo.svg';
-import noUserImage from '../assets/no-user.svg';
-import searchImage from '../assets/search.svg';
+import logoSrc from '../assets/logo.png';
+import SearchIcon from '../assets/search.svg';
+import userSrc from '../assets/user.png';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
@@ -14,14 +14,22 @@ const Header = () => {
 
   return (
     <StyledHeader>
-      <div onClick={() => history.push(ROUTE.HOME)}>
-        <Logo src={logo} alt="로고" />
-      </div>
+      <h1>
+        <Logo
+          href="/"
+          onClick={(event) => {
+            event.preventDefault();
+            history.push(ROUTE.HOME);
+          }}
+        >
+          <span>보고 또 보고</span>
+        </Logo>
+      </h1>
       <RightContent>
         <button onClick={() => history.push(ROUTE.SEARCH)}>
-          <SearchImage src={searchImage} alt="검색" />
+          <SearchIcon width="1.25rem" height="1.25rem" />
         </button>
-        <Avatar src={noUserImage} alt="유저 프로필" />
+        <Avatar src={userSrc} />
       </RightContent>
     </StyledHeader>
   );
@@ -38,18 +46,33 @@ const StyledHeader = styled.header`
   `};
 `;
 
-const Logo = styled.img`
-  cursor: pointer;
+const Logo = styled.a`
+  position: relative;
   height: 1.5rem;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 2rem;
+    width: 8rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(${logoSrc});
+  }
+
+  & > span {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+  }
 `;
 
 const RightContent = styled.div`
-  ${Flex({ items: 'center' })}
-`;
-
-const SearchImage = styled.img`
-  width: 1.3rem;
-  height: 1.3rem;
+  ${Flex({ items: 'center' })};
 `;
 
 const Avatar = styled.img`

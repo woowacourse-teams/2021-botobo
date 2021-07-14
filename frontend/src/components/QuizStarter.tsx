@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import quizStarterImage from '../assets/design-thinking.svg';
+import QuizStarterIcon from '../assets/design-thinking.svg';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 import Button from './Button';
@@ -25,7 +25,7 @@ const QuizStarter = () => {
         </Button>
       </Content>
       <ImageWrapper>
-        <Image src={quizStarterImage} />
+        <QuizStarterIcon width="5.5rem" height="5.5rem" />
       </ImageWrapper>
     </Container>
   );
@@ -52,10 +52,6 @@ const Content = styled.div`
 const ImageWrapper = styled.div`
   ${Flex({ justify: 'center', items: 'center' })}
   width: 30%;
-`;
-
-const Image = styled.img`
-  width: 5.5rem;
 `;
 
 export default QuizStarter;

@@ -2,8 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import searchCloseImage from '../assets/cross-mark.svg';
-import searchImage from '../assets/search.svg';
+import SearchCloseIcon from '../assets/cross-mark.svg';
+import SearchIcon from '../assets/search.svg';
 import { Flex } from '../styles';
 
 interface SearchStyleProps {
@@ -17,7 +17,7 @@ const SearchPage = () => {
   return (
     <Container>
       <SearchBar isFocus={isFocus}>
-        <SearchImage src={searchImage} alt="검색 버튼" />
+        <SearchIcon width="1.3rem" height="1.3rem" />
         <SearchInput
           value={searchValue}
           onChange={({ target }) => setSearchValue(target.value)}
@@ -27,7 +27,7 @@ const SearchPage = () => {
         />
         {searchValue && (
           <button onClick={() => setSearchValue('')}>
-            <SearchCloseImage src={searchCloseImage} alt="검색 리셋 버튼" />
+            <SearchCloseIcon width="0.5rem" height="0.5rem" />
           </button>
         )}
       </SearchBar>
@@ -54,6 +54,11 @@ const SearchBar = styled.div<SearchStyleProps>`
   ${({ theme, isFocus }) => css`
     background-color: ${theme.color.white};
     border: 1px solid ${isFocus ? theme.color.green : theme.color.gray_3};
+
+    & > svg {
+      transition: all 0.3s ease;
+      fill: ${isFocus ? theme.color.green : theme.color.gray_3};
+    }
   `};
 
   & > img {
@@ -71,16 +76,6 @@ const SearchInput = styled.input`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
   `}
-`;
-
-const SearchImage = styled.img`
-  width: 1.3rem;
-  height: 1.3rem;
-`;
-
-const SearchCloseImage = styled.img`
-  width: 0.5rem;
-  height: 0.5rem;
 `;
 
 export default SearchPage;

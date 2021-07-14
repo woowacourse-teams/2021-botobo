@@ -2,8 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import emptyStar from '../assets/star-empty.svg';
-import fillStar from '../assets/star-fill.svg';
+import EmptyStarIcon from '../assets/star-empty.svg';
+import FillStarIcon from '../assets/star-fill.svg';
 import { CardResponse } from '../types';
 
 const QnACard = ({
@@ -13,9 +13,9 @@ const QnACard = ({
 }: Omit<CardResponse, 'id'>) => (
   <Container>
     <Header>
-      <button>
-        <BookmarkImage src={isBookmark ? fillStar : emptyStar} />
-      </button>
+      <BookmarkButton>
+        {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
+      </BookmarkButton>
     </Header>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
@@ -45,9 +45,11 @@ const Header = styled.div`
   margin-bottom: 1rem;
 `;
 
-const BookmarkImage = styled.img`
-  height: 1.5rem;
-  width: 1.5rem;
+const BookmarkButton = styled.button`
+  & > svg {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
 `;
 
 const Question = styled.div`
