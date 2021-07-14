@@ -25,10 +25,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.svg/,
-        type: 'asset/inline',
-      },
-      {
         test: /\.(js|ts)x?$/,
         exclude: /node_modules/,
         use: {
@@ -51,6 +47,24 @@ module.exports = {
               '@emotion',
             ],
           },
+        },
+      },
+      {
+        test: /\.png$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              prettier: false,
+            },
+          },
+        ],
+        issuer: {
+          and: [/\.(js|ts)x?$/],
         },
       },
     ],
