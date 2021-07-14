@@ -2,6 +2,7 @@ package botobo.core.quiz.dto;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,19 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CardResponse {
 
     private Long id;
     private String question;
     private String answer;
-
-    @Builder
-    private CardResponse(Long id, String question, String answer) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-    }
 
     public static CardResponse of(Card card) {
         return CardResponse.builder()

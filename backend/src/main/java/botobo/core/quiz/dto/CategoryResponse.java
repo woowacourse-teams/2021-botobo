@@ -1,6 +1,7 @@
 package botobo.core.quiz.dto;
 
 import botobo.core.quiz.domain.category.Category;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CategoryResponse {
 
     private Long id;
@@ -18,23 +21,14 @@ public class CategoryResponse {
     private int cardCount;
     private String logoUrl;
 
-    @Builder
-    private CategoryResponse(Long id, String name, String description, int cardCount, String logoUrl) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.cardCount = cardCount;
-        this.logoUrl = logoUrl;
-    }
-
     public static CategoryResponse of(Category category) {
-        return new CategoryResponse(
-                category.getId(),
-                category.getName(),
-                category.getDescription(),
-                category.cardCount(),
-                category.getLogoUrl()
-        );
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .description(category.getDescription())
+                .cardCount(category.cardCount())
+                .logoUrl(category.getLogoUrl())
+                .build();
     }
 
     public static List<CategoryResponse> listOf(List<Category> categories) {
