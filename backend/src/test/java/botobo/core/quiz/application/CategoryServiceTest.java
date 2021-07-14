@@ -1,7 +1,10 @@
 package botobo.core.quiz.application;
 
+import botobo.core.quiz.domain.answer.Answer;
+import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.category.Category;
 import botobo.core.quiz.domain.category.CategoryRepository;
+import botobo.core.quiz.dto.CategoryCardsResponse;
 import botobo.core.quiz.dto.CategoryResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +15,10 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.times;
@@ -28,8 +34,8 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    @DisplayName("목 카테고리 전체 조회 - 성공")
-    void findAllWithMock() {
+    @DisplayName("더미 카테고리 전체 조회 - 성공")
+    void findAllWithDummy() {
         // given
         List<Category> categories = Arrays.asList(
                 Category.builder().id(1L).name("a").logoUrl("").isDeleted(false).description("").build(),
@@ -45,5 +51,41 @@ class CategoryServiceTest {
         then(categoryRepository)
                 .should(times(1))
                 .findAll();
+    }
+
+    @Test
+    @DisplayName("더미 카테고리 카드 모아보기 - 성공")
+    void findCategoryCardsWithDummy() {
+        // given
+        Category category = Category.builder()
+                .id(1L)
+                .name("java")
+                .isDeleted(false)
+                .logoUrl("botobo.io")
+                .description("~")
+                .build();
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .category(category)
+                .build();
+        Answer answer = Answer.builder()
+                .id(1L)
+                .content("내용입니다.")
+                .card(card)
+                .build();
+
+        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(category));
+
+        // when
+        CategoryCardsResponse categoryCardsResponse = categoryService.findCategoryCardsById(category.getId());
+
+        // then
+        assertThat(categoryCardsResponse.getCategoryName()).isEqualTo("java");
+        assertThat(categoryCardsResponse.getCards().size()).isEqualTo(1);
+
+        then(categoryRepository)
+                .should(times(1))
+                .findCategoryAndCardsByIdJoinFetch(anyLong());
     }
 }
