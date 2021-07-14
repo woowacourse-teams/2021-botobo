@@ -49,9 +49,11 @@ public class GithubOauthManager {
 
     private GithubTokenResponse getAccessTokenFromGithub(String code) {
         RestTemplate restTemplate = new RestTemplate();
-        GithubTokenRequest githubTokenRequest = new GithubTokenRequest(
-                code, clientId, clientSecret
-        );
+        GithubTokenRequest githubTokenRequest = GithubTokenRequest.builder()
+                .code(code)
+                .client_id(clientId)
+                .client_secret(clientSecret)
+                .build();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<GithubTokenRequest> httpEntity = new HttpEntity<>(githubTokenRequest, httpHeaders);

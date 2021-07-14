@@ -1,11 +1,15 @@
 package botobo.core.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GithubTokenResponse {
 
     @JsonProperty("access_token")
@@ -14,9 +18,4 @@ public class GithubTokenResponse {
     private String tokenType;
     private String scope;
 
-    public GithubTokenResponse(String accessToken, String tokenType, String scope) {
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.scope = scope;
-    }
 }

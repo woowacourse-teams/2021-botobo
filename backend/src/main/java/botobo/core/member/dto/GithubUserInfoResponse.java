@@ -1,11 +1,15 @@
 package botobo.core.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GithubUserInfoResponse {
 
     @JsonProperty("login")
@@ -14,9 +18,4 @@ public class GithubUserInfoResponse {
     @JsonProperty("avatar_url")
     private String profileUrl;
 
-    public GithubUserInfoResponse(String userName, Long id, String profileUrl) {
-        this.userName = userName;
-        this.id = id;
-        this.profileUrl = profileUrl;
-    }
 }

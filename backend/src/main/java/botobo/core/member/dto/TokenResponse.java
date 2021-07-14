@@ -1,19 +1,21 @@
 package botobo.core.member.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TokenResponse {
 
     private String accessToken;
 
-    private TokenResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
     public static TokenResponse of(String accessToken) {
-        return new TokenResponse(accessToken);
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .build();
     }
 }
