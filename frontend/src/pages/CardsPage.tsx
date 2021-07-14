@@ -85,7 +85,9 @@ const CardsPage = () => {
           </Button>
         ))}
       </Filter>
-      <Button size="full">새로운 카드 추가하기</Button>
+      <Button size="full" backgroundColor="blue">
+        새로운 카드 추가하기
+      </Button>
       <ul>
         {filter[currentFilterId](cards).map(
           ({ id, question, answer, isBookmark }) => (

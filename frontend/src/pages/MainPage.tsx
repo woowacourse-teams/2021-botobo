@@ -4,6 +4,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
+import PlusIcon from '../assets/plus.svg';
 import { Button, CategoryList, QuizStarter } from '../components';
 import { ROUTE } from '../constants';
 import { categoryState } from '../recoil';
@@ -25,7 +26,7 @@ const MainPage = () => {
             color="green"
             hasShadow={true}
           >
-            <i className="fas fa-plus"></i>
+            <StyledPlusIcon />
           </Button>
         </CategoryHeader>
         <CategoryList
@@ -52,7 +53,22 @@ const CategoryHeader = styled.div`
 `;
 
 const CategoryTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.semiLarge};
+  font-size: ${({ theme }) =>
+    css`
+      ${theme.fontSize.semiLarge}
+    `};
+`;
+
+// TODO: 타입 체크하기
+const StyledPlusIcon = styled(PlusIcon)`
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+
+  ${({ theme }) =>
+    css`
+      fill: ${theme.color.green};
+    `}
 `;
 
 export default MainPage;
