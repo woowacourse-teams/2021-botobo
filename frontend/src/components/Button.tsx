@@ -2,31 +2,37 @@ import { Color, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps {
   children: string | React.ReactElement;
-  backgroundColor?: keyof Color;
   hasShadow?: boolean;
+  backgroundColor?: keyof Color;
+  color?: keyof Color;
   size?: keyof typeof buttonSize;
-  shape?: 'circle' | 'square' | 'rectangle';
+  shape?: 'circle' | 'square' | 'rectangle' | 'round';
+  inversion?: boolean;
 }
 
-type StyledProps = Required<
-  Pick<Props, 'backgroundColor' | 'hasShadow' | 'size' | 'shape'>
->;
+type Props = ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>;
+
+type StyledProps = Required<Omit<ButtonProps, 'children'>>;
 
 const Button = ({
   children,
   hasShadow = false,
-  backgroundColor = 'pink',
+  backgroundColor = 'green',
+  color = 'white',
   size = 'default',
   shape = 'square',
+  inversion = false,
   ...props
 }: Props) => (
   <StyledButton
-    backgroundColor={backgroundColor}
     hasShadow={hasShadow}
+    backgroundColor={backgroundColor}
+    color={color}
     size={size}
     shape={shape}
+    inversion={inversion}
     {...props}
   >
     {children}
@@ -45,6 +51,7 @@ const buttonSize = {
       width: 2.5rem;
       height: 2.5rem;
     `,
+    round: css``,
   },
   full: {
     rectangle: css`
@@ -56,6 +63,7 @@ const buttonSize = {
       height: 3rem;
     `,
     circle: null,
+    round: css``,
   },
 };
 
@@ -68,16 +76,24 @@ const StyledButton = styled.button<StyledProps>`
   box-shadow: ${({ hasShadow, theme }) =>
     hasShadow ? theme.boxShadow.button : ''};
 
-  ${({ theme, shape, backgroundColor, size }) => css`
+  ${({ theme, shape, backgroundColor, color, size, inversion }) => css`
     background-color: ${theme.color[backgroundColor]};
+    color: ${theme.color[color]};
+
+    ${inversion &&
+    css`
+      background-color: transparent;
+      box-shadow: ${`${theme.boxShadow.inset} ${theme.color[backgroundColor]}`};
+      color: ${theme.color[backgroundColor]};
+    `}
 
     border-radius: ${theme.borderRadius[shape]};
 
-    color: ${backgroundColor === 'white'
-      ? theme.color.green
-      : theme.color.white};
-
     ${buttonSize[size][shape]};
+
+    &:hover {
+      filter: brightness(95%);
+    }
   `}
 `;
 

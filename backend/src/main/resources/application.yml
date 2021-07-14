@@ -17,7 +17,7 @@ spring:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   config:
     activate:
       on-profile: local
@@ -74,3 +74,4 @@ security:
     token:
       secret-key: s
       expire-length: 3600000
+

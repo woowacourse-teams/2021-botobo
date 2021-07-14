@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import quizStarterImage from '../assets/design-thinking.png';
+import quizStarterImage from '../assets/design-thinking.svg';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 import Button from './Button';
@@ -35,7 +35,7 @@ const Container = styled.div`
   ${Flex()}
   background-color: ${({ theme }) => theme.color.white};
   height: 10rem;
-  padding: 0 0.75rem;
+  padding: 0 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.square};
   box-shadow: ${({ theme }) => theme.boxShadow.card};
 `;
@@ -55,7 +55,7 @@ const ImageWrapper = styled.div`
 `;
 
 const Image = styled.img`
-  width: 6.25rem;
+  width: 5.5rem;
 `;
 
 export default QuizStarter;

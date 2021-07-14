@@ -33,6 +33,7 @@ const QuizResultPage = () => {
         <Button
           size="full"
           backgroundColor="white"
+          color="green"
           shape="rectangle"
           onClick={() => history.push(ROUTE.HOME)}
         >
@@ -53,6 +54,7 @@ const QuizResultPage = () => {
 
 const Container = styled.div`
   margin-bottom: 3rem;
+
   ${({ theme }) =>
     css`
       padding: ${theme.pageSize.padding};

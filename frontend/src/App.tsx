@@ -6,7 +6,14 @@ import { RecoilRoot } from 'recoil';
 import { Header } from './components';
 import { ROUTE, theme } from './constants';
 import GlobalStyle from './GlobalStyle';
-import { MainPage, QuizPage, QuizResultPage, QuizSettingPage } from './pages';
+import {
+  CardsPage,
+  MainPage,
+  QuizPage,
+  QuizResultPage,
+  QuizSettingPage,
+  SearchPage,
+} from './pages';
 
 const App = () => (
   <ThemeProvider theme={theme}>
@@ -27,6 +34,12 @@ const App = () => (
             </Route>
             <Route exact path={ROUTE.QUIZ_RESULT}>
               <QuizResultPage />
+            </Route>
+            <Route exact path={`/:categoryId${ROUTE.CARDS}`}>
+              <CardsPage />
+            </Route>
+            <Route exact path={ROUTE.SEARCH}>
+              <SearchPage />
             </Route>
           </Switch>
         </BrowserRouter>

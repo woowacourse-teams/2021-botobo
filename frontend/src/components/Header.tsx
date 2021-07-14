@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../assets/logo.png';
-import noUserImage from '../assets/no_user_image.png';
+import logo from '../assets/logo.svg';
+import noUserImage from '../assets/no-user.svg';
+import searchImage from '../assets/search.svg';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
@@ -16,9 +17,12 @@ const Header = () => {
       <div onClick={() => history.push(ROUTE.HOME)}>
         <Logo src={logo} alt="로고" />
       </div>
-      <Profile>
+      <RightContent>
+        <button onClick={() => history.push(ROUTE.SEARCH)}>
+          <SearchImage src={searchImage} alt="검색" />
+        </button>
         <Avatar src={noUserImage} alt="유저 프로필" />
-      </Profile>
+      </RightContent>
     </StyledHeader>
   );
 };
@@ -36,14 +40,26 @@ const StyledHeader = styled.header`
 
 const Logo = styled.img`
   cursor: pointer;
-  height: 2rem;
+  height: 1.5rem;
 `;
 
-const Profile = styled.div``;
+const RightContent = styled.div`
+  ${Flex({ items: 'center' })}
+`;
+
+const SearchImage = styled.img`
+  width: 1.3rem;
+  height: 1.3rem;
+`;
 
 const Avatar = styled.img`
-  height: 2rem;
-  border-radius: ${({ theme }) => theme.borderRadius.circle};
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 1rem;
+
+  ${({ theme }) => css`
+    border-radius: ${theme.borderRadius.circle};
+  `}
 `;
 
 export default Header;
