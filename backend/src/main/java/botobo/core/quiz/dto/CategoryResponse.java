@@ -29,12 +29,12 @@ public class CategoryResponse {
 
     public static CategoryResponse of(Category category) {
         return new CategoryResponse(
-                          category.getId(),
-                          category.getName(),
-                          category.getDescription(),
-                          category.cardCount(),
-                          category.getLogoUrl()
-                  );
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                category.cardCount(),
+                category.getLogoUrl()
+        );
     }
 
     public static List<CategoryResponse> listOf(List<Category> categories) {
