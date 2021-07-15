@@ -17,7 +17,6 @@ export interface CardResponse {
   id: number;
   question: string;
   answer: string;
-  // isBookmark: boolean;
 }
 
 export interface CardsResponse {

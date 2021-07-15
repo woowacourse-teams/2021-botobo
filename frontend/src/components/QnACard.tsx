@@ -9,10 +9,9 @@ import { CardResponse } from '../types';
 const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
   <Container>
     <Header>
-      <EmptyStarIcon />
-      {/* <BookmarkButton>
-        {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
-      </BookmarkButton> */}
+      <BookmarkButton>
+        <EmptyStarIcon />
+      </BookmarkButton>
     </Header>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
