@@ -52,7 +52,9 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
 
         // then
         final List<CategoryResponse> categoryResponses = response.body().jsonPath().getList(".", CategoryResponse.class);
-
+        assertThat(categoryResponses.get(0).getCardCount()).isEqualTo(3);
+        assertThat(categoryResponses.get(1).getCardCount()).isEqualTo(0);
+        assertThat(categoryResponses.get(2).getCardCount()).isEqualTo(0);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(categoryResponses.size()).isEqualTo(3);
     }
