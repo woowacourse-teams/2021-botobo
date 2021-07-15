@@ -1,11 +1,11 @@
-package botobo.core.member.infrastructure;
+package botobo.core.user.infrastructure;
 
-import botobo.core.member.dto.GithubTokenRequest;
-import botobo.core.member.dto.GithubTokenResponse;
-import botobo.core.member.dto.GithubUserInfoResponse;
-import botobo.core.member.dto.LoginRequest;
-import botobo.core.member.exception.GithubApiFailedException;
-import botobo.core.member.exception.UserProfileLoadFailedException;
+import botobo.core.user.dto.GithubTokenRequest;
+import botobo.core.user.dto.GithubTokenResponse;
+import botobo.core.user.dto.GithubUserInfoResponse;
+import botobo.core.user.dto.LoginRequest;
+import botobo.core.user.exception.GithubApiFailedException;
+import botobo.core.user.exception.UserProfileLoadFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

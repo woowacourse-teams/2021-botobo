@@ -10,3 +10,5 @@ include::categories.adoc[]
 include::quizzes.adoc[]
 
 include::admin.adoc[]
+
+include::login.adoc[]
