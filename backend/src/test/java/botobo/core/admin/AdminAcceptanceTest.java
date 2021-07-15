@@ -18,7 +18,8 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static botobo.core.quiz.domain.CategoryRepositoryTest.longStringGenerator;
+import static botobo.core.TestUtils.extractId;
+import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
@@ -331,11 +332,5 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("카드의 Id는 필수 입력값 입니다.");
-    }
-
-
-    private Long extractId(ExtractableResponse<Response> response) {
-        final String location = response.header("Location");
-        return Long.parseLong(location.split("/")[3]);
     }
 }

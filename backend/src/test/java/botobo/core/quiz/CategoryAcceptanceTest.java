@@ -60,7 +60,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("카테고리의 카드 모아보기 - 성공")
+    @DisplayName("카테고리의 카드 모아보기 (카드 존재) - 성공")
     void findCategoryCardsById() {
         // when
         ExtractableResponse<Response> response =
@@ -75,5 +75,24 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(categoryCardsResponse.getCategoryName()).isEqualTo(CATEGORY_REQUEST_1.getName());
         assertThat(categoryCardsResponse.getCards()).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("카테고리의 카드 모아보기 (카드 0개) - 성공")
+    void findCategoryCardsByIdWithNotExistsCard() {
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when().get("/categories/{id}/cards", 2L)
+                        .then().log().all()
+                        .extract();
+
+        // then
+        final CategoryCardsResponse categoryCardsResponse = response.as(CategoryCardsResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(categoryCardsResponse.getCategoryName()).isEqualTo(CATEGORY_REQUEST_2.getName());
+        assertThat(categoryCardsResponse.getCards()).hasSize(0);
     }
 }

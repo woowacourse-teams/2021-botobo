@@ -3,6 +3,7 @@ package botobo.core.quiz.domain.category;
 import botobo.core.quiz.domain.BaseEntity;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
+import botobo.core.quiz.exception.CardNotFoundException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,6 +62,9 @@ public class Category extends BaseEntity {
     }
 
     public List<Card> getAllCards() {
+        if (cards.isEmpty()) {
+            throw new CardNotFoundException("카드가 존재하지 않습니다.");
+        }
         return cards.getCards();
     }
 }

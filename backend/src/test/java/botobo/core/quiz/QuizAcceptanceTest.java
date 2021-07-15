@@ -1,6 +1,8 @@
 package botobo.core.quiz;
 
 import botobo.core.AcceptanceTest;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminCategoryRequest;
 import botobo.core.exception.ErrorResponse;
 import botobo.core.quiz.dto.CategoryIdsRequest;
 import botobo.core.quiz.dto.QuizResponse;
@@ -49,9 +51,12 @@ import static botobo.core.Fixture.CARD_REQUEST_9;
 import static botobo.core.Fixture.CATEGORY_REQUEST_1;
 import static botobo.core.Fixture.CATEGORY_REQUEST_2;
 import static botobo.core.Fixture.CATEGORY_REQUEST_3;
+import static botobo.core.TestUtils.extractId;
 import static botobo.core.admin.AdminAcceptanceTest.여러개_답변_생성_요청;
 import static botobo.core.admin.AdminAcceptanceTest.여러개_카드_생성_요청;
 import static botobo.core.admin.AdminAcceptanceTest.여러개_카테고리_생성_요청;
+import static botobo.core.admin.AdminAcceptanceTest.카드_생성_요청;
+import static botobo.core.admin.AdminAcceptanceTest.카테고리_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -113,5 +118,50 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(errorResponse.getMessage()).isEqualTo("해당 카테고리를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("퀴즈 생성 - 실패, 카테고리의 카드가 없을 경우")
+    void createQuizWithNotExistCard() {
+        // given
+        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4", "4", "4"));
+        final Long id = extractId(categoryResponse);
+        CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(id));
+
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(categoryIdsRequest)
+                        .when().post("/quizzes")
+                        .then().log().all()
+                        .extract();
+
+        // when, then
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("퀴즈 생성 - 실패, 카테고리의 카드의 답변이 없을 경우")
+    void createQuizWithNotExistAnswer() {
+        // given
+        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4", "4", "4"));
+        final Long id = extractId(categoryResponse);
+        CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(id));
+        카드_생성_요청(new AdminCardRequest("question", id));
+
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(categoryIdsRequest)
+                        .when().post("/quizzes")
+                        .then().log().all()
+                        .extract();
+
+        // when, then
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("답변이 존재하지 않습니다.");
     }
 }

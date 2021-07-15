@@ -26,7 +26,7 @@ public class QuizService {
     public List<QuizResponse> createQuiz(List<Long> ids) {
         List<Card> quizzes = new ArrayList<>();
         for (Long id : ids) {
-            final Category category = categoryRepository.findCategoryAndCardsByIdJoinFetch(id)
+            final Category category = categoryRepository.findById(id)
                     .orElseThrow(CategoryNotFoundException::new);
             quizzes.addAll(category.getAllCards());
         }

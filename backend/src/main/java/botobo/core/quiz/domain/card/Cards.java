@@ -32,4 +32,8 @@ public class Cards {
     public int size() {
         return cards.size();
     }
+
+    public boolean isEmpty() {
+        return cards.isEmpty();
+    }
 }

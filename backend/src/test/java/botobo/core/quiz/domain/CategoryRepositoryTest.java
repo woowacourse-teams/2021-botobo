@@ -10,9 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,12 +24,6 @@ public class CategoryRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager;
-
-    public static String longStringGenerator(int max) {
-        return IntStream.rangeClosed(1, max)
-                .mapToObj(i -> "x")
-                .collect(Collectors.joining());
-    }
 
     @Test
     @DisplayName("Category를 저장 - 성공")

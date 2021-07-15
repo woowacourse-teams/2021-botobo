@@ -74,7 +74,7 @@ class CategoryServiceTest {
                 .card(card)
                 .build();
 
-        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(category));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
 
         // when
         CategoryCardsResponse categoryCardsResponse = categoryService.findCategoryCardsById(category.getId());
@@ -85,6 +85,6 @@ class CategoryServiceTest {
 
         then(categoryRepository)
                 .should(times(1))
-                .findCategoryAndCardsByIdJoinFetch(anyLong());
+                .findById(anyLong());
     }
 }
