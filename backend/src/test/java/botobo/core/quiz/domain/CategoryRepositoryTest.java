@@ -143,23 +143,4 @@ public class CategoryRepositoryTest {
         Optional<Category> findCategory = categoryRepository.findById(savedCategory.getId());
         assertThat(findCategory).containsSame(savedCategory);
     }
-
-    @Test
-    @DisplayName("Category를 id로 조회")
-    void findByIdWhenCardIsNotExist() {
-        // given
-        Category category = Category.builder()
-                .name("java")
-                .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
-                .build();
-        final Category savedCategory = categoryRepository.save(category);
-
-        // when
-        final Optional<Category> findCategory = categoryRepository.findCategoryAndCardsByIdJoinFetch(savedCategory.getId());
-
-        // then
-        assertThat(findCategory).isNotPresent(); // 존재하지 않는다 -> CategoryNotFound를 던진다.
-    }
 }
