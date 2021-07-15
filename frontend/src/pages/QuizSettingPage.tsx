@@ -30,9 +30,12 @@ const Container = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.semiLarge};
   margin-top: 1rem;
   margin-bottom: 2rem;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.semiLarge};
+  `};
 `;
 
 const CategoryWrapper = styled.div`

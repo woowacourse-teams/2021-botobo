@@ -69,7 +69,7 @@ const QuizResultList = styled.ul`
 `;
 
 const ButtonWrapper = styled.div`
-  ${Flex()}
+  ${Flex()};
   opacity: 0.9;
   position: fixed;
   bottom: 0;
