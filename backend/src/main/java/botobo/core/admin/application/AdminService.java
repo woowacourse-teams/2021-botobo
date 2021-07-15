@@ -1,6 +1,11 @@
 package botobo.core.admin.application;
 
-import botobo.core.admin.dto.*;
+import botobo.core.admin.dto.AdminAnswerRequest;
+import botobo.core.admin.dto.AdminAnswerResponse;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminCardResponse;
+import botobo.core.admin.dto.AdminCategoryRequest;
+import botobo.core.admin.dto.AdminCategoryResponse;
 import botobo.core.quiz.domain.answer.Answer;
 import botobo.core.quiz.domain.answer.AnswerRepository;
 import botobo.core.quiz.domain.card.Card;

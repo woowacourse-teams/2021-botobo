@@ -2,7 +2,10 @@ package botobo.core.quiz.dto;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.category.Category;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
