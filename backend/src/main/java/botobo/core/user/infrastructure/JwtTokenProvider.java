@@ -1,4 +1,4 @@
-package botobo.core.member.infrastructure;
+package botobo.core.user.infrastructure;
 
 import botobo.core.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;

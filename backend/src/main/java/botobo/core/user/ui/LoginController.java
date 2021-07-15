@@ -1,14 +1,13 @@
-package botobo.core.member.ui;
+package botobo.core.user.ui;
 
-import botobo.core.member.application.LoginService;
-import botobo.core.member.dto.LoginRequest;
-import botobo.core.member.dto.TokenResponse;
+import botobo.core.user.application.LoginService;
+import botobo.core.user.dto.LoginRequest;
+import botobo.core.user.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/login")
