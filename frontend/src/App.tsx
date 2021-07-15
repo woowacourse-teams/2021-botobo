@@ -35,7 +35,7 @@ const App = () => (
             <Route exact path={ROUTE.QUIZ_RESULT}>
               <QuizResultPage />
             </Route>
-            <Route exact path={`/:categoryId${ROUTE.CARDS}`}>
+            <Route exact path={ROUTE.CARDS}>
               <CardsPage />
             </Route>
             <Route exact path={ROUTE.SEARCH}>

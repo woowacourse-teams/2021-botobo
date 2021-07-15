@@ -3,19 +3,16 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
-import FillStarIcon from '../assets/star-fill.svg';
+// import FillStarIcon from '../assets/star-fill.svg';
 import { CardResponse } from '../types';
 
-const QnACard = ({
-  question,
-  answer,
-  isBookmark,
-}: Omit<CardResponse, 'id'>) => (
+const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
   <Container>
     <Header>
-      <BookmarkButton>
+      <EmptyStarIcon />
+      {/* <BookmarkButton>
         {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
-      </BookmarkButton>
+      </BookmarkButton> */}
     </Header>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
