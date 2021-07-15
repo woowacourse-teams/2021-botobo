@@ -9,11 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
@@ -24,12 +22,6 @@ public class CategoryRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager;
-
-    public static String longStringGenerator(int max) {
-        return IntStream.rangeClosed(1, max)
-                .mapToObj(i -> "x")
-                .collect(Collectors.joining());
-    }
 
     @Test
     @DisplayName("Category를 저장 - 성공")
@@ -148,5 +140,24 @@ public class CategoryRepositoryTest {
         // when, then
         Optional<Category> findCategory = categoryRepository.findById(savedCategory.getId());
         assertThat(findCategory).containsSame(savedCategory);
+    }
+
+    @Test
+    @DisplayName("Category를 id로 조회")
+    void findByIdWhenCardIsNotExist() {
+        // given
+        Category category = Category.builder()
+                .name("java")
+                .isDeleted(false)
+                .logoUrl("botobo.io")
+                .description("~")
+                .build();
+        final Category savedCategory = categoryRepository.save(category);
+
+        // when
+        final Optional<Category> findCategory = categoryRepository.findCategoryAndCardsByIdJoinFetch(savedCategory.getId());
+
+        // then
+        assertThat(findCategory).isNotPresent(); // 존재하지 않는다 -> CategoryNotFound를 던진다.
     }
 }

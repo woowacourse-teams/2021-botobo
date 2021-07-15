@@ -1,5 +1,6 @@
 package botobo.core.quiz.domain.answer;
 
+import botobo.core.quiz.exception.AnswerNotFoundException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,9 @@ public class Answers {
     }
 
     public String getFirstAnswerContent() {
+        if (answers.isEmpty()) {
+            throw new AnswerNotFoundException("답변이 존재하지 않습니다.");
+        }
         return answers.get(0).getContent();
     }
 }

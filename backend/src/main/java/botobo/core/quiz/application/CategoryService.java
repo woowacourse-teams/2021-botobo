@@ -26,7 +26,7 @@ public class CategoryService {
     }
 
     public CategoryCardsResponse findCategoryCardsById(Long id) {
-        Category category = categoryRepository.findCategoryAndCardsByIdJoinFetch(id)
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);
         return CategoryCardsResponse.of(category);
     }

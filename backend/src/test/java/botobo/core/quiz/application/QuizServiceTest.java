@@ -8,10 +8,8 @@ import botobo.core.quiz.dto.QuizResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.Arrays;
@@ -80,7 +78,7 @@ class QuizServiceTest {
     void createQuiz() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(category));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -90,7 +88,7 @@ class QuizServiceTest {
 
         then(categoryRepository)
                 .should(times(1))
-                .findCategoryAndCardsByIdJoinFetch(anyLong());
+                .findById(anyLong());
     }
 
     @Test
@@ -98,7 +96,7 @@ class QuizServiceTest {
     void createQuizWithOneCards() {
         // given
         List<Long> ids = Arrays.asList(1L, 2L);
-        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(categoryWithOneCards));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(categoryWithOneCards));
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -108,6 +106,6 @@ class QuizServiceTest {
 
         then(categoryRepository)
                 .should(times(2))
-                .findCategoryAndCardsByIdJoinFetch(anyLong());
+                .findById(anyLong());
     }
 }

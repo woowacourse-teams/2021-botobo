@@ -13,15 +13,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.times;
+import static org.mockito.BDDMockito.*;
 
 @DisplayName("카테고리 서비스 테스트")
 @MockitoSettings
@@ -75,7 +72,7 @@ class CategoryServiceTest {
                 .card(card)
                 .build();
 
-        given(categoryRepository.findCategoryAndCardsByIdJoinFetch(anyLong())).willReturn(Optional.of(category));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.of(category));
 
         // when
         CategoryCardsResponse categoryCardsResponse = categoryService.findCategoryCardsById(category.getId());
@@ -86,6 +83,6 @@ class CategoryServiceTest {
 
         then(categoryRepository)
                 .should(times(1))
-                .findCategoryAndCardsByIdJoinFetch(anyLong());
+                .findById(anyLong());
     }
 }
