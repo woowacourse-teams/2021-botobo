@@ -1,43 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
 import { Button, QnACard } from '../components';
-import { cardState } from '../recoil';
+import { useCards } from '../hooks';
 import { CardResponse } from '../types';
-
-const data = {
-  categoryName: '자바스크립트',
-  cards: [
-    {
-      id: 1,
-      question: '클로저란 무엇인가요 무엇인가요 무엇인가요 무엇인가요?',
-      answer: '클로저란 어쩌고 저쩌고 입니다.',
-      isBookmark: false,
-    },
-    {
-      id: 2,
-      question: '클로저란 무엇인가요?',
-      answer: '클로저란 어쩌고 저쩌고 입니다.',
-      isBookmark: true,
-    },
-    {
-      id: 3,
-      question: '클로저란 무엇인가요?',
-      answer:
-        '클로저란 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 어쩌고 저쩌고 입니다.',
-      isBookmark: true,
-    },
-    {
-      id: 4,
-      question: '클로저란 무엇인가요?',
-      answer: '클로저란 어쩌고 저쩌고 입니다.',
-      isBookmark: false,
-    },
-  ],
-};
 
 interface Filter {
   [key: number]: (cards: CardResponse[]) => CardResponse[];
@@ -45,14 +12,14 @@ interface Filter {
 
 const filterByLatest = (cards: CardResponse[]) => cards;
 
-const filterByBookMark = (cards: CardResponse[]) =>
-  [...cards].sort((card1, card2) =>
-    card1.isBookmark === card2.isBookmark ? 0 : card1.isBookmark ? -1 : 1
-  );
+// const filterByBookMark = (cards: CardResponse[]) =>
+//   [...cards].sort((card1, card2) =>
+//     card1.isBookmark === card2.isBookmark ? 0 : card1.isBookmark ? -1 : 1
+//   );
 
 const filter: Filter = {
   1: filterByLatest,
-  2: filterByBookMark,
+  // 2: filterByBookMark,
 };
 
 const filters = [
@@ -61,12 +28,8 @@ const filters = [
 ];
 
 const CardsPage = () => {
+  const { categoryName, cards } = useCards();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
-  const { pathname } = useLocation();
-  const categoryId = Number(pathname.split('/')[0]);
-  const _cards = useRecoilValue(cardState(categoryId));
-
-  const { categoryName, cards } = data;
 
   return (
     <Container>
@@ -89,17 +52,11 @@ const CardsPage = () => {
         새로운 카드 추가하기
       </Button>
       <ul>
-        {filter[currentFilterId](cards).map(
-          ({ id, question, answer, isBookmark }) => (
-            <li key={id}>
-              <QnACard
-                question={question}
-                answer={answer}
-                isBookmark={isBookmark}
-              />
-            </li>
-          )
-        )}
+        {filter[currentFilterId](cards).map(({ id, question, answer }) => (
+          <li key={id}>
+            <QnACard question={question} answer={answer} />
+          </li>
+        ))}
       </ul>
     </Container>
   );
