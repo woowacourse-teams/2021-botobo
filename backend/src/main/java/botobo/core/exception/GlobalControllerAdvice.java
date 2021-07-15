@@ -16,13 +16,13 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
-        log.error("NotFoundException", e);
+        log.info("NotFoundException", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.of(e.getMessage()));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
-        log.error("UnauthorizedException", e);
+        log.info("UnauthorizedException", e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
     }
 
@@ -32,13 +32,13 @@ public class GlobalControllerAdvice {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(System.lineSeparator()));
-        log.error("MethodArgumentNotValidException", e);
+        log.info("MethodArgumentNotValidException", e);
         return ResponseEntity.badRequest().body(ErrorResponse.of(message));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Exception", e);
+        log.info("Exception", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse.of("알 수 없는 예외가 발생했습니다."));
     }
 }
