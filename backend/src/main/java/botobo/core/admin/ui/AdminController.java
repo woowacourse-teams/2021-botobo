@@ -1,7 +1,12 @@
 package botobo.core.admin.ui;
 
 import botobo.core.admin.application.AdminService;
-import botobo.core.admin.dto.*;
+import botobo.core.admin.dto.AdminAnswerRequest;
+import botobo.core.admin.dto.AdminAnswerResponse;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminCardResponse;
+import botobo.core.admin.dto.AdminCategoryRequest;
+import botobo.core.admin.dto.AdminCategoryResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

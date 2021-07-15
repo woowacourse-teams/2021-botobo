@@ -1,7 +1,12 @@
 package botobo.core.admin;
 
 import botobo.core.AcceptanceTest;
-import botobo.core.admin.dto.*;
+import botobo.core.admin.dto.AdminAnswerRequest;
+import botobo.core.admin.dto.AdminAnswerResponse;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminCardResponse;
+import botobo.core.admin.dto.AdminCategoryRequest;
+import botobo.core.admin.dto.AdminCategoryResponse;
 import botobo.core.exception.ErrorResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

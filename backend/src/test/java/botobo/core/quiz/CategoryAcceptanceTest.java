@@ -15,8 +15,18 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.Fixture.*;
-import static botobo.core.admin.AdminAcceptanceTest.*;
+import static botobo.core.Fixture.ANSWER_REQUEST_1;
+import static botobo.core.Fixture.ANSWER_REQUEST_2;
+import static botobo.core.Fixture.ANSWER_REQUEST_3;
+import static botobo.core.Fixture.CARD_REQUEST_1;
+import static botobo.core.Fixture.CARD_REQUEST_2;
+import static botobo.core.Fixture.CARD_REQUEST_3;
+import static botobo.core.Fixture.CATEGORY_REQUEST_1;
+import static botobo.core.Fixture.CATEGORY_REQUEST_2;
+import static botobo.core.Fixture.CATEGORY_REQUEST_3;
+import static botobo.core.admin.AdminAcceptanceTest.여러개_답변_생성_요청;
+import static botobo.core.admin.AdminAcceptanceTest.여러개_카드_생성_요청;
+import static botobo.core.admin.AdminAcceptanceTest.여러개_카테고리_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Category 인수 테스트")
