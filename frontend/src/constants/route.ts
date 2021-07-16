@@ -1,5 +1,6 @@
 const ROUTE = {
   HOME: '/',
+  LOGIN: '/login',
   QUIZ_SETTING: '/quizSetting',
   QUIZ: '/quiz',
   QUIZ_RESULT: '/quizResult',

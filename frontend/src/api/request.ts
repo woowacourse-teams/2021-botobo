@@ -16,7 +16,9 @@ const request = async ({ method, path, data }: HttpRequest) => {
   });
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    const { message } = await response.json();
+
+    throw new Error(message); //TODO: type 처리
   }
 
   return await response.json();
