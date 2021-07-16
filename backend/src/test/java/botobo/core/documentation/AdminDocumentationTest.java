@@ -49,13 +49,11 @@ public class AdminDocumentationTest {
     @DisplayName("관리자 카테고리 생성 - 성공")
     void createCategory() throws Exception {
         // given
-        AdminCategoryRequest adminCategoryRequest = new AdminCategoryRequest("JAVA", "botobo.io", "프로그래밍 언어입니다.");
+        AdminCategoryRequest adminCategoryRequest = new AdminCategoryRequest("JAVA");
         given(adminService.createCategory(any())).willReturn(
                 AdminCategoryResponse.builder()
                         .id(1L)
                         .name("JAVA")
-                        .logoUrl("botobo.io")
-                        .description("프로그래밍 언어입니다.")
                         .build()
         );
 

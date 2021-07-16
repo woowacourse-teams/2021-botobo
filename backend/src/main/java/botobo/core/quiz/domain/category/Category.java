@@ -25,35 +25,20 @@ public class Category extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @Column(nullable = false, length = 100)
-    private String logoUrl = "";
-
-    @Column(nullable = false)
-    private String description = "";
-
     @Embedded
     private Cards cards = new Cards();
 
     @Builder
-    public Category(Long id, String name, boolean isDeleted, String logoUrl,
-                    String description) {
-        validateNull(name, logoUrl, description);
+    public Category(Long id, String name, boolean isDeleted) {
+        validateNull(name);
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
-        this.logoUrl = logoUrl;
-        this.description = description;
     }
 
-    private void validateNull(String name, String logoUrl, String description) {
+    private void validateNull(String name) {
         if (Objects.isNull(name)) {
             throw new IllegalArgumentException("Category의 Name에는 null이 들어갈 수 없습니다.");
-        }
-        if (Objects.isNull(logoUrl)) {
-            throw new IllegalArgumentException("Category의 LogoUrl에는 null이 들어갈 수 없습니다.");
-        }
-        if (Objects.isNull(description)) {
-            throw new IllegalArgumentException("Category의 Description에는 null이 들어갈 수 없습니다.");
         }
     }
 

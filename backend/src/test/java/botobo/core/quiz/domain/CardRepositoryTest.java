@@ -34,8 +34,6 @@ class CardRepositoryTest {
         category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
         categoryRepository.save(category);
     }

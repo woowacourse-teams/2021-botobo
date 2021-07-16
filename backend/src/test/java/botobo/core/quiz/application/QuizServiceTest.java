@@ -40,15 +40,11 @@ class QuizServiceTest {
     void setUp() {
         category = Category.builder()
                 .name("name")
-                .logoUrl("")
-                .description("")
                 .isDeleted(false)
                 .build();
 
         categoryWithOneCards = Category.builder()
                 .name("name")
-                .logoUrl("")
-                .description("")
                 .isDeleted(false)
                 .build();
 

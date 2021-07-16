@@ -21,6 +21,9 @@ spring:
   config:
     activate:
       on-profile: local
+  h2:
+    console:
+      enabled: true
 
 logging:
   level:
@@ -46,6 +49,9 @@ security:
       secret-key: s
       expire-length: 3600000
 
+dummy:
+  file-path: backend/src/docs/dummydata/
+  categories: database.txt, java.txt, javascript.txt, network.txt, react.txt, spring.txt
 
 ---
 

@@ -17,17 +17,13 @@ public class CategoryResponse {
 
     private Long id;
     private String name;
-    private String description;
     private int cardCount;
-    private String logoUrl;
 
     public static CategoryResponse of(Category category) {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .description(category.getDescription())
                 .cardCount(category.cardCount())
-                .logoUrl(category.getLogoUrl())
                 .build();
     }
 

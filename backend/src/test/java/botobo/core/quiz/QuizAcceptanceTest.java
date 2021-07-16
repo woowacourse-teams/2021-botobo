@@ -148,7 +148,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 카테고리의 카드가 없을 경우")
     void createQuizWithNotExistCard() {
         // given
-        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4", "4", "4"));
+        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4"));
         final Long id = extractId(categoryResponse);
         CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(id));
 
@@ -170,7 +170,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 카테고리의 카드의 답변이 없을 경우")
     void createQuizWithNotExistAnswer() {
         // given
-        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4", "4", "4"));
+        final ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(new AdminCategoryRequest("4"));
         final Long id = extractId(categoryResponse);
         CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(id));
         카드_생성_요청(new AdminCardRequest("question", id));

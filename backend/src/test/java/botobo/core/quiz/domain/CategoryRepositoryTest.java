@@ -32,8 +32,6 @@ public class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         // when
@@ -55,8 +53,6 @@ public class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("card")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         categoryRepository.save(category);
@@ -64,8 +60,6 @@ public class CategoryRepositoryTest {
         Category duplicatedNameCategory = Category.builder()
                 .name("card")
                 .isDeleted(false)
-                .logoUrl("botobo.io.io")
-                .description("~")
                 .build();
 
         // when
@@ -80,8 +74,6 @@ public class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         // when, then
@@ -96,8 +88,6 @@ public class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("")
-                .description("~")
                 .build();
 
         // when, then
@@ -111,21 +101,6 @@ public class CategoryRepositoryTest {
         testEntityManager.flush();
     }
 
-    @Test
-    @DisplayName("Category를 생성 - 실패, logoUrl은 최대 100의 길이를 갖는다.")
-    void saveWithLongLogoUrl() {
-        // given
-        Category category = Category.builder()
-                .name("java")
-                .isDeleted(false)
-                .logoUrl(longStringGenerator(101))
-                .description("~")
-                .build();
-
-        // when, then
-        assertThatThrownBy(() -> categoryRepository.save(category))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
 
     @Test
     @DisplayName("Category를 id로 조회 - 성공")
@@ -134,8 +109,6 @@ public class CategoryRepositoryTest {
         Category category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
         Category savedCategory = categoryRepository.save(category);
 
