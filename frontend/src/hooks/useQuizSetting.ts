@@ -40,9 +40,7 @@ const useQuizSetting = () => {
       return;
     }
 
-    const quizzes = await postQuizzesAsync({
-      categoryIds,
-    });
+    const quizzes = await postQuizzesAsync(categoryIds);
 
     setQuizState(quizzes);
     history.push(ROUTE.QUIZ);
