@@ -8,6 +8,7 @@ import { ROUTE, theme } from './constants';
 import GlobalStyle from './GlobalStyle';
 import {
   CardsPage,
+  GithubCallbackPage,
   LoginPage,
   MainPage,
   QuizPage,
@@ -50,6 +51,9 @@ const App = () => (
             <Route exact path={ROUTE.SEARCH}>
               <GlobalHeader />
               <SearchPage />
+            </Route>
+            <Route exact path={ROUTE.GITHUB_CALLBACK}>
+              <GithubCallbackPage />
             </Route>
           </Switch>
         </BrowserRouter>

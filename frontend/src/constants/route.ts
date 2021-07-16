@@ -6,6 +6,7 @@ const ROUTE = {
   QUIZ_RESULT: '/quizResult',
   CARDS: '/cards',
   SEARCH: '/search',
+  GITHUB_CALLBACK: '/github/callback',
 } as const;
 
 export default ROUTE;

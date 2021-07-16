@@ -2,18 +2,24 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import logoSrc from '../assets/logo.png';
 import SearchIcon from '../assets/search.svg';
 import userSrc from '../assets/user.png';
-import { ROUTE } from '../constants';
+import { ROUTE, STORAGE_KEY } from '../constants';
 import { loginState } from '../recoil';
 import { Flex } from '../styles';
+import { setSessionStorage } from '../utils';
 
 const GlobalHeader = () => {
   const history = useHistory();
-  const isLogin = useRecoilValue(loginState);
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+  const routeLogin = () => {
+    setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
+    history.push(ROUTE.LOGIN);
+  };
 
   return (
     <StyledHeader>
@@ -32,11 +38,13 @@ const GlobalHeader = () => {
         <button onClick={() => history.push(ROUTE.SEARCH)}>
           <SearchIcon width="1.25rem" height="1.25rem" />
         </button>
-        {isLogin && <Avatar src={userSrc} />}
         {isLogin ? (
-          <button>로그아웃</button>
+          <>
+            <Avatar src={userSrc} />
+            <button onClick={() => setIsLogin(false)}>로그아웃</button>
+          </>
         ) : (
-          <button onClick={() => history.push(ROUTE.LOGIN)}>로그인</button>
+          <button onClick={routeLogin}>로그인</button>
         )}
       </RightContent>
     </StyledHeader>
