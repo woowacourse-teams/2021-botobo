@@ -50,7 +50,7 @@ security:
       expire-length: 3600000
 
 dummy:
-  file-path: C:\\Users\\xntm3\\Woowacourse\\Woowa-Level3\\2021-botobo\\backend\\src\\docs\\dummydata\\
+  file-path: backend/src/docs/dummydata/
   categories: database.txt, java.txt, javascript.txt, network.txt, react.txt, spring.txt
 
 ---
