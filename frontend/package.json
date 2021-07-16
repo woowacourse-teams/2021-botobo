@@ -4,8 +4,8 @@
   "author": "Team Botobo",
   "license": "MIT",
   "scripts": {
-    "start": "cp ../env/.env.dev ./.env && webpack serve --config webpack.dev.js",
-    "build": "cp ../env/.env.prod ./.env && webpack --config webpack.prod.js"
+    "start": "cp ../dev/env/.env.dev ./.env && webpack serve --config webpack.dev.js",
+    "build": "cp ../dev/env/.env.prod ./.env && webpack --config webpack.prod.js"
   },
   "dependencies": {
     "@emotion/css": "^11.1.3",
