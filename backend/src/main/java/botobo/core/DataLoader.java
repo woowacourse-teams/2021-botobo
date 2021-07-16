@@ -39,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (!categoryRepository.findAll().isEmpty()) {
             return;
         }
@@ -65,11 +65,7 @@ public class DataLoader implements CommandLineRunner {
 
     private void setData(BufferedReader bufferedReader) throws IOException {
         String line = "";
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line == null) {
-                break;
-            }
+        while ((line = bufferedReader.readLine()) != null) {
             Category category = makeCategory(line);
             Card card = Card.builder()
                     .category(category)
@@ -93,14 +89,14 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    public Category makeCategory(String categoryName) {
+    private Category makeCategory(String categoryName) {
         Category category = Category.builder()
                 .name(categoryName)
                 .isDeleted(false).build();
         return categoryRepository.save(category);
     }
 
-    public Card setQuestion(Category category, String question) {
+    private Card setQuestion(Category category, String question) {
         Card card = Card.builder()
                 .question(question)
                 .category(category)
@@ -109,7 +105,7 @@ public class DataLoader implements CommandLineRunner {
         return cardRepository.save(card);
     }
 
-    public void setAnswer(Card card, String answer) {
+    private void setAnswer(Card card, String answer) {
         answerRepository.save(Answer.builder()
                 .content(answer)
                 .card(card)
