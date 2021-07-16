@@ -6,9 +6,9 @@ import botobo.core.admin.dto.AdminCategoryRequest;
 
 public class Fixture {
 
-    public static final AdminCategoryRequest CATEGORY_REQUEST_1 = new AdminCategoryRequest("1", "1", "1"); //3개
-    public static final AdminCategoryRequest CATEGORY_REQUEST_2 = new AdminCategoryRequest("2", "2", "2"); //3개
-    public static final AdminCategoryRequest CATEGORY_REQUEST_3 = new AdminCategoryRequest("3", "3", "3"); //3개
+    public static final AdminCategoryRequest CATEGORY_REQUEST_1 = new AdminCategoryRequest("1"); //3개
+    public static final AdminCategoryRequest CATEGORY_REQUEST_2 = new AdminCategoryRequest("2"); //3개
+    public static final AdminCategoryRequest CATEGORY_REQUEST_3 = new AdminCategoryRequest("3"); //3개
 
     public static final AdminCardRequest CARD_REQUEST_1 = new AdminCardRequest("1", 1L); //15개 (1카테 5카드)
     public static final AdminCardRequest CARD_REQUEST_2 = new AdminCardRequest("2", 1L); //15개 (1카테 5카드)

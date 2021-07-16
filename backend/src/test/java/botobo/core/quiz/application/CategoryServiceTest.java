@@ -37,9 +37,9 @@ class CategoryServiceTest {
     void findAllWithDummy() {
         // given
         List<Category> categories = Arrays.asList(
-                Category.builder().id(1L).name("a").logoUrl("").isDeleted(false).description("").build(),
-                Category.builder().id(2L).name("b").logoUrl("").isDeleted(false).description("").build(),
-                Category.builder().id(3L).name("c").logoUrl("").isDeleted(false).description("").build()
+                Category.builder().id(1L).name("a").isDeleted(false).build(),
+                Category.builder().id(2L).name("b").isDeleted(false).build(),
+                Category.builder().id(3L).name("c").isDeleted(false).build()
         );
         given(categoryRepository.findAll()).willReturn(categories);
 
@@ -60,8 +60,6 @@ class CategoryServiceTest {
                 .id(1L)
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
         Card card = Card.builder()
                 .id(1L)

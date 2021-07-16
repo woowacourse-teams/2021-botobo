@@ -72,23 +72,17 @@ public class CategoryDocumentationTest {
                 CategoryResponse.builder()
                         .id(1L)
                         .name("Java")
-                        .description("스프링의 기초가 되는 언어")
                         .cardCount(20)
-                        .logoUrl("botobo.io")
                         .build(),
                 CategoryResponse.builder()
                         .id(2L)
                         .name("Javascript")
-                        .description("프론트엔드의 기초가 되는 언어")
                         .cardCount(15)
-                        .logoUrl("botobo.io")
                         .build(),
                 CategoryResponse.builder()
                         .id(3L)
                         .name("React")
-                        .description("프론트엔드의 요즘 기술")
                         .cardCount(8)
-                        .logoUrl("botobo.io")
                         .build()
         );
     }

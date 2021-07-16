@@ -11,23 +11,17 @@ public class AdminCategoryResponse {
 
     private Long id;
     private String name;
-    private String logoUrl;
-    private String description;
 
     @Builder
-    private AdminCategoryResponse(Long id, String name, String logoUrl, String description) {
+    private AdminCategoryResponse(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.logoUrl = logoUrl;
-        this.description = description;
     }
 
     public static AdminCategoryResponse of(Category category) {
         return new AdminCategoryResponse(
                 category.getId(),
-                category.getName(),
-                category.getLogoUrl(),
-                category.getDescription()
+                category.getName()
         );
     }
 }

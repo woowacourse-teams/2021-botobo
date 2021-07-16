@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AdminAcceptanceTest extends AcceptanceTest {
 
     private static final AdminCategoryRequest ADMIN_CATEGORY_REQUEST =
-            new AdminCategoryRequest("Category", "botobo.io", "this is category.");
+            new AdminCategoryRequest("Category");
 
     public static ExtractableResponse<Response> 카테고리_생성_요청(AdminCategoryRequest adminCategoryRequest) {
         return RestAssured.given().log().all()
@@ -100,15 +100,13 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(adminCategoryResponse.getId()).isNotNull();
         assertThat(adminCategoryResponse.getName()).isEqualTo("Category");
-        assertThat(adminCategoryResponse.getLogoUrl()).isEqualTo("botobo.io");
-        assertThat(adminCategoryResponse.getDescription()).isEqualTo("this is category.");
     }
 
     @Test
     @DisplayName("Category 생성 - 실패, name이 null일 때")
     void createCategoryWithNullName() {
         //given
-        AdminCategoryRequest adminCategoryRequestWithNullName = new AdminCategoryRequest(null, "botobo.io", "description");
+        AdminCategoryRequest adminCategoryRequestWithNullName = new AdminCategoryRequest(null);
         ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithNullName);
 
         //when
@@ -119,42 +117,12 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 필수 입력값입니다.");
     }
 
-    @Test
-    @DisplayName("Category 생성 - 실패, logoUrl null일 때")
-    void createCategoryWithNullLogoUrl() {
-        //given
-        AdminCategoryRequest adminCategoryRequestWithNullLogoUrl = new AdminCategoryRequest("name", null, "description");
-        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithNullLogoUrl);
-
-        //when
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("로고 url은 필수 입력값입니다.");
-    }
-
-
-    @Test
-    @DisplayName("Category 생성 - 실패, Description null일 때")
-    void createCategoryWithNullDescription() {
-        //given
-        AdminCategoryRequest adminCategoryRequestWithNullDescription = new AdminCategoryRequest("name", "logoUrl", null);
-        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithNullDescription);
-
-        //when
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("설명은 필수 입력값입니다.");
-    }
 
     @Test
     @DisplayName("Category 생성 - 실패, name은 최소 1글자")
     void createCategoryWithInvalidLengthWithZero() {
         //given
-        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("", "logoUrl", "description");
+        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("");
         ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidName);
 
         //when
@@ -169,7 +137,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @DisplayName("Category 생성 - 실패, name에 공백만 들어가는 경우")
     void createCategoryWithOnlyWhiteSpace() {
         //given
-        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("     ", "logoUrl", "description");
+        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("     ");
         ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidName);
 
         //when
@@ -185,9 +153,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     void createCategoryWithInvalidLengthWith31() {
         //given
         AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest(
-                longStringGenerator(31),
-                "logoUrl",
-                "description"
+                longStringGenerator(31)
         );
         ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidName);
 
@@ -198,45 +164,6 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 최소 1글자, 최대 30글자만 가능합니다.");
     }
-
-    @Test
-    @DisplayName("Category 생성 - 실패, logoUrl은 최대 100글자")
-    void createCategoryWithInvalidLogoLength() {
-        //given
-        AdminCategoryRequest adminCategoryRequestWithInvalidLogoUrl = new AdminCategoryRequest(
-                "name",
-                longStringGenerator(101),
-                "description"
-        );
-        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidLogoUrl);
-
-        //when
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("logo Url은 최대 100글자까지 가능합니다.");
-    }
-
-    @Test
-    @DisplayName("Category 생성 - 실패, description은 최대 255글자")
-    void createCategoryWithInvalidDescription() {
-        //given
-        AdminCategoryRequest adminCategoryRequestWithInvalidLengthDescription = new AdminCategoryRequest(
-                "name",
-                "logoUrl",
-                longStringGenerator(256)
-        );
-        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidLengthDescription);
-
-        //when
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("설명은 최대 255글자까지 가능합니다.");
-    }
-
 
     @Test
     @DisplayName("Card 생성 - 성공")

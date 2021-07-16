@@ -40,8 +40,6 @@ class AnswerRepositoryTest {
         category = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         card = Card.builder()

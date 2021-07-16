@@ -1,0 +1,21 @@
+Javascript
+JS의 원시타입
+Undefined, Null, Boolean, Number, BigInt, String, Symbol
+일급 객체
+'다른 객체에 일반적으로 적용 가능한 모든 연산을 지원하는 객체'이며 Object type인 JS 함수의 특징을 활용한다.
+호이스팅
+변수 / 함수의 선언부가 위치한 인접 스코프의 시작 지점에서 해당 식별자의 관측이 가능한 현상
+클로저
+함수가 속한 렉시컬 스코프를 기억하여 함수가 렉시컬 스코프 밖에서 실행될 때도 그 스코프의 외부에 접근할 수 있게 하는 기능
+this
+실행중인 모든 함수가 가지고 있는 자신의 현재 실행 컨텍스트에 대한 참조
+this 바인딩 방식
+Default binding, Implicit binding, Explicit binding, new binding
+프로토타입
+JS 객체가 서로의 기능을 상속하는 것을 가능하게 하는 메커니즘
+Iteration Protocol
+객체 내부의 반복 동작을 수행하기 위해 정립된 규칙이다.\nIteration Protocol의 하위 규칙은 iterable protocol과 iterator protocol이 있다.
+동기와 비동기
+동기란 순차적으로 한번에 하나의 task 가 수행되는 방식이며 비동기란 한번에 여러 개의 task 가 서로의 흐름을 방해하지 않고 수행되는 방식.
+Promise
+미래에 값을 반환할 수도 있는 함수를 캡슐화한 객체

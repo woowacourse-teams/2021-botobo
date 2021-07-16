@@ -17,8 +17,6 @@ class CardTest {
         Category java = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         // when, then
@@ -38,8 +36,6 @@ class CardTest {
         Category java = Category.builder()
                 .name("java")
                 .isDeleted(false)
-                .logoUrl("botobo.io")
-                .description("~")
                 .build();
 
         // when, then
