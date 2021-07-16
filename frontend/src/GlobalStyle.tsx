@@ -19,10 +19,13 @@ const GlobalStyle = () => {
         body {
           cursor: default;
           background-color: ${theme.color.gray_0};
+          color: ${theme.color.gray_9};
         }
         a {
           text-decoration: none;
           outline: none;
+          color: ${theme.color.gray_9};
+
           &:visited {
             color: inherit;
           }

@@ -48,14 +48,14 @@ const Container = styled.div`
 `;
 
 const CategoryHeader = styled.div`
-  ${Flex({ justify: 'space-between', items: 'center' })}
+  ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
 const CategoryTitle = styled.h2`
-  font-size: ${({ theme }) =>
+  ${({ theme }) =>
     css`
-      ${theme.fontSize.semiLarge}
+      font-size: ${theme.fontSize.semiLarge};
     `};
 `;
 

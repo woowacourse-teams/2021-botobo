@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const path = require('path');
 
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   plugins: [
+    new Dotenv(),
     new HtmlWebpackPlugin({ template: './public/index.html' }),
     new CopyPlugin({
       patterns: [

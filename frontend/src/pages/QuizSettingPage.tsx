@@ -15,7 +15,7 @@ const QuizSettingPage = () => {
       <CategoryWrapper>
         <CategoryList categories={categories} onClickCategory={checkCategory} />
       </CategoryWrapper>
-      <Button onClick={startQuiz} backgroundColor="green" size="full">
+      <Button onClick={startQuiz} size="full">
         시작!
       </Button>
     </Container>
@@ -30,9 +30,12 @@ const Container = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.semiLarge};
   margin-top: 1rem;
   margin-bottom: 2rem;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.semiLarge};
+  `};
 `;
 
 const CategoryWrapper = styled.div`

@@ -20,16 +20,18 @@ const Category = ({ name, cardCount, isChecked, onClick }: Props) => (
 );
 
 const Container = styled.div<Pick<Props, 'isChecked'>>`
-  ${Flex({ direction: 'column' })}
+  ${Flex({ direction: 'column' })};
   cursor: pointer;
-  background-color: ${({ theme }) => theme.color.white};
   padding: 1rem;
   height: 100%;
-  border-radius: ${({ theme }) => theme.borderRadius.square};
-  box-shadow: ${({ theme, isChecked }) =>
-    isChecked
+
+  ${({ theme, isChecked }) => css`
+    background-color: ${theme.color.white};
+    border-radius: ${theme.borderRadius.square};
+    box-shadow: ${isChecked
       ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
       : theme.boxShadow.card};
+  `}
 `;
 
 const Name = styled.span`
@@ -43,7 +45,9 @@ const Name = styled.span`
 `;
 
 const CardCount = styled.span`
-  color: ${({ theme }) => theme.color.gray_6};
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+  `};
 `;
 
 export default Category;

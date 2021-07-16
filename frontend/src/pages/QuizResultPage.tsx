@@ -41,7 +41,6 @@ const QuizResultPage = () => {
         </Button>
         <Button
           size="full"
-          backgroundColor="green"
           shape="rectangle"
           onClick={() => history.push(ROUTE.HOME)}
         >
@@ -70,7 +69,7 @@ const QuizResultList = styled.ul`
 `;
 
 const ButtonWrapper = styled.div`
-  ${Flex()}
+  ${Flex()};
   opacity: 0.9;
   position: fixed;
   bottom: 0;

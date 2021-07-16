@@ -1,14 +1,14 @@
-import { CardsResponse } from './../types/index';
-import { CategoryResponse, QuizResponse } from '../types';
+import { CardsResponse, CategoryResponse, QuizResponse } from '../types';
 import { REQUEST } from './request';
 
-interface CardData {
-  categoryId: number;
-}
+export const getAccessTokenAsync = async (code: string) => {
+  const accessToken = await REQUEST.POST<string>({
+    path: '/login',
+    data: { code },
+  });
 
-interface QuizSettingData {
-  categoryIds: number[];
-}
+  return accessToken;
+};
 
 export const getCategoriesAsync = async () => {
   const categories = await REQUEST.GET<CategoryResponse[]>({
@@ -18,7 +18,7 @@ export const getCategoriesAsync = async () => {
   return categories;
 };
 
-export const getCardsAsync = async ({ categoryId }: CardData) => {
+export const getCardsAsync = async (categoryId: number) => {
   const cards = await REQUEST.GET<CardsResponse>({
     path: `/categories/${categoryId}/cards`,
   });
@@ -26,7 +26,7 @@ export const getCardsAsync = async ({ categoryId }: CardData) => {
   return cards;
 };
 
-export const postQuizzesAsync = async ({ categoryIds }: QuizSettingData) => {
+export const postQuizzesAsync = async (categoryIds: number[]) => {
   const quizzes = await REQUEST.POST<QuizResponse[]>({
     path: '/quizzes',
     data: { categoryIds },

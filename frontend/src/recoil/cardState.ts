@@ -7,6 +7,6 @@ export const cardState = atomFamily<CardsResponse, number>({
   key: 'cardState',
   default: selectorFamily({
     key: 'categoryRequest',
-    get: (categoryId) => () => getCardsAsync({ categoryId }),
+    get: (categoryId) => () => getCardsAsync(categoryId),
   }),
 });
