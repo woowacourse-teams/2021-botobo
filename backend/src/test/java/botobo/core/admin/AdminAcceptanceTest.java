@@ -162,7 +162,22 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 최소 1글자, 최대 30글자만 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 필수 입력값입니다.");
+    }
+
+    @Test
+    @DisplayName("Category 생성 - 실패, name에 공백만 들어가는 경우")
+    void createCategoryWithOnlyWhiteSpace() {
+        //given
+        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("     ", "logoUrl", "description");
+        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidName);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 필수 입력값입니다.");
     }
 
     @Test

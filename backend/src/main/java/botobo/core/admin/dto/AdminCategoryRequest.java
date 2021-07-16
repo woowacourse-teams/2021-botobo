@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
 public class AdminCategoryRequest {
-    @NotNull(message = "카테고리명은 필수 입력값입니다.")
-    @Length(min = 1, max = 30, message = "카테고리명은 최소 1글자, 최대 30글자만 가능합니다.")
+
+    @NotBlank(message = "카테고리명은 필수 입력값입니다.")
+    @Length(max = 30, message = "카테고리명은 최소 1글자, 최대 30글자만 가능합니다.")
     private String name;
 
     @NotNull(message = "로고 url은 필수 입력값입니다.")
