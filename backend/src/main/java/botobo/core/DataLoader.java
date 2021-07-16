@@ -79,7 +79,7 @@ public class DataLoader implements CommandLineRunner {
     private void setQuestionAndAnswer(BufferedReader bufferedReader, Category category, Card card) throws IOException {
         String line = "";
         int count = 0;
-        while ((line = bufferedReader.readLine()) != null){
+        while ((line = bufferedReader.readLine()) != null) {
             if (count % 2 == 0) {
                 card = setQuestion(category, line);
             } else {
