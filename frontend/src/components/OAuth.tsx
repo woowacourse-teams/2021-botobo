@@ -3,11 +3,11 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import GithubIcon from '../assets/github-brands.svg';
-import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
-const CLIENT_ID = 'c7b8dfc709b50e0c7885';
-const REDIRECT_URI = `http://localhost:3000${ROUTE.GITHUB_CALLBACK}`;
+const CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
+const REDIRECT_URI = process.env.REACT_APP_LOGIN_REDIRECT_URL;
+console.log(CLIENT_ID, REDIRECT_URI);
 const URI = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
 
 const OAuth = () => {
