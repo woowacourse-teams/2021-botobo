@@ -162,7 +162,22 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 최소 1글자, 최대 30글자만 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 필수 입력값입니다.");
+    }
+
+    @Test
+    @DisplayName("Category 생성 - 실패, name에 공백만 들어가는 경우")
+    void createCategoryWithOnlyWhiteSpace() {
+        //given
+        AdminCategoryRequest adminCategoryRequestWithInvalidName = new AdminCategoryRequest("     ", "logoUrl", "description");
+        ExtractableResponse<Response> response = 카테고리_생성_요청(adminCategoryRequestWithInvalidName);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("카테고리명은 필수 입력값입니다.");
     }
 
     @Test
@@ -243,6 +258,23 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("Card 생성 - 실패, question이 공백일 때")
+    void createCardWithBlankQuestion() {
+        ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(ADMIN_CATEGORY_REQUEST);
+        final Long categoryId = extractId(categoryResponse);
+
+        AdminCardRequest adminCardRequest = new AdminCardRequest("     ", categoryId);
+        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("질문은 필수 입력값입니다.");
+    }
+
+    @Test
     @DisplayName("Card 생성 - 실패, question이 null일 때")
     void createCardWithNullQuestion() {
         ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(ADMIN_CATEGORY_REQUEST);
@@ -295,6 +327,28 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(adminAnswerResponse.getId()).isNotNull();
         assertThat(adminAnswerResponse.getContent()).isEqualTo("Answer");
         assertThat(adminAnswerResponse.getCardId()).isEqualTo(cardId);
+    }
+
+    @Test
+    @DisplayName("Answer 생성 - 실패, content가 공백일 때")
+    void createAnswerWithBlankContent() {
+        //given
+        ExtractableResponse<Response> categoryResponse = 카테고리_생성_요청(ADMIN_CATEGORY_REQUEST);
+        final Long categoryId = extractId(categoryResponse);
+
+        AdminCardRequest adminCardRequest = new AdminCardRequest("Question", categoryId);
+        ExtractableResponse<Response> cardResponse = 카드_생성_요청(adminCardRequest);
+        final Long cardId = extractId(cardResponse);
+
+        AdminAnswerRequest adminAnswerRequest = new AdminAnswerRequest("     ", cardId);
+        final ExtractableResponse<Response> response = 답변_생성_요청(adminAnswerRequest);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("답변 필수 입력값 입니다.");
     }
 
     @Test

@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static botobo.core.Fixture.ANSWER_REQUEST_1;
@@ -96,6 +98,28 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(quizResponses.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 카테고리 id가 없음")
+    void createQuizWithEmptyCategoryIdList() {
+        // given
+        List<Long> ids = Collections.emptyList();
+        CategoryIdsRequest categoryIdsRequest =
+                new CategoryIdsRequest(ids);
+
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(categoryIdsRequest)
+                        .when().post("/quizzes")
+                        .then().log().all()
+                        .extract();
+
+        // when, then
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("퀴즈를 진행하려면 카테고리 아이디가 필요합니다.");
     }
 
     @Test
