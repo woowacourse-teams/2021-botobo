@@ -2,9 +2,11 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import logoSrc from '../assets/logo-full.png';
 import { OAuth } from '../components';
+import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { Flex } from '../styles';
+
+const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo-full.png`;
 
 const LoginPage = () => (
   <Container>
