@@ -8,10 +8,12 @@ import { ROUTE } from '../constants';
 
 const useQuizSetting = () => {
   const [categories, setCategories] = useState(
-    useRecoilValue(categoryState).map((category) => ({
-      ...category,
-      isChecked: false,
-    }))
+    useRecoilValue(categoryState)
+      .filter(({ cardCount }) => cardCount > 0)
+      .map((category) => ({
+        ...category,
+        isChecked: false,
+      }))
   );
   const setQuizState = useSetRecoilState(quizState);
   const history = useHistory();

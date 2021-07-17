@@ -7,7 +7,6 @@ import { Flex } from '../styles';
 
 const CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
 const REDIRECT_URI = process.env.REACT_APP_LOGIN_REDIRECT_URL;
-console.log(CLIENT_ID, REDIRECT_URI);
 const URI = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
 
 const OAuth = () => {
