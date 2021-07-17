@@ -4,13 +4,14 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import logoSrc from '../assets/logo.png';
 import SearchIcon from '../assets/search.svg';
-import userSrc from '../assets/user.png';
-import { ROUTE, STORAGE_KEY } from '../constants';
+import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
 import { loginState } from '../recoil';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
+
+const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
+const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
 const GlobalHeader = () => {
   const history = useHistory();
