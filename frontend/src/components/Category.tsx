@@ -39,7 +39,7 @@ const Name = styled.span`
   word-wrap: break-word;
 
   ${({ theme }) => css`
-    font-size: ${theme.fontSize.semiLarge};
+    font-size: ${theme.fontSize.medium};
     font-weight: ${theme.fontWeight.normal};
   `};
 `;
@@ -47,6 +47,7 @@ const Name = styled.span`
 const CardCount = styled.span`
   ${({ theme }) => css`
     color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
   `};
 `;
 

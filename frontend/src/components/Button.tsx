@@ -56,7 +56,7 @@ const buttonSize = {
   full: {
     rectangle: css`
       width: 100%;
-      height: 2.5rem;
+      height: 3.5rem;
     `,
     square: css`
       width: 100%;
