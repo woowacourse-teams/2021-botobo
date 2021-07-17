@@ -10,7 +10,9 @@ const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo-full.png`;
 
 const LoginPage = () => (
   <Container>
-    <Logo src={logoSrc} alt="로고 이미지" />
+    <LogoWrapper>
+      <img src={logoSrc} alt="로고 이미지" />
+    </LogoWrapper>
     <AuthWrapper>
       <OAuth />
     </AuthWrapper>
@@ -27,8 +29,9 @@ const Container = styled.div`
     `}
 `;
 
-const Logo = styled.img`
+const LogoWrapper = styled.div`
   margin-top: 5rem;
+  height: 6.25rem;
 `;
 
 const AuthWrapper = styled.div`
