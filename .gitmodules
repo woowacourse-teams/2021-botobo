@@ -2,3 +2,9 @@
 	path = dev
 	url = git@github.com:botobo-team/dev.git
 	branch = master
+	
+[submodule "dev"]
+	path = dev
+	url = https://github.com/botobo-team/dev.git
+	branch = master
+
