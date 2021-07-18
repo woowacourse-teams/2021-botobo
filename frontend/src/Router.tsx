@@ -33,7 +33,7 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
 
   return (
     <Route {...props}>
-      {isLogin ? { children } : <Redirect to={ROUTE.LOGIN.PATH} />}
+      {isLogin ? children : <Redirect to={ROUTE.LOGIN.PATH} />}
     </Route>
   );
 };
