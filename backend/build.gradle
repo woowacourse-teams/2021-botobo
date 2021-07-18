@@ -72,6 +72,12 @@ task createDocument(type: Copy) {
     into file("src/main/resources/static/docs")
 }
 
+task copyDev(type: Copy) {
+    from '../dev/application-dev.yml'
+    into './src/main/resources'
+}
+
 build {
+    dependsOn copyDev
     dependsOn createDocument
 }
