@@ -7,6 +7,7 @@ import {
   CardsPage,
   GithubCallbackPage,
   LoginPage,
+  MainLoadable,
   MainPage,
   QuizPage,
   QuizResultPage,
@@ -18,7 +19,7 @@ const Router = () => (
   <BrowserRouter>
     <Switch>
       <Route exact path={ROUTE.HOME.PATH}>
-        <Suspense fallback={<div>loading</div>}>
+        <Suspense fallback={<MainLoadable />}>
           <MainHeader />
           <MainPage />
         </Suspense>
