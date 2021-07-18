@@ -19,7 +19,7 @@ const MainPage = () => {
       <QuizStarter />
       <section>
         <CategoryHeader>
-          <CategoryTitle>전체 카테고리</CategoryTitle>
+          <CategoryTitle>학습 중</CategoryTitle>
           <Button
             shape="circle"
             backgroundColor="white"

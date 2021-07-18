@@ -23,7 +23,7 @@ const Container = styled.div<Pick<Props, 'isChecked'>>`
   ${Flex({ direction: 'column' })};
   cursor: pointer;
   padding: 1rem;
-  height: 100%;
+  height: 9.5rem;
 
   ${({ theme, isChecked }) => css`
     background-color: ${theme.color.white};
@@ -40,7 +40,7 @@ const Name = styled.span`
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
-    font-weight: ${theme.fontWeight.normal};
+    font-weight: ${theme.fontWeight.bold};
   `};
 `;
 
