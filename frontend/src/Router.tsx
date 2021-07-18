@@ -60,10 +60,8 @@ const Router = () => (
       </PrivateRoute>
       {/* TODO: Quiz, QuizResult에 진입 시, length로 분기 처리 */}
       <Route exact path={ROUTE.QUIZ.PATH}>
-        <Suspense fallback={<div>loading</div>}>
-          <PageHeader title={ROUTE.QUIZ.TITLE} />
-          <QuizPage />
-        </Suspense>
+        <PageHeader title={ROUTE.QUIZ.TITLE} />
+        <QuizPage />
       </Route>
       <Route exact path={ROUTE.QUIZ_RESULT.PATH}>
         <PageHeader title={ROUTE.QUIZ_RESULT.TITLE} />
