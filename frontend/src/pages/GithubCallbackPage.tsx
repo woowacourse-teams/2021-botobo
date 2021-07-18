@@ -24,7 +24,7 @@ const GithubCallbackPage = () => {
 
         setIsLogin(true);
         history.push(
-          getSessionStorage(STORAGE_KEY.REDIRECTED_PATH) ?? ROUTE.HOME
+          getSessionStorage(STORAGE_KEY.REDIRECTED_PATH) ?? ROUTE.HOME.PATH
         );
       } catch (error) {
         console.error(error);

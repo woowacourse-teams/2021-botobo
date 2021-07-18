@@ -18,7 +18,7 @@ const PageHeader = ({ title }: Props) => {
       <PageBackButton onClick={history.goBack}>
         <BackIcon width="1.5rem" height="1.5rem" />
       </PageBackButton>
-      <h2>{title}</h2>
+      <Title>{title}</Title>
     </StyledHeader>
   );
 };
@@ -35,6 +35,12 @@ const StyledHeader = styled.header`
 
 const PageBackButton = styled.button`
   margin-right: 1rem;
+`;
+
+const Title = styled.h1`
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+  `}
 `;
 
 export default PageHeader;

@@ -1,4 +1,4 @@
-export { default as GlobalHeader } from './GlobalHeader';
+export { default as MainHeader } from './MainHeader';
 export { default as PageHeader } from './PageHeader';
 export { default as QuizStarter } from './QuizStarter';
 export { default as Category } from './Category';
