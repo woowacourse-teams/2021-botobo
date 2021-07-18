@@ -9,4 +9,5 @@ export { default as QuizResult } from './QuizResult';
 export { default as QnACard } from './QnACard';
 export { default as OAuth } from './OAuth';
 export { default as CardSkeleton } from './CardSkeleton';
+export { default as CardSkeletonList } from './CardSkeletonList';
 export { default as HeaderSkeleton } from './HeaderSkeleton';
