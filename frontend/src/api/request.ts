@@ -7,7 +7,7 @@ interface HttpRequest {
 }
 
 const request = async ({ method, path, data }: HttpRequest) => {
-  const response = await fetch(`https://botobo.r-e.kr${path}`, {
+  const response = await fetch(`${process.env.REACT_APP_SERVER_URL}${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
