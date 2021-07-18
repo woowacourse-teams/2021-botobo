@@ -32,7 +32,7 @@ const MainPage = () => {
         <CategoryList
           categories={categories}
           onClickCategory={(categoryId) =>
-            history.push(`${ROUTE.CARDS}?categoryId=${categoryId}`)
+            history.push(`${ROUTE.CARDS.PATH}?categoryId=${categoryId}`)
           }
         />
       </section>
