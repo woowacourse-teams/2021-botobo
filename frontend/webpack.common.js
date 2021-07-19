@@ -1,14 +1,29 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const path = require('path');
 
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
-  plugins: [new HtmlWebpackPlugin({ template: './public/index.html' })],
+  plugins: [
+    new Dotenv(),
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: './public',
+          globOptions: {
+            ignore: ['**/index.html'],
+          },
+        },
+      ],
+    }),
+  ],
   module: {
     rules: [
       {
@@ -18,7 +33,6 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-typescript',
               [
                 '@babel/preset-env',
                 {
@@ -27,6 +41,7 @@ module.exports = {
                 },
               ],
               '@babel/preset-react',
+              '@babel/preset-typescript',
             ],
             plugins: [
               '@babel/proposal-class-properties',
@@ -34,6 +49,24 @@ module.exports = {
               '@emotion',
             ],
           },
+        },
+      },
+      {
+        test: /\.png$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              prettier: false,
+            },
+          },
+        ],
+        issuer: {
+          and: [/\.(js|ts)x?$/],
         },
       },
     ],

@@ -1,0 +1,21 @@
+Spring
+Spring의 의존성 주입(DI)방법에 대해 말해주세요.
+크게 3가지 의존성 주입 방법이 존재합니다.\nField 주입: 필드에 @Autowired를 붙인다.\nSetter 주입: Setter에 @Autowired를 붙인다.\nConstructor 주입: 필요한 의존성을 인자로 가지는 생성자를 만든다.
+Field, Setter, Constructor 주입 방식 중 어떤 방식을 선호하나요?
+생성자 주입방식을 선호합니다. 다른 주입전략과 다르게 필드에 final을 붙일 수 있다는 점과 순환 의존성을 가질 경우 BeanCurrentlyInCreationException이 발생하여 문제 상황을 알 수 있기 때문입니다.
+Spring Bean을 등록하는 방법에 대해 말해라.
+JavaConfig 방식이라면 @Configuration를 붙인 클래스에 @Bean을 통해 빈을 등록하거나, 클래스 위에 @Component를 붙여 @ComponentScan한다.
+ArgumentResolver는 무엇인가요?
+Controller 메서드의 인자를 검사하여 조건에 만족하는 경우 값을 가공하여 원하는 값을 전달할 수 있는 방법을 제공한다. HandlerMethodArgumentResolver 인터페이스를 구현하여 정의한다.
+Interceptor는 무엇인가요?
+인터셉터는 컨트롤러에서 요청을 핸들링 하기 전이나 후에 특정 동작을 할 수 있는 방법을 제공한다. HandlerInterceptor 인터페이스를 구현하여 정의한다.
+DispatcherServlet
+DispatcherServlet은 표현 계층 전면에서 HTTP 프로토콜을 통해 들어오는 모든 요청을 중앙집중식으로 처리하는 프론트 컨트롤러이다. DispatcherServlet은 Spring MVC의 핵심 요소이다. 클라이언트로부터 어떤 요청이 들어오면 서블릿 컨테이너이 요청을 받는다. 이때 공통 작업은 DispatcherServlet에서 처리하고, 이외 작업은 적절한 세부 컨트롤러로 위임한다.
+Spring과 Spring Boot의 차이는 무엇인가요?
+스프링 프레임워크는 기능이 많은만큼 환경설정이 복잡하다. 이에 어려움을 느끼는 사용자들을 위해 나온 것이 바로 스프링 부트다. 스프링 부트는 스프링 프레임워크를 사용하기 위한 설정의 많은 부분을 자동화하여 사용자가 정말 편하게 스프링을 활용할 수 있도록 돕는다.
+Spring Bean의 Scope에 대해 설명해주세요.
+빈 스코프는 빈이 존재할 수 있는 범위를 뜻하며 singleton, prototype, request, session, application이 있습니다. singleton은 기본 스코프로 스프링 컨테이너의 시작과 종료까지 유지되는 가장 넓은 범위의 스코프입니다. prototype은 빈의 생성과 의존관계 주입까지만 관여하고 더는 관리하지 않는 매우 짧은 범위의 스코프입니다. request는 웹 요청이 들어오고 나갈때까지 유지하는 스코프, session은 웹 세션이 생성, 종료할때까지, application은 웹 서블릿 컨텍스트와 같은 범위로 유지하는 스코프입니다.
+Spring에서 CORS 에러를 해결하기 위한 방법을 설명해주세요.
+Servlet Filter를 사용하여 커스텀한 Cors 설정하거나, WebMvcConfiguer를 구현한 Configuration 클래스를 만들어서 addCorsMappings()를 재정의할 수도 있고, 마지막으로 Spring Security에서 CorsConfigurationSource를 Bean으로 등록하고 config에 추가해줌으로써 해결할 수 있습니다.
+Spring Security란 무엇인가요?
+Spring Security는 Java 애플리케이션에서 인증 및 권한 부여 방법을 제공하는 데 초점을 맞춘 Spring 프레임 워크의 별도 모듈입니다. 또한 CSRF 공격과 같은 대부분의 일반적인 Security 취약점을 처리합니다.
