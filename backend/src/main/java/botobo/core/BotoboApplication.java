@@ -11,11 +11,6 @@ import java.util.TimeZone;
 @EnableJpaAuditing
 public class BotoboApplication {
 
-    @PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(BotoboApplication.class, args);
     }
