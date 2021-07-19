@@ -46,3 +46,5 @@ backend/src/main/resources/static/docs/**
 
 ### Secret files ###
 backend/src/main/resources/application-dev.yml
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-prod.yml

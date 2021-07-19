@@ -19,7 +19,7 @@ const MainPage = () => {
       <QuizStarter />
       <section>
         <CategoryHeader>
-          <CategoryTitle>전체 카테고리</CategoryTitle>
+          <CategoryTitle>학습 중</CategoryTitle>
           <Button
             shape="circle"
             backgroundColor="white"
@@ -32,7 +32,7 @@ const MainPage = () => {
         <CategoryList
           categories={categories}
           onClickCategory={(categoryId) =>
-            history.push(`${ROUTE.CARDS}?categoryId=${categoryId}`)
+            history.push(`${ROUTE.CARDS.PATH}?categoryId=${categoryId}`)
           }
         />
       </section>

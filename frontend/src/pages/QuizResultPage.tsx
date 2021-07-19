@@ -35,14 +35,14 @@ const QuizResultPage = () => {
           backgroundColor="white"
           color="green"
           shape="rectangle"
-          onClick={() => history.push(ROUTE.HOME)}
+          onClick={() => history.push(ROUTE.HOME.PATH)}
         >
           저장 안하고 나가기
         </Button>
         <Button
           size="full"
           shape="rectangle"
-          onClick={() => history.push(ROUTE.HOME)}
+          onClick={() => history.push(ROUTE.HOME.PATH)}
         >
           다음에 또 보기
         </Button>

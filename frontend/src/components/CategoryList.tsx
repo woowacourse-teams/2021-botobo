@@ -30,13 +30,9 @@ const CategoryList = ({ categories, onClickCategory }: Props) => (
 
 const StyledUl = styled.ul`
   display: grid;
-  grid-template-columns: repeat(2, calc(50% - 0.5rem));
+  grid-template-columns: repeat(1);
   gap: 1rem;
   margin: 1rem 0;
-
-  & > li {
-    height: 9.5rem;
-  }
 `;
 
 export default CategoryList;

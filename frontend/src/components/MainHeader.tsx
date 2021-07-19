@@ -4,7 +4,6 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import SearchIcon from '../assets/search.svg';
 import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
 import { loginState } from '../recoil';
 import { Flex } from '../styles';
@@ -13,13 +12,13 @@ import { setSessionStorage } from '../utils';
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-const GlobalHeader = () => {
+const MainHeader = () => {
   const history = useHistory();
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
   const routeLogin = () => {
     setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
-    history.push(ROUTE.LOGIN);
+    history.push(ROUTE.LOGIN.PATH);
   };
 
   return (
@@ -29,23 +28,20 @@ const GlobalHeader = () => {
           href="/"
           onClick={(event) => {
             event.preventDefault();
-            history.push(ROUTE.HOME);
+            history.push(ROUTE.HOME.PATH);
           }}
         >
           <span>보고 또 보고</span>
         </Logo>
       </h1>
       <RightContent>
-        <button onClick={() => history.push(ROUTE.SEARCH)}>
-          <SearchIcon width="1.25rem" height="1.25rem" />
-        </button>
         {isLogin ? (
           <>
             <Avatar src={userSrc} />
-            <button onClick={() => setIsLogin(false)}>로그아웃</button>
+            <AuthButton onClick={() => setIsLogin(false)}>로그아웃</AuthButton>
           </>
         ) : (
-          <button onClick={routeLogin}>로그인</button>
+          <AuthButton onClick={routeLogin}>로그인</AuthButton>
         )}
       </RightContent>
     </StyledHeader>
@@ -105,4 +101,10 @@ const Avatar = styled.img`
   `}
 `;
 
-export default GlobalHeader;
+const AuthButton = styled.button`
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.default};
+  `}
+`;
+
+export default MainHeader;

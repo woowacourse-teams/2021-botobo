@@ -10,7 +10,7 @@ const useCards = () => {
   const categoryId = new URLSearchParams(search).get('categoryId');
 
   if (!categoryId) {
-    history.push(ROUTE.HOME);
+    history.push(ROUTE.HOME.PATH);
   } //TODO: 에러 바운더리에서 처리 (메시지)
 
   const { categoryName, cards } = useRecoilValue(cardState(Number(categoryId)));
