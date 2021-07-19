@@ -1,43 +1,19 @@
 <configuration>
-    <!--console appender-->
     <property name="BOTOBO_HTTP_CONSOLE_LOG_PATTERN"
               value="%cyan(%t{yy-MM-dd}) %magenta(%t{HH:mm:ss}) [%yellow(HTTP REQUEST)] [%boldBlue(%requestMethod)] [%localIP]
-\n%cyan(%t{yy-MM-dd}) %magenta(%t{HH:mm:ss}) [%yellow(HTTP RESPONSE)] [%boldBlue(%statusCode)] [%remoteIP]%n%n[%boldWhite(FULL REQUEST)]%n%fullRequest[%boldWhite(FULL RESPONSE)]%n%fullResponse"/>
-
-    <appender name="HTTP_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${BOTOBO_HTTP_CONSOLE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <!--file appender-->
+\n%cyan(%t{yy-MM-dd}) %magenta(%t{HH:mm:ss}) [%yellow(HTTP RESPONSE)] [%boldBlue(%statusCode)] [%remoteIP]%n%n[%boldWhite(FULL REQUEST)]%n%fullRequest%n[%boldWhite(FULL RESPONSE)]%n%fullResponse%n"/>
 
     <property name="BOTOBO_HTTP_FILE_LOG_PATTERN"
               value="%t{yy-MM-dd} %t{HH:mm:ss} [HTTP REQUEST] [%requestMethod] [%localIP]
 \n%t{yy-MM-dd} %t{HH:mm:ss} [HTTP RESPONSE] [%statusCode] [%remoteIP]%n%n[FULL REQUEST]%n%fullRequest[FULL RESPONSE]%n%fullResponse"/>
 
-    <property name="BOTOBO_HTTP_LOG_PATH" value="logs/http"/>
-    <property name="BOTOBO_HTTP_LOG_FILE_NAME" value="http"/>
+    <springProfile name="test, local">
+        <include resource="logback/http-console-appender.xml"/>
+        <appender-ref ref="HTTP_CONSOLE"/>
+    </springProfile>
 
-
-    <appender name="HTTP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${BOTOBO_HTTP_LOG_PATH}/${BOTOBO_HTTP_LOG_FILE_NAME}.log</file>
-
-        <encoder>
-            <pattern>${BOTOBO_HTTP_FILE_LOG_PATTERN}</pattern>
-        </encoder>
-
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${BOTOBO_HTTP_LOG_PATH}/${BOTOBO_HTTP_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>3MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>100</maxHistory>
-        </rollingPolicy>
-    </appender>
-
-    <appender-ref ref="HTTP_CONSOLE"/>
-    <appender-ref ref="HTTP_FILE"/>
+    <springProfile name="dev, prod">
+        <include resource="logback/http-file-appender.xml"/>
+        <appender-ref ref="HTTP_FILE"/>
+    </springProfile>
 </configuration>

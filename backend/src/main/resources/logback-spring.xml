@@ -1,116 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?> <!-- 60초마다 설정 파일의 변경을 확인 하여 변경시 갱신 -->
-<configuration scan="true" scanPeriod="60 seconds">
+<?xml version="1.0" encoding="UTF-8"?>
 
+<configuration>
     <property name="BOTOBO_CONSOLE_LOG_PATTERN"
               value="%cyan(%d{yy-MM-dd}) %magenta(%d{HH:mm:ss}) %highlight(%-5level) [%yellow(%-41logger{36}):%white(%-4line)] - %msg%n "/>
 
     <property name="BOTOBO_FILE_LOG_PATTERN"
               value="%d{yy-MM-dd} %d{HH:mm:ss} %-5level [%-41logger{36}:%-4line] - %msg%n "/>
 
-    <!--console append (INFO, WARN, ERROR)-->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${BOTOBO_CONSOLE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <!--info file append (INFO)-->
-    <property name="INFO_LOG_PATH" value="logs/info"/>
-    <property name="INFO_LOG_FILE_NAME" value="info"/>
-
-    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-
-        <file>${INFO_LOG_PATH}/${INFO_LOG_FILE_NAME}.log</file>
-
-        <encoder>
-            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
-        </encoder>
-
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${INFO_LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>3MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>100</maxHistory>
-        </rollingPolicy>
-    </appender>
-
-    <!--warn file append (WARN)-->
-    <property name="WARN_LOG_PATH" value="logs/warn"/>
-    <property name="WARN_LOG_FILE_NAME" value="warn"/>
-
-    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-
-        <file>${WARN_LOG_PATH}/${WARN_LOG_FILE_NAME}.log</file>
-
-        <encoder>
-            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
-        </encoder>
-
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${WARN_LOG_PATH}/${WARN_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>3MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>100</maxHistory>
-        </rollingPolicy>
-    </appender>
-
-    <!--error file append (ERROR)-->
-    <property name="ERROR_LOG_PATH" value="logs/error"/>
-    <property name="ERROR_LOG_FILE_NAME" value="error"/>
-
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-
-        <file>${ERROR_LOG_PATH}/${ERROR_LOG_FILE_NAME}.log</file>
-
-        <encoder>
-            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
-        </encoder>
-
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${ERROR_LOG_PATH}/${ERROR_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>3MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>100</maxHistory>
-        </rollingPolicy>
-    </appender>
-    
-    <springProfile name="test, local">
-        <root level="${LOG_LEVEL}">
+    <springProfile name="local, test">
+        <include resource="logback/console-appender.xml"/>
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
     <springProfile name="dev, prod">
-        <root level="${LOG_LEVEL}">
+        <include resource="logback/info-file-appender.xml"/>
+        <include resource="logback/warn-file-appender.xml"/>
+        <include resource="logback/error-file-appender.xml"/>
+        <include resource="logback/query-file-appender.xml"/>
+
+        <root level="INFO">
             <appender-ref ref="INFO_FILE"/>
             <appender-ref ref="WARN_FILE"/>
             <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="QUERY_FILE"/>
         </root>
     </springProfile>
-
 </configuration>
-
