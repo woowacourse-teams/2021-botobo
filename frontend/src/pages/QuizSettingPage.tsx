@@ -10,7 +10,6 @@ const QuizSettingPage = () => {
 
   return (
     <Container>
-      <Title>퀴즈 설정</Title>
       <span>어떤 문제를 풀어볼까요?</span>
       <CategoryWrapper>
         <CategoryList categories={categories} onClickCategory={checkCategory} />
@@ -27,15 +26,6 @@ const Container = styled.div`
     css`
       padding: ${theme.pageSize.padding};
     `}
-`;
-
-const Title = styled.h2`
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-
-  ${({ theme }) => css`
-    font-size: ${theme.fontSize.semiLarge};
-  `};
 `;
 
 const CategoryWrapper = styled.div`

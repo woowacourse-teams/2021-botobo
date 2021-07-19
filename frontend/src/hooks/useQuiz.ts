@@ -20,7 +20,7 @@ const useQuiz = () => {
 
   const showNextQuiz = () => {
     if (currentQuizIndex === quizzes.length - 1) {
-      history.push(ROUTE.QUIZ_RESULT);
+      history.push(ROUTE.QUIZ_RESULT.PATH);
 
       return;
     }

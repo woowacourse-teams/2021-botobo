@@ -45,7 +45,7 @@ const useQuizSetting = () => {
     const quizzes = await postQuizzesAsync(categoryIds);
 
     setQuizState(quizzes);
-    history.push(ROUTE.QUIZ);
+    history.push(ROUTE.QUIZ.PATH);
   };
 
   return { categories, checkCategory, startQuiz };

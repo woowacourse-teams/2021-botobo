@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
