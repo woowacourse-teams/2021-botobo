@@ -1,0 +1,98 @@
+spring:
+  profiles:
+    active: local
+
+
+---
+
+# local
+
+spring:
+  datasource:
+    url: jdbc:h2:~/test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+    root: INFO
+
+github:
+  client:
+    id: a
+    secret: a
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com/user
+
+security:
+  jwt:
+    token:
+      secret-key: s
+      expire-length: 3600000
+
+dummy:
+  file-path: backend/src/docs/dummydata/
+  categories: database.txt, java.txt, javascript.txt, network.txt, react.txt, spring.txt
+
+---
+
+# test
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  config:
+    activate:
+      on-profile: test
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+    root: INFO
+
+github:
+  client:
+    id: a
+    secret: a
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com/user
+
+security:
+  jwt:
+    token:
+      secret-key: s
+      expire-length: 3600000
+

@@ -1,0 +1,7 @@
+== 로그인 API
+
+=== Github 소셜 로그인
+==== 요청
+include::{snippets}/login-success/http-request.adoc[]
+==== 응답
+include::{snippets}/login-success/http-response.adoc[]
