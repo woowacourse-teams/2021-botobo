@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,5 +30,11 @@ public class QuizResponse {
                 .answer(answer)
                 .categoryName(category.getName())
                 .build();
+    }
+
+    public static List<QuizResponse> of(List<Card> cards) {
+        return cards.stream()
+                .map(QuizResponse::of)
+                .collect(Collectors.toList());
     }
 }

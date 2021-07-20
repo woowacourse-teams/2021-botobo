@@ -2,7 +2,6 @@ package botobo.core.quiz.domain.card;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class FixedCards {
     private static final FixedCards fixedCards = new FixedCards();

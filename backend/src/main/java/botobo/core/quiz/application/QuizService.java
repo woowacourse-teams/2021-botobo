@@ -28,31 +28,25 @@ public class QuizService {
     }
 
     public List<QuizResponse> createQuiz(List<Long> ids) {
-        List<Card> quiz = new ArrayList<>();
+        List<Card> cards = new ArrayList<>();
         for (Long id : ids) {
             final Category category = categoryRepository.findById(id)
                     .orElseThrow(CategoryNotFoundException::new);
-            quiz.addAll(category.getAllCards());
+            cards.addAll(category.getAllCards());
         }
-        final int maxLimit = Math.min(quiz.size(), 10);
-        Collections.shuffle(quiz);
-        return convertToQuizResponse(quiz, maxLimit);
+        final int maxLimit = Math.min(cards.size(), 10);
+        Collections.shuffle(cards);
+        final List<Card> quiz = cards.stream().limit(maxLimit).collect(Collectors.toList());
+        return QuizResponse.of(quiz);
     }
 
     public List<QuizResponse> createQuizForGuest() {
         FixedCards fixedCards = FixedCards.getInstance();
-        final int maxLimit = 10;
         if (fixedCards.isFull()) {
-            return convertToQuizResponse(fixedCards.getCards(), maxLimit);
+            return QuizResponse.of(fixedCards.getCards());
         }
-        List<Card> quiz = cardRepository.findFirst10By();
+        final List<Card> quiz = cardRepository.findFirst10By();
         fixedCards.initialize(quiz);
-        return convertToQuizResponse(quiz, maxLimit);
-    }
-
-    public List<QuizResponse> convertToQuizResponse(List<Card> cards, int maxLimit) {
-        return cards.stream().limit(maxLimit)
-                .map(QuizResponse::of)
-                .collect(Collectors.toList());
+        return QuizResponse.of(quiz);
     }
 }

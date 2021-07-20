@@ -42,7 +42,7 @@ class FixedCardsTest {
 
     @Test
     @DisplayName("한번 초기화된 FixedCards는 다음 요청 시 동일한 카드를 반환한다. - 성공")
-    void name() {
+    void checkThatAlwaysSameFixedCards() {
         // given
         FixedCards fixedCards = FixedCards.getInstance();
         fixedCards.initialize(cards);
@@ -52,8 +52,6 @@ class FixedCardsTest {
 
         // then
         assertThat(fixedCards).isSameAs(secondRequestedFixedCards);
-        assertThat(fixedCards).isEqualTo(secondRequestedFixedCards);
-        assertThat(secondRequestedFixedCards.getCards()).hasSize(fixedCards.getCards().size());
     }
 
     @Test
