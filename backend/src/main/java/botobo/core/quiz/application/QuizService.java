@@ -45,7 +45,7 @@ public class QuizService {
         if (fixedCards.isFull()) {
             return convertToQuizResponse(fixedCards.getCards(), maxLimit);
         }
-        List<Card> quiz = cardRepository.findTop10ByOrderById();
+        List<Card> quiz = cardRepository.findFirst10By();
         fixedCards.initialize(quiz);
         return convertToQuizResponse(quiz, maxLimit);
     }

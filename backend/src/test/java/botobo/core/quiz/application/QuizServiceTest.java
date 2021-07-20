@@ -120,7 +120,7 @@ class QuizServiceTest {
     void createQuizForGuest() {
         FixedCards fixedCards = FixedCards.getInstance();
         if (!fixedCards.isFull()) {
-            given(cardRepository.findTop10ByOrderById()).willReturn(cards);
+            given(cardRepository.findFirst10By()).willReturn(cards);
         }
         // when
         List<QuizResponse> quizResponses = quizService.createQuizForGuest();
