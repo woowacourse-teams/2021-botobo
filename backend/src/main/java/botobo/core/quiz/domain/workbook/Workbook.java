@@ -22,7 +22,7 @@ public class Workbook extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 30;
 
-    @Column(length = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @Column(nullable = false)

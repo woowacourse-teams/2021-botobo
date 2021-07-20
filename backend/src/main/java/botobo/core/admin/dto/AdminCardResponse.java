@@ -15,7 +15,7 @@ public class AdminCardResponse {
     private int encounterCount;
 
     @Builder
-    public AdminCardResponse(Long id, String question, String answer, Long workbookId, int encounterCount) {
+    private AdminCardResponse(Long id, String question, String answer, Long workbookId, int encounterCount) {
         this.id = id;
         this.question = question;
         this.answer = answer;
