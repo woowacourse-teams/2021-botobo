@@ -1,6 +1,9 @@
 package botobo.core.quiz;
 
-import botobo.core.AcceptanceTest;
+import botobo.core.admin.dto.AdminAnswerRequest;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminCategoryRequest;
+import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.quiz.dto.CategoryCardsResponse;
 import botobo.core.quiz.dto.CategoryResponse;
 import io.restassured.RestAssured;
@@ -24,13 +27,10 @@ import static botobo.core.Fixture.CARD_REQUEST_3;
 import static botobo.core.Fixture.CATEGORY_REQUEST_1;
 import static botobo.core.Fixture.CATEGORY_REQUEST_2;
 import static botobo.core.Fixture.CATEGORY_REQUEST_3;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_답변_생성_요청;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_카드_생성_요청;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_카테고리_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Category 인수 테스트")
-public class CategoryAcceptanceTest extends AcceptanceTest {
+public class CategoryAcceptanceTest extends AuthAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -46,6 +46,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .when().get("/categories")
                         .then().log().all()
                         .extract();
@@ -66,6 +67,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .when().get("/categories/{id}/cards", 1L)
                         .then().log().all()
                         .extract();
@@ -84,6 +86,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .when().get("/categories/{id}/cards", 2L)
                         .then().log().all()
                         .extract();
@@ -94,5 +97,40 @@ public class CategoryAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(categoryCardsResponse.getCategoryName()).isEqualTo(CATEGORY_REQUEST_2.getName());
         assertThat(categoryCardsResponse.getCards()).hasSize(0);
+    }
+
+    public void 여러개_카테고리_생성_요청(List<AdminCategoryRequest> requests) {
+        for (AdminCategoryRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/categories")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
+        for (AdminCardRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/cards")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
+    public void 여러개_답변_생성_요청(List<AdminAnswerRequest> requests) {
+        for (AdminAnswerRequest request : requests)
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/answers")
+                    .then().log().all()
+                    .extract();
     }
 }

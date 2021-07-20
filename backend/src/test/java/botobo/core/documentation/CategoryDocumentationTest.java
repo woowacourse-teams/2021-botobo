@@ -1,5 +1,6 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.CategoryService;
 import botobo.core.quiz.dto.CardResponse;
 import botobo.core.quiz.dto.CategoryCardsResponse;
@@ -37,14 +38,20 @@ public class CategoryDocumentationTest {
     @MockBean
     private CategoryService categoryService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
     @Test
     @DisplayName("카레고리 전체 조회 - 성공")
     void findAllCategories() throws Exception {
         // given
+        String token = "botobo.access.token";
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(categoryService.findAll()).willReturn(generateCategoryResponse());
 
         // when, then
-        mockMvc.perform(get("/categories"))
+        mockMvc.perform(get("/categories")
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("categories-get-success",
                         getDocumentRequest(),
@@ -56,10 +63,13 @@ public class CategoryDocumentationTest {
     @DisplayName("카테고리의 카드 모아보기 - 성공")
     void findCategoryCardsById() throws Exception {
         // given
+        String token = "botobo.access.token";
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(categoryService.findCategoryCardsById(anyLong())).willReturn(generateCategoryCardsResponse());
 
         // when, then
-        mockMvc.perform(get("/categories/{id}/cards", 1))
+        mockMvc.perform(get("/categories/{id}/cards", 1)
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("categories-cards-get-success",
                         getDocumentRequest(),

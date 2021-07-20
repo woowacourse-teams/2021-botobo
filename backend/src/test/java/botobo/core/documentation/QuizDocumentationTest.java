@@ -1,5 +1,6 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.QuizService;
 import botobo.core.quiz.dto.CategoryIdsRequest;
 import botobo.core.quiz.dto.QuizResponse;
@@ -41,15 +42,21 @@ public class QuizDocumentationTest {
     @MockBean
     private QuizService quizService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
     @Test
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
+        String token = "botobo.access.token";
         CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(1L, 2L, 3L));
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
 
         // when, then
         mockMvc.perform(post("/quizzes")
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(categoryIdsRequest)))
@@ -64,11 +71,14 @@ public class QuizDocumentationTest {
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 카테고리 존재하지 않음")
     void createQuizWithInvalidCategoryId() throws Exception {
         // given
+        String token = "botobo.access.token";
         CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(1L, 2L, 1000L));
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 1000L))).willThrow(new CategoryNotFoundException());
 
         // when, then
         mockMvc.perform(post("/quizzes")
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(categoryIdsRequest)))

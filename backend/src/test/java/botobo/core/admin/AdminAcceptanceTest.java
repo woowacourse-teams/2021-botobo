@@ -1,12 +1,12 @@
 package botobo.core.admin;
 
-import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminAnswerRequest;
 import botobo.core.admin.dto.AdminAnswerResponse;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
 import botobo.core.admin.dto.AdminCategoryRequest;
 import botobo.core.admin.dto.AdminCategoryResponse;
+import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.exception.ErrorResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -23,24 +23,26 @@ import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends AcceptanceTest {
+public class AdminAcceptanceTest extends AuthAcceptanceTest {
 
     private static final AdminCategoryRequest ADMIN_CATEGORY_REQUEST =
             new AdminCategoryRequest("Category");
 
-    public static ExtractableResponse<Response> 카테고리_생성_요청(AdminCategoryRequest adminCategoryRequest) {
+    public ExtractableResponse<Response> 카테고리_생성_요청(AdminCategoryRequest adminCategoryRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminCategoryRequest)
                 .when().post("/admin/categories")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 여러개_카테고리_생성_요청(List<AdminCategoryRequest> requests) {
+    public void 여러개_카테고리_생성_요청(List<AdminCategoryRequest> requests) {
         for (AdminCategoryRequest request : requests) {
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
                     .when().post("/admin/categories")
                     .then().log().all()
@@ -48,19 +50,21 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    public static ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
+    public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminCardRequest)
                 .when().post("/admin/cards")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
         for (AdminCardRequest request : requests) {
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
                     .when().post("/admin/cards")
                     .then().log().all()
@@ -68,19 +72,21 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    public static ExtractableResponse<Response> 답변_생성_요청(AdminAnswerRequest adminAnswerRequest) {
+    public ExtractableResponse<Response> 답변_생성_요청(AdminAnswerRequest adminAnswerRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminAnswerRequest)
                 .when().post("/admin/answers")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 여러개_답변_생성_요청(List<AdminAnswerRequest> requests) {
+    public void 여러개_답변_생성_요청(List<AdminAnswerRequest> requests) {
         for (AdminAnswerRequest request : requests)
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
                     .when().post("/admin/answers")
                     .then().log().all()
@@ -314,4 +320,5 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("카드의 Id는 필수 입력값 입니다.");
     }
+
 }
