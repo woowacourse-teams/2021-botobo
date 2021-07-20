@@ -6,6 +6,10 @@ export interface CategoryResponse {
   logoUrl: string;
 }
 
+export interface SharedWorkbookResponse extends CategoryResponse {
+  author: string;
+}
+
 export interface QuizResponse {
   id: number;
   question: string;

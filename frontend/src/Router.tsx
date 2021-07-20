@@ -21,6 +21,7 @@ import {
   QuizResultPage,
   QuizSettingPage,
   SearchPage,
+  SharedWorkbookPage,
 } from './pages';
 import { loginState } from './recoil';
 
@@ -76,6 +77,10 @@ const Router = () => (
       <Route exact path={ROUTE.SEARCH.PATH}>
         <PageHeader title={ROUTE.SEARCH.TITLE} />
         <SearchPage />
+      </Route>
+      <Route exact path={ROUTE.SHARED_WORKBOOK.PATH}>
+        <PageHeader title={ROUTE.SHARED_WORKBOOK.TITLE} />
+        <SharedWorkbookPage />
       </Route>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />

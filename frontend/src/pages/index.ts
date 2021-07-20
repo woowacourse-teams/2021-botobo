@@ -8,3 +8,4 @@ export { default as CardsPage } from './CardsPage';
 export { default as CardsLoadable } from './CardsLoadable';
 export { default as SearchPage } from './SearchPage';
 export { default as GithubCallbackPage } from './GithubCallbackPage';
+export { default as SharedWorkbookPage } from './SharedWorkbookPage';
