@@ -14,7 +14,7 @@ import java.util.List;
 @Embeddable
 public class Cards {
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Card> cards = new ArrayList<>();
 
     public Cards(List<Card> cards) {

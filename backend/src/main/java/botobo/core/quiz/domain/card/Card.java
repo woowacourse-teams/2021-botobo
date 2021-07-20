@@ -1,14 +1,12 @@
 package botobo.core.quiz.domain.card;
 
 import botobo.core.quiz.domain.BaseEntity;
-import botobo.core.quiz.domain.answer.Answers;
-import botobo.core.quiz.domain.category.Category;
+import botobo.core.quiz.domain.workbook.Workbook;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -24,47 +22,54 @@ public class Card extends BaseEntity {
     @Column(nullable = false)
     private String question;
 
+    @Lob
+    @Column(nullable = false)
+    private String answer;
+
+    @ManyToOne
+    @JoinColumn(name = "workbook_id", nullable = false)
+    private Workbook workbook;
+
     @Column(nullable = false)
     private int encounterCount;
 
     @Column(nullable = false)
+    private boolean isNextQuiz;
+
+    @Column(nullable = false)
+    private boolean isBookmark;
+
+    @Column(nullable = false)
     private boolean isDeleted;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
-    @Embedded
-    private Answers answers = new Answers();
-
     @Builder
-    public Card(Long id, String question, boolean isDeleted, Category category) {
-        validateNull(question, category);
+    public Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
+        validateNull(question, workbook);
         this.id = id;
         this.question = question;
+        this.answer = answer;
+        this.encounterCount = encounterCount;
+        this.isNextQuiz = isNextQuiz;
+        this.isBookmark = isBookmark;
         this.isDeleted = isDeleted;
-        setCategory(category);
+        setWorkbook(workbook);
     }
 
-    private void validateNull(String question, Category category) {
+    private void validateNull(String question, Workbook workbook) {
         if (Objects.isNull(question)) {
             throw new IllegalArgumentException("Card의 Question에는 null이 들어갈 수 없습니다.");
         }
-        if (Objects.isNull(category)) {
+        if (Objects.isNull(workbook)) {
             throw new IllegalArgumentException("Card의 Category에는 null이 들어갈 수 없습니다.");
         }
     }
 
-    private void setCategory(Category category) {
-        if (Objects.nonNull(category)) {
-            category.getCards().removeCard(this);
+    public void setWorkbook(Workbook workbook) {
+        if (Objects.nonNull(workbook)) {
+            workbook.getCards().removeCard(this);
         }
-        this.category = category;
-        category.getCards().addCard(this);
-    }
-
-    public String getFirstAnswerContent() {
-        return answers.getFirstAnswerContent();
+        this.workbook = workbook;
+        workbook.getCards().addCard(this);
     }
 
     public void incrementEncounterCount() {
