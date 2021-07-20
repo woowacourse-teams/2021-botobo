@@ -23,6 +23,7 @@ public class WorkbookResponse {
         return WorkbookResponse.builder()
                 .id(workbook.getId())
                 .name(workbook.getName())
+                .cardCount(workbook.cardCount())
                 .build();
     }
 

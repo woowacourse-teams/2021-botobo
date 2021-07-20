@@ -47,7 +47,7 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
 
         // then
         final List<WorkbookResponse> workbookResponse = response.body().jsonPath().getList(".", WorkbookResponse.class);
-        assertThat(workbookResponse.get(0).getCardCount()).isZero();
+        assertThat(workbookResponse.get(0).getCardCount()).isEqualTo(3);
         assertThat(workbookResponse.get(1).getCardCount()).isZero();
         assertThat(workbookResponse.get(2).getCardCount()).isZero();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

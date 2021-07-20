@@ -1,12 +1,12 @@
-== 카테고리 API
+== 문제집 API
 
-=== 카테고리 전체 보기
+=== 문제집 전체 보기
 ==== 요청
 include::{snippets}/workbooks-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-get-success/http-response.adoc[]
 
-=== 카테고리별 카드 모아보기
+=== 문제집별 카드 모아보기
 ==== 요청
 include::{snippets}/workbooks-cards-get-success/http-request.adoc[]
 ==== 응답
