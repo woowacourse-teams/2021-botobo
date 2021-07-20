@@ -1,4 +1,4 @@
-package botobo.core.user.exception;
+package botobo.core.auth.exception;
 
 import botobo.core.exception.UnauthorizedException;
 

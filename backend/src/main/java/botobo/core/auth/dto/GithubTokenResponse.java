@@ -1,4 +1,4 @@
-package botobo.core.user.dto;
+package botobo.core.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

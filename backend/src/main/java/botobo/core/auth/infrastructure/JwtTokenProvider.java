@@ -1,6 +1,5 @@
-package botobo.core.user.infrastructure;
+package botobo.core.auth.infrastructure;
 
-import botobo.core.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

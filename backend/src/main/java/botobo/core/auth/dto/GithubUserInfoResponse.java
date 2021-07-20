@@ -1,4 +1,4 @@
-package botobo.core.user.dto;
+package botobo.core.auth.dto;
 
 import botobo.core.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
