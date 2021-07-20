@@ -1,11 +1,14 @@
 package botobo.core.admin.dto;
 
 import botobo.core.quiz.domain.card.Card;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class AdminCardResponse {
     private Long id;
@@ -14,21 +17,13 @@ public class AdminCardResponse {
     private Long workbookId;
     private int encounterCount;
 
-    @Builder
-    private AdminCardResponse(Long id, String question, String answer, Long workbookId, int encounterCount) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.workbookId = workbookId;
-        this.encounterCount = encounterCount;
-    }
-
     public static AdminCardResponse of(Card card) {
-        return new AdminCardResponse(
-                card.getId(),
-                card.getQuestion(),
-                card.getAnswer(),
-                card.getWorkbook().getId(),
-                card.getEncounterCount());
+        return AdminCardResponse.builder()
+                .id(card.getId())
+                .question(card.getQuestion())
+                .answer(card.getAnswer())
+                .workbookId(card.getWorkbook().getId())
+                .encounterCount(card.getEncounterCount())
+                .build();
     }
 }
