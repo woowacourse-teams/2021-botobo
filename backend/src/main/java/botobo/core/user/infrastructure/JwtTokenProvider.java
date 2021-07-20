@@ -2,6 +2,7 @@ package botobo.core.user.infrastructure;
 
 import botobo.core.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,14 +40,15 @@ public class JwtTokenProvider {
         return claims.get("id", Long.class);
     }
 
-    public void validateToken(String token) {
+    public boolean isValidToken(String token) {
         try {
-            Jwts.parser()
+            Jws<Claims> claims = Jwts
+                    .parser()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new UnauthorizedException(e.getMessage());
+            return false;
         }
     }
 }
