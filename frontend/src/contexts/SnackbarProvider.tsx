@@ -5,6 +5,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import CloseIcon from '../assets/cross-mark.svg';
 import { useTimeout } from '../hooks';
 import { Flex } from '../styles';
+import { formatNewLine } from '../utils';
 
 interface SnackbarInfo {
   message: string;
@@ -59,7 +60,7 @@ const Snackbar = ({ snackbarInfo }: SnackbarProps) => {
 
   return (
     <Container isVisible={isVisible} type={type}>
-      <span>{message}</span>
+      {formatNewLine(message)}
       <StyledCloseIcon onClick={() => setIsVisible(false)} />
     </Container>
   );
