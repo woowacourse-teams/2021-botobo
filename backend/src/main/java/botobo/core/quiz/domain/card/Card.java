@@ -52,7 +52,7 @@ public class Card extends BaseEntity {
         this.isNextQuiz = isNextQuiz;
         this.isBookmark = isBookmark;
         this.isDeleted = isDeleted;
-        setWorkbook(workbook);
+        changeWorkbook(workbook);
     }
 
     private void validateNull(String question, Workbook workbook) {
@@ -64,7 +64,7 @@ public class Card extends BaseEntity {
         }
     }
 
-    public void setWorkbook(Workbook workbook) {
+    public void changeWorkbook(Workbook workbook) {
         if (Objects.nonNull(workbook)) {
             workbook.getCards().removeCard(this);
         }
