@@ -10,19 +10,25 @@ import lombok.NoArgsConstructor;
 public class AdminCardResponse {
     private Long id;
     private String question;
-    private Long categoryId;
+    private String answer;
+    private Long workbookId;
+    private int encounterCount;
 
     @Builder
-    private AdminCardResponse(Long id, String question, Long categoryId) {
+    public AdminCardResponse(Long id, String question, String answer, Long workbookId, int encounterCount) {
         this.id = id;
         this.question = question;
-        this.categoryId = categoryId;
+        this.answer = answer;
+        this.workbookId = workbookId;
+        this.encounterCount = encounterCount;
     }
 
     public static AdminCardResponse of(Card card) {
         return new AdminCardResponse(
                 card.getId(),
                 card.getQuestion(),
-                card.getCategory().getId());
+                card.getAnswer(),
+                card.getWorkbook().getId(),
+                card.getEncounterCount());
     }
 }

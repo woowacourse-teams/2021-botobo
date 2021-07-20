@@ -1,19 +1,14 @@
 package botobo.core.admin.application;
 
-import botobo.core.admin.dto.AdminAnswerRequest;
-import botobo.core.admin.dto.AdminAnswerResponse;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
-import botobo.core.admin.dto.AdminCategoryRequest;
-import botobo.core.admin.dto.AdminCategoryResponse;
-import botobo.core.quiz.domain.answer.Answer;
-import botobo.core.quiz.domain.answer.AnswerRepository;
+import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.admin.dto.AdminWorkbookResponse;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.category.Category;
-import botobo.core.quiz.domain.category.CategoryRepository;
-import botobo.core.quiz.exception.CardNotFoundException;
-import botobo.core.quiz.exception.CategoryNotFoundException;
+import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.domain.workbook.WorkbookRepository;
+import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,46 +16,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AdminService {
 
-    private final CategoryRepository categoryRepository;
+    private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
-    private final AnswerRepository answerRepository;
 
-    public AdminService(CategoryRepository categoryRepository, CardRepository cardRepository, AnswerRepository answerRepository) {
-        this.categoryRepository = categoryRepository;
+    public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository) {
+        this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
-        this.answerRepository = answerRepository;
     }
 
     @Transactional
-    public AdminCategoryResponse createCategory(AdminCategoryRequest adminCategoryRequest) {
-        Category category = adminCategoryRequest.toCategory();
-        Category savedCategory = categoryRepository.save(category);
-        return AdminCategoryResponse.of(savedCategory);
+    public AdminWorkbookResponse createWorkbook(AdminWorkbookRequest adminWorkbookRequest) {
+        Workbook workbook = adminWorkbookRequest.toWorkbook();
+        Workbook savedWorkbook = workbookRepository.save(workbook);
+        return AdminWorkbookResponse.of(savedWorkbook);
     }
 
     @Transactional
     public AdminCardResponse createCard(AdminCardRequest adminCardRequest) {
-        Long categoryId = adminCardRequest.getCategoryId();
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(CategoryNotFoundException::new);
+        Long workbookId = adminCardRequest.getWorkbookId();
+        Workbook workbook = workbookRepository.findById(workbookId)
+                .orElseThrow(WorkbookNotFoundException::new);
+
         Card card = Card.builder()
                 .question(adminCardRequest.getQuestion())
-                .category(category)
+                .answer(adminCardRequest.getAnswer())
+                .workbook(workbook)
                 .build();
         Card savedCard = cardRepository.save(card);
         return AdminCardResponse.of(savedCard);
-    }
-
-    @Transactional
-    public AdminAnswerResponse createAnswer(AdminAnswerRequest adminAnswerRequest) {
-        Long cardId = adminAnswerRequest.getCardId();
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(CardNotFoundException::new);
-        Answer answer = Answer.builder()
-                .card(card)
-                .content(adminAnswerRequest.getContent())
-                .build();
-        Answer savedAnswer = answerRepository.save(answer);
-        return AdminAnswerResponse.of(savedAnswer);
     }
 }
