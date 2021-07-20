@@ -5,18 +5,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class FixedCards {
-    private static FixedCards fixedCards;
-    private static List<Card> cards;
+    private static final FixedCards fixedCards = new FixedCards();
+    private final List<Card> cards;
 
-    private FixedCards(List<Card> cards) {
-        FixedCards.cards = cards;
+    private FixedCards() {
+        cards = new ArrayList<>();
     }
 
     public static FixedCards getInstance() {
-        if (Objects.isNull(fixedCards) && Objects.isNull(cards)) {
-            cards = new ArrayList<>();
-            fixedCards = new FixedCards(cards);
-        }
         return fixedCards;
     }
 
