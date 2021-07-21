@@ -2,8 +2,8 @@ package botobo.core.quiz.domain;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.category.Category;
-import botobo.core.quiz.domain.category.CategoryRepository;
+import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,20 +22,20 @@ class CardRepositoryTest {
     private CardRepository cardRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private WorkbookRepository workbookRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
 
-    private Category category;
+    private Workbook workbook;
 
     @BeforeEach
     void setUp() {
-        category = Category.builder()
+        workbook = Workbook.builder()
                 .name("java")
                 .isDeleted(false)
                 .build();
-        categoryRepository.save(category);
+        workbookRepository.save(workbook);
     }
 
     @Test
@@ -44,7 +44,8 @@ class CardRepositoryTest {
         // given
         Card card = Card.builder()
                 .question("질문")
-                .category(category)
+                .answer("답변")
+                .workbook(workbook)
                 .build();
 
         // when
@@ -64,7 +65,8 @@ class CardRepositoryTest {
         // given
         Card card = Card.builder()
                 .question("질문")
-                .category(category)
+                .answer("답변")
+                .workbook(workbook)
                 .build();
 
         // when
@@ -81,7 +83,8 @@ class CardRepositoryTest {
         // given
         Card card = Card.builder()
                 .question("질문")
-                .category(category)
+                .answer("답변")
+                .workbook(workbook)
                 .build();
         final Card savedCard = cardRepository.save(card);
 
@@ -90,6 +93,6 @@ class CardRepositoryTest {
 
         // then
         assertThat(findCard).isPresent();
-        assertThat(findCard.get().getCategory()).isNotNull();
+        assertThat(findCard.get().getWorkbook()).isNotNull();
     }
 }

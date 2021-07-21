@@ -1,7 +1,7 @@
 package botobo.core.quiz.domain;
 
 import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.category.Category;
+import botobo.core.quiz.domain.workbook.Workbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +14,8 @@ class CardTest {
     @DisplayName("Builder를 이용한 Card 객체 생성 - 성공")
     void createWithBuilder() {
         // given
-        Category java = Category.builder()
-                .name("java")
+        Workbook workbook = Workbook.builder()
+                .name("완벽한 자바 문제집")
                 .isDeleted(false)
                 .build();
 
@@ -23,7 +23,8 @@ class CardTest {
         assertThatCode(() -> Card.builder()
                 .id(1L)
                 .question("질문")
-                .category(java)
+                .answer("답변")
+                .workbook(workbook)
                 .isDeleted(false)
                 .build()
         ).doesNotThrowAnyException();
@@ -33,8 +34,8 @@ class CardTest {
     @DisplayName("Question이 null일 때 Card 객체 생성 - 실패")
     void createWithNullQuestion() {
         // given
-        Category java = Category.builder()
-                .name("java")
+        Workbook workbook = Workbook.builder()
+                .name("또 다른 완벽한 자바 문제집")
                 .isDeleted(false)
                 .build();
 
@@ -42,20 +43,22 @@ class CardTest {
         assertThatThrownBy(() -> Card.builder()
                 .id(1L)
                 .question(null)
-                .category(java)
+                .answer("답변")
+                .workbook(workbook)
                 .isDeleted(false)
                 .build()
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Category가 null일 때 Card 객체 생성 - 실패")
+    @DisplayName("Workbook가 null일 때 Card 객체 생성 - 실패")
     void createWithNullCard() {
         // when, then
         assertThatThrownBy(() -> Card.builder()
                 .id(1L)
                 .question("질문")
-                .category(null)
+                .answer("답변")
+                .workbook(null)
                 .isDeleted(false)
                 .build()
         ).isInstanceOf(IllegalArgumentException.class);

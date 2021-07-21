@@ -1,10 +1,10 @@
 == 관리자 API
 
-=== 관리자 권한으로 카테고리 추가하기
+=== 관리자 권한으로 문제집 추가하기
 ==== 요청
-include::{snippets}/admin-categories-post-success/http-request.adoc[]
+include::{snippets}/admin-workbooks-post-success/http-request.adoc[]
 ==== 응답
-include::{snippets}/admin-categories-post-success/http-response.adoc[]
+include::{snippets}/admin-workbooks-post-success/http-response.adoc[]
 
 === 관리자 권한으로 카드 추가하기
 ==== 요청
@@ -13,21 +13,8 @@ include::{snippets}/admin-cards-post-success/http-request.adoc[]
 include::{snippets}/admin-cards-post-success/http-response.adoc[]
 
 === 카드 생성 실패
-==== 카테고리 존재하지 않음
+==== 문제집 존재하지 않음
 ==== 요청
-include::{snippets}/admin-cards-post-fail-invalid-category/http-request.adoc[]
+include::{snippets}/admin-cards-post-fail-invalid-workbook/http-request.adoc[]
 ==== 응답
-include::{snippets}/admin-cards-post-fail-invalid-category/http-response.adoc[]
-
-=== 관리자 권한으로 답변 추가하기
-==== 요청
-include::{snippets}/admin-answers-post-success/http-request.adoc[]
-==== 응답
-include::{snippets}/admin-answers-post-success/http-response.adoc[]
-
-=== 답변 생성 실패
-==== 카드 존재하지 않음
-==== 요청
-include::{snippets}/admin-answers-post-fail-invalid-card/http-request.adoc[]
-==== 응답
-include::{snippets}/admin-answers-post-fail-invalid-card/http-response.adoc[]
+include::{snippets}/admin-cards-post-fail-invalid-workbook/http-response.adoc[]

@@ -1,7 +1,7 @@
 package botobo.core.quiz.ui;
 
 import botobo.core.quiz.application.QuizService;
-import botobo.core.quiz.dto.CategoryIdsRequest;
+import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +24,8 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity<List<QuizResponse>> createQuiz(@Valid @RequestBody CategoryIdsRequest categoryIdsRequest) {
-        List<QuizResponse> quizResponses = quizService.createQuiz(categoryIdsRequest.getCategoryIds());
+    public ResponseEntity<List<QuizResponse>> createQuiz(@Valid @RequestBody QuizRequest quizRequest) {
+        List<QuizResponse> quizResponses = quizService.createQuiz(quizRequest.getWorkbookIds());
         return ResponseEntity.ok(quizResponses);
     }
 

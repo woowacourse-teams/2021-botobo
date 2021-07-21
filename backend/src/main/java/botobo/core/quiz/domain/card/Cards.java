@@ -1,6 +1,7 @@
 package botobo.core.quiz.domain.card;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -9,14 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 @Embeddable
 public class Cards {
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Card> cards;
+    @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Card> cards = new ArrayList<>();
 
-    public Cards() {
-        this.cards = new ArrayList<>();
+    public Cards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public void addCard(Card card) {
