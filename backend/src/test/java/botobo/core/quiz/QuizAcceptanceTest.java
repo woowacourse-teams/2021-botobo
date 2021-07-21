@@ -144,4 +144,48 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
     }
+
+    @Test
+    @DisplayName("비회원용 퀴즈 생성 - 성공")
+    void createQuizForGuest() {
+        // given
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .when().get("/quizzes/guest")
+                        .then().log().all()
+                        .extract();
+
+        // when
+        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(quizResponses.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("비회원용 퀴즈 생성을 여러번 요청해도 동일한 퀴즈를 제공한다. - 성공")
+    void createQuizForGuestMultipleRequest() {
+        // given
+        final ExtractableResponse<Response> firstResponse =
+                RestAssured.given().log().all()
+                        .when().get("/quizzes/guest")
+                        .then().log().all()
+                        .extract();
+        final List<QuizResponse> firstQuizResponses = firstResponse.body().jsonPath().getList(".", QuizResponse.class);
+
+        final ExtractableResponse<Response> secondResponse =
+                RestAssured.given().log().all()
+                        .when().get("/quizzes/guest")
+                        .then().log().all()
+                        .extract();
+        final List<QuizResponse> secondQuizResponses = secondResponse.body().jsonPath().getList(".", QuizResponse.class);
+
+        // when - then
+        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(firstQuizResponses.size()).isEqualTo(10);
+
+        assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(secondQuizResponses.size()).isEqualTo(10);
+    }
 }

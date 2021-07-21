@@ -60,7 +60,7 @@ public class Card extends BaseEntity {
             throw new IllegalArgumentException("Card의 Question에는 null이 들어갈 수 없습니다.");
         }
         if (Objects.isNull(workbook)) {
-            throw new IllegalArgumentException("Card의 Category에는 null이 들어갈 수 없습니다.");
+            throw new IllegalArgumentException("Card의 Workbook에는 null이 들어갈 수 없습니다.");
         }
     }
 

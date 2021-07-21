@@ -36,4 +36,8 @@ public class Cards {
     public boolean isEmpty() {
         return cards.isEmpty();
     }
+
+    public void addAll(List<Card> cards) {
+        this.cards.addAll(cards);
+    }
 }

@@ -3,6 +3,8 @@ package botobo.core.quiz.application;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
+import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.card.FixedCards;
 import botobo.core.quiz.dto.QuizResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,11 +31,15 @@ class QuizServiceTest {
     @Mock
     private WorkbookRepository workbookRepository;
 
+    @Mock
+    private CardRepository cardRepository;
+
     @InjectMocks
     private QuizService quizService;
 
     private Workbook workbook;
     private Workbook workbookWithOneCard;
+    private List<Card> cards;
 
     @BeforeEach
     void setUp() {
@@ -60,6 +66,8 @@ class QuizServiceTest {
                 .answer("answer")
                 .workbook(workbookWithOneCard)
                 .build();
+
+        cards = Arrays.asList(card1, card1, card1, card1, card1, card1, card1, card1, card1, card1);
     }
 
     @Test
@@ -96,5 +104,19 @@ class QuizServiceTest {
         then(workbookRepository)
                 .should(times(2))
                 .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("첫 비회원용 퀴즈 생성 요청 - 성공")
+    void createQuizForGuest() {
+        FixedCards fixedCards = FixedCards.getInstance();
+        if (!fixedCards.isFull()) {
+            given(cardRepository.findFirst10By()).willReturn(cards);
+        }
+        // when
+        List<QuizResponse> quizResponses = quizService.createQuizForGuest();
+
+        //then
+        assertThat(quizResponses.size()).isEqualTo(10);
     }
 }
