@@ -37,9 +37,7 @@ const SharedWorkbookPage = () => {
       </SearchBar>
       <SharedWorkbookList
         onClickSharedWorkbook={(sharedWorkbookId) =>
-          history.push(
-            `${ROUTE.SHARED_WORKBOOK_DETAIL.PATH}?id=${sharedWorkbookId}`
-          )
+          history.push(`${ROUTE.SHARED_CARDS.PATH}?id=${sharedWorkbookId}`)
         }
       />
     </Container>
