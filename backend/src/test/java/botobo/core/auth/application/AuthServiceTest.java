@@ -1,11 +1,11 @@
-package botobo.core.user.application;
+package botobo.core.auth.application;
 
+import botobo.core.auth.dto.GithubUserInfoResponse;
+import botobo.core.auth.dto.TokenResponse;
+import botobo.core.auth.infrastructure.GithubOauthManager;
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.user.domain.User;
 import botobo.core.user.domain.UserRepository;
-import botobo.core.user.dto.GithubUserInfoResponse;
-import botobo.core.user.dto.TokenResponse;
-import botobo.core.user.infrastructure.GithubOauthManager;
-import botobo.core.user.infrastructure.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 
 @DisplayName("로그인 서비스 테스트")
 @MockitoSettings
-class LoginServiceTest {
+class AuthServiceTest {
 
     @Mock
     private GithubOauthManager githubOauthManager;
@@ -35,7 +35,7 @@ class LoginServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private LoginService loginService;
+    private AuthService authService;
 
     @Test
     @DisplayName("토큰을 만든다. - 성공, 유저가 이미 존재하는 경우")
@@ -60,7 +60,7 @@ class LoginServiceTest {
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = loginService.createToken(any());
+        TokenResponse tokenResponse = authService.createToken(any());
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
@@ -100,7 +100,7 @@ class LoginServiceTest {
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = loginService.createToken(any());
+        TokenResponse tokenResponse = authService.createToken(any());
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);

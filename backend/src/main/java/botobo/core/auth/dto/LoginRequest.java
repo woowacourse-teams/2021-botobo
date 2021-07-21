@@ -1,18 +1,14 @@
-package botobo.core.user.dto;
+package botobo.core.auth.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class GithubTokenRequest {
+public class LoginRequest {
 
     private String code;
-    private String client_id;
-    private String client_secret;
 
 }

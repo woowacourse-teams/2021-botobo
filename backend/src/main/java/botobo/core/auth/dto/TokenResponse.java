@@ -1,4 +1,4 @@
-package botobo.core.user.dto;
+package botobo.core.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

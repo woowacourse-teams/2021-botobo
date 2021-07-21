@@ -36,5 +36,5 @@ github:
 security:
   jwt:
     token:
-      secret-key: s
+      secret-key: testsecretkey
       expire-length: 3600000

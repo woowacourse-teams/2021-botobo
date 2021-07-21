@@ -1,8 +1,9 @@
-package botobo.core.user.ui;
+package botobo.core.auth.ui;
 
-import botobo.core.user.application.LoginService;
-import botobo.core.user.dto.LoginRequest;
-import botobo.core.user.dto.TokenResponse;
+
+import botobo.core.auth.application.AuthService;
+import botobo.core.auth.dto.LoginRequest;
+import botobo.core.auth.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,17 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
-public class LoginController {
+public class AuthController {
 
-    private final LoginService loginService;
+    private final AuthService authService;
 
-    public LoginController(LoginService loginService) {
-        this.loginService = loginService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
-        TokenResponse tokenResponse = loginService.createToken(loginRequest);
+        TokenResponse tokenResponse = authService.createToken(loginRequest);
         return ResponseEntity.ok(tokenResponse);
     }
 }

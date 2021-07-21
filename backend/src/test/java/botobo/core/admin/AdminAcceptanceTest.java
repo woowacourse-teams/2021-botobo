@@ -1,10 +1,10 @@
 package botobo.core.admin;
 
-import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.admin.dto.AdminWorkbookResponse;
+import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.exception.ErrorResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,57 +14,36 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-
 import static botobo.core.TestUtils.extractId;
 import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends AcceptanceTest {
+public class AdminAcceptanceTest extends AuthAcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_CATEGORY_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
 
-    public static ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
+    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminWorkbookRequest)
                 .when().post("/admin/workbooks")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
-        for (AdminWorkbookRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(request)
-                    .when().post("/admin/workbooks")
-                    .then().log().all()
-                    .extract();
-        }
-    }
-
-    public static ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
+    public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminCardRequest)
                 .when().post("/admin/cards")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
-        for (AdminCardRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(request)
-                    .when().post("/admin/cards")
-                    .then().log().all()
-                    .extract();
-        }
-    }
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
@@ -210,4 +189,5 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
     }
+
 }

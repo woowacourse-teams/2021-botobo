@@ -1,5 +1,6 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.dto.CardResponse;
 import botobo.core.quiz.dto.WorkbookCardResponse;
@@ -37,14 +38,20 @@ public class WorkbookDocumentationTest {
     @MockBean
     private WorkbookService workbookService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
     @Test
     @DisplayName("문제집 전체 조회 - 성공")
     void findAllWorkbooks() throws Exception {
         // given
+        String token = "botobo.access.token";
         given(workbookService.findAll()).willReturn(generateWorkbookResponse());
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/workbooks"))
+        mockMvc.perform(get("/workbooks")
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("workbooks-get-success",
                         getDocumentRequest(),
@@ -56,10 +63,13 @@ public class WorkbookDocumentationTest {
     @DisplayName("문제집의 카드 모아보기 - 성공")
     void findWorkbookCardsById() throws Exception {
         // given
+        String token = "botobo.access.token";
         given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generateWorkbookCardsResponse());
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/workbooks/{id}/cards", 1))
+        mockMvc.perform(get("/workbooks/{id}/cards", 1)
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("workbooks-cards-get-success",
                         getDocumentRequest(),

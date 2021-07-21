@@ -1,7 +1,8 @@
 package botobo.core.quiz;
 
-import botobo.core.AcceptanceTest;
+import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.exception.ErrorResponse;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
@@ -37,14 +38,11 @@ import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
 import static botobo.core.TestUtils.extractId;
-import static botobo.core.admin.AdminAcceptanceTest.문제집_생성_요청;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_문제집_생성_요청;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_카드_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Quiz 인수 테스트")
-public class QuizAcceptanceTest extends AcceptanceTest {
+public class QuizAcceptanceTest extends AuthAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -66,6 +64,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
                         .when().post("/quizzes")
                         .then().log().all()
@@ -90,6 +89,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
                         .when().post("/quizzes")
                         .then().log().all()
@@ -112,6 +112,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
                         .when().post("/quizzes")
                         .then().log().all()
@@ -134,6 +135,7 @@ public class QuizAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
                         .when().post("/quizzes")
                         .then().log().all()
@@ -187,5 +189,39 @@ public class QuizAcceptanceTest extends AcceptanceTest {
 
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(secondQuizResponses.size()).isEqualTo(10);
+    }
+
+    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
+                .body(adminWorkbookRequest)
+                .when().post("/admin/workbooks")
+                .then().log().all()
+                .extract();
+    }
+
+    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
+        for (AdminWorkbookRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/workbooks")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
+        for (AdminCardRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/cards")
+                    .then().log().all()
+                    .extract();
+        }
     }
 }
