@@ -32,7 +32,7 @@ public class QuizResponse {
                 .build();
     }
 
-    public static List<QuizResponse> of(List<Card> cards) {
+    public static List<QuizResponse> listOf(List<Card> cards) {
         return cards.stream()
                 .map(QuizResponse::of)
                 .collect(Collectors.toList());

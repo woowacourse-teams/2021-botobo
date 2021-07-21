@@ -37,16 +37,16 @@ public class QuizService {
         final int maxLimit = Math.min(cards.size(), 10);
         Collections.shuffle(cards);
         final List<Card> quiz = cards.stream().limit(maxLimit).collect(Collectors.toList());
-        return QuizResponse.of(quiz);
+        return QuizResponse.listOf(quiz);
     }
 
     public List<QuizResponse> createQuizForGuest() {
         FixedCards fixedCards = FixedCards.getInstance();
         if (fixedCards.isFull()) {
-            return QuizResponse.of(fixedCards.getCards());
+            return QuizResponse.listOf(fixedCards.getCards());
         }
         final List<Card> quiz = cardRepository.findFirst10By();
         fixedCards.initialize(quiz);
-        return QuizResponse.of(quiz);
+        return QuizResponse.listOf(quiz);
     }
 }
