@@ -1,6 +1,6 @@
 package botobo.core.quiz.domain.card;
 
-import botobo.core.quiz.domain.category.Category;
+import botobo.core.quiz.domain.workbook.Workbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,8 @@ class FixedCardsTest {
     void setUp() {
         card = Card.builder()
                 .question("question")
-                .category(Category.builder().name("name").build())
+                .answer("answer")
+                .workbook(Workbook.builder().name("name").build())
                 .build();
         cards = Arrays.asList(card, card, card, card, card, card, card, card, card, card);
         nineCards = Arrays.asList(card, card, card, card, card, card, card, card, card);

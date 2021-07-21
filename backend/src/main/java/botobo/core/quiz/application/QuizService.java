@@ -3,10 +3,10 @@ package botobo.core.quiz.application;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.card.FixedCards;
-import botobo.core.quiz.domain.category.Category;
-import botobo.core.quiz.domain.category.CategoryRepository;
+import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.QuizResponse;
-import botobo.core.quiz.exception.CategoryNotFoundException;
+import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class QuizService {
 
-    private final CategoryRepository categoryRepository;
+    private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
 
-    public QuizService(CategoryRepository categoryRepository, CardRepository cardRepository) {
-        this.categoryRepository = categoryRepository;
+    public QuizService(WorkbookRepository workbookRepository, CardRepository cardRepository) {
+        this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
     }
 
     public List<QuizResponse> createQuiz(List<Long> ids) {
         List<Card> cards = new ArrayList<>();
         for (Long id : ids) {
-            final Category category = categoryRepository.findById(id)
-                    .orElseThrow(CategoryNotFoundException::new);
-            cards.addAll(category.getAllCards());
+            final Workbook workbook = workbookRepository.findById(id)
+                    .orElseThrow(WorkbookNotFoundException::new);
+            cards.addAll(workbook.getAllCards());
         }
         final int maxLimit = Math.min(cards.size(), 10);
         Collections.shuffle(cards);

@@ -24,7 +24,7 @@ public class CardResponse {
         return CardResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())
-                .answer(card.getFirstAnswerContent())
+                .answer(card.getAnswer())
                 .build();
     }
 

@@ -1,15 +1,13 @@
 package botobo.core.documentation;
 
 import botobo.core.admin.application.AdminService;
-import botobo.core.admin.dto.AdminAnswerRequest;
-import botobo.core.admin.dto.AdminAnswerResponse;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
-import botobo.core.admin.dto.AdminCategoryRequest;
-import botobo.core.admin.dto.AdminCategoryResponse;
+import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.admin.dto.AdminWorkbookResponse;
 import botobo.core.admin.ui.AdminController;
-import botobo.core.quiz.exception.CardNotFoundException;
-import botobo.core.quiz.exception.CategoryNotFoundException;
+import botobo.core.auth.infrastructure.JwtTokenProvider;
+import botobo.core.quiz.exception.WorkbookNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,26 +43,32 @@ public class AdminDocumentationTest {
     @MockBean
     private AdminService adminService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
     @Test
-    @DisplayName("관리자 카테고리 생성 - 성공")
+    @DisplayName("관리자 문제집 생성 - 성공")
     void createCategory() throws Exception {
         // given
-        AdminCategoryRequest adminCategoryRequest = new AdminCategoryRequest("JAVA");
-        given(adminService.createCategory(any())).willReturn(
-                AdminCategoryResponse.builder()
+        String token = "botobo.access.token";
+        AdminWorkbookRequest adminWorkbookRequest = new AdminWorkbookRequest("JAVA");
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+        given(adminService.createWorkbook(any())).willReturn(
+                AdminWorkbookResponse.builder()
                         .id(1L)
                         .name("JAVA")
                         .build()
         );
 
         // when, then
-        mockMvc.perform(post("/admin/categories")
+        mockMvc.perform(post("/admin/workbooks")
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminCategoryRequest)))
+                .content(objectMapper.writeValueAsString(adminWorkbookRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/admin/categories/1"))
-                .andDo(document("admin-categories-post-success",
+                .andExpect(header().string("Location", "/admin/workbooks/1"))
+                .andDo(document("admin-workbooks-post-success",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );
@@ -74,17 +78,20 @@ public class AdminDocumentationTest {
     @DisplayName("관리자 카드 생성 - 성공")
     void createCard() throws Exception {
         // given
-        AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", 1L);
+        String token = "botobo.access.token";
+        AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1L);
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(adminService.createCard(any())).willReturn(
                 AdminCardResponse.builder()
                         .id(1L)
                         .question("질문1")
-                        .categoryId(1L)
+                        .workbookId(1L)
                         .build()
         );
 
         // when, then
         mockMvc.perform(post("/admin/cards")
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(adminCardRequest)))
@@ -97,64 +104,22 @@ public class AdminDocumentationTest {
     }
 
     @Test
-    @DisplayName("관리자 카드 생성 - 실패, 카테고리 존재하지 않음")
+    @DisplayName("관리자 카드 생성 - 실패, 문제집 존재하지 않음")
     void createCardWithInvalidCategory() throws Exception {
         // given
-        AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", 1000L);
-        given(adminService.createCard(any())).willThrow(new CategoryNotFoundException());
+        String token = "botobo.access.token";
+        AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1000L);
+        given(adminService.createCard(any())).willThrow(new WorkbookNotFoundException());
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         mockMvc.perform(post("/admin/cards")
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(adminCardRequest)))
                 .andExpect(status().isNotFound())
-                .andDo(document("admin-cards-post-fail-invalid-category",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
-    }
-
-    @Test
-    @DisplayName("관리자 답변 생성 - 성공")
-    void createAnswer() throws Exception {
-        // given
-        AdminAnswerRequest adminAnswerRequest = new AdminAnswerRequest("답변1", 1L);
-        given(adminService.createAnswer(any())).willReturn(
-                AdminAnswerResponse.builder()
-                        .id(1L)
-                        .content("답변1")
-                        .cardId(1L)
-                        .build()
-        );
-
-        // when, then
-        mockMvc.perform(post("/admin/answers")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminAnswerRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/admin/answers/1"))
-                .andDo(document("admin-answers-post-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
-    }
-
-    @Test
-    @DisplayName("관리자 정답 생성 - 실패, 카드 존재하지 않음")
-    void createAnswerWithInvalidCard() throws Exception {
-        // given
-        AdminAnswerRequest adminAnswerRequest = new AdminAnswerRequest("정답1", 1000L);
-        given(adminService.createAnswer(any())).willThrow(new CardNotFoundException());
-
-        // when, then
-        mockMvc.perform(post("/admin/answers")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminAnswerRequest)))
-                .andExpect(status().isNotFound())
-                .andDo(document("admin-answers-post-fail-invalid-card",
+                .andDo(document("admin-cards-post-fail-invalid-workbook",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );

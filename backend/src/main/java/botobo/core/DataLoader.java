@@ -1,116 +1,94 @@
 package botobo.core;
 
-import botobo.core.quiz.domain.answer.Answer;
-import botobo.core.quiz.domain.answer.AnswerRepository;
-import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.category.Category;
-import botobo.core.quiz.domain.category.CategoryRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+//@Component
+//@Slf4j
+//@Profile("!test")
+public class DataLoader {
+//
+//    @Value("${dummy.file-path}")
+//    private String filePath;
+//    @Value("${dummy.categories}")
+//    private List<String> categories;
+//    private WorkbookRepository workbookRepository;
+//    private CardRepository cardRepository;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
+//    public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository) {
+//        this.workbookRepository = workbookRepository;
+//        this.cardRepository = cardRepository;
+//    }
+//
+//    @Override
+//    public void run(String... args) {
+//        if (!workbookRepository.findAll().isEmpty()) {
+//            return;
+//        }
+//        for (String category : categories) {
+//            readFile(filePath + category);
+//        }
+//    }
 
-@Component
-@Slf4j
-@Profile("!test")
-public class DataLoader implements CommandLineRunner {
+//    public void readFile(String filePath) {
+//        try {
+//            File file = new File(filePath);
+//            FileReader fileReader = new FileReader(file);
+//
+//            BufferedReader bufferedReader = new BufferedReader(fileReader);
+//            setData(bufferedReader);
+//            bufferedReader.close();
+//        } catch (FileNotFoundException e) {
+//            log.info("Dummy Data 파일 경로를 찾지 못했습니다.");
+//        } catch (IOException e) {
+//            log.info("Dummy Data를 불러오는 중 자바 입출력 에러가 발생했습니다.");
+//        }
+//    }
 
-    @Value("${dummy.file-path}")
-    private String filePath;
-    @Value("${dummy.categories}")
-    private List<String> categories;
-    private CategoryRepository categoryRepository;
-    private CardRepository cardRepository;
-    private AnswerRepository answerRepository;
+//    private void setData(BufferedReader bufferedReader) throws IOException {
+//        String line = "";
+//        while ((line = bufferedReader.readLine()) != null) {
+//            Workbook workbook = makeWorkbook(line);
+//            Card card = Card.builder()
+//                    .workbook(workbook)
+//                    .question("")
+//                    .isDeleted(false)
+//                    .build();
+//            setQuestionAndAnswer(bufferedReader, workbook);
+//        }
+//    }
 
-    public DataLoader(CategoryRepository categoryRepository, CardRepository cardRepository, AnswerRepository answerRepository) {
-        this.categoryRepository = categoryRepository;
-        this.cardRepository = cardRepository;
-        this.answerRepository = answerRepository;
-    }
+//    private void setQuestionAndAnswer(BufferedReader bufferedReader, Workbook workbook) throws IOException {
+//        String line = "";
+//        while ((line = bufferedReader.readLine()) != null) {
+//            if (count % 2 == 0) {
+//                card = setQuestion(workbook, line);
+//            } else {
+//                setAnswer(card, line);
+//            }
+//
+//        }
+//    }
+//
+//    private Workbook makeWorkbook(String workbookName) {
+//        Workbook workbook = Workbook.builder()
+//                .name(workbookName)
+//                .isDeleted(false).build();
+//        return workbookRepository.save(workbook);
+//    }
 
-    @Override
-    public void run(String... args) {
-        if (!categoryRepository.findAll().isEmpty()) {
-            return;
-        }
-        for (String category : categories) {
-            readFile(filePath + category);
-        }
-    }
+//    private Card setQuestion(Workbook workbook, String question) {
+//        Card card = Card.builder()
+//                .question(question)
+//                .answer(answer)
+//                .workbook(workbook)
+//                .isDeleted(false)
+//                .build();
+//        return cardRepository.save(card);
+//    }
 
-    public void readFile(String filePath) {
-        try {
-            File file = new File(filePath);
-            FileReader fileReader = new FileReader(file);
-
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            setData(bufferedReader);
-            bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            log.info("Dummy Data 파일 경로를 찾지 못했습니다.");
-        } catch (IOException e) {
-            log.info("Dummy Data를 불러오는 중 자바 입출력 에러가 발생했습니다.");
-        }
-    }
-
-    private void setData(BufferedReader bufferedReader) throws IOException {
-        String line = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            Category category = makeCategory(line);
-            Card card = Card.builder()
-                    .category(category)
-                    .question("")
-                    .isDeleted(false)
-                    .build();
-            setQuestionAndAnswer(bufferedReader, category, card);
-        }
-    }
-
-    private void setQuestionAndAnswer(BufferedReader bufferedReader, Category category, Card card) throws IOException {
-        String line = "";
-        int count = 0;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (count % 2 == 0) {
-                card = setQuestion(category, line);
-            } else {
-                setAnswer(card, line);
-            }
-            count++;
-        }
-    }
-
-    private Category makeCategory(String categoryName) {
-        Category category = Category.builder()
-                .name(categoryName)
-                .isDeleted(false).build();
-        return categoryRepository.save(category);
-    }
-
-    private Card setQuestion(Category category, String question) {
-        Card card = Card.builder()
-                .question(question)
-                .category(category)
-                .isDeleted(false)
-                .build();
-        return cardRepository.save(card);
-    }
-
-    private void setAnswer(Card card, String answer) {
-        answerRepository.save(Answer.builder()
-                .content(answer)
-                .card(card)
-                .isDeleted(false)
-                .build());
-    }
-
+//    private void setAnswer(Card card, String answer) {
+//        answerRepository.save(Answer.builder()
+//                .content(answer)
+//                .card(card)
+//                .isDeleted(false)
+//                .build());
+//    }
 }
