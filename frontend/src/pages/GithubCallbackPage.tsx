@@ -27,6 +27,7 @@ const GithubCallbackPage = () => {
           getSessionStorage(STORAGE_KEY.REDIRECTED_PATH) ?? ROUTE.HOME.PATH
         );
       } catch (error) {
+        //TODO: 에러 바운더리로 보내기
         console.error(error);
       }
     })();

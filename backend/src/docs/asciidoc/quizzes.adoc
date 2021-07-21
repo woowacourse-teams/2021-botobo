@@ -11,3 +11,9 @@ include::{snippets}/quizzes-post-success/http-response.adoc[]
 include::{snippets}/quizzes-post-fail-invalid-category-id/http-request.adoc[]
 ==== 응답
 include::{snippets}/quizzes-post-fail-invalid-category-id/http-response.adoc[]
+
+=== 비회원용 퀴즈 생성하기
+==== 요청
+include::{snippets}/quizzes-guest-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/quizzes-guest-get-success/http-response.adoc[]

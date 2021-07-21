@@ -1,9 +1,11 @@
 package botobo.core.documentation;
 
-import botobo.core.user.application.LoginService;
-import botobo.core.user.dto.LoginRequest;
-import botobo.core.user.dto.TokenResponse;
-import botobo.core.user.ui.LoginController;
+
+import botobo.core.auth.application.AuthService;
+import botobo.core.auth.dto.LoginRequest;
+import botobo.core.auth.dto.TokenResponse;
+import botobo.core.auth.infrastructure.JwtTokenProvider;
+import botobo.core.auth.ui.AuthController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("로그인 문서화 테스트")
-@WebMvcTest(LoginController.class)
+@WebMvcTest(AuthController.class)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
 public class LoginDocumentationTest {
@@ -36,19 +38,22 @@ public class LoginDocumentationTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private LoginService loginService;
+    private AuthService authService;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("로그인 - 성공")
     void login() throws Exception {
         //given
         LoginRequest loginRequest = new LoginRequest("githubCode");
-        given(loginService.createToken(any())).willReturn(
-                TokenResponse.of("토큰입니다.")
+        given(authService.createToken(any())).willReturn(
+                TokenResponse.of("botobo.access.token")
         );
 
         // when, then
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/api/login")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(loginRequest)))
