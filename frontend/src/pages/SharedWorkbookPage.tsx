@@ -1,18 +1,22 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
+import { SharedWorkbookList } from '../components';
+import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
 interface SearchStyleProps {
   isFocus: boolean;
 }
 
-const SearchPage = () => {
+const SharedWorkbookPage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
+  const history = useHistory();
 
   return (
     <Container>
@@ -31,6 +35,11 @@ const SearchPage = () => {
           </button>
         )}
       </SearchBar>
+      <SharedWorkbookList
+        onClickSharedWorkbook={(sharedWorkbookId) =>
+          history.push(`${ROUTE.SHARED_CARDS.PATH}?id=${sharedWorkbookId}`)
+        }
+      />
     </Container>
   );
 };
@@ -47,7 +56,7 @@ const SearchBar = styled.div<SearchStyleProps>`
   ${Flex({ justify: 'space-between', items: 'center' })};
   width: 100%;
   height: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding: 0.5rem 1rem;
   transition: border 0.3s ease;
 
@@ -78,4 +87,4 @@ const SearchInput = styled.input`
   `}
 `;
 
-export default SearchPage;
+export default SharedWorkbookPage;
