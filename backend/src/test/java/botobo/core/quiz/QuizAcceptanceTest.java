@@ -1,9 +1,9 @@
 package botobo.core.quiz;
 
-import botobo.core.AcceptanceTest;
+import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.exception.ErrorResponse;
 import botobo.core.auth.AuthAcceptanceTest;
+import botobo.core.exception.ErrorResponse;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import io.restassured.RestAssured;
@@ -191,36 +191,26 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         assertThat(secondQuizResponses.size()).isEqualTo(10);
     }
 
-    public ExtractableResponse<Response> 카테고리_생성_요청(AdminCategoryRequest adminCategoryRequest) {
+    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminCategoryRequest)
-                .when().post("/admin/categories")
+                .body(adminWorkbookRequest)
+                .when().post("/admin/workbooks")
                 .then().log().all()
                 .extract();
     }
 
-    public void 여러개_카테고리_생성_요청(List<AdminCategoryRequest> requests) {
-        for (AdminCategoryRequest request : requests) {
+    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
+        for (AdminWorkbookRequest request : requests) {
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
-                    .when().post("/admin/categories")
+                    .when().post("/admin/workbooks")
                     .then().log().all()
                     .extract();
         }
-    }
-
-    public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminCardRequest)
-                .when().post("/admin/cards")
-                .then().log().all()
-                .extract();
     }
 
     public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
@@ -233,16 +223,5 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                     .then().log().all()
                     .extract();
         }
-    }
-
-    public void 여러개_답변_생성_요청(List<AdminAnswerRequest> requests) {
-        for (AdminAnswerRequest request : requests)
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/admin/answers")
-                    .then().log().all()
-                    .extract();
     }
 }

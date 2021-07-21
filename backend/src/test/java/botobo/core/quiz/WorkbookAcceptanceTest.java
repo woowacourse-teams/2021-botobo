@@ -1,6 +1,8 @@
 package botobo.core.quiz;
 
-import botobo.core.AcceptanceTest;
+import botobo.core.admin.dto.AdminCardRequest;
+import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.quiz.dto.WorkbookCardResponse;
 import botobo.core.quiz.dto.WorkbookResponse;
 import io.restassured.RestAssured;
@@ -21,12 +23,10 @@ import static botobo.core.Fixture.CARD_REQUEST_3;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_문제집_생성_요청;
-import static botobo.core.admin.AdminAcceptanceTest.여러개_카드_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Workbook 인수 테스트")
-public class WorkbookAcceptanceTest extends AcceptanceTest {
+public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -40,6 +40,7 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when().get("/workbooks")
                         .then().log().all()
@@ -60,6 +61,7 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when().get("/workbooks/{id}/cards", 1L)
                         .then().log().all()
@@ -78,6 +80,7 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when().get("/workbooks/{id}/cards", 2L)
                         .then().log().all()
@@ -89,5 +92,29 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_2.getName());
         assertThat(workbookCardResponse.getCards()).isEmpty();
+    }
+
+    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
+        for (AdminWorkbookRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/workbooks")
+                    .then().log().all()
+                    .extract();
+        }
+    }
+
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
+        for (AdminCardRequest request : requests) {
+            RestAssured.given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(로그인되어_있음().getAccessToken())
+                    .body(request)
+                    .when().post("/admin/cards")
+                    .then().log().all()
+                    .extract();
+        }
     }
 }

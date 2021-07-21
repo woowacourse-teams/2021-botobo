@@ -1,21 +1,5 @@
 package botobo.core;
 
-import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.workbook.Workbook;
-import botobo.core.quiz.domain.workbook.WorkbookRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 //@Component
 //@Slf4j
 //@Profile("!test")
