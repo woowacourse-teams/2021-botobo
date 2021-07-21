@@ -1,35 +1,34 @@
+import axios from 'axios';
+
 import { CardsResponse, CategoryResponse, QuizResponse } from '../types';
-import { REQUEST } from './request';
+
+const request = axios.create({
+  baseURL: `${process.env.REACT_APP_SERVER_URL}`,
+});
 
 export const getAccessTokenAsync = async (code: string) => {
-  const accessToken = await REQUEST.POST<string>({
-    path: '/login',
-    data: { code },
-  });
+  const accessToken = await request.post<string>('/login', { code });
 
   return accessToken;
 };
 
 export const getCategoriesAsync = async () => {
-  const categories = await REQUEST.GET<CategoryResponse[]>({
-    path: '/categories',
-  });
+  const categories = await request.get<CategoryResponse[]>('/api/workbooks');
 
   return categories;
 };
 
 export const getCardsAsync = async (categoryId: number) => {
-  const cards = await REQUEST.GET<CardsResponse>({
-    path: `/categories/${categoryId}/cards`,
-  });
+  const cards = await request.get<CardsResponse>(
+    `/categories/${categoryId}/cards`
+  );
 
   return cards;
 };
 
 export const postQuizzesAsync = async (categoryIds: number[]) => {
-  const quizzes = await REQUEST.POST<QuizResponse[]>({
-    path: '/quizzes',
-    data: { categoryIds },
+  const quizzes = await request.post<QuizResponse[]>('/quizzes', {
+    categoryIds,
   });
 
   return quizzes;
