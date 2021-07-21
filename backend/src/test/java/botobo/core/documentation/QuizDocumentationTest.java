@@ -24,6 +24,7 @@ import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("퀴즈 문서화 테스트")
@@ -74,6 +75,21 @@ public class QuizDocumentationTest {
                 .content(objectMapper.writeValueAsString(categoryIdsRequest)))
                 .andExpect(status().isNotFound())
                 .andDo(document("quizzes-post-fail-invalid-category-id",
+                        getDocumentRequest(),
+                        getDocumentResponse())
+                );
+    }
+
+    @Test
+    @DisplayName("비회원용 퀴즈 생성 - 성공")
+    void createQuizForGuest() throws Exception {
+        // given
+        given(quizService.createQuizForGuest()).willReturn(generateQuizResponses());
+
+        // when, then
+        mockMvc.perform(get("/quizzes/guest"))
+                .andExpect(status().isOk())
+                .andDo(document("quizzes-guest-get-success",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );

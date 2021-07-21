@@ -2,6 +2,8 @@ package botobo.core.quiz.application;
 
 import botobo.core.quiz.domain.answer.Answer;
 import botobo.core.quiz.domain.card.Card;
+import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.card.FixedCards;
 import botobo.core.quiz.domain.category.Category;
 import botobo.core.quiz.domain.category.CategoryRepository;
 import botobo.core.quiz.dto.QuizResponse;
@@ -30,11 +32,15 @@ class QuizServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
+    @Mock
+    private CardRepository cardRepository;
+
     @InjectMocks
     private QuizService quizService;
 
     private Category category;
     private Category categoryWithOneCards;
+    private List<Card> cards;
 
     @BeforeEach
     void setUp() {
@@ -69,6 +75,8 @@ class QuizServiceTest {
                 .content("content")
                 .card(card2)
                 .build();
+
+        cards = Arrays.asList(card1, card1, card1, card1, card1, card1, card1, card1, card1, card1);
     }
 
     @Test
@@ -105,5 +113,19 @@ class QuizServiceTest {
         then(categoryRepository)
                 .should(times(2))
                 .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("첫 비회원용 퀴즈 생성 요청 - 성공")
+    void createQuizForGuest() {
+        FixedCards fixedCards = FixedCards.getInstance();
+        if (!fixedCards.isFull()) {
+            given(cardRepository.findFirst10By()).willReturn(cards);
+        }
+        // when
+        List<QuizResponse> quizResponses = quizService.createQuizForGuest();
+
+        //then
+        assertThat(quizResponses.size()).isEqualTo(10);
     }
 }

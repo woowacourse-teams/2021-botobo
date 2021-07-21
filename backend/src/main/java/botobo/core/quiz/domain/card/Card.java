@@ -25,6 +25,9 @@ public class Card extends BaseEntity {
     private String question;
 
     @Column(nullable = false)
+    private int encounterCount;
+
+    @Column(nullable = false)
     private boolean isDeleted;
 
     @ManyToOne
@@ -62,5 +65,9 @@ public class Card extends BaseEntity {
 
     public String getFirstAnswerContent() {
         return answers.getFirstAnswerContent();
+    }
+
+    public void incrementEncounterCount() {
+        encounterCount++;
     }
 }
