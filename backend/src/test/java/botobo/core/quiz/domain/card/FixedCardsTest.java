@@ -15,15 +15,29 @@ class FixedCardsTest {
 
     private List<Card> cards;
     private List<Card> nineCards;
+    private Card card;
 
     @BeforeEach
     void setUp() {
-        Card card = Card.builder()
+        card = Card.builder()
                 .question("question")
                 .category(Category.builder().name("name").build())
                 .build();
         cards = Arrays.asList(card, card, card, card, card, card, card, card, card, card);
         nineCards = Arrays.asList(card, card, card, card, card, card, card, card, card);
+    }
+
+    @Test
+    @DisplayName("FixedCards의 getCards는 unmodifiable한 객체를 리턴한다. - 성공")
+    void deepCopy() {
+        // given
+        FixedCards fixedCards = FixedCards.getInstance();
+        fixedCards.initialize(cards);
+
+        // when
+        List<Card> copiedCards = fixedCards.getCards();
+        assertThatThrownBy(() -> copiedCards.add(card))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

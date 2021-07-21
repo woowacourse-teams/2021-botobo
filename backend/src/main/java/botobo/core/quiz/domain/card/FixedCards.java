@@ -1,6 +1,7 @@
 package botobo.core.quiz.domain.card;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FixedCards {
@@ -20,7 +21,7 @@ public class FixedCards {
     }
 
     public List<Card> getCards() {
-        return List.copyOf(cards);
+        return Collections.unmodifiableList(cards);
     }
 
     public void initialize(List<Card> quiz) {
