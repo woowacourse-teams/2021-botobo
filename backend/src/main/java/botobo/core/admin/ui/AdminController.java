@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     private final AdminService adminService;
@@ -27,12 +27,12 @@ public class AdminController {
     @PostMapping("/workbooks")
     public ResponseEntity<AdminWorkbookResponse> createCategory(@Valid @RequestBody AdminWorkbookRequest adminWorkbookRequest) {
         AdminWorkbookResponse adminWorkbookResponse = adminService.createWorkbook(adminWorkbookRequest);
-        return ResponseEntity.created(URI.create("/admin/workbooks/" + adminWorkbookResponse.getId())).body(adminWorkbookResponse);
+        return ResponseEntity.created(URI.create("/api/admin/workbooks/" + adminWorkbookResponse.getId())).body(adminWorkbookResponse);
     }
 
     @PostMapping("/cards")
     public ResponseEntity<AdminCardResponse> createCard(@Valid @RequestBody AdminCardRequest adminCardRequest) {
         AdminCardResponse adminCardResponse = adminService.createCard(adminCardRequest);
-        return ResponseEntity.created(URI.create("/admin/cards/" + adminCardResponse.getId())).body(adminCardResponse);
+        return ResponseEntity.created(URI.create("/api/admin/cards/" + adminCardResponse.getId())).body(adminCardResponse);
     }
 }

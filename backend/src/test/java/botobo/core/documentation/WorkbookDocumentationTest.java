@@ -50,7 +50,7 @@ public class WorkbookDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/workbooks")
+        mockMvc.perform(get("/api/workbooks")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("workbooks-get-success",
@@ -68,7 +68,7 @@ public class WorkbookDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/workbooks/{id}/cards", 1)
+        mockMvc.perform(get("/api/workbooks/{id}/cards", 1)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(document("workbooks-cards-get-success",

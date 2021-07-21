@@ -56,7 +56,7 @@ public class QuizDocumentationTest {
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
 
         // when, then
-        mockMvc.perform(post("/quizzes")
+        mockMvc.perform(post("/api/quizzes")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +78,7 @@ public class QuizDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(post("/quizzes")
+        mockMvc.perform(post("/api/quizzes")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +97,7 @@ public class QuizDocumentationTest {
         given(quizService.createQuizForGuest()).willReturn(generateQuizResponses());
 
         // when, then
-        mockMvc.perform(get("/quizzes/guest"))
+        mockMvc.perform(get("/api/quizzes/guest"))
                 .andExpect(status().isOk())
                 .andDo(document("quizzes-guest-get-success",
                         getDocumentRequest(),
