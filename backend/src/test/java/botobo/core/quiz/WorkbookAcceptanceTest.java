@@ -42,7 +42,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
                 RestAssured.given().log().all()
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .when().get("/workbooks")
+                        .when().get("/api/workbooks")
                         .then().log().all()
                         .extract();
 
@@ -63,7 +63,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
                 RestAssured.given().log().all()
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .when().get("/workbooks/{id}/cards", 1L)
+                        .when().get("/api/workbooks/{id}/cards", 1L)
                         .then().log().all()
                         .extract();
         // then
@@ -82,7 +82,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
                 RestAssured.given().log().all()
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .when().get("/workbooks/{id}/cards", 2L)
+                        .when().get("/api/workbooks/{id}/cards", 2L)
                         .then().log().all()
                         .extract();
 
@@ -100,7 +100,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
-                    .when().post("/admin/workbooks")
+                    .when().post("/api/admin/workbooks")
                     .then().log().all()
                     .extract();
         }
@@ -112,7 +112,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
-                    .when().post("/admin/cards")
+                    .when().post("/api/admin/cards")
                     .then().log().all()
                     .extract();
         }

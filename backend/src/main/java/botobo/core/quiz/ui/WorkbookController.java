@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/workbooks")
+@RequestMapping("/api/workbooks")
 public class WorkbookController {
 
     private final WorkbookService workbookService;

@@ -53,7 +53,7 @@ public class LoginDocumentationTest {
         );
 
         // when, then
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/api/login")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(loginRequest)))
