@@ -1,6 +1,6 @@
 package botobo.core.quiz.domain.workbook;
 
-import botobo.core.quiz.domain.BaseEntity;
+import botobo.core.common.domain.BaseEntity;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
 import botobo.core.quiz.exception.CardNotFoundException;

@@ -1,7 +1,5 @@
-package botobo.core.quiz.domain;
+package botobo.core.quiz.domain.card;
 
-import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import org.junit.jupiter.api.BeforeEach;

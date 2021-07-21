@@ -2,7 +2,7 @@ package botobo.core.auth.ui;
 
 import botobo.core.auth.infrastructure.AuthorizationExtractor;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
-import botobo.core.exception.UnauthorizedException;
+import botobo.core.common.exception.UnauthorizedException;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 

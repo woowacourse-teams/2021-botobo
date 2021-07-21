@@ -1,4 +1,4 @@
-package botobo.core.quiz.domain;
+package botobo.core.common.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
