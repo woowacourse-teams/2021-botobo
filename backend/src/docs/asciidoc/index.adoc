@@ -5,7 +5,9 @@
 :toc: left
 :toclevels: 2
 
-include::workbook.adoc[]
+include::workbooks.adoc[]
+
+include::cards.adoc[]
 
 include::quizzes.adoc[]
 
