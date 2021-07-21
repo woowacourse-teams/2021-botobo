@@ -2,16 +2,15 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
 import PlusIcon from '../assets/plus.svg';
 import { Button, CategoryList, QuizStarter } from '../components';
 import { ROUTE } from '../constants';
-import { categoryState } from '../recoil';
+import { useMain } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
-  const categories = useRecoilValue(categoryState);
+  const { categories } = useMain();
   const history = useHistory();
 
   return (

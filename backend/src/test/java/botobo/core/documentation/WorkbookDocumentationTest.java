@@ -1,11 +1,11 @@
 package botobo.core.documentation;
 
 import botobo.core.auth.infrastructure.JwtTokenProvider;
-import botobo.core.quiz.application.CategoryService;
+import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.dto.CardResponse;
-import botobo.core.quiz.dto.CategoryCardsResponse;
-import botobo.core.quiz.dto.CategoryResponse;
-import botobo.core.quiz.ui.CategoryController;
+import botobo.core.quiz.dto.WorkbookCardResponse;
+import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,78 +26,78 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("카테고리 문서화 테스트")
-@WebMvcTest(CategoryController.class)
+@DisplayName("문제집 문서화 테스트")
+@WebMvcTest(WorkbookController.class)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
-public class CategoryDocumentationTest {
+public class WorkbookDocumentationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private CategoryService categoryService;
+    private WorkbookService workbookService;
 
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
     @Test
-    @DisplayName("카레고리 전체 조회 - 성공")
-    void findAllCategories() throws Exception {
+    @DisplayName("문제집 전체 조회 - 성공")
+    void findAllWorkbooks() throws Exception {
         // given
         String token = "botobo.access.token";
+        given(workbookService.findAll()).willReturn(generateWorkbookResponse());
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
-        given(categoryService.findAll()).willReturn(generateCategoryResponse());
 
         // when, then
-        mockMvc.perform(get("/categories")
+        mockMvc.perform(get("/workbooks"))
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andDo(document("categories-get-success",
+                .andDo(document("workbooks-get-success",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );
     }
 
     @Test
-    @DisplayName("카테고리의 카드 모아보기 - 성공")
-    void findCategoryCardsById() throws Exception {
+    @DisplayName("문제집의 카드 모아보기 - 성공")
+    void findWorkbookCardsById() throws Exception {
         // given
         String token = "botobo.access.token";
+        given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generateWorkbookCardsResponse());
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
-        given(categoryService.findCategoryCardsById(anyLong())).willReturn(generateCategoryCardsResponse());
 
         // when, then
-        mockMvc.perform(get("/categories/{id}/cards", 1)
+        mockMvc.perform(get("/workbooks/{id}/cards", 1))
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andDo(document("categories-cards-get-success",
+                .andDo(document("workbooks-cards-get-success",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );
     }
 
-    private List<CategoryResponse> generateCategoryResponse() {
+    private List<WorkbookResponse> generateWorkbookResponse() {
         return Arrays.asList(
-                CategoryResponse.builder()
+                WorkbookResponse.builder()
                         .id(1L)
-                        .name("Java")
+                        .name("피케이의 자바 문제 20선")
                         .cardCount(20)
                         .build(),
-                CategoryResponse.builder()
+                WorkbookResponse.builder()
                         .id(2L)
-                        .name("Javascript")
+                        .name("오즈의 비올 때 푸는 Database 문제")
                         .cardCount(15)
                         .build(),
-                CategoryResponse.builder()
+                WorkbookResponse.builder()
                         .id(3L)
-                        .name("React")
+                        .name("조앤의 Network 정복 모음집")
                         .cardCount(8)
                         .build()
         );
     }
 
-    private CategoryCardsResponse generateCategoryCardsResponse() {
+    private WorkbookCardResponse generateWorkbookCardsResponse() {
         List<CardResponse> cardResponses = Arrays.asList(
                 CardResponse.builder()
                         .id(1L)
@@ -114,8 +114,8 @@ public class CategoryDocumentationTest {
                         .question("Java에는 j가 몇 개 들어갈까요?")
                         .answer("1개")
                         .build());
-        return CategoryCardsResponse.builder()
-                .categoryName("Java")
+        return WorkbookCardResponse.builder()
+                .workbookName("Java")
                 .cards(cardResponses)
                 .build();
     }

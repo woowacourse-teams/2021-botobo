@@ -17,6 +17,7 @@ const theme: Theme = {
     pink: '#f582c6',
     green: '#02c584',
     blue: '#0084F4',
+    red: '#d32f2f',
   },
   boxShadow: {
     header: `0 2px 5px 0 rgb(0 0 0 / 12%)`,

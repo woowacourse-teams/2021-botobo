@@ -1,17 +1,17 @@
 package botobo.core.quiz.domain.workbook;
 
 import botobo.core.quiz.domain.BaseEntity;
-import botobo.core.user.domain.User;
+import botobo.core.quiz.domain.card.Card;
+import botobo.core.quiz.domain.card.Cards;
+import botobo.core.quiz.exception.CardNotFoundException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -28,20 +28,19 @@ public class Workbook extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    @Embedded
+    private Cards cards = new Cards();
+
     @Column(nullable = false)
     private boolean isPublic;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_workbook_to_user"))
-    private User user;
-
     @Builder
-    public Workbook(String name, boolean isDeleted, boolean isPublic, User user) {
+    public Workbook(Long id, String name, boolean isDeleted, boolean isPublic) {
         validateName(name);
+        this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
         this.isPublic = isPublic;
-        this.user = user;
     }
 
     private void validateName(String name) {
@@ -56,5 +55,16 @@ public class Workbook extends BaseEntity {
                     String.format("Workbook의 Name %d자 이하여야 합니다.", NAME_MAX_LENGTH)
             );
         }
+    }
+
+    public int cardCount() {
+        return cards.size();
+    }
+
+    public List<Card> getAllCards() {
+        if (cards.isEmpty()) {
+            throw new CardNotFoundException("카드가 존재하지 않습니다.");
+        }
+        return cards.getCards();
     }
 }

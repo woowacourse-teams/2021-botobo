@@ -2,9 +2,9 @@ package botobo.core.documentation;
 
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.QuizService;
-import botobo.core.quiz.dto.CategoryIdsRequest;
+import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
-import botobo.core.quiz.exception.CategoryNotFoundException;
+import botobo.core.quiz.exception.WorkbookNotFoundException;
 import botobo.core.quiz.ui.QuizController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +25,7 @@ import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("퀴즈 문서화 테스트")
@@ -49,8 +50,8 @@ public class QuizDocumentationTest {
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
+        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L));
         String token = "botobo.access.token";
-        CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(1L, 2L, 3L));
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
 
@@ -59,7 +60,7 @@ public class QuizDocumentationTest {
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(categoryIdsRequest)))
+                .content(objectMapper.writeValueAsString(quizRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("quizzes-post-success",
                         getDocumentRequest(),
@@ -72,18 +73,33 @@ public class QuizDocumentationTest {
     void createQuizWithInvalidCategoryId() throws Exception {
         // given
         String token = "botobo.access.token";
-        CategoryIdsRequest categoryIdsRequest = new CategoryIdsRequest(Arrays.asList(1L, 2L, 1000L));
+        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L));
+        given(quizService.createQuiz(Arrays.asList(1L, 2L, 1000L))).willThrow(new WorkbookNotFoundException());
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
-        given(quizService.createQuiz(Arrays.asList(1L, 2L, 1000L))).willThrow(new CategoryNotFoundException());
 
         // when, then
         mockMvc.perform(post("/quizzes")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(categoryIdsRequest)))
+                .content(objectMapper.writeValueAsString(quizRequest)))
                 .andExpect(status().isNotFound())
                 .andDo(document("quizzes-post-fail-invalid-category-id",
+                        getDocumentRequest(),
+                        getDocumentResponse())
+                );
+    }
+
+    @Test
+    @DisplayName("비회원용 퀴즈 생성 - 성공")
+    void createQuizForGuest() throws Exception {
+        // given
+        given(quizService.createQuizForGuest()).willReturn(generateQuizResponses());
+
+        // when, then
+        mockMvc.perform(get("/quizzes/guest"))
+                .andExpect(status().isOk())
+                .andDo(document("quizzes-guest-get-success",
                         getDocumentRequest(),
                         getDocumentResponse())
                 );
@@ -95,61 +111,61 @@ public class QuizDocumentationTest {
                         .id(3L)
                         .question("Javascript 질문 2")
                         .answer("Javascript 답 2")
-                        .categoryName("Javascript")
+                        .workbookName("Javascript")
                         .build(),
                 QuizResponse.builder()
                         .id(10L)
                         .question("Java 질문 1")
                         .answer("Java 답 1")
-                        .categoryName("JAVA")
+                        .workbookName("JAVA")
                         .build(),
                 QuizResponse.builder()
                         .id(2L)
                         .question("Java 질문 3")
                         .answer("Java 답 3")
-                        .categoryName("JAVA")
+                        .workbookName("JAVA")
                         .build(),
                 QuizResponse.builder()
                         .id(11L)
                         .question("Spring 질문 1")
                         .answer("Java 답 1")
-                        .categoryName("JAVA")
+                        .workbookName("JAVA")
                         .build(),
                 QuizResponse.builder()
                         .id(1L)
                         .question("Java 질문 2")
                         .answer("Java 답 2")
-                        .categoryName("JAVA")
+                        .workbookName("JAVA")
                         .build(),
                 QuizResponse.builder()
                         .id(4L)
                         .question("Spring 질문 6")
                         .answer("Spring 답 6")
-                        .categoryName("Spring")
+                        .workbookName("Spring")
                         .build(),
                 QuizResponse.builder()
                         .id(7L)
                         .question("Javascript 질문 9")
                         .answer("Javascript 답 9")
-                        .categoryName("Javascript")
+                        .workbookName("Javascript")
                         .build(),
                 QuizResponse.builder()
                         .id(21L)
                         .question("Spring 질문 3")
                         .answer("Spring 답 3")
-                        .categoryName("Spring")
+                        .workbookName("Spring")
                         .build(),
                 QuizResponse.builder()
                         .id(17L)
                         .question("Javascript 질문 4")
                         .answer("Javascript 답 4")
-                        .categoryName("Javascript")
+                        .workbookName("Javascript")
                         .build(),
                 QuizResponse.builder()
                         .id(14L)
                         .question("Javascript 질문 1")
                         .answer("Javascript 답 1")
-                        .categoryName("Javascript")
+                        .workbookName("Javascript")
                         .build()
         );
     }
