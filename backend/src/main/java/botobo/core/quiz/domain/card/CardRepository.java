@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findFirst10By();
+
+    List<Card> findByIdIn(List<Long> cardIds);
 }
