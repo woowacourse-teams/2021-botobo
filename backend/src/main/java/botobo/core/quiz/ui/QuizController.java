@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/quizzes")
+@RequestMapping("/api/quizzes")
 public class QuizController {
 
     private final QuizService quizService;

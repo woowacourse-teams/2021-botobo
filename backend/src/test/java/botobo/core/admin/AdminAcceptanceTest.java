@@ -29,7 +29,7 @@ public class AdminAcceptanceTest extends AuthAcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminWorkbookRequest)
-                .when().post("/admin/workbooks")
+                .when().post("/api/admin/workbooks")
                 .then().log().all()
                 .extract();
     }
@@ -39,7 +39,7 @@ public class AdminAcceptanceTest extends AuthAcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminCardRequest)
-                .when().post("/admin/cards")
+                .when().post("/api/admin/cards")
                 .then().log().all()
                 .extract();
     }
@@ -146,9 +146,9 @@ public class AdminAcceptanceTest extends AuthAcceptanceTest {
     @DisplayName("관리자 카드 생성 - 실패, question이 공백일 때")
     void createCardWithBlankQuestion() {
         ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
-        final Long categoryId = extractId(categoryResponse);
+        final Long workbookId = extractId(categoryResponse);
 
-        AdminCardRequest adminCardRequest = new AdminCardRequest("     ", "Answer", categoryId);
+        AdminCardRequest adminCardRequest = new AdminCardRequest("     ", "Answer", workbookId);
         final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
 
         //when
@@ -163,9 +163,9 @@ public class AdminAcceptanceTest extends AuthAcceptanceTest {
     @DisplayName("관리자 카드 생성 - 실패, question이 null일 때")
     void createCardWithNullQuestion() {
         ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
-        final Long categoryId = extractId(categoryResponse);
+        final Long workbookId = extractId(categoryResponse);
 
-        AdminCardRequest adminCardRequest = new AdminCardRequest(null, "Answer", categoryId);
+        AdminCardRequest adminCardRequest = new AdminCardRequest(null, "Answer", workbookId);
         final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
 
         //when

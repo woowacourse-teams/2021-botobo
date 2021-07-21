@@ -66,7 +66,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
-                        .when().post("/quizzes")
+                        .when().post("/api/quizzes")
                         .then().log().all()
                         .extract();
 
@@ -91,7 +91,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
-                        .when().post("/quizzes")
+                        .when().post("/api/quizzes")
                         .then().log().all()
                         .extract();
 
@@ -114,7 +114,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
-                        .when().post("/quizzes")
+                        .when().post("/api/quizzes")
                         .then().log().all()
                         .extract();
 
@@ -137,7 +137,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .auth().oauth2(로그인되어_있음().getAccessToken())
                         .body(quizRequest)
-                        .when().post("/quizzes")
+                        .when().post("/api/quizzes")
                         .then().log().all()
                         .extract();
 
@@ -153,7 +153,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         // given
         final ExtractableResponse<Response> response =
                 RestAssured.given().log().all()
-                        .when().get("/quizzes/guest")
+                        .when().get("/api/quizzes/guest")
                         .then().log().all()
                         .extract();
 
@@ -171,14 +171,14 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         // given
         final ExtractableResponse<Response> firstResponse =
                 RestAssured.given().log().all()
-                        .when().get("/quizzes/guest")
+                        .when().get("/api/quizzes/guest")
                         .then().log().all()
                         .extract();
         final List<QuizResponse> firstQuizResponses = firstResponse.body().jsonPath().getList(".", QuizResponse.class);
 
         final ExtractableResponse<Response> secondResponse =
                 RestAssured.given().log().all()
-                        .when().get("/quizzes/guest")
+                        .when().get("/api/quizzes/guest")
                         .then().log().all()
                         .extract();
         final List<QuizResponse> secondQuizResponses = secondResponse.body().jsonPath().getList(".", QuizResponse.class);
@@ -196,7 +196,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(로그인되어_있음().getAccessToken())
                 .body(adminWorkbookRequest)
-                .when().post("/admin/workbooks")
+                .when().post("/api/admin/workbooks")
                 .then().log().all()
                 .extract();
     }
@@ -207,7 +207,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
-                    .when().post("/admin/workbooks")
+                    .when().post("/api/admin/workbooks")
                     .then().log().all()
                     .extract();
         }
@@ -219,7 +219,7 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .auth().oauth2(로그인되어_있음().getAccessToken())
                     .body(request)
-                    .when().post("/admin/cards")
+                    .when().post("/api/admin/cards")
                     .then().log().all()
                     .extract();
         }

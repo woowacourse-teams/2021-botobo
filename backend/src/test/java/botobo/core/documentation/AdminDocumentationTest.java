@@ -61,13 +61,13 @@ public class AdminDocumentationTest {
         );
 
         // when, then
-        mockMvc.perform(post("/admin/workbooks")
+        mockMvc.perform(post("/api/admin/workbooks")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(adminWorkbookRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/admin/workbooks/1"))
+                .andExpect(header().string("Location", "/api/admin/workbooks/1"))
                 .andDo(document("admin-workbooks-post-success",
                         getDocumentRequest(),
                         getDocumentResponse())
@@ -90,13 +90,13 @@ public class AdminDocumentationTest {
         );
 
         // when, then
-        mockMvc.perform(post("/admin/cards")
+        mockMvc.perform(post("/api/admin/cards")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(adminCardRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/admin/cards/1"))
+                .andExpect(header().string("Location", "/api/admin/cards/1"))
                 .andDo(document("admin-cards-post-success",
                         getDocumentRequest(),
                         getDocumentResponse())
@@ -113,7 +113,7 @@ public class AdminDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(post("/admin/cards")
+        mockMvc.perform(post("/api/admin/cards")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
