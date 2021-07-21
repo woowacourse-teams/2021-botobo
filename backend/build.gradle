@@ -63,9 +63,6 @@ task copyDev(type: Copy) {
 
     from '../dev/application-local.yml'
     into './src/main/resources'
-
-    from '../dev/application-test.yml'
-    into './src/main/resources'
 }
 
 test {
