@@ -1,7 +1,5 @@
-package botobo.core.quiz.domain;
+package botobo.core.quiz.domain.workbook;
 
-import botobo.core.quiz.domain.workbook.Workbook;
-import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
