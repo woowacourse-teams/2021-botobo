@@ -20,7 +20,7 @@ public class AuthenticationConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizationInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/login");
+                .excludePathPatterns("/", "/login", "/docs/index.html", "/quizzes/guest");
     }
 
     @Bean

@@ -19,12 +19,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @MockBean
     private GithubOauthManager githubOauthManager;
 
-    public TokenResponse 로그인되어_있음() {
+    protected TokenResponse 로그인되어_있음() {
         ExtractableResponse<Response> response = 로그인_요청();
         return response.as(TokenResponse.class);
     }
 
-    public ExtractableResponse<Response> 로그인_요청() {
+    private ExtractableResponse<Response> 로그인_요청() {
         LoginRequest loginRequest = new LoginRequest("githubCode");
         GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
                 .userName("githubUser")
