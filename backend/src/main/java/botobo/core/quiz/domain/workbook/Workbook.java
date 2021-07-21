@@ -61,10 +61,7 @@ public class Workbook extends BaseEntity {
         return cards.size();
     }
 
-    public List<Card> getAllCards() {
-        if (cards.isEmpty()) {
-            throw new CardNotFoundException("카드가 존재하지 않습니다.");
-        }
+    public List<Card> getCardsAsList() {
         return cards.getCards();
     }
 }

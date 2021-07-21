@@ -125,29 +125,6 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 생성 - 실패, 문제집의 카드가 없을 경우")
-    void createQuizWithNotExistCard() {
-        // given
-        final ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(new AdminWorkbookRequest("문제집"));
-        final Long id = extractId(categoryResponse);
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(id));
-
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
-
-        // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
-    }
-
-    @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
         // given
