@@ -37,7 +37,6 @@ import static botobo.core.Fixture.CARD_REQUEST_9;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.TestUtils.extractId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
