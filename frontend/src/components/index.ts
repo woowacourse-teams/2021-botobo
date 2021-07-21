@@ -11,3 +11,5 @@ export { default as OAuth } from './OAuth';
 export { default as CardSkeleton } from './CardSkeleton';
 export { default as CardSkeletonList } from './CardSkeletonList';
 export { default as HeaderSkeleton } from './HeaderSkeleton';
+export { default as SharedWorkbookList } from './SharedWorkbookList';
+export { default as SharedWorkbook } from './SharedWorkbook';
