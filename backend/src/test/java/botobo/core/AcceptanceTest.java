@@ -1,7 +1,8 @@
 package botobo.core;
 
-import botobo.core.RequestBuilder.HttpFunction;
-import botobo.core.auth.application.AuthService;
+import botobo.core.utils.RequestBuilder;
+import botobo.core.utils.RequestBuilder.HttpFunction;
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +21,22 @@ public class AcceptanceTest {
     private RequestBuilder requestBuilder;
 
     @Autowired
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-        requestBuilder = new RequestBuilder();
+        String defaultToken = jwtTokenProvider.createToken(100L);
+        requestBuilder = new RequestBuilder(defaultToken);
     }
 
     /**
      * example:
      * request()
-     * .get("/path")   http method
-     * .useLogin()     default: false
+     * .get("/path")   http method type
+     * .auth()         default: false
      * .build();
-     * <p>
+     *
      * - logging is default
      */
     protected HttpFunction request() {

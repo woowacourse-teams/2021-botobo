@@ -1,4 +1,4 @@
-package botobo.core;
+package botobo.core.utils;
 
 import botobo.core.exception.ErrorResponse;
 import io.restassured.RestAssured;
@@ -6,13 +6,16 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-@NoArgsConstructor
 public class RequestBuilder {
+    private String accessToken;
+
+    public RequestBuilder(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public HttpFunction build() {
         return new HttpFunction();
@@ -26,24 +29,23 @@ public class RequestBuilder {
 
     public class Details {
         private final RestAssuredRequest request;
-//        private boolean loginFlag;
+        private boolean loginFlag;
 
         public Details(RestAssuredRequest request) {
             this.request = request;
-//            this.loginFlag = false;
+            this.loginFlag = false;
         }
 
-//        public Details useLogin() {
-//            this.loginFlag = true;
-//            return this;
-//        }
+        public Details auth() {
+            this.loginFlag = true;
+            return this;
+        }
 
         public HttpResponse build() {
-            RequestSpecification requestSpecification = RestAssured.given();
-//            if (loginFlag) {
-//                requestSpecification.header("Authorization", "Bearer " + accessToken);
-//            }
-            requestSpecification = requestSpecification.log().all();
+            RequestSpecification requestSpecification = RestAssured.given().log().all();
+            if (loginFlag) {
+                requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
+            }
             ValidatableResponse response = request.doAction(requestSpecification).log().all();
             return new HttpResponse(response.extract());
         }
@@ -98,3 +100,4 @@ public class RequestBuilder {
         }
     }
 }
+

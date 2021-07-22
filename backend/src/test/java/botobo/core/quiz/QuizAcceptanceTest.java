@@ -1,6 +1,6 @@
 package botobo.core.quiz;
 
-import botobo.core.RequestBuilder.HttpResponse;
+import botobo.core.utils.RequestBuilder.HttpResponse;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.AuthAcceptanceTest;
@@ -20,25 +20,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static botobo.core.Fixture.CARD_REQUEST_1;
-import static botobo.core.Fixture.CARD_REQUEST_10;
-import static botobo.core.Fixture.CARD_REQUEST_11;
-import static botobo.core.Fixture.CARD_REQUEST_12;
-import static botobo.core.Fixture.CARD_REQUEST_13;
-import static botobo.core.Fixture.CARD_REQUEST_14;
-import static botobo.core.Fixture.CARD_REQUEST_15;
-import static botobo.core.Fixture.CARD_REQUEST_2;
-import static botobo.core.Fixture.CARD_REQUEST_3;
-import static botobo.core.Fixture.CARD_REQUEST_4;
-import static botobo.core.Fixture.CARD_REQUEST_5;
-import static botobo.core.Fixture.CARD_REQUEST_6;
-import static botobo.core.Fixture.CARD_REQUEST_7;
-import static botobo.core.Fixture.CARD_REQUEST_8;
-import static botobo.core.Fixture.CARD_REQUEST_9;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.TestUtils.extractId;
+import static botobo.core.utils.Fixture.CARD_REQUEST_1;
+import static botobo.core.utils.Fixture.CARD_REQUEST_10;
+import static botobo.core.utils.Fixture.CARD_REQUEST_11;
+import static botobo.core.utils.Fixture.CARD_REQUEST_12;
+import static botobo.core.utils.Fixture.CARD_REQUEST_13;
+import static botobo.core.utils.Fixture.CARD_REQUEST_14;
+import static botobo.core.utils.Fixture.CARD_REQUEST_15;
+import static botobo.core.utils.Fixture.CARD_REQUEST_2;
+import static botobo.core.utils.Fixture.CARD_REQUEST_3;
+import static botobo.core.utils.Fixture.CARD_REQUEST_4;
+import static botobo.core.utils.Fixture.CARD_REQUEST_5;
+import static botobo.core.utils.Fixture.CARD_REQUEST_6;
+import static botobo.core.utils.Fixture.CARD_REQUEST_7;
+import static botobo.core.utils.Fixture.CARD_REQUEST_8;
+import static botobo.core.utils.Fixture.CARD_REQUEST_9;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
+import static botobo.core.utils.TestUtils.extractId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
