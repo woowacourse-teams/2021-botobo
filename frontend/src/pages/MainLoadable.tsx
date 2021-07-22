@@ -16,8 +16,8 @@ const MainLoadable = () => (
     <Container>
       <CardSkeleton />
       <section>
-        <CategoryHeader>
-          <CategoryTitle />
+        <WorkbookHeader>
+          <WorkbookTitle />
           <Button
             shape="circle"
             backgroundColor="white"
@@ -27,7 +27,7 @@ const MainLoadable = () => (
           >
             {''}
           </Button>
-        </CategoryHeader>
+        </WorkbookHeader>
         <CardSkeletonList count={6} />
       </section>
     </Container>
@@ -41,12 +41,12 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryHeader = styled.div`
+const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
-const CategoryTitle = styled.div`
+const WorkbookTitle = styled.div`
   height: 1.5rem;
   width: 50%;
 

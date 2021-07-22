@@ -1,11 +1,11 @@
 import { rest } from 'msw';
 
 const handlers = [
-  rest.get(`http://localhost:8080/categories`, (req, res, ctx) => {
+  rest.get(`http://localhost:8080/workbooks`, (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
-        categories: [
+        workbooks: [
           {
             id: 1,
             name: 'Java',

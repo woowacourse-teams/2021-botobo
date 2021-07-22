@@ -13,9 +13,9 @@ interface ContainerStyleProps {
   isChecked: boolean;
 }
 
-const QuizResult = ({ question, categoryName, isChecked, onClick }: Props) => (
+const QuizResult = ({ question, workbookName, isChecked, onClick }: Props) => (
   <Container isChecked={isChecked} onClick={onClick}>
-    <CategoryName>{categoryName}</CategoryName>
+    <WorkbookName>{workbookName}</WorkbookName>
     <span>Q. {question}</span>
   </Container>
 );
@@ -35,7 +35,7 @@ const Container = styled.div<ContainerStyleProps>`
   `};
 `;
 
-const CategoryName = styled.span`
+const WorkbookName = styled.span`
   display: block;
   margin-bottom: 1rem;
 

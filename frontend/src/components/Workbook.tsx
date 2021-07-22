@@ -3,16 +3,16 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Flex } from '../styles';
-import { CategoryResponse } from '../types';
+import { WorkbookResponse } from '../types';
 
-type PickedCategory = Pick<CategoryResponse, 'name' | 'cardCount'>;
+type PickedWorkbook = Pick<WorkbookResponse, 'name' | 'cardCount'>;
 
-interface Props extends PickedCategory {
+interface Props extends PickedWorkbook {
   isChecked?: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const Category = ({ name, cardCount, isChecked, onClick }: Props) => (
+const Workbook = ({ name, cardCount, isChecked, onClick }: Props) => (
   <Container isChecked={isChecked} onClick={onClick}>
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 문제</CardCount>
@@ -51,4 +51,4 @@ const CardCount = styled.span`
   `};
 `;
 
-export default Category;
+export default Workbook;

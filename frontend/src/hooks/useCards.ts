@@ -9,17 +9,17 @@ import useSnackbar from './useSnackbar';
 const useCards = () => {
   const history = useHistory();
   const { search } = useLocation();
-  const categoryId = new URLSearchParams(search).get('categoryId');
+  const workbookId = new URLSearchParams(search).get('workbookId');
   const showSnackbar = useSnackbar();
 
-  if (!categoryId) {
+  if (!workbookId) {
     history.push(ROUTE.HOME.PATH);
   }
 
   const {
-    data: { categoryName, cards },
+    data: { workbookName, cards },
     errorMessage,
-  } = useRecoilValue(cardState(Number(categoryId)));
+  } = useRecoilValue(cardState(Number(workbookId)));
 
   useEffect(() => {
     if (errorMessage) {
@@ -27,7 +27,7 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { categoryName, cards };
+  return { workbookName, cards };
 };
 
 export default useCards;

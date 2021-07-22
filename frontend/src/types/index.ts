@@ -1,4 +1,4 @@
-export interface CategoryResponse {
+export interface WorkbookResponse {
   id: number;
   name: string;
   description: string;
@@ -6,7 +6,7 @@ export interface CategoryResponse {
   logoUrl: string;
 }
 
-export interface SharedWorkbookResponse extends CategoryResponse {
+export interface SharedWorkbookResponse extends WorkbookResponse {
   author: string;
 }
 
@@ -14,7 +14,7 @@ export interface QuizResponse {
   id: number;
   question: string;
   answer: string;
-  categoryName: string;
+  workbookName: string;
 }
 
 export interface CardResponse {
@@ -24,6 +24,6 @@ export interface CardResponse {
 }
 
 export interface CardsResponse {
-  categoryName: string;
+  workbookName: string;
   cards: CardResponse[];
 }

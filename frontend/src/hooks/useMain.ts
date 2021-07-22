@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { categoryState } from '../recoil';
+import { workbookState } from '../recoil';
 import useSnackbar from './useSnackbar';
 
 const useMain = () => {
-  const { data: categories, errorMessage } = useRecoilValue(categoryState);
+  const { data: workbooks, errorMessage } = useRecoilValue(workbookState);
   const showSnackbar = useSnackbar();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const useMain = () => {
     }
   }, [errorMessage]);
 
-  return { categories };
+  return { workbooks };
 };
 
 export default useMain;

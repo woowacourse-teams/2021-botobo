@@ -4,21 +4,21 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import PlusIcon from '../assets/plus.svg';
-import { Button, CategoryList, QuizStarter } from '../components';
+import { Button, QuizStarter, WorkbookList } from '../components';
 import { ROUTE } from '../constants';
 import { useMain } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
-  const { categories } = useMain();
+  const { workbooks } = useMain();
   const history = useHistory();
 
   return (
     <Container>
       <QuizStarter />
       <section>
-        <CategoryHeader>
-          <CategoryTitle>학습 중</CategoryTitle>
+        <WorkbookHeader>
+          <WorkbookTitle>학습 중</WorkbookTitle>
           <Button
             shape="circle"
             backgroundColor="white"
@@ -27,11 +27,11 @@ const MainPage = () => {
           >
             <StyledPlusIcon />
           </Button>
-        </CategoryHeader>
-        <CategoryList
-          categories={categories}
-          onClickCategory={(categoryId) =>
-            history.push(`${ROUTE.CARDS.PATH}?categoryId=${categoryId}`)
+        </WorkbookHeader>
+        <WorkbookList
+          workbooks={workbooks}
+          onClickWorkbook={(workbookId) =>
+            history.push(`${ROUTE.CARDS.PATH}?workbookId=${workbookId}`)
           }
         />
       </section>
@@ -46,12 +46,12 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryHeader = styled.div`
+const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
-const CategoryTitle = styled.h2`
+const WorkbookTitle = styled.h2`
   ${({ theme }) =>
     css`
       font-size: ${theme.fontSize.semiLarge};

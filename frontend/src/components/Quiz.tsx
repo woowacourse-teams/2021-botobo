@@ -13,7 +13,7 @@ interface CardStyleProps {
   isFlipped: boolean;
 }
 
-const Quiz = ({ question, answer, categoryName, isChanged }: Props) => {
+const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
@@ -24,11 +24,11 @@ const Quiz = ({ question, answer, categoryName, isChanged }: Props) => {
     <Container onClick={() => setIsFlipped((prevValue) => !prevValue)}>
       <Card isFlipped={isFlipped}>
         <Question>
-          <CategoryName>{categoryName}</CategoryName>
+          <WorkbookName>{workbookName}</WorkbookName>
           <span>Q. {question}</span>
         </Question>
         <Answer>
-          <CategoryName>{categoryName}</CategoryName>
+          <WorkbookName>{workbookName}</WorkbookName>
           <span>A. {answer}</span>
         </Answer>
       </Card>
@@ -74,7 +74,7 @@ const Card = styled.div<CardStyleProps>`
   }
 `;
 
-const CategoryName = styled.span`
+const WorkbookName = styled.span`
   position: absolute;
   top: 1rem;
   left: 1rem;

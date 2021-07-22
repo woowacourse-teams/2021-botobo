@@ -8,15 +8,15 @@ interface CardState {
   errorMessage: string | null;
 }
 
-const cardInitialState = { categoryName: '', cards: [] };
+const cardInitialState = { workbookName: '', cards: [] };
 
 export const cardState = atomFamily<CardState, number>({
   key: 'cardState',
   default: selectorFamily({
-    key: 'categoryRequest',
-    get: (categoryId) => async () => {
+    key: 'workbookRequest',
+    get: (workbookId) => async () => {
       try {
-        return { data: await getCardsAsync(categoryId), errorMessage: null };
+        return { data: await getCardsAsync(workbookId), errorMessage: null };
       } catch (error) {
         return {
           data: cardInitialState,
