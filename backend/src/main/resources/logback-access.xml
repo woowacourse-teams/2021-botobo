@@ -1,9 +1,19 @@
 <configuration>
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%n###### HTTP Request ######%n%fullRequest%n###### HTTP Response ######%n%fullResponse%n%n
-            </pattern>
-        </encoder>
-    </appender>
-    <appender-ref ref="CONSOLE"/>
+    <property name="BOTOBO_HTTP_CONSOLE_LOG_PATTERN"
+              value="%cyan(%t{yy-MM-dd}) %magenta(%t{HH:mm:ss}) [%yellow(HTTP REQUEST)] [%boldBlue(%requestMethod)] [%localIP]
+\n%cyan(%t{yy-MM-dd}) %magenta(%t{HH:mm:ss}) [%yellow(HTTP RESPONSE)] [%boldBlue(%statusCode)] [%remoteIP]%n%n[%boldWhite(FULL REQUEST)]%n%fullRequest%n[%boldWhite(FULL RESPONSE)]%n%fullResponse%n"/>
+
+    <property name="BOTOBO_HTTP_FILE_LOG_PATTERN"
+              value="%t{yy-MM-dd} %t{HH:mm:ss} [HTTP REQUEST] [%requestMethod] [%localIP]
+\n%t{yy-MM-dd} %t{HH:mm:ss} [HTTP RESPONSE] [%statusCode] [%remoteIP]%n%n[FULL REQUEST]%n%fullRequest[FULL RESPONSE]%n%fullResponse"/>
+
+    <springProfile name="test, local">
+        <include resource="logback/http-console-appender.xml"/>
+        <appender-ref ref="HTTP_CONSOLE"/>
+    </springProfile>
+
+    <springProfile name="dev, prod">
+        <include resource="logback/http-file-appender.xml"/>
+        <appender-ref ref="HTTP_FILE"/>
+    </springProfile>
 </configuration>
