@@ -1,5 +1,6 @@
 package botobo.core.quiz;
 
+import botobo.core.RequestBuilder.HttpResponse;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.AuthAcceptanceTest;
@@ -150,18 +151,14 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
     @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
-        // given
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .get("/api/quizzes/guest")
+                .build();
 
-        // when
-        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
     }
 
@@ -169,25 +166,21 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
     @DisplayName("비회원용 퀴즈 생성을 여러번 요청해도 동일한 퀴즈를 제공한다. - 성공")
     void createQuizForGuestMultipleRequest() {
         // given
-        final ExtractableResponse<Response> firstResponse =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
-        final List<QuizResponse> firstQuizResponses = firstResponse.body().jsonPath().getList(".", QuizResponse.class);
+        final HttpResponse firstResponse = request()
+                .get("/api/quizzes/guest")
+                .build();
+        List<QuizResponse> firstQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
-        final ExtractableResponse<Response> secondResponse =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
-        final List<QuizResponse> secondQuizResponses = secondResponse.body().jsonPath().getList(".", QuizResponse.class);
+        final HttpResponse secondResponse = request()
+                .get("/api/quizzes/guest")
+                .build();
+        List<QuizResponse> secondQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
         // when - then
-        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(firstQuizResponses.size()).isEqualTo(10);
 
-        assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(secondQuizResponses.size()).isEqualTo(10);
     }
 
