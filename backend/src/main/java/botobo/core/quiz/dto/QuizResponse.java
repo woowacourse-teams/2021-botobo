@@ -20,6 +20,7 @@ public class QuizResponse {
     private String question;
     private String answer;
     private String workbookName;
+    private int encounterCount;
 
     public static QuizResponse of(Card card) {
         final Workbook workbook = card.getWorkbook();
@@ -29,6 +30,7 @@ public class QuizResponse {
                 .question(card.getQuestion())
                 .answer(answer)
                 .workbookName(workbook.getName())
+                .encounterCount(card.getEncounterCount())
                 .build();
     }
 
