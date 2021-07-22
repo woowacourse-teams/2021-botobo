@@ -17,10 +17,6 @@ public class Cards {
     @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Card> cards = new ArrayList<>();
 
-    public Cards(List<Card> cards) {
-        this.cards = cards;
-    }
-
     public void addCard(Card card) {
         cards.add(card);
     }

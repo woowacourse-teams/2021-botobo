@@ -76,4 +76,12 @@ public class Card extends BaseEntity {
     public void incrementEncounterCount() {
         encounterCount++;
     }
+
+    public void makeNextQuizCard() {
+        isNextQuiz = true;
+    }
+
+    public void cancelNextQuizCard() {
+        isNextQuiz = false;
+    }
 }

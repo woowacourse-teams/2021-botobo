@@ -18,7 +18,7 @@ public class WorkbookCardResponse {
     private List<CardResponse> cards;
 
     public static WorkbookCardResponse of(Workbook workbook) {
-        List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCards());
+        List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCardsAsList());
         return WorkbookCardResponse.builder()
                 .workbookName(workbook.getName())
                 .cards(cardResponses)

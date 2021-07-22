@@ -67,7 +67,7 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("문제집의 카드 모아보기 (카드 0개) - 성공")
-    void findCategoryCardsByIdWithNotExistsCard() {
+    void findWorkbookCardsByIdWithNotExistsCard() {
         // when
         HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", 2L)
