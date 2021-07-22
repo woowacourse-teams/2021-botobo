@@ -18,12 +18,20 @@ public class CardResponse {
     private Long id;
     private String question;
     private String answer;
+    private Long workbookId;
+    private boolean isBookmark;
+    private boolean isNextQuiz;
+    private int encounterCount;
 
     public static CardResponse of(Card card) {
         return CardResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())
                 .answer(card.getAnswer())
+                .workbookId(card.getWorkbook().getId())
+                .isBookmark(card.isBookmark())
+                .isNextQuiz(card.isNextQuiz())
+                .encounterCount(card.getEncounterCount())
                 .build();
     }
 
