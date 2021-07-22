@@ -23,13 +23,15 @@ public class WorkbookController {
 
     @GetMapping
     public ResponseEntity<List<WorkbookResponse>> findAllWorkbooks() {
-        List<WorkbookResponse> workbookRespons = workbookService.findAll();
-        return ResponseEntity.ok(workbookRespons);
+        return ResponseEntity.ok(
+                workbookService.findAll()
+        );
     }
 
     @GetMapping("/{id}/cards")
     public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id) {
-        WorkbookCardResponse workbookCardResponse = workbookService.findWorkbookCardsById(id);
-        return ResponseEntity.ok(workbookCardResponse);
+        return ResponseEntity.ok(
+                workbookService.findWorkbookCardsById(id)
+        );
     }
 }

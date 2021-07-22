@@ -4,6 +4,7 @@ import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.WorkbookCardResponse;
+import botobo.core.quiz.dto.WorkbookResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,33 +32,35 @@ class WorkbookServiceTest {
     private WorkbookRepository workbookRepository;
 
     @Test
-    @DisplayName("더미 문제집 전체 조회 - 성공")
-    void findAllWithDummy() {
+    @DisplayName("문제집 전체 조회 - 성공")
+    void findAll() {
         // given
         List<Workbook> workbooks = Arrays.asList(
-                Workbook.builder().id(1L).name("a").isDeleted(false).build(),
-                Workbook.builder().id(2L).name("b").isDeleted(false).build(),
-                Workbook.builder().id(3L).name("c").isDeleted(false).build()
+                Workbook.builder().id(1L).name("workbook1").build(),
+                Workbook.builder().id(2L).name("workbook2").build(),
+                Workbook.builder().id(3L).name("workbook3").build()
         );
         given(workbookRepository.findAll()).willReturn(workbooks);
 
         // when
-        workbookService.findAll();
+        List<WorkbookResponse> workbookResponses = workbookService.findAll();
 
         // then
         then(workbookRepository)
                 .should(times(1))
                 .findAll();
+
+        assertThat(workbookResponses).extracting("id")
+                .containsExactlyInAnyOrder(1L, 2L, 3L);
     }
 
     @Test
-    @DisplayName("더미 문제집 카드 모아보기 - 성공")
-    void findCategoryCardsWithDummy() {
+    @DisplayName("문제집 카드 모아보기 - 성공")
+    void findWorkbookCardsById() {
         // given
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("java")
-                .isDeleted(false)
                 .build();
         Card card = Card.builder()
                 .id(1L)
