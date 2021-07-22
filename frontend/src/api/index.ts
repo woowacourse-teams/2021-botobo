@@ -1,15 +1,30 @@
 import axios from 'axios';
 
-import { CardsResponse, QuizResponse, WorkbookResponse } from '../types';
+import { STORAGE_KEY } from '../constants';
+import {
+  AccessTokenResponse,
+  CardsResponse,
+  QuizResponse,
+  WorkbookResponse,
+} from '../types';
+import { getLocalStorage } from '../utils';
 
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
 });
 
-export const getAccessTokenAsync = async (code: string) => {
-  const { data } = await request.post<string>('/login', { code });
+const token = getLocalStorage(STORAGE_KEY.TOKEN);
 
-  return data;
+request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+export const getAccessTokenAsync = async (code: string) => {
+  const {
+    data: { accessToken },
+  } = await request.post<AccessTokenResponse>('/login', { code });
+
+  request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+  return accessToken;
 };
 
 export const getWorkbooksAsync = async () => {

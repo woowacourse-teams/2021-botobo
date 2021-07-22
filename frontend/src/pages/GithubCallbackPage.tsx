@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { getAccessTokenAsync } from '../api';
 import { ROUTE, STORAGE_KEY } from '../constants';
 import { loginState } from '../recoil';
-import { getSessionStorage } from '../utils';
+import { getSessionStorage, setLocalStorage } from '../utils';
 
 const GITHUB_OAUTH_QUERY = 'code';
 
@@ -20,9 +20,11 @@ const GithubCallbackPage = () => {
 
     (async () => {
       try {
-        await getAccessTokenAsync(code);
+        const accessToken = await getAccessTokenAsync(code);
 
         setIsLogin(true);
+        setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
+
         history.push(
           getSessionStorage(STORAGE_KEY.REDIRECTED_PATH) ?? ROUTE.HOME.PATH
         );

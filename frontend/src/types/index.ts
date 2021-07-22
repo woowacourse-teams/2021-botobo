@@ -1,3 +1,7 @@
+export interface AccessTokenResponse {
+  accessToken: string;
+}
+
 export interface WorkbookResponse {
   id: number;
   name: string;

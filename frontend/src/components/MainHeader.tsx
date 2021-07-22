@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
 import { loginState } from '../recoil';
 import { Flex } from '../styles';
-import { setSessionStorage } from '../utils';
+import { removeLocalStorage, setSessionStorage } from '../utils';
 
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
@@ -19,6 +19,12 @@ const MainHeader = () => {
   const routeLogin = () => {
     setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
     history.push(ROUTE.LOGIN.PATH);
+  };
+
+  const logout = () => {
+    removeLocalStorage(STORAGE_KEY.TOKEN);
+    setIsLogin(false);
+    history.push(ROUTE.HOME.PATH);
   };
 
   return (
@@ -38,7 +44,7 @@ const MainHeader = () => {
         {isLogin ? (
           <>
             <Avatar src={userSrc} />
-            <AuthButton onClick={() => setIsLogin(false)}>로그아웃</AuthButton>
+            <AuthButton onClick={logout}>로그아웃</AuthButton>
           </>
         ) : (
           <AuthButton onClick={routeLogin}>로그인</AuthButton>
