@@ -1,4 +1,4 @@
-package botobo.core.quiz.dto;
+package botobo.core.quiz.dto.workbook;
 
 import botobo.core.quiz.domain.workbook.Workbook;
 import lombok.AllArgsConstructor;
@@ -16,14 +16,16 @@ import java.util.stream.Collectors;
 public class WorkbookResponse {
 
     private Long id;
-    private String name;
+    private String workbookName;
     private int cardCount;
+    private String author;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
                 .id(workbook.getId())
-                .name(workbook.getName())
+                .workbookName(workbook.getName())
                 .cardCount(workbook.cardCount())
+                .author(workbook.author())
                 .build();
     }
 

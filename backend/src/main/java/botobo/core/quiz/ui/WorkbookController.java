@@ -1,8 +1,8 @@
 package botobo.core.quiz.ui;
 
 import botobo.core.quiz.application.WorkbookService;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
+import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
