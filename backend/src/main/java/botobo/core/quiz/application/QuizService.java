@@ -32,7 +32,7 @@ public class QuizService {
         for (Long id : ids) {
             final Workbook workbook = workbookRepository.findById(id)
                     .orElseThrow(WorkbookNotFoundException::new);
-            cards.addAll(workbook.getAllCards());
+            cards.addAll(workbook.getCardsAsList());
         }
         final int maxLimit = Math.min(cards.size(), 10);
         Collections.shuffle(cards);

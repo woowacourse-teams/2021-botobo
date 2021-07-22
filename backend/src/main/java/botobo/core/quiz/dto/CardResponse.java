@@ -1,7 +1,6 @@
 package botobo.core.quiz.dto;
 
 import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.card.Cards;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +27,8 @@ public class CardResponse {
                 .build();
     }
 
-    public static List<CardResponse> listOf(Cards cards) {
-        return cards.getCards().stream()
+    public static List<CardResponse> listOf(List<Card> cards) {
+        return cards.stream()
                 .map(CardResponse::of)
                 .collect(Collectors.toList());
     }

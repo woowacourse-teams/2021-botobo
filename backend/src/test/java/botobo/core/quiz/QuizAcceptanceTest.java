@@ -1,5 +1,6 @@
 package botobo.core.quiz;
 
+import botobo.core.DomainAcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.AuthAcceptanceTest;
@@ -37,12 +38,11 @@ import static botobo.core.Fixture.CARD_REQUEST_9;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.TestUtils.extractId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Quiz 인수 테스트")
-public class QuizAcceptanceTest extends AuthAcceptanceTest {
+public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -125,29 +125,6 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 생성 - 실패, 문제집의 카드가 없을 경우")
-    void createQuizWithNotExistCard() {
-        // given
-        final ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(new AdminWorkbookRequest("문제집"));
-        final Long id = extractId(categoryResponse);
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(id));
-
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
-
-        // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
-    }
-
-    @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
         // given
@@ -189,39 +166,5 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
 
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(secondQuizResponses.size()).isEqualTo(10);
-    }
-
-    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminWorkbookRequest)
-                .when().post("/api/admin/workbooks")
-                .then().log().all()
-                .extract();
-    }
-
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
-        for (AdminWorkbookRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/workbooks")
-                    .then().log().all()
-                    .extract();
-        }
-    }
-
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
-        for (AdminCardRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/cards")
-                    .then().log().all()
-                    .extract();
-        }
     }
 }

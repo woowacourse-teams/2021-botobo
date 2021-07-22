@@ -76,7 +76,7 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
 
     @Test
     @DisplayName("문제집의 카드 모아보기 (카드 0개) - 성공")
-    void findCategoryCardsByIdWithNotExistsCard() {
+    void findWorkbookCardsByIdWithNotExistsCard() {
         // when
         ExtractableResponse<Response> response =
                 RestAssured.given().log().all()

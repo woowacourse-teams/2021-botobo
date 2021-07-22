@@ -3,7 +3,6 @@ package botobo.core.quiz.domain.workbook;
 import botobo.core.common.domain.BaseEntity;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
-import botobo.core.quiz.exception.CardNotFoundException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,10 +60,7 @@ public class Workbook extends BaseEntity {
         return cards.size();
     }
 
-    public List<Card> getAllCards() {
-        if (cards.isEmpty()) {
-            throw new CardNotFoundException("카드가 존재하지 않습니다.");
-        }
+    public List<Card> getCardsAsList() {
         return cards.getCards();
     }
 }

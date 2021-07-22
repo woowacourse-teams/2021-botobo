@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,14 +42,11 @@ class CardRepositoryTest {
     @DisplayName("Card 저장 - 성공")
     void save() {
         // given
-        Card card = Card.builder()
-                .question("질문")
-                .answer("답변")
-                .workbook(workbook)
-                .build();
+        Card card = generateCard();
 
         // when
         Card savedCard = cardRepository.save(card);
+
         testEntityManager.flush();
 
         // then
@@ -61,11 +60,7 @@ class CardRepositoryTest {
     @DisplayName("Id로 Card 찾기 - 성공")
     void findById() {
         // given
-        Card card = Card.builder()
-                .question("질문")
-                .answer("답변")
-                .workbook(workbook)
-                .build();
+        Card card = generateCard();
 
         // when
         Card savedCard = cardRepository.save(card);
@@ -76,21 +71,76 @@ class CardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Card 추가 시, 카테고리도 함께 추가 - 성공")
+    @DisplayName("Card 추가 시, 문제집도 함께 추가 - 성공")
     void checkCategoryIsSaved() {
         // given
-        Card card = Card.builder()
-                .question("질문")
-                .answer("답변")
-                .workbook(workbook)
-                .build();
-        final Card savedCard = cardRepository.save(card);
+        Card card = generateCard();
+
+        Card savedCard = cardRepository.save(card);
 
         // when
-        final Optional<Card> findCard = cardRepository.findById(savedCard.getId());
+        Optional<Card> findCard = cardRepository.findById(savedCard.getId());
 
         // then
         assertThat(findCard).isPresent();
         assertThat(findCard.get().getWorkbook()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("카드 id 리스트로 카드들 찾기 - 성공")
+    void findByInventoryIds() {
+        // given
+        Card card1 = generateCard();
+        Card card2 = generateCard();
+        Card card3 = generateCard();
+
+        Card savedCard1 = cardRepository.save(card1);
+        Card savedCard2 = cardRepository.save(card2);
+        Card savedCard3 = cardRepository.save(card3);
+
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // when
+        List<Card> findCards = cardRepository.findByIdIn(Arrays.asList(
+                savedCard1.getId(),
+                savedCard2.getId(),
+                savedCard3.getId()
+        ));
+
+        // then
+        assertThat(findCards).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 카드 아이디 포함하여 카드 id 리스트로 카드들 찾기 - 성공")
+    void findByInventoryIdsWithNonExistingId() {
+        // given
+        Card card1 = generateCard();
+        Card card2 = generateCard();
+
+        Card savedCard1 = cardRepository.save(card1);
+        Card savedCard2 = cardRepository.save(card2);
+
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // when
+        List<Card> findCards = cardRepository.findByIdIn(Arrays.asList(
+                savedCard1.getId(),
+                savedCard2.getId(),
+                savedCard2.getId() + 1
+        ));
+
+        // then
+        assertThat(findCards).hasSize(2);
+    }
+
+    private Card generateCard() {
+        return Card.builder()
+                .question("질문")
+                .answer("답변")
+                .workbook(workbook)
+                .build();
     }
 }
