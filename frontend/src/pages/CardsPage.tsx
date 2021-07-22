@@ -28,12 +28,12 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { categoryName, cards } = useCards();
+  const { workbookName, cards } = useCards();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
   return (
     <Container>
-      <CategoryName>{categoryName}</CategoryName>
+      <WorkbookName>{workbookName}</WorkbookName>
       <span>{cards.length}개의 카드를 학습 중이에요.</span>
       <Filter>
         {filters.map(({ id, name }) => (
@@ -69,7 +69,7 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryName = styled.h2`
+const WorkbookName = styled.h2`
   margin-bottom: 1rem;
 `;
 

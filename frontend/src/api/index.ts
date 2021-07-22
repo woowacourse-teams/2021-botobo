@@ -1,35 +1,50 @@
 import axios from 'axios';
 
-import { CardsResponse, CategoryResponse, QuizResponse } from '../types';
+import { STORAGE_KEY } from '../constants';
+import {
+  AccessTokenResponse,
+  CardsResponse,
+  QuizResponse,
+  WorkbookResponse,
+} from '../types';
+import { getLocalStorage } from '../utils';
 
 const request = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_URL}`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
 });
 
+const token = getLocalStorage(STORAGE_KEY.TOKEN);
+
+request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
 export const getAccessTokenAsync = async (code: string) => {
-  const accessToken = await request.post<string>('/login', { code });
+  const {
+    data: { accessToken },
+  } = await request.post<AccessTokenResponse>('/login', { code });
+
+  request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
   return accessToken;
 };
 
-export const getCategoriesAsync = async () => {
-  const categories = await request.get<CategoryResponse[]>('/api/workbooks');
+export const getWorkbooksAsync = async () => {
+  const { data } = await request.get<WorkbookResponse[]>('/workbooks');
 
-  return categories;
+  return data;
 };
 
-export const getCardsAsync = async (categoryId: number) => {
-  const cards = await request.get<CardsResponse>(
-    `/categories/${categoryId}/cards`
+export const getCardsAsync = async (workbookId: number) => {
+  const { data } = await request.get<CardsResponse>(
+    `/workbooks/${workbookId}/cards`
   );
 
-  return cards;
+  return data;
 };
 
-export const postQuizzesAsync = async (categoryIds: number[]) => {
-  const quizzes = await request.post<QuizResponse[]>('/quizzes', {
-    categoryIds,
+export const postQuizzesAsync = async (workbookIds: number[]) => {
+  const { data } = await request.post<QuizResponse[]>('/quizzes', {
+    workbookIds,
   });
 
-  return quizzes;
+  return data;
 };
