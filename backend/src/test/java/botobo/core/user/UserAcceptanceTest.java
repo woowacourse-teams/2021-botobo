@@ -1,19 +1,12 @@
 package botobo.core.user;
 
-import botobo.core.AcceptanceTest;
 import botobo.core.auth.AuthAcceptanceTest;
-import botobo.core.auth.infrastructure.GithubOauthManager;
 import botobo.core.common.exception.ErrorResponse;
 import botobo.core.user.dto.UserResponse;
 import botobo.core.utils.RequestBuilder.HttpResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -9,28 +9,20 @@ import botobo.core.quiz.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
-import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("문제집 문서화 테스트")
 @WebMvcTest(WorkbookController.class)
-@AutoConfigureRestDocs
-@MockBean(JpaMetamodelMappingContext.class)
-public class WorkbookDocumentationTest {
+public class WorkbookDocumentationTest extends DocumentationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,13 +42,12 @@ public class WorkbookDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/api/workbooks")
-                .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andDo(document("workbooks-get-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks")
+                .auth(token)
+                .build()
+                .addStatusAndIdentifier(status().isOk(), "workbooks-get-success");
     }
 
     @Test
@@ -68,13 +59,13 @@ public class WorkbookDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(get("/api/workbooks/{id}/cards", 1)
-                .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andDo(document("workbooks-cards-get-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks/{id}/cards", 1)
+                .auth(token)
+                .build()
+                .addStatusAndIdentifier(status().isOk(), "workbooks-cards-get-success");
+
     }
 
     private List<WorkbookResponse> generateWorkbookResponse() {

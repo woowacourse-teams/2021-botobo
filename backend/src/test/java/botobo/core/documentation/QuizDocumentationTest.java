@@ -6,39 +6,25 @@ import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import botobo.core.quiz.ui.QuizController;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
-import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("퀴즈 문서화 테스트")
 @WebMvcTest(QuizController.class)
-@AutoConfigureRestDocs
-@MockBean(JpaMetamodelMappingContext.class)
-public class QuizDocumentationTest {
+public class QuizDocumentationTest extends DocumentationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private QuizService quizService;
@@ -56,16 +42,12 @@ public class QuizDocumentationTest {
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
 
         // when, then
-        mockMvc.perform(post("/api/quizzes")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(quizRequest)))
-                .andExpect(status().isOk())
-                .andDo(document("quizzes-post-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/quizzes", quizRequest)
+                .auth(token)
+                .build()
+                .addStatusAndIdentifier(status().isOk(), "quizzes-post-success");
     }
 
     @Test
@@ -78,16 +60,12 @@ public class QuizDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(post("/api/quizzes")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(quizRequest)))
-                .andExpect(status().isNotFound())
-                .andDo(document("quizzes-post-fail-invalid-category-id",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/quizzes", quizRequest)
+                .auth(token)
+                .build()
+                .addStatusAndIdentifier(status().isNotFound(), "quizzes-post-fail-invalid-category-id");
     }
 
     @Test
@@ -97,12 +75,12 @@ public class QuizDocumentationTest {
         given(quizService.createQuizForGuest()).willReturn(generateQuizResponses());
 
         // when, then
-        mockMvc.perform(get("/api/quizzes/guest"))
-                .andExpect(status().isOk())
-                .andDo(document("quizzes-guest-get-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/quizzes/guest")
+                .build()
+                .addStatusAndIdentifier(status().isOk(),
+                        "quizzes-guest-get-success");
     }
 
     private List<QuizResponse> generateQuizResponses() {
