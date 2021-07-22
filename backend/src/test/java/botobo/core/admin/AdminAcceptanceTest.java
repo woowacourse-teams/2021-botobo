@@ -27,7 +27,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
                 .post("/api/admin/workbooks", adminWorkbookRequest)
                 .auth()
                 .build()
-                .extractableResponse();
+                .extract();
     }
 
     public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
@@ -35,7 +35,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
                 .post("/api/admin/cards", adminCardRequest)
                 .auth()
                 .build()
-                .extractableResponse();
+                .extract();
     }
 
 

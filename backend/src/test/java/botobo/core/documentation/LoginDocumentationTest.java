@@ -44,6 +44,7 @@ public class LoginDocumentationTest extends DocumentationTest {
                 .mockMvc(mockMvc)
                 .post("/api/login", loginRequest)
                 .build()
-                .addStatusAndIdentifier(status().isOk(), "login-success");
+                .status(status().isOk())
+                .identifier("login-success");
     }
 }

@@ -74,7 +74,7 @@ public class RequestBuilder {
             if (loginFlag) {
                 requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
             }
-            ValidatableResponse response = request.doAction(requestSpecification);
+            ValidatableResponse response = request.action(requestSpecification);
             if (logFlag) {
                 response = response.log().all();
             }
@@ -102,17 +102,17 @@ public class RequestBuilder {
             return HttpStatus.valueOf(response.statusCode());
         }
 
-        public ErrorResponse errorResponse() {
+        public ErrorResponse convertToErrorResponse() {
             return response.as(ErrorResponse.class);
         }
 
-        public ExtractableResponse<Response> extractableResponse() {
+        public ExtractableResponse<Response> extract() {
             return response;
         }
     }
 
     interface RestAssuredRequest {
-        ValidatableResponse doAction(RequestSpecification specification);
+        ValidatableResponse action(RequestSpecification specification);
     }
 
     private static class GetRequest implements RestAssuredRequest {
@@ -125,7 +125,7 @@ public class RequestBuilder {
         }
 
         @Override
-        public ValidatableResponse doAction(RequestSpecification specification) {
+        public ValidatableResponse action(RequestSpecification specification) {
             return specification.get(path, params)
                     .then();
         }
@@ -141,7 +141,7 @@ public class RequestBuilder {
         }
 
         @Override
-        public ValidatableResponse doAction(RequestSpecification specification) {
+        public ValidatableResponse action(RequestSpecification specification) {
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .post(path)
@@ -159,7 +159,7 @@ public class RequestBuilder {
         }
 
         @Override
-        public ValidatableResponse doAction(RequestSpecification specification) {
+        public ValidatableResponse action(RequestSpecification specification) {
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .put(path)
@@ -177,7 +177,7 @@ public class RequestBuilder {
         }
 
         @Override
-        public ValidatableResponse doAction(RequestSpecification specification) {
+        public ValidatableResponse action(RequestSpecification specification) {
             return specification
                     .delete(path, params)
                     .then();

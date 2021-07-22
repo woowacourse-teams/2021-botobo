@@ -47,7 +47,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .get("/api/workbooks")
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isOk(), "workbooks-get-success");
+                .status(status().isOk())
+                .identifier("workbooks-get-success");
     }
 
     @Test
@@ -64,7 +65,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .get("/api/workbooks/{id}/cards", 1)
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isOk(), "workbooks-cards-get-success");
+                .status(status().isOk())
+                .identifier("workbooks-cards-get-success");
 
     }
 

@@ -50,9 +50,10 @@ public class AdminDocumentationTest extends DocumentationTest {
                 .mockMvc(mockMvc)
                 .post("/api/admin/workbooks", adminWorkbookRequest)
                 .auth(token)
-                .headerLocation("/api/admin/workbooks/1")
+                .locationHeader("/api/admin/workbooks/1")
                 .build()
-                .addStatusAndIdentifier(status().isCreated(), "admin-workbooks-post-success");
+                .status(status().isCreated())
+                .identifier("admin-workbooks-post-success");
     }
 
     @Test
@@ -75,9 +76,10 @@ public class AdminDocumentationTest extends DocumentationTest {
                 .mockMvc(mockMvc)
                 .post("/api/admin/cards", adminCardRequest)
                 .auth(token)
-                .headerLocation("/api/admin/cards/1")
+                .locationHeader("/api/admin/cards/1")
                 .build()
-                .addStatusAndIdentifier(status().isCreated(), "admin-cards-post-success");
+                .status(status().isCreated())
+                .identifier("admin-cards-post-success");
     }
 
     @Test
@@ -95,7 +97,8 @@ public class AdminDocumentationTest extends DocumentationTest {
                 .post("/api/admin/cards", adminCardRequest)
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isNotFound(), "admin-cards-post-fail-invalid-workbook");
+                .status(status().isNotFound())
+                .identifier("admin-cards-post-fail-invalid-workbook");
 
     }
 }

@@ -47,6 +47,7 @@ public class UserDocumentationTest extends DocumentationTest {
                 .get("/api/users/me")
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isOk(), "users-find-me-get-success");
+                .status(status().isOk())
+                .identifier("users-find-me-get-success");
     }
 }

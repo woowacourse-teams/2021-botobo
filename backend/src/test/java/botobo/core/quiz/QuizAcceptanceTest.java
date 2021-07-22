@@ -82,7 +82,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.errorResponse();
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("퀴즈를 진행하려면 문제집 아이디가 필요합니다.");
     }
@@ -101,7 +101,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.errorResponse();
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
     }

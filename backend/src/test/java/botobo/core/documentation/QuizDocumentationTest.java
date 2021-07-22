@@ -47,7 +47,8 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .post("/api/quizzes", quizRequest)
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isOk(), "quizzes-post-success");
+                .status(status().isOk())
+                .identifier("quizzes-post-success");
     }
 
     @Test
@@ -65,7 +66,8 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .post("/api/quizzes", quizRequest)
                 .auth(token)
                 .build()
-                .addStatusAndIdentifier(status().isNotFound(), "quizzes-post-fail-invalid-category-id");
+                .status(status().isNotFound())
+                .identifier("quizzes-post-fail-invalid-category-id");
     }
 
     @Test
@@ -79,8 +81,8 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .mockMvc(mockMvc)
                 .get("/api/quizzes/guest")
                 .build()
-                .addStatusAndIdentifier(status().isOk(),
-                        "quizzes-guest-get-success");
+                .status(status().isOk())
+                .identifier("quizzes-guest-get-success");
     }
 
     private List<QuizResponse> generateQuizResponses() {

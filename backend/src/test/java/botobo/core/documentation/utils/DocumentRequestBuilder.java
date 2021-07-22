@@ -34,21 +34,17 @@ public class DocumentRequestBuilder {
             return new Options(new PutPerform<>(path, body));
         }
 
-        public Options get(String path) {
-            return new Options(new GetPerform(path));
+        public Options get(String path, Object... params) {
+            return new Options(new GetPerform(path, params));
         }
 
-        public Options delete(String path) {
-            return new Options(new DeletePerform(path));
+        public Options delete(String path, Object... params) {
+            return new Options(new DeletePerform(path, params));
         }
 
         public MockMvcFunction mockMvc(MockMvc mockMvc) {
             DocumentRequestBuilder.mockMvc = mockMvc;
             return this;
-        }
-
-        public Options get(String path, Object... params) {
-            return new Options(new GetPerformWithParam(path, params));
         }
     }
 
@@ -57,7 +53,7 @@ public class DocumentRequestBuilder {
         private ResultActions resultActions;
         private boolean loginFlag;
         private boolean headerFlag;
-        private String headerLocation;
+        private String location;
         private String accessToken;
 
         public Options(HttpMethodRequest request) {
@@ -71,9 +67,9 @@ public class DocumentRequestBuilder {
             return this;
         }
 
-        public Options headerLocation(String headerLocation) {
+        public Options locationHeader(String location) {
             this.headerFlag = true;
-            this.headerLocation = headerLocation;
+            this.location = location;
             return this;
         }
 
@@ -84,18 +80,21 @@ public class DocumentRequestBuilder {
             }
             resultActions = mockMvc.perform(requestBuilder);
             if (headerFlag) {
-                resultActions = resultActions.andExpect(header().string("Location", headerLocation));
+                resultActions = resultActions.andExpect(header().string("Location", location));
             }
             return this;
         }
 
-        public void addStatusAndIdentifier(ResultMatcher resultStatus, String documentIdentifier) throws Exception {
-            resultActions.andExpect(resultStatus)
-                    .andDo(document(documentIdentifier,
-                            getDocumentRequest(),
-                            getDocumentResponse()));
+        public Options status(ResultMatcher resultStatus) throws Exception {
+            resultActions = resultActions.andExpect(resultStatus);
+            return this;
         }
 
+        public void identifier(String documentIdentifier) throws Exception {
+            resultActions.andDo(document(documentIdentifier,
+                    getDocumentRequest(),
+                    getDocumentResponse()));
+        }
     }
 
     interface HttpMethodRequest {
@@ -138,22 +137,9 @@ public class DocumentRequestBuilder {
 
     private static class GetPerform implements HttpMethodRequest {
         private final String path;
-
-        public GetPerform(String path) {
-            this.path = path;
-        }
-
-        @Override
-        public MockHttpServletRequestBuilder doAction() {
-            return get(path);
-        }
-    }
-
-    private static class GetPerformWithParam implements HttpMethodRequest {
-        private final String path;
         private final Object[] params;
 
-        public GetPerformWithParam(String path, Object[] params) {
+        public GetPerform(String path, Object[] params) {
             this.path = path;
             this.params = params;
         }
@@ -164,17 +150,18 @@ public class DocumentRequestBuilder {
         }
     }
 
-
     private static class DeletePerform implements HttpMethodRequest {
         private final String path;
+        private final Object[] params;
 
-        public DeletePerform(String path) {
+        public DeletePerform(String path, Object[] params) {
             this.path = path;
+            this.params = params;
         }
 
         @Override
         public MockHttpServletRequestBuilder doAction() {
-            return delete(path);
+            return delete(path, params);
         }
     }
 }

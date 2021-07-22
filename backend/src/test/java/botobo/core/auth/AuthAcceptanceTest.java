@@ -39,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return request()
                 .post("/api/login", loginRequest)
                 .build()
-                .extractableResponse();
+                .extract();
     }
 
     @Test

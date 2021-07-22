@@ -36,7 +36,7 @@ public class UserAcceptanceTest extends AuthAcceptanceTest {
         final HttpResponse response = request()
                 .get("/api/users/me")
                 .build();
-        final ErrorResponse errorResponse = response.errorResponse();
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);

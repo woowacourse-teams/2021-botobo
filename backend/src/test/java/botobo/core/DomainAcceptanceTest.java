@@ -14,7 +14,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .post("/api/admin/workbooks", adminWorkbookRequest)
                 .auth()
                 .build()
-                .extractableResponse();
+                .extract();
     }
 
     public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
@@ -29,7 +29,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                     .post("/api/admin/cards", adminCardRequest)
                     .auth()
                     .build()
-                    .extractableResponse();
+                    .extract();
         }
     }
 }
