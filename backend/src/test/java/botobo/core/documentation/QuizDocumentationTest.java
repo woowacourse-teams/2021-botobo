@@ -51,7 +51,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 카테고리 존재하지 않음")
+    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
     void createQuizWithInvalidCategoryId() throws Exception {
         // given
         String token = "botobo.access.token";
