@@ -31,3 +31,16 @@ export interface CardsResponse {
   workbookName: string;
   cards: CardResponse[];
 }
+
+export interface TagResponse {
+  id: number;
+  name: string;
+}
+
+export interface SharedCardsResponse {
+  id: number;
+  workbookName: string;
+  cardCount: number;
+  tags: TagResponse[];
+  cards: CardResponse[];
+}

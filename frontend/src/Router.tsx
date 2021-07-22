@@ -20,6 +20,7 @@ import {
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
+  SharedCardsPage,
   SharedWorkbookPage,
 } from './pages';
 import { loginState } from './recoil';
@@ -76,6 +77,10 @@ const Router = () => (
       <Route exact path={ROUTE.SHARED_WORKBOOK.PATH}>
         <PageHeader title={ROUTE.SHARED_WORKBOOK.TITLE} />
         <SharedWorkbookPage />
+      </Route>
+      <Route exact path={ROUTE.SHARED_CARDS.PATH}>
+        <PageHeader title={ROUTE.SHARED_CARDS.TITLE} />
+        <SharedCardsPage />
       </Route>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />

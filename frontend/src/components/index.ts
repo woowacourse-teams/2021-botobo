@@ -13,3 +13,5 @@ export { default as CardSkeletonList } from './CardSkeletonList';
 export { default as HeaderSkeleton } from './HeaderSkeleton';
 export { default as SharedWorkbookList } from './SharedWorkbookList';
 export { default as SharedWorkbook } from './SharedWorkbook';
+export { default as SharedQnACard } from './SharedQnACard';
+export { default as Checkbox } from './Checkbox';
