@@ -10,7 +10,9 @@ import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class WorkbookTest {
 
@@ -29,6 +31,9 @@ class WorkbookTest {
         assertThat(workbook.getName()).isEqualTo(workbookName);
         assertFalse(workbook.isDeleted());
         assertFalse(workbook.isPublic());
+        assertNotNull(workbook.getCards());
+        assertThat(workbook.getCards().size()).isEqualTo(0);
+        assertNull(workbook.getUser());
     }
 
     @Test
@@ -62,5 +67,4 @@ class WorkbookTest {
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
 }
