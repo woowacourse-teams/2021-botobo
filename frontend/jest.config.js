@@ -1,0 +1,7 @@
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  moduleNameMapper: {
+    '\\.svg$': '<rootDir>/src/__mocks__/svgrMock.tsx',
+  },
+};

@@ -1,6 +1,6 @@
 package botobo.core.quiz.domain.card;
 
-import botobo.core.quiz.domain.BaseEntity;
+import botobo.core.common.domain.BaseEntity;
 import botobo.core.quiz.domain.workbook.Workbook;
 import lombok.Builder;
 import lombok.Getter;

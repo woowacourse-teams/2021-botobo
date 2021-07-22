@@ -1,0 +1,18 @@
+<included>
+    <property name="HTTP_LOG_PATH" value="logs/http"/>
+    <property name="HTTP_LOG_FILE_NAME" value="http"/>
+
+    <appender name="HTTP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HTTP_LOG_PATH}/${HTTP_LOG_FILE_NAME}.log</file>
+
+        <encoder>
+            <pattern>${HTTP_FILE_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HTTP_LOG_PATH}/${HTTP_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxFileSize>3MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+    </appender>
+</included>
