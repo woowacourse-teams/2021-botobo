@@ -1,4 +1,4 @@
-package botobo.core.documentation;
+package botobo.core.documentation.utils;
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;

@@ -1,7 +1,7 @@
 package botobo.core.documentation;
 
-import botobo.core.utils.DocumentRequestBuilder;
-import botobo.core.utils.DocumentRequestBuilder.MockMvcFunction;
+import botobo.core.documentation.utils.DocumentRequestBuilder;
+import botobo.core.documentation.utils.DocumentRequestBuilder.MockMvcFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.mock.mockito.MockBean;

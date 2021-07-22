@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
-import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
+import static botobo.core.documentation.utils.DocumentationUtils.getDocumentRequest;
+import static botobo.core.documentation.utils.DocumentationUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
