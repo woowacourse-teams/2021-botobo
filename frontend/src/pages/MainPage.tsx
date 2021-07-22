@@ -24,6 +24,7 @@ const MainPage = () => {
             backgroundColor="white"
             color="green"
             hasShadow={true}
+            onClick={() => history.push(ROUTE.WORKBOOK_ADD.PATH)}
           >
             <StyledPlusIcon />
           </Button>
