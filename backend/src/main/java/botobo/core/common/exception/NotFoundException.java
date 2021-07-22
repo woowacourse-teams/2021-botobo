@@ -1,4 +1,4 @@
-package botobo.core.exception;
+package botobo.core.common.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException() {

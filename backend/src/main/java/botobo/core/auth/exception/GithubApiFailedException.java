@@ -1,6 +1,6 @@
 package botobo.core.auth.exception;
 
-import botobo.core.exception.UnauthorizedException;
+import botobo.core.common.exception.UnauthorizedException;
 
 public class GithubApiFailedException extends UnauthorizedException {
 

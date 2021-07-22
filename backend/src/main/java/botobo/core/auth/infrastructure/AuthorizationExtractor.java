@@ -1,6 +1,6 @@
 package botobo.core.auth.infrastructure;
 
-import botobo.core.exception.UnauthorizedException;
+import botobo.core.common.exception.UnauthorizedException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

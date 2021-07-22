@@ -1,6 +1,6 @@
 package botobo.core.quiz.exception;
 
-import botobo.core.exception.NotFoundException;
+import botobo.core.common.exception.NotFoundException;
 
 public class CardNotFoundException extends NotFoundException {
     public CardNotFoundException() {
