@@ -2,8 +2,6 @@ package botobo.core.quiz.application;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.card.Cards;
-import botobo.core.quiz.domain.card.FixedCards;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.QuizResponse;
@@ -18,11 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.times;
@@ -119,10 +115,6 @@ class QuizServiceTest {
     @Test
     @DisplayName("첫 비회원용 퀴즈 생성 요청 - 성공")
     void createQuizForGuest() {
-        FixedCards fixedCards = FixedCards.getInstance();
-        if (!fixedCards.isFull()) {
-            given(cardRepository.findFirst10By()).willReturn(cards);
-        }
         // when
         List<QuizResponse> quizResponses = quizService.createQuizForGuest();
 

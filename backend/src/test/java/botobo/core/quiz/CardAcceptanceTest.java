@@ -1,7 +1,6 @@
 package botobo.core.quiz;
 
 import botobo.core.DomainAcceptanceTest;
-import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

@@ -1,8 +1,6 @@
 package botobo.core.auth;
 
 import botobo.core.AcceptanceTest;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.dto.GithubUserInfoResponse;
 import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
@@ -12,8 +10,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

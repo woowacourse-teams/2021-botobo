@@ -3,18 +3,14 @@ package botobo.core.quiz.application;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.card.Cards;
-import botobo.core.quiz.domain.card.FixedCards;
-import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.domain.card.GuestCards;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.QuizResponse;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,8 +27,10 @@ public class QuizService {
     public List<QuizResponse> createQuiz(List<Long> workbookIds) {
         validateWorkbookIds(workbookIds);
 
-        Cards nextCards = new Cards(cardRepository.findNextCardAndWorkbookIdIn(workbookIds));
+        final List<Card> nextShownCards = cardRepository.findNextCardAndWorkbookIdIn(workbookIds);
+        Cards nextCards = new Cards(nextShownCards);
         if (nextCards.size() == 10) {
+            nextShownCards.forEach(Card::cancelNextQuiz);
             return QuizResponse.cardsOf(nextCards);
         }
 
@@ -41,6 +39,7 @@ public class QuizService {
 
         Cards quiz = new Cards(cards.subList(index));
         quiz.addAll(nextCards);
+        nextShownCards.forEach(Card::cancelNextQuiz);
         return QuizResponse.cardsOf(quiz);
     }
 
@@ -51,12 +50,7 @@ public class QuizService {
     }
 
     public List<QuizResponse> createQuizForGuest() {
-        FixedCards fixedCards = FixedCards.getInstance();
-        if (fixedCards.isFull()) {
-            return QuizResponse.listOf(fixedCards.getCards());
-        }
-        final List<Card> quiz = cardRepository.findFirst10By();
-        fixedCards.initialize(quiz);
-        return QuizResponse.listOf(quiz);
+        Cards guestCards = GuestCards.getInstance();
+        return QuizResponse.cardsOf(guestCards);
     }
 }
