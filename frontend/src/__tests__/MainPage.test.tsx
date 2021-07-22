@@ -1,15 +1,21 @@
-import { waitFor } from '@testing-library/react';
 import React from 'react';
+import { RecoilRoot } from 'recoil';
 
 import { MainPage } from '../pages';
-import { render } from '../test-utils';
+import { loginState } from '../recoil';
+import { render, screen, waitFor } from '../test-utils';
 
 describe('메인 페이지 테스트', () => {
+  beforeAll(() => {
+    render(
+      <RecoilRoot initializeState={(snap) => snap.set(loginState, true)}>
+        <MainPage />
+      </RecoilRoot>
+    );
+  });
   test('렌더링 테스트', async () => {
-    const { getByText } = render(<MainPage />);
-
     await waitFor(() => {
-      expect(getByText('Java')).toBeVisible();
+      expect(screen.getByText('Java')).toBeVisible();
     });
   });
 });
