@@ -40,20 +40,6 @@ public class WorkbookRepositoryTest {
         testEntityManager.flush();
     }
 
-//    @Test
-//    @DisplayName("Workbook 저장 - 실패, 이름이 최대 길이를 초과")
-//    void saveWithLongName() {
-//        // given
-//        Workbook workbook = Workbook.builder()
-//                .name("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
-//                .isDeleted(false)
-//                .build();
-//
-//        // when, then
-//        assertThatThrownBy(() -> workbookRepository.save(workbook))
-//                .isInstanceOf(DataIntegrityViolationException.class);
-//    }
-
     @Test
     @DisplayName("Workbook id로 조회 - 성공")
     void findById() {
