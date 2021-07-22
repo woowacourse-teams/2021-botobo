@@ -69,6 +69,13 @@ public class Workbook extends BaseEntity {
         }
     }
 
+    public String author() {
+        if (Objects.isNull(user)) {
+            return "존재하지 않는 유저";
+        }
+        return user.getUserName();
+    }
+
     public int cardCount() {
         return cards.size();
     }

@@ -67,4 +67,18 @@ class WorkbookTest {
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+
+    @Test
+    @DisplayName("문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
+    void authorWithNullUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("단계별 자바 문제집")
+                .user(null)
+                .build();
+
+        // when, then
+        assertThat(workbook.author()).isEqualTo("존재하지 않는 유저");
+    }
 }
