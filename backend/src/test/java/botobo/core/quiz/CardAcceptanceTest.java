@@ -1,5 +1,6 @@
 package botobo.core.quiz;
 
+import botobo.core.DomainAcceptanceTest;
 import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import io.restassured.RestAssured;
@@ -21,7 +22,7 @@ import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
-public class CardAcceptanceTest extends AuthAcceptanceTest {
+public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {

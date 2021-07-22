@@ -1,5 +1,6 @@
 package botobo.core.quiz;
 
+import botobo.core.DomainAcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.AuthAcceptanceTest;
@@ -41,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Quiz 인수 테스트")
-public class QuizAcceptanceTest extends AuthAcceptanceTest {
+public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
