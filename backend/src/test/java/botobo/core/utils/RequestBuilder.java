@@ -44,11 +44,19 @@ public class RequestBuilder {
         private final RestAssuredRequest request;
         private RequestSpecification requestSpecification;
         private boolean loginFlag;
+        private boolean logFlag;
 
         public Options(RestAssuredRequest request) {
             this.request = request;
-            this.requestSpecification = RestAssured.given().log().all();
+            this.requestSpecification = RestAssured.given();
             this.loginFlag = false;
+            this.logFlag = false;
+        }
+
+        public Options log() {
+            this.logFlag = true;
+            this.requestSpecification = requestSpecification.log().all();
+            return this;
         }
 
         public Options auth() {
@@ -66,7 +74,10 @@ public class RequestBuilder {
             if (loginFlag) {
                 requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
             }
-            ValidatableResponse response = request.doAction(requestSpecification).log().all();
+            ValidatableResponse response = request.doAction(requestSpecification);
+            if (logFlag) {
+                response = response.log().all();
+            }
             return new HttpResponse(response.extract());
         }
 

@@ -19,11 +19,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
         for (AdminWorkbookRequest adminRequest : adminRequests) {
-            request()
-                    .post("/api/admin/workbooks", adminRequest)
-                    .auth()
-                    .build()
-                    .extractableResponse();
+            문제집_생성_요청(adminRequest);
         }
     }
 

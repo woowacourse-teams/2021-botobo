@@ -32,18 +32,16 @@ public class AcceptanceTest {
 
     /**
      * example:
-     * <p>
      * <로그인이 필요한 경우>
      * request()
      * .get(path, params)   http method type
      * .auth()         default: false
+     * .log()          default: false
      * .build();
-     * <p>
      * <로그인이 필요하지 않은 경우>
      * request()
      * .post(path, body)   http method type
      * .build();
-     * - logging is default
      */
     protected HttpFunction request() {
         return requestBuilder.build();

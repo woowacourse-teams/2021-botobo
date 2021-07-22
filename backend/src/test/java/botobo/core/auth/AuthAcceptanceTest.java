@@ -5,7 +5,6 @@ import botobo.core.auth.dto.GithubUserInfoResponse;
 import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
 import botobo.core.auth.infrastructure.GithubOauthManager;
-import botobo.core.utils.RequestBuilder.HttpResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -46,22 +45,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("로그인을 한다 - 성공")
     void login() {
-        // given
-        LoginRequest loginRequest = new LoginRequest("githubCode");
-        GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .userName("githubUser")
-                .githubId(1L)
-                .profileUrl("github.io")
-                .build();
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
-
-        // when
-        final HttpResponse response = request()
-                .post("/api/login", loginRequest)
-                .build();
-
-        // then
-        final TokenResponse tokenResponse = response.convertBody(TokenResponse.class);
+        final TokenResponse tokenResponse = 로그인되어_있음();
         assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 }
