@@ -1,47 +1,41 @@
 package botobo.core.admin;
 
+import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.admin.dto.AdminWorkbookResponse;
-import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.exception.ErrorResponse;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static botobo.core.utils.TestUtils.extractId;
 import static botobo.core.utils.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends AuthAcceptanceTest {
+public class AdminAcceptanceTest extends AcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_CATEGORY_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminWorkbookRequest)
-                .when().post("/api/admin/workbooks")
-                .then().log().all()
-                .extract();
+        return request()
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth()
+                .build()
+                .extractableResponse();
     }
 
     public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminCardRequest)
-                .when().post("/api/admin/cards")
-                .then().log().all()
-                .extract();
+        return request()
+                .post("/api/admin/cards", adminCardRequest)
+                .auth()
+                .build()
+                .extractableResponse();
     }
 
 

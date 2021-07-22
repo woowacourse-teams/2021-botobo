@@ -1,8 +1,8 @@
 package botobo.core;
 
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.utils.RequestBuilder;
 import botobo.core.utils.RequestBuilder.HttpFunction;
-import botobo.core.auth.infrastructure.JwtTokenProvider;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +32,17 @@ public class AcceptanceTest {
 
     /**
      * example:
+     * <p>
+     * <로그인이 필요한 경우>
      * request()
-     * .get("/path")   http method type
+     * .get(path, params)   http method type
      * .auth()         default: false
      * .build();
-     *
+     * <p>
+     * <로그인이 필요하지 않은 경우>
+     * request()
+     * .post(path, body)   http method type
+     * .build();
      * - logging is default
      */
     protected HttpFunction request() {

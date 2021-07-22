@@ -5,40 +5,40 @@ import botobo.core.auth.dto.GithubUserInfoResponse;
 import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
 import botobo.core.auth.infrastructure.GithubOauthManager;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import botobo.core.utils.RequestBuilder.HttpResponse;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("Auth Acceptance 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @MockBean
     private GithubOauthManager githubOauthManager;
 
-    protected TokenResponse 로그인되어_있음() {
-        ExtractableResponse<Response> response = 로그인_요청();
-        return response.as(TokenResponse.class);
-    }
-
-    private ExtractableResponse<Response> 로그인_요청() {
+    @Test
+    @DisplayName("로그인을 한다 - 성공")
+    void login() {
+        // given
         LoginRequest loginRequest = new LoginRequest("githubCode");
         GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
                 .userName("githubUser")
                 .githubId(1L)
                 .profileUrl("github.io")
                 .build();
-
         given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
 
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().post("/api/login")
-                .then().log().all()
-                .extract();
+        // when
+        final HttpResponse response = request()
+                .post("/api/login", loginRequest)
+                .build();
+
+        // then
+        final TokenResponse tokenResponse = response.convertBody(TokenResponse.class);
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 }

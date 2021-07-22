@@ -7,11 +7,12 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
 public class RequestBuilder {
-    private String accessToken;
+    private final String accessToken;
 
     public RequestBuilder(String accessToken) {
         this.accessToken = accessToken;
@@ -22,27 +23,40 @@ public class RequestBuilder {
     }
 
     public class HttpFunction {
-        public Details get(String path, Object... params) {
-            return new Details(new GetRequest(path, params));
+        public Options get(String path, Object... params) {
+            return new Options(new GetRequest(path, params));
+        }
+
+        public <T> Options post(String path, T body) {
+            return new Options(new PostRequest<>(path, body));
+        }
+
+        public <T> Options put(String path, T body) {
+            return new Options(new PutRequest<>(path, body));
+        }
+
+        public Options delete(String path, Object... params) {
+            return new Options(new DeleteRequest(path, params));
         }
     }
 
-    public class Details {
+    public class Options {
         private final RestAssuredRequest request;
+        private RequestSpecification requestSpecification;
         private boolean loginFlag;
 
-        public Details(RestAssuredRequest request) {
+        public Options(RestAssuredRequest request) {
             this.request = request;
+            this.requestSpecification = RestAssured.given().log().all();
             this.loginFlag = false;
         }
 
-        public Details auth() {
+        public Options auth() {
             this.loginFlag = true;
             return this;
         }
 
         public HttpResponse build() {
-            RequestSpecification requestSpecification = RestAssured.given().log().all();
             if (loginFlag) {
                 requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
             }
@@ -96,6 +110,59 @@ public class RequestBuilder {
         @Override
         public ValidatableResponse doAction(RequestSpecification specification) {
             return specification.get(path, params)
+                    .then();
+        }
+    }
+
+    private static class PostRequest<T> implements RestAssuredRequest {
+        private final String path;
+        private final T body;
+
+        public PostRequest(String path, T body) {
+            this.path = path;
+            this.body = body;
+        }
+
+        @Override
+        public ValidatableResponse doAction(RequestSpecification specification) {
+            return specification.body(body)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .post(path)
+                    .then();
+        }
+    }
+
+    private static class PutRequest<T> implements RestAssuredRequest {
+        private final String path;
+        private final T body;
+
+        public PutRequest(String path, T body) {
+            this.path = path;
+            this.body = body;
+        }
+
+        @Override
+        public ValidatableResponse doAction(RequestSpecification specification) {
+            return specification.body(body)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .put(path)
+                    .then();
+        }
+    }
+
+    private static class DeleteRequest implements RestAssuredRequest {
+        private final String path;
+        private final Object[] params;
+
+        public DeleteRequest(String path, Object[] params) {
+            this.path = path;
+            this.params = params;
+        }
+
+        @Override
+        public ValidatableResponse doAction(RequestSpecification specification) {
+            return specification
+                    .delete(path, params)
                     .then();
         }
     }

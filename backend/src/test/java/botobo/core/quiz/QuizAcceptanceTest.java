@@ -1,20 +1,18 @@
 package botobo.core.quiz;
 
-import botobo.core.utils.RequestBuilder.HttpResponse;
+import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.exception.ErrorResponse;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
-import io.restassured.RestAssured;
+import botobo.core.utils.RequestBuilder.HttpResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Quiz 인수 테스트")
-public class QuizAcceptanceTest extends AuthAcceptanceTest {
+public class QuizAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -62,20 +60,16 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when
-        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
     }
 
@@ -87,18 +81,14 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        final ErrorResponse errorResponse = response.errorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("퀴즈를 진행하려면 문제집 아이디가 필요합니다.");
     }
 
@@ -110,18 +100,14 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        final ErrorResponse errorResponse = response.errorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
     }
 
@@ -131,20 +117,16 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
         // given
         final ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(new AdminWorkbookRequest("문제집"));
         final Long id = extractId(categoryResponse);
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(id));
+        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(id));
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        final ErrorResponse errorResponse = response.errorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
     }
 
@@ -185,36 +167,30 @@ public class QuizAcceptanceTest extends AuthAcceptanceTest {
     }
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(로그인되어_있음().getAccessToken())
-                .body(adminWorkbookRequest)
-                .when().post("/api/admin/workbooks")
-                .then().log().all()
-                .extract();
+        return request()
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth()
+                .build()
+                .extractableResponse();
     }
 
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
-        for (AdminWorkbookRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/workbooks")
-                    .then().log().all()
-                    .extract();
+    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
+        for (AdminWorkbookRequest adminRequest : adminRequests) {
+            request()
+                    .post("/api/admin/workbooks", adminRequest)
+                    .auth()
+                    .build()
+                    .extractableResponse();
         }
     }
 
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
-        for (AdminCardRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/cards")
-                    .then().log().all()
-                    .extract();
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
+        for (AdminCardRequest adminCardRequest : adminCardRequests) {
+            request()
+                    .post("/api/admin/cards", adminCardRequest)
+                    .auth()
+                    .build()
+                    .extractableResponse();
         }
     }
 }

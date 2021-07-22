@@ -1,17 +1,15 @@
 package botobo.core.quiz;
 
-import botobo.core.utils.RequestBuilder.HttpResponse;
+import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.quiz.dto.WorkbookCardResponse;
 import botobo.core.quiz.dto.WorkbookResponse;
-import io.restassured.RestAssured;
+import botobo.core.utils.RequestBuilder.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +23,7 @@ import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Workbook 인수 테스트")
-public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
+public class WorkbookAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -84,27 +82,23 @@ public class WorkbookAcceptanceTest extends AuthAcceptanceTest {
         assertThat(workbookCardResponse.getCards()).isEmpty();
     }
 
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> requests) {
-        for (AdminWorkbookRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/workbooks")
-                    .then().log().all()
-                    .extract();
+    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminWorkbookRequests) {
+        for (AdminWorkbookRequest adminWorkbookRequest : adminWorkbookRequests) {
+            request()
+                    .post("/api/admin/workbooks", adminWorkbookRequest)
+                    .auth()
+                    .build()
+                    .extractableResponse();
         }
     }
 
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> requests) {
-        for (AdminCardRequest request : requests) {
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .auth().oauth2(로그인되어_있음().getAccessToken())
-                    .body(request)
-                    .when().post("/api/admin/cards")
-                    .then().log().all()
-                    .extract();
+    public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
+        for (AdminCardRequest adminCardRequest : adminCardRequests) {
+            request()
+                    .post("/api/admin/cards", adminCardRequest)
+                    .auth()
+                    .build()
+                    .extractableResponse();
         }
     }
 }
