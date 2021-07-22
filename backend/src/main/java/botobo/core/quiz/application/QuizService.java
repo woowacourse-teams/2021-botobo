@@ -2,6 +2,7 @@ package botobo.core.quiz.application;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.card.Cards;
 import botobo.core.quiz.domain.card.FixedCards;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
@@ -27,17 +28,26 @@ public class QuizService {
         this.cardRepository = cardRepository;
     }
 
-    public List<QuizResponse> createQuiz(List<Long> ids) {
-        List<Card> cards = new ArrayList<>();
-        for (Long id : ids) {
-            final Workbook workbook = workbookRepository.findById(id)
-                    .orElseThrow(WorkbookNotFoundException::new);
-            cards.addAll(workbook.getCardsAsList());
+    public List<QuizResponse> createQuiz(List<Long> workbookIds) {
+        validateWorkbookIds(workbookIds);
+
+        Cards nextCards = new Cards(cardRepository.findNextCardAndWorkbookIdIn(workbookIds));
+        if (nextCards.size() == 10) {
+            return QuizResponse.cardsOf(nextCards);
         }
-        final int maxLimit = Math.min(cards.size(), 10);
-        Collections.shuffle(cards);
-        final List<Card> quiz = cards.stream().limit(maxLimit).collect(Collectors.toList());
-        return QuizResponse.listOf(quiz);
+
+        Cards cards = new Cards(cardRepository.findCardsByWorkbookId(workbookIds)).shuffle();
+        final int index = Math.min(cards.size(), 10 - nextCards.size());
+
+        Cards quiz = new Cards(cards.subList(index));
+        quiz.addAll(nextCards);
+        return QuizResponse.cardsOf(quiz);
+    }
+
+    private void validateWorkbookIds(List<Long> workbookIds) {
+        if (!workbookRepository.existsByIdIsIn(workbookIds)) {
+            throw new WorkbookNotFoundException();
+        }
     }
 
     public List<QuizResponse> createQuizForGuest() {

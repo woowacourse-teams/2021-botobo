@@ -1,10 +1,8 @@
 package botobo.core.quiz;
 
 import botobo.core.DomainAcceptanceTest;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.auth.AuthAcceptanceTest;
 import botobo.core.common.exception.ErrorResponse;
+import botobo.core.quiz.dto.NextQuizCardsRequest;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import io.restassured.RestAssured;
@@ -19,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static botobo.core.Fixture.CARD_REQUEST_1;
 import static botobo.core.Fixture.CARD_REQUEST_10;
@@ -46,7 +45,6 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-
         여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3));
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
                 CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
@@ -99,6 +97,50 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isEqualTo("퀴즈를 진행하려면 문제집 아이디가 필요합니다.");
+    }
+
+    @Test
+    @DisplayName("다음에 또 보기가 포함된 카드를 퀴즈에 포함한다. - 성공")
+    void createQuizIncludeNextQuizOption() {
+        // given
+        다음에_또_보기(List.of(1L, 2L, 3L));
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest =
+                new QuizRequest(ids);
+
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(quizRequest)
+                        .when().post("/api/quizzes")
+                        .then().log().all()
+                        .extract();
+
+        // when
+        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(quizResponses.size()).isEqualTo(10);
+        assertThat(quizResponses.stream()
+                .map(QuizResponse::getQuestion)
+                .collect(Collectors.toList()))
+                .containsAll(List.of("1", "2", "3"));
+    }
+
+    public ExtractableResponse<Response> 다음에_또_보기(List<Long> cardIds) {
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
+                .cardIds(cardIds)
+                .build();
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(로그인되어_있음().getAccessToken())
+                .body(request)
+                .when().put("/api/cards/next-quiz")
+                .then().log().all()
+                .extract();
     }
 
     @Test

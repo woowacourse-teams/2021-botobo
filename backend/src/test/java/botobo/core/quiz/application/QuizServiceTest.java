@@ -2,6 +2,7 @@ package botobo.core.quiz.application;
 
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
+import botobo.core.quiz.domain.card.Cards;
 import botobo.core.quiz.domain.card.FixedCards;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
@@ -13,12 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -71,39 +74,46 @@ class QuizServiceTest {
     }
 
     @Test
-    @DisplayName("문제집 id(Long)를 이용해서 1개의 카드가 담긴 퀴즈 생성 - 성공")
+    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 성공")
     void createQuiz() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(workbookRepository.existsByIdIsIn(any())).willReturn(true);
+        given(cardRepository.findNextCardAndWorkbookIdIn(any())).willReturn(new ArrayList<>());
+        given(cardRepository.findCardsByWorkbookId(any())).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
-        assertThat(quizResponses.size()).isEqualTo(1);
+        assertThat(quizResponses.size()).isEqualTo(10);
 
-        then(workbookRepository)
+        then(cardRepository)
                 .should(times(1))
-                .findById(anyLong());
+                .findCardsByWorkbookId(any());
     }
 
     @Test
-    @DisplayName("문제집 두 개의 id(Long)를 이용해서 2개의 카드가 담긴 퀴즈 생성 - 성공")
+    @DisplayName("문제집 id(Long) 및 다음에 또보기 카드 10개를 포함한 퀴즈 생성 - 성공")
     void createQuizWithOneCards() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L);
-        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbookWithOneCard));
+        List<Long> ids = Collections.singletonList(1L);
+        given(workbookRepository.existsByIdIsIn(any())).willReturn(true);
+        given(cardRepository.findNextCardAndWorkbookIdIn(any())).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
 
         // then
-        assertThat(quizResponses.size()).isEqualTo(2);
+        assertThat(quizResponses.size()).isEqualTo(10);
 
-        then(workbookRepository)
-                .should(times(2))
-                .findById(anyLong());
+        then(cardRepository)
+                .should(times(1))
+                .findNextCardAndWorkbookIdIn(any());
+
+        then(cardRepository)
+                .should(times(0))
+                .findCardsByWorkbookId(any());
     }
 
     @Test

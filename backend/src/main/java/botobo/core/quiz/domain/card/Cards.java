@@ -7,7 +7,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +18,19 @@ public class Cards {
 
     @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Card> cards = new ArrayList<>();
+
+    public Cards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public Cards shuffle() {
+        Collections.shuffle(cards);
+        return this;
+    }
+
+    public List<Card> subList(int size) {
+        return cards.stream().limit(size).collect(Collectors.toList());
+    }
 
     public void addCard(Card card) {
         cards.add(card);
@@ -33,7 +48,7 @@ public class Cards {
         return cards.isEmpty();
     }
 
-    public void addAll(List<Card> cards) {
-        this.cards.addAll(cards);
+    public void addAll(Cards cards) {
+        this.cards.addAll(cards.getCards());
     }
 }
