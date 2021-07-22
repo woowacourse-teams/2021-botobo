@@ -1,6 +1,6 @@
 package botobo.core.utils;
 
-import botobo.core.exception.ErrorResponse;
+import botobo.core.common.exception.ErrorResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,17 +12,17 @@ import org.springframework.http.MediaType;
 import java.util.List;
 
 public class RequestBuilder {
-    private final String accessToken;
+    private static String accessToken;
 
     public RequestBuilder(String accessToken) {
-        this.accessToken = accessToken;
+        RequestBuilder.accessToken = accessToken;
     }
 
     public HttpFunction build() {
         return new HttpFunction();
     }
 
-    public class HttpFunction {
+    public static class HttpFunction {
         public Options get(String path, Object... params) {
             return new Options(new GetRequest(path, params));
         }
@@ -40,7 +40,7 @@ public class RequestBuilder {
         }
     }
 
-    public class Options {
+    public static class Options {
         private final RestAssuredRequest request;
         private RequestSpecification requestSpecification;
         private boolean loginFlag;
@@ -56,6 +56,12 @@ public class RequestBuilder {
             return this;
         }
 
+        public Options auth(String token) {
+            RequestBuilder.accessToken = token;
+            this.loginFlag = true;
+            return this;
+        }
+
         public HttpResponse build() {
             if (loginFlag) {
                 requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
@@ -66,7 +72,7 @@ public class RequestBuilder {
 
     }
 
-    public class HttpResponse {
+    public static class HttpResponse {
         private final ExtractableResponse<Response> response;
 
         public HttpResponse(ExtractableResponse<Response> response) {

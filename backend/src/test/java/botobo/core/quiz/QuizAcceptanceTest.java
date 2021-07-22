@@ -3,7 +3,7 @@ package botobo.core.quiz;
 import botobo.core.AcceptanceTest;
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.common.exception.ErrorResponse;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import botobo.core.utils.RequestBuilder.HttpResponse;

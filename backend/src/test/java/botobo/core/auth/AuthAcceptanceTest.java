@@ -6,6 +6,8 @@ import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
 import botobo.core.auth.infrastructure.GithubOauthManager;
 import botobo.core.utils.RequestBuilder.HttpResponse;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +21,27 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @MockBean
     private GithubOauthManager githubOauthManager;
+
+    protected TokenResponse 로그인되어_있음() {
+        ExtractableResponse<Response> response = 로그인_요청();
+        return response.as(TokenResponse.class);
+    }
+
+    private ExtractableResponse<Response> 로그인_요청() {
+        LoginRequest loginRequest = new LoginRequest("githubCode");
+        GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
+                .userName("githubUser")
+                .githubId(1L)
+                .profileUrl("github.io")
+                .build();
+
+        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
+
+        return request()
+                .post("/api/login", loginRequest)
+                .build()
+                .extractableResponse();
+    }
 
     @Test
     @DisplayName("로그인을 한다 - 성공")
