@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
         for (HttpMessageConverter<?> converter : converters) {
             if (converter instanceof MappingJackson2HttpMessageConverter) {
                 MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter) converter;
-                jacksonConverter.setPrettyPrint( true );
+                jacksonConverter.setPrettyPrint(true);
             }
         }
     }

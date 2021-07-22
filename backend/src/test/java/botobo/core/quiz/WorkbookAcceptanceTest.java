@@ -1,8 +1,6 @@
 package botobo.core.quiz;
 
-import botobo.core.AcceptanceTest;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.DomainAcceptanceTest;
 import botobo.core.quiz.dto.WorkbookCardResponse;
 import botobo.core.quiz.dto.WorkbookResponse;
 import botobo.core.utils.RequestBuilder.HttpResponse;
@@ -23,7 +21,7 @@ import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Workbook 인수 테스트")
-public class WorkbookAcceptanceTest extends AcceptanceTest {
+public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -80,25 +78,5 @@ public class WorkbookAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_2.getName());
         assertThat(workbookCardResponse.getCards()).isEmpty();
-    }
-
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminWorkbookRequests) {
-        for (AdminWorkbookRequest adminWorkbookRequest : adminWorkbookRequests) {
-            request()
-                    .post("/api/admin/workbooks", adminWorkbookRequest)
-                    .auth()
-                    .build()
-                    .extractableResponse();
-        }
-    }
-
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
-        for (AdminCardRequest adminCardRequest : adminCardRequests) {
-            request()
-                    .post("/api/admin/cards", adminCardRequest)
-                    .auth()
-                    .build()
-                    .extractableResponse();
-        }
     }
 }

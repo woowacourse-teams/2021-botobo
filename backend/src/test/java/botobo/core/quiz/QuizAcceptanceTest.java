@@ -1,14 +1,10 @@
 package botobo.core.quiz;
 
 import botobo.core.DomainAcceptanceTest;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.common.exception.ErrorResponse;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import botobo.core.utils.RequestBuilder.HttpResponse;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +32,6 @@ import static botobo.core.utils.Fixture.CARD_REQUEST_9;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.utils.TestUtils.extractId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -112,25 +107,6 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 생성 - 실패, 문제집의 카드가 없을 경우")
-    void createQuizWithNotExistCard() {
-        // given
-        final ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(new AdminWorkbookRequest("문제집"));
-        final Long id = extractId(categoryResponse);
-        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(id));
-
-        final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
-                .auth()
-                .build();
-
-        // when, then
-        final ErrorResponse errorResponse = response.errorResponse();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(errorResponse.getMessage()).isEqualTo("카드가 존재하지 않습니다.");
-    }
-
-    @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
         final HttpResponse response = request()
@@ -164,33 +140,5 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(secondQuizResponses.size()).isEqualTo(10);
-    }
-
-    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
-        return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth()
-                .build()
-                .extractableResponse();
-    }
-
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
-        for (AdminWorkbookRequest adminRequest : adminRequests) {
-            request()
-                    .post("/api/admin/workbooks", adminRequest)
-                    .auth()
-                    .build()
-                    .extractableResponse();
-        }
-    }
-
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
-        for (AdminCardRequest adminCardRequest : adminCardRequests) {
-            request()
-                    .post("/api/admin/cards", adminCardRequest)
-                    .auth()
-                    .build()
-                    .extractableResponse();
-        }
     }
 }
