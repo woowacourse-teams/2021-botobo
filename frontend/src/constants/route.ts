@@ -22,13 +22,13 @@ const ROUTE = {
     PATH: '/cards',
     TITLE: '모아보기',
   },
-  SHARED_WORKBOOK: {
-    PATH: '/sharedWorkbook',
+  PUBLIC_WORKBOOK: {
+    PATH: '/publicWorkbook',
     TITLE: '공유 문제집',
   },
-  SHARED_CARDS: {
-    PATH: '/sharedCards',
-    TITLE: '공유 문제집 상세',
+  PUBLIC_CARDS: {
+    PATH: '/publicCards',
+    TITLE: '문제집 상세',
   },
   GITHUB_CALLBACK: {
     PATH: '/github/callback',

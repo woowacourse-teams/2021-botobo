@@ -7,4 +7,5 @@ export { default as QuizResultPage } from './QuizResultPage';
 export { default as CardsPage } from './CardsPage';
 export { default as CardsLoadable } from './CardsLoadable';
 export { default as GithubCallbackPage } from './GithubCallbackPage';
-export { default as SharedWorkbookPage } from './SharedWorkbookPage';
+export { default as PublicWorkbookPage } from './PublicWorkbookPage';
+export { default as PublicCardsPage } from './PublicCardsPage';
