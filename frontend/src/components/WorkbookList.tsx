@@ -11,9 +11,14 @@ interface WorkbookProp extends WorkbookResponse {
 interface Props {
   workbooks: WorkbookProp[];
   onClickWorkbook: (id: number) => void;
+  editable?: boolean;
 }
 
-const WorkbookList = ({ workbooks, onClickWorkbook }: Props) => (
+const WorkbookList = ({
+  workbooks,
+  onClickWorkbook,
+  editable = false,
+}: Props) => (
   <StyledUl>
     {workbooks.map(({ id, name, cardCount, isChecked }) => (
       <li key={id}>
@@ -22,6 +27,7 @@ const WorkbookList = ({ workbooks, onClickWorkbook }: Props) => (
           cardCount={cardCount}
           isChecked={isChecked}
           onClick={() => onClickWorkbook(id)}
+          editable={editable}
         />
       </li>
     ))}

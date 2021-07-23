@@ -1,4 +1,4 @@
-package botobo.core;
+package botobo.core.utils;
 
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;

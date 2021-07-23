@@ -1,15 +1,31 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import { getGuestQuizzesAsync } from '../api';
 import QuizStarterIcon from '../assets/design-thinking.svg';
-import { ROUTE } from '../constants';
+import { useRouter, useSnackbar } from '../hooks';
+import { quizState, userState } from '../recoil';
 import { Flex } from '../styles';
 import Button from './Button';
+import CardTemplate from './CardTemplate';
 
 const QuizStarter = () => {
-  const history = useHistory();
+  const userInfo = useRecoilValue(userState);
+  const setQuizState = useSetRecoilState(quizState);
+  const showSnackbar = useSnackbar();
+  const { routeQuizSetting, routeQuiz } = useRouter();
+
+  const startGuestQuiz = async () => {
+    try {
+      const quizzes = await getGuestQuizzesAsync();
+
+      setQuizState(quizzes);
+      routeQuiz();
+    } catch (error) {
+      showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
+    }
+  };
 
   return (
     <Container>
@@ -18,7 +34,7 @@ const QuizStarter = () => {
           이제까지 정리한 <br />
           지식을 검증해보고 싶다면?
         </span>
-        <Button onClick={() => history.push(ROUTE.QUIZ_SETTING.PATH)}>
+        <Button onClick={userInfo ? routeQuizSetting : startGuestQuiz}>
           퀴즈 풀러 가기
         </Button>
       </Content>
@@ -29,16 +45,9 @@ const QuizStarter = () => {
   );
 };
 
-const Container = styled.div`
+const Container = styled(CardTemplate)`
   ${Flex()};
   height: 10rem;
-  padding: 0 1.25rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `}
 `;
 
 const Content = styled.div`

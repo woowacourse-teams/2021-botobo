@@ -51,13 +51,13 @@ const CardsPage = () => {
       <Button size="full" backgroundColor="blue">
         새로운 카드 추가하기
       </Button>
-      <ul>
+      <CardList>
         {filter[currentFilterId](cards).map(({ id, question, answer }) => (
           <li key={id}>
             <QnACard question={question} answer={answer} />
           </li>
         ))}
-      </ul>
+      </CardList>
     </Container>
   );
 };
@@ -80,6 +80,13 @@ const Filter = styled.div`
   & > button {
     margin-right: 0.8rem;
   }
+`;
+
+const CardList = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(1);
+  gap: 2rem;
+  margin-top: 2rem;
 `;
 
 export default CardsPage;

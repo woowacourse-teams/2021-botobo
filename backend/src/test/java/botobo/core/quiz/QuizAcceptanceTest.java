@@ -5,38 +5,35 @@ import botobo.core.common.exception.ErrorResponse;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import botobo.core.utils.RequestBuilder.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.Fixture.CARD_REQUEST_1;
-import static botobo.core.Fixture.CARD_REQUEST_10;
-import static botobo.core.Fixture.CARD_REQUEST_11;
-import static botobo.core.Fixture.CARD_REQUEST_12;
-import static botobo.core.Fixture.CARD_REQUEST_13;
-import static botobo.core.Fixture.CARD_REQUEST_14;
-import static botobo.core.Fixture.CARD_REQUEST_15;
-import static botobo.core.Fixture.CARD_REQUEST_2;
-import static botobo.core.Fixture.CARD_REQUEST_3;
-import static botobo.core.Fixture.CARD_REQUEST_4;
-import static botobo.core.Fixture.CARD_REQUEST_5;
-import static botobo.core.Fixture.CARD_REQUEST_6;
-import static botobo.core.Fixture.CARD_REQUEST_7;
-import static botobo.core.Fixture.CARD_REQUEST_8;
-import static botobo.core.Fixture.CARD_REQUEST_9;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_2;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_3;
+import static botobo.core.utils.Fixture.CARD_REQUEST_1;
+import static botobo.core.utils.Fixture.CARD_REQUEST_10;
+import static botobo.core.utils.Fixture.CARD_REQUEST_11;
+import static botobo.core.utils.Fixture.CARD_REQUEST_12;
+import static botobo.core.utils.Fixture.CARD_REQUEST_13;
+import static botobo.core.utils.Fixture.CARD_REQUEST_14;
+import static botobo.core.utils.Fixture.CARD_REQUEST_15;
+import static botobo.core.utils.Fixture.CARD_REQUEST_2;
+import static botobo.core.utils.Fixture.CARD_REQUEST_3;
+import static botobo.core.utils.Fixture.CARD_REQUEST_4;
+import static botobo.core.utils.Fixture.CARD_REQUEST_5;
+import static botobo.core.utils.Fixture.CARD_REQUEST_6;
+import static botobo.core.utils.Fixture.CARD_REQUEST_7;
+import static botobo.core.utils.Fixture.CARD_REQUEST_8;
+import static botobo.core.utils.Fixture.CARD_REQUEST_9;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -59,20 +56,16 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when
-        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
     }
 
@@ -84,18 +77,14 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("퀴즈를 진행하려면 문제집 아이디가 필요합니다.");
     }
 
@@ -151,36 +140,28 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         QuizRequest quizRequest =
                 new QuizRequest(ids);
 
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(quizRequest)
-                        .when().post("/api/quizzes")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
 
         // when, then
-        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
     }
 
     @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
-        // given
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .get("/api/quizzes/guest")
+                .build();
 
-        // when
-        final List<QuizResponse> quizResponses = response.body().jsonPath().getList(".", QuizResponse.class);
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
     }
 
@@ -188,25 +169,21 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("비회원용 퀴즈 생성을 여러번 요청해도 동일한 퀴즈를 제공한다. - 성공")
     void createQuizForGuestMultipleRequest() {
         // given
-        final ExtractableResponse<Response> firstResponse =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
-        final List<QuizResponse> firstQuizResponses = firstResponse.body().jsonPath().getList(".", QuizResponse.class);
+        final HttpResponse firstResponse = request()
+                .get("/api/quizzes/guest")
+                .build();
+        List<QuizResponse> firstQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
-        final ExtractableResponse<Response> secondResponse =
-                RestAssured.given().log().all()
-                        .when().get("/api/quizzes/guest")
-                        .then().log().all()
-                        .extract();
-        final List<QuizResponse> secondQuizResponses = secondResponse.body().jsonPath().getList(".", QuizResponse.class);
+        final HttpResponse secondResponse = request()
+                .get("/api/quizzes/guest")
+                .build();
+        List<QuizResponse> secondQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
         // when - then
-        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(firstQuizResponses.size()).isEqualTo(10);
 
-        assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(secondQuizResponses.size()).isEqualTo(10);
     }
 }

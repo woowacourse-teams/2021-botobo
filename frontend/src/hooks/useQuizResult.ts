@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { quizState } from '../recoil';
+import useRouter from './useRouter';
 
 const useQuizResult = () => {
   const [quizResults, setQuizResults] = useState(
@@ -10,6 +11,7 @@ const useQuizResult = () => {
       isChecked: false,
     }))
   );
+  const { routeMain } = useRouter();
 
   const checkQuizResult = (id: number) => {
     const newQuizResults = quizResults.map((quizResult) => {
@@ -23,6 +25,11 @@ const useQuizResult = () => {
 
     setQuizResults(newQuizResults);
   };
+
+  useEffect(() => {
+    if (quizResults.length !== 0) return;
+    routeMain();
+  }, []);
 
   return { quizResults, checkQuizResult };
 };

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { quizState, workbookState } from './../recoil';
 import { postQuizzesAsync } from '../api';
-import { ROUTE } from '../constants';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useQuizSetting = () => {
@@ -18,8 +17,8 @@ const useQuizSetting = () => {
       }))
   );
   const setQuizState = useSetRecoilState(quizState);
-  const history = useHistory();
   const showSnackbar = useSnackbar();
+  const { routeQuiz } = useRouter();
 
   const checkWorkbook = (id: number) => {
     const newWorkbooks = workbooks.map((workbook) => {
@@ -49,7 +48,7 @@ const useQuizSetting = () => {
       const quizzes = await postQuizzesAsync(workbookIds);
 
       setQuizState(quizzes);
-      history.push(ROUTE.QUIZ.PATH);
+      routeQuiz();
     } catch (error) {
       showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
     }

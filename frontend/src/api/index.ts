@@ -5,6 +5,7 @@ import {
   AccessTokenResponse,
   CardsResponse,
   QuizResponse,
+  UserInfoResponse,
   WorkbookResponse,
 } from '../types';
 import { getLocalStorage } from '../utils';
@@ -45,6 +46,18 @@ export const postQuizzesAsync = async (workbookIds: number[]) => {
   const { data } = await request.post<QuizResponse[]>('/quizzes', {
     workbookIds,
   });
+
+  return data;
+};
+
+export const getGuestQuizzesAsync = async () => {
+  const { data } = await request.get<QuizResponse[]>('/quizzes/guest');
+
+  return data;
+};
+
+export const getUserInfoAsync = async () => {
+  const { data } = await request.get<UserInfoResponse>('/users/me');
 
   return data;
 };

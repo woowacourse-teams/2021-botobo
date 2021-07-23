@@ -14,19 +14,11 @@ const MainLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
-      <CardSkeleton />
+      <Greeting />
+      <QuizStarterSkeleton />
       <section>
         <WorkbookHeader>
           <WorkbookTitle />
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-            disabled={true}
-          >
-            {''}
-          </Button>
         </WorkbookHeader>
         <CardSkeletonList count={6} />
       </section>
@@ -34,11 +26,23 @@ const MainLoadable = () => (
   </>
 );
 
+const Greeting = styled.div`
+  height: 1.5rem;
+  width: 60%;
+  margin-bottom: 1rem;
+
+  ${loadContent}
+`;
+
 const Container = styled.div`
   ${({ theme }) =>
     css`
       padding: ${theme.pageSize.padding};
     `}
+`;
+
+const QuizStarterSkeleton = styled(CardSkeleton)`
+  height: 9.5rem;
 `;
 
 const WorkbookHeader = styled.div`
