@@ -2,7 +2,7 @@ import { atom, selector } from 'recoil';
 
 import { getWorkbooksAsync } from '../api';
 import { WorkbookResponse } from '../types';
-import { loginState } from './userState';
+import { userState } from './userState';
 
 interface WorkbookState {
   data: WorkbookResponse[];
@@ -17,10 +17,8 @@ export const workbookState = atom<WorkbookState>({
     key: 'workbookRequest',
     get: async ({ get }) => {
       try {
-        const isLogin = get(loginState);
-
         return {
-          data: isLogin ? await getWorkbooksAsync() : [],
+          data: get(userState) ? await getWorkbooksAsync() : [],
           errorMessage: null,
         };
       } catch (error) {

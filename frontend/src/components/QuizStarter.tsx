@@ -6,12 +6,12 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getGuestQuizzesAsync } from '../api';
 import QuizStarterIcon from '../assets/design-thinking.svg';
 import { useRouter, useSnackbar } from '../hooks';
-import { loginState, quizState } from '../recoil';
+import { quizState, userState } from '../recoil';
 import { Flex } from '../styles';
 import Button from './Button';
 
 const QuizStarter = () => {
-  const isLogin = useRecoilValue(loginState);
+  const userInfo = useRecoilValue(userState);
   const setQuizState = useSetRecoilState(quizState);
   const showSnackbar = useSnackbar();
   const { routeQuizSetting, routeQuiz } = useRouter();
@@ -34,7 +34,7 @@ const QuizStarter = () => {
           이제까지 정리한 <br />
           지식을 검증해보고 싶다면?
         </span>
-        <Button onClick={isLogin ? routeQuizSetting : startGuestQuiz}>
+        <Button onClick={userInfo ? routeQuizSetting : startGuestQuiz}>
           퀴즈 풀러 가기
         </Button>
       </Content>

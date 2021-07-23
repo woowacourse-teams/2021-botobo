@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { useRouter } from '../hooks';
-import { loginState } from '../recoil';
+import { userState } from '../recoil';
 import { Flex } from '../styles';
 import { removeLocalStorage } from '../utils';
 
@@ -14,11 +14,11 @@ const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
 const MainHeader = () => {
   const { routeMain, routeLogin } = useRouter();
-  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const [userInfo, setUserInfo] = useRecoilState(userState);
 
   const logout = () => {
     removeLocalStorage(STORAGE_KEY.TOKEN);
-    setIsLogin(false);
+    setUserInfo(null);
     routeMain();
   };
 
@@ -36,9 +36,10 @@ const MainHeader = () => {
         </Logo>
       </h1>
       <RightContent>
-        {isLogin ? (
+        {userInfo ? (
           <>
-            <Avatar src={userSrc} />
+            <Avatar src={userInfo.profileUrl ?? userSrc} />
+            {/* TODO: 로그아웃 감추기 */}
             <AuthButton onClick={logout}>로그아웃</AuthButton>
           </>
         ) : (
