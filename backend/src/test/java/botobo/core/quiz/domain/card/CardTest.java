@@ -1,6 +1,5 @@
 package botobo.core.quiz.domain.card;
 
-import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.workbook.Workbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

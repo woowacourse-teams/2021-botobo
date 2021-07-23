@@ -1,23 +1,21 @@
 package botobo.core.auth;
 
 import botobo.core.AcceptanceTest;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.auth.dto.GithubUserInfoResponse;
 import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
 import botobo.core.auth.infrastructure.GithubOauthManager;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("Auth Acceptance 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @MockBean
@@ -38,11 +36,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
 
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().post("/api/login")
-                .then().log().all()
+        return request()
+                .post("/api/login", loginRequest)
+                .build()
                 .extract();
+    }
+
+    @Test
+    @DisplayName("로그인을 한다 - 성공")
+    void login() {
+        final TokenResponse tokenResponse = 로그인되어_있음();
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 }
