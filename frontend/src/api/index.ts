@@ -48,3 +48,9 @@ export const postQuizzesAsync = async (workbookIds: number[]) => {
 
   return data;
 };
+
+export const getGuestQuizzesAsync = async () => {
+  const { data } = await request.get<QuizResponse[]>('/quizzes/guest');
+
+  return data;
+};

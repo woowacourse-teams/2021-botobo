@@ -32,7 +32,7 @@ const MainPage = () => {
         <WorkbookList
           workbooks={workbooks}
           onClickWorkbook={(workbookId) =>
-            history.push(`${ROUTE.CARDS.PATH}?workbookId=${workbookId}`)
+            history.push(`${ROUTE.CARDS.PATH}?id=${workbookId}`)
           }
         />
       </section>
