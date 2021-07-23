@@ -10,7 +10,7 @@ export interface WorkbookResponse {
   logoUrl: string;
 }
 
-export interface SharedWorkbookResponse extends WorkbookResponse {
+export interface PublicWorkbookResponse extends WorkbookResponse {
   author: string;
 }
 
@@ -29,5 +29,18 @@ export interface CardResponse {
 
 export interface CardsResponse {
   workbookName: string;
+  cards: CardResponse[];
+}
+
+export interface TagResponse {
+  id: number;
+  name: string;
+}
+
+export interface PublicCardsResponse {
+  id: number;
+  workbookName: string;
+  cardCount: number;
+  tags: TagResponse[];
   cards: CardResponse[];
 }
