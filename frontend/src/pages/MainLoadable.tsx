@@ -19,15 +19,6 @@ const MainLoadable = () => (
       <section>
         <WorkbookHeader>
           <WorkbookTitle />
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-            disabled={true}
-          >
-            {''}
-          </Button>
         </WorkbookHeader>
         <CardSkeletonList count={6} />
       </section>
