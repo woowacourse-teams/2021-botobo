@@ -22,6 +22,9 @@ import {
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
+  PublicWorkbookPage,
+  WorkbookAddPage,
+
 } from './pages';
 import { loginState } from './recoil';
 
@@ -52,6 +55,12 @@ const Router = () => (
         <PageHeader title={ROUTE.LOGIN.TITLE} />
         <LoginPage />
       </Route>
+      <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
+        <>
+          <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
+          <WorkbookAddPage />
+        </>
+      </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
         {/* TODO: 비 로그인 상태일 때, QuizStarter에서 분기 처리 */}
         <Suspense fallback={<div>loading</div>}>

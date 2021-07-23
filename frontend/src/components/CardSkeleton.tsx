@@ -4,8 +4,12 @@ import React from 'react';
 
 import { Flex, loadContent } from '../styles';
 
-const CardSkeleton = () => (
-  <Container>
+interface Props {
+  className?: string;
+}
+
+const CardSkeleton = ({ className }: Props) => (
+  <Container className={className}>
     <Name />
     <Description />
   </Container>
@@ -15,7 +19,7 @@ const Container = styled.div`
   ${Flex({ direction: 'column' })};
   position: relative;
   padding: 1rem;
-  height: 9.5rem;
+  height: 7rem;
 
   ${({ theme }) => css`
     background-color: ${theme.color.white};

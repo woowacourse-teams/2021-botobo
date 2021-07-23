@@ -23,7 +23,7 @@ const Container = styled.div<Pick<Props, 'isChecked'>>`
   ${Flex({ direction: 'column' })};
   cursor: pointer;
   padding: 1rem;
-  height: 9.5rem;
+  min-height: 7rem;
 
   ${({ theme, isChecked }) => css`
     background-color: ${theme.color.white};
