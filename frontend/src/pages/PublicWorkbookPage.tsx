@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { SharedWorkbookList } from '../components';
+import { PublicWorkbookList } from '../components';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
@@ -13,7 +13,7 @@ interface SearchStyleProps {
   isFocus: boolean;
 }
 
-const SharedWorkbookPage = () => {
+const PublicWorkbookPage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const history = useHistory();
@@ -35,9 +35,9 @@ const SharedWorkbookPage = () => {
           </button>
         )}
       </SearchBar>
-      <SharedWorkbookList
-        onClickSharedWorkbook={(sharedWorkbookId) =>
-          history.push(`${ROUTE.SHARED_CARDS.PATH}?id=${sharedWorkbookId}`)
+      <PublicWorkbookList
+        onClickPublicWorkbook={(publicWorkbookId) =>
+          history.push(`${ROUTE.PUBLIC_CARDS.PATH}?id=${publicWorkbookId}`)
         }
       />
     </Container>
@@ -87,4 +87,4 @@ const SearchInput = styled.input`
   `}
 `;
 
-export default SharedWorkbookPage;
+export default PublicWorkbookPage;
