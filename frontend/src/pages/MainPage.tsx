@@ -8,11 +8,12 @@ import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
-  const { workbooks } = useMain();
+  const { workbooks, userInfo } = useMain();
   const { routeWorkbookAdd, routeCards } = useRouter();
 
   return (
     <Container>
+      {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
       <QuizStarter />
       <section>
         <WorkbookHeader>
@@ -41,6 +42,10 @@ const Container = styled.div`
     css`
       padding: ${theme.pageSize.padding};
     `}
+`;
+
+const Greeting = styled.div`
+  margin: 1rem 0;
 `;
 
 const WorkbookHeader = styled.div`

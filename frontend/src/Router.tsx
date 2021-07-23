@@ -24,18 +24,18 @@ import {
   QuizSettingPage,
   WorkbookAddPage,
 } from './pages';
-import { loginState } from './recoil';
+import { userState } from './recoil';
 
 interface PrivateRouteProps extends RouteProps {
   children: React.ReactElement;
 }
 
 const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
-  const isLogin = useRecoilValue(loginState);
+  const userInfo = useRecoilValue(userState);
 
   return (
     <Route {...props}>
-      {isLogin ? children : <Redirect to={ROUTE.LOGIN.PATH} />}
+      {userInfo ? children : <Redirect to={ROUTE.LOGIN.PATH} />}
     </Route>
   );
 };

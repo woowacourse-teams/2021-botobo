@@ -44,3 +44,9 @@ export interface PublicCardsResponse {
   tags: TagResponse[];
   cards: CardResponse[];
 }
+
+export interface UserInfoResponse {
+  id: number;
+  userName: string;
+  profileUrl: string;
+}
