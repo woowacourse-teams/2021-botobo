@@ -31,6 +31,7 @@ const MainPage = () => {
         <WorkbookList
           workbooks={workbooks}
           onClickWorkbook={(workbookId) => routeCards(workbookId)}
+          editable={true}
         />
       </section>
     </Container>
@@ -45,7 +46,7 @@ const Container = styled.div`
 `;
 
 const Greeting = styled.div`
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 `;
 
 const WorkbookHeader = styled.div`

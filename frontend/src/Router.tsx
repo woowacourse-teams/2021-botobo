@@ -27,7 +27,7 @@ import {
 import { userState } from './recoil';
 
 interface PrivateRouteProps extends RouteProps {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
@@ -54,12 +54,11 @@ const Router = () => (
         <LoginPage />
       </Route>
       <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
-        <>
-          <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
-          <WorkbookAddPage />
-        </>
+        <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
+        <WorkbookAddPage />
       </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
+        {/* TODO: 스켈레톤으로 변경 */}
         <Suspense fallback={<div>loading</div>}>
           <PageHeader title={ROUTE.QUIZ_SETTING.TITLE} />
           <QuizSettingPage />

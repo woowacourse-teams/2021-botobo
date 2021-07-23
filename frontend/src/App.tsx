@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 
 import { theme } from './constants';
@@ -12,7 +12,9 @@ const App = () => (
     <SnackbarProvider>
       <RecoilRoot>
         <GlobalStyle />
-        <Router />
+        <Suspense fallback={<div>loading</div>}>
+          <Router />
+        </Suspense>
       </RecoilRoot>
     </SnackbarProvider>
   </ThemeProvider>

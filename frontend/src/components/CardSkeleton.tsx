@@ -1,8 +1,8 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
 import { Flex, loadContent } from '../styles';
+import CardTemplate from './CardTemplate';
 
 interface Props {
   className?: string;
@@ -15,17 +15,10 @@ const CardSkeleton = ({ className }: Props) => (
   </Container>
 );
 
-const Container = styled.div`
+const Container = styled(CardTemplate)`
   ${Flex({ direction: 'column' })};
   position: relative;
-  padding: 1rem;
   height: 7rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `}
 `;
 
 const Name = styled.span`

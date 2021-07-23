@@ -14,6 +14,7 @@ const MainLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
+      <Greeting />
       <QuizStarterSkeleton />
       <section>
         <WorkbookHeader>
@@ -33,6 +34,14 @@ const MainLoadable = () => (
     </Container>
   </>
 );
+
+const Greeting = styled.div`
+  height: 1.5rem;
+  width: 60%;
+  margin-bottom: 1rem;
+
+  ${loadContent}
+`;
 
 const Container = styled.div`
   ${({ theme }) =>

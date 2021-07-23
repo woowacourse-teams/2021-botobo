@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { CardResponse } from '../types';
+import CardTemplate from './CardTemplate';
 
 type PickedCardResponse = Omit<CardResponse, 'id'>;
 
@@ -12,28 +13,14 @@ interface Props extends PickedCardResponse {
 }
 
 const PublicQnACard = ({ question, answer, isChecked, onClick }: Props) => (
-  <Container isChecked={isChecked} onClick={onClick}>
+  <CardTemplate isChecked={isChecked} onClick={onClick}>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
-  </Container>
+  </CardTemplate>
 );
 
-const Container = styled.div<Pick<Props, 'isChecked'>>`
-  padding: 2rem 1rem;
-  word-break: break-all;
-
-  ${({ theme, isChecked }) => css`
-    background-color: ${theme.color.white};
-    box-shadow: ${theme.boxShadow.card};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${isChecked
-      ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
-      : theme.boxShadow.card};
-  `};
-`;
-
 const Question = styled.div`
-  padding-bottom: 1rem;
+  padding: 1rem 0;
 
   ${({ theme }) => css`
     border-bottom: 2px solid ${theme.color.gray_3};
@@ -42,6 +29,7 @@ const Question = styled.div`
 
 const Answer = styled.div`
   padding-top: 1.5rem;
+  padding-bottom: 1rem;
 `;
 
 export default PublicQnACard;

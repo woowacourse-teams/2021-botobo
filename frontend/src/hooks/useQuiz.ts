@@ -30,6 +30,7 @@ const useQuiz = () => {
 
   useEffect(() => {
     if (quizzes.length !== 0) return;
+
     routeMain();
   }, []);
 

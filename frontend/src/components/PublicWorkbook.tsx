@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Flex } from '../styles';
 import { PublicWorkbookResponse } from '../types';
+import CardTemplate from './CardTemplate';
 
 type PickedPublicWorkbook = Pick<
   PublicWorkbookResponse,
@@ -22,17 +23,8 @@ const PublicWorkbook = ({ name, cardCount, author, onClick }: Props) => (
   </Container>
 );
 
-const Container = styled.div`
+const Container = styled(CardTemplate)`
   ${Flex({ direction: 'column', justify: 'center', items: 'center' })};
-  cursor: pointer;
-  padding: 1rem;
-  word-break: break-all;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `}
 `;
 
 const Name = styled.span`
