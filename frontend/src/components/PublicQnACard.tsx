@@ -11,7 +11,7 @@ interface Props extends PickedCardResponse {
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const SharedQnACard = ({ question, answer, isChecked, onClick }: Props) => (
+const PublicQnACard = ({ question, answer, isChecked, onClick }: Props) => (
   <Container isChecked={isChecked} onClick={onClick}>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
@@ -44,4 +44,4 @@ const Answer = styled.div`
   padding-top: 1.5rem;
 `;
 
-export default SharedQnACard;
+export default PublicQnACard;

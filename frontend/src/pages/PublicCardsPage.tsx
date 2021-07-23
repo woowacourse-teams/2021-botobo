@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
-import { Button, Checkbox, PageHeader, SharedQnACard } from '../components';
+import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
 import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
@@ -36,7 +36,7 @@ const data = {
   ],
 };
 
-const SharedCardsPage = () => {
+const PublicCardsPage = () => {
   const [cards, setCards] = useState(
     data.cards.map((card) => ({ ...card, isChecked: false }))
   );
@@ -71,7 +71,7 @@ const SharedCardsPage = () => {
   return (
     <>
       <PageHeader
-        title={ROUTE.SHARED_CARDS.TITLE}
+        title={ROUTE.PUBLIC_CARDS.TITLE}
         sticky={true}
         rightContent={
           <StyledButton size="full" shape="square" backgroundColor="blue">
@@ -92,7 +92,7 @@ const SharedCardsPage = () => {
         <ul>
           {cards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
-              <SharedQnACard
+              <PublicQnACard
                 question={question}
                 answer={answer}
                 isChecked={isChecked}
@@ -185,4 +185,4 @@ const CheckboxWrapper = styled.div`
   `};
 `;
 
-export default SharedCardsPage;
+export default PublicCardsPage;

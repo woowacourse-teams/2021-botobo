@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { Button, MainHeader, PageHeader } from './components';
+import { MainHeader, PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
   CardsLoadable,
@@ -17,11 +17,11 @@ import {
   LoginPage,
   MainLoadable,
   MainPage,
+  PublicCardsPage,
+  PublicWorkbookPage,
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
-  SharedCardsPage,
-  SharedWorkbookPage,
 } from './pages';
 import { loginState } from './recoil';
 
@@ -74,12 +74,12 @@ const Router = () => (
           <CardsPage />
         </Suspense>
       </Route>
-      <Route exact path={ROUTE.SHARED_WORKBOOK.PATH}>
-        <PageHeader title={ROUTE.SHARED_WORKBOOK.TITLE} />
-        <SharedWorkbookPage />
+      <Route exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
+        <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+        <PublicWorkbookPage />
       </Route>
-      <Route exact path={ROUTE.SHARED_CARDS.PATH}>
-        <SharedCardsPage />
+      <Route exact path={ROUTE.PUBLIC_CARDS.PATH}>
+        <PublicCardsPage />
       </Route>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />
