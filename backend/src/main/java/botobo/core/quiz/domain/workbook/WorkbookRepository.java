@@ -7,8 +7,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface WorkbookRepository extends JpaRepository<Workbook, Long> {
-    @Query("select w from Workbook w join fetch w.cards.cards where w.id = :id")
-    Optional<Workbook> findCategoryAndCardsByIdJoinFetch(@Param("id") Long id);
-
     boolean existsById(Long id);
 }
