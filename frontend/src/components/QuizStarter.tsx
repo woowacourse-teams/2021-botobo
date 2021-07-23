@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -9,6 +8,7 @@ import { useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { Flex } from '../styles';
 import Button from './Button';
+import CardTemplate from './CardTemplate';
 
 const QuizStarter = () => {
   const userInfo = useRecoilValue(userState);
@@ -45,16 +45,9 @@ const QuizStarter = () => {
   );
 };
 
-const Container = styled.div`
+const Container = styled(CardTemplate)`
   ${Flex()};
   height: 10rem;
-  padding: 0 1.25rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `}
 `;
 
 const Content = styled.div`
