@@ -3,6 +3,7 @@ package botobo.core.documentation;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.dto.CardResponse;
+import botobo.core.quiz.dto.CardSimpleResponse;
 import botobo.core.quiz.dto.WorkbookCardResponse;
 import botobo.core.quiz.dto.WorkbookResponse;
 import botobo.core.quiz.ui.WorkbookController;
@@ -98,25 +99,31 @@ public class WorkbookDocumentationTest {
     }
 
     private WorkbookCardResponse generateWorkbookCardsResponse() {
-        List<CardResponse> cardResponses = Arrays.asList(
-                CardResponse.builder()
+        List<CardSimpleResponse> cardSimpleResponse = Arrays.asList(
+                CardSimpleResponse.builder()
                         .id(1L)
                         .question("Java에는 a가 몇 개 들어갈까요?")
                         .answer("2개")
+                        .bookmark(true)
+                        .encounterCount(5)
                         .build(),
-                CardResponse.builder()
+                CardSimpleResponse.builder()
                         .id(2L)
                         .question("Java에는 v가 몇 개 들어갈까요?")
                         .answer("1개")
+                        .bookmark(true)
+                        .encounterCount(10)
                         .build(),
-                CardResponse.builder()
+                CardSimpleResponse.builder()
                         .id(3L)
                         .question("Java에는 j가 몇 개 들어갈까요?")
                         .answer("1개")
+                        .bookmark(false)
+                        .encounterCount(2)
                         .build());
         return WorkbookCardResponse.builder()
                 .workbookName("Java")
-                .cards(cardResponses)
+                .cards(cardSimpleResponse)
                 .build();
     }
 }

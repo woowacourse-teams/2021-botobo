@@ -15,13 +15,13 @@ import java.util.List;
 public class WorkbookCardResponse {
 
     private String workbookName;
-    private List<CardResponse> cards;
+    private List<CardSimpleResponse> cards;
 
     public static WorkbookCardResponse of(Workbook workbook) {
-        List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCardsAsList());
+        List<CardSimpleResponse> cardSimpleResponses = CardSimpleResponse.listOf(workbook.getCardsAsList());
         return WorkbookCardResponse.builder()
                 .workbookName(workbook.getName())
-                .cards(cardResponses)
+                .cards(cardSimpleResponses)
                 .build();
     }
 }
