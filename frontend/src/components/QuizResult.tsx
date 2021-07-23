@@ -22,7 +22,7 @@ const QuizResult = ({ question, workbookName, isChecked, onClick }: Props) => (
 
 const Container = styled.div<ContainerStyleProps>`
   cursor: pointer;
-  height: 7rem;
+  min-height: 7rem;
   padding: 1rem;
 
   ${({ theme, isChecked }) => css`

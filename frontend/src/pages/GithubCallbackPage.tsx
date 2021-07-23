@@ -10,10 +10,10 @@ import { getSessionStorage, setLocalStorage } from '../utils';
 const GITHUB_OAUTH_QUERY = 'code';
 
 const GithubCallbackPage = () => {
-  const history = useHistory();
   const location = useLocation();
   const setIsLogin = useSetRecoilState(loginState);
   const code = new URLSearchParams(location.search).get(GITHUB_OAUTH_QUERY);
+  const history = useHistory();
 
   useEffect(() => {
     if (!code) return;
@@ -25,6 +25,7 @@ const GithubCallbackPage = () => {
         setIsLogin(true);
         setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
 
+        //TODO: 훅으로 빼는 방법 고민하기
         history.push(
           getSessionStorage(STORAGE_KEY.REDIRECTED_PATH) ?? ROUTE.HOME.PATH
         );
