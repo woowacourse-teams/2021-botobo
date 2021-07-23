@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -74,8 +73,7 @@ class QuizServiceTest {
     void createQuiz() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(workbookRepository.existsByIdIsIn(any())).willReturn(true);
-        given(cardRepository.findNextCardAndWorkbookIdIn(any())).willReturn(new ArrayList<>());
+        given(workbookRepository.existsById(any())).willReturn(true);
         given(cardRepository.findCardsByWorkbookId(any())).willReturn(cards);
 
         // when
@@ -94,8 +92,8 @@ class QuizServiceTest {
     void createQuizWithOneCards() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        given(workbookRepository.existsByIdIsIn(any())).willReturn(true);
-        given(cardRepository.findNextCardAndWorkbookIdIn(any())).willReturn(cards);
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookId(any())).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -105,10 +103,6 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findNextCardAndWorkbookIdIn(any());
-
-        then(cardRepository)
-                .should(times(0))
                 .findCardsByWorkbookId(any());
     }
 

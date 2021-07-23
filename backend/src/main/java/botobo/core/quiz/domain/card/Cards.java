@@ -23,13 +23,8 @@ public class Cards {
         this.cards = cards;
     }
 
-    public Cards shuffle() {
+    public void shuffle() {
         Collections.shuffle(cards);
-        return this;
-    }
-
-    public List<Card> subList(int size) {
-        return cards.stream().limit(size).collect(Collectors.toList());
     }
 
     public void addCard(Card card) {
@@ -40,7 +35,7 @@ public class Cards {
         cards.remove(card);
     }
 
-    public int size() {
+    public int counts() {
         return cards.size();
     }
 
@@ -50,5 +45,16 @@ public class Cards {
 
     public void addAll(Cards cards) {
         this.cards.addAll(cards.getCards());
+    }
+
+    public Cards chooseCard(boolean isNextQuiz, int targetCounts) {
+        return new Cards(cards.stream()
+                .filter(card -> card.equalsNextQuizWith(isNextQuiz))
+                .limit(targetCounts)
+                .collect(Collectors.toList()));
+    }
+
+    public void cancelNextQuiz() {
+        cards.forEach(Card::cancelNextQuiz);
     }
 }
