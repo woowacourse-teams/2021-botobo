@@ -14,7 +14,7 @@ const MainLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
-      <CardSkeleton />
+      <QuizStarterSkeleton />
       <section>
         <WorkbookHeader>
           <WorkbookTitle />
@@ -39,6 +39,10 @@ const Container = styled.div`
     css`
       padding: ${theme.pageSize.padding};
     `}
+`;
+
+const QuizStarterSkeleton = styled(CardSkeleton)`
+  height: 9.5rem;
 `;
 
 const WorkbookHeader = styled.div`

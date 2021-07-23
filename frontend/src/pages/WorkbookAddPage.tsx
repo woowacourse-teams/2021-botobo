@@ -19,9 +19,11 @@ const WorkbookAddPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
 
-  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) return;
-    setInputValue(event.target.value);
+  const onChangeInput: React.ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    if (target.value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) return;
+    setInputValue(target.value);
   };
 
   return (
@@ -121,9 +123,11 @@ const AccessSelectorWrapper = styled.div`
   }
 `;
 
-const AccessSelector = styled.div`
+const AccessSelector = styled.span`
   width: 100%;
+  height: 100%;
   cursor: pointer;
+  line-height: 2rem;
 `;
 
 export default WorkbookAddPage;
