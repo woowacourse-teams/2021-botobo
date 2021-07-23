@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { cardState } from './../recoil/cardState';
-import { ROUTE } from '../constants';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useCards = () => {
-  const history = useHistory();
+  const { routeMain } = useRouter();
   const { search } = useLocation();
-  const workbookId = new URLSearchParams(search).get('workbookId');
+  const workbookId = new URLSearchParams(search).get('id');
   const showSnackbar = useSnackbar();
 
   if (!workbookId) {
-    history.push(ROUTE.HOME.PATH);
+    routeMain();
   }
 
   const {

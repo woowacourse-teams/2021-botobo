@@ -1,17 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import PlusIcon from '../assets/plus.svg';
 import { Button, QuizStarter, WorkbookList } from '../components';
-import { ROUTE } from '../constants';
-import { useMain } from '../hooks';
+import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
   const { workbooks } = useMain();
-  const history = useHistory();
+  const { routeWorkbookAdd, routeCards } = useRouter();
 
   return (
     <Container>
@@ -24,16 +22,14 @@ const MainPage = () => {
             backgroundColor="white"
             color="green"
             hasShadow={true}
-            onClick={() => history.push(ROUTE.WORKBOOK_ADD.PATH)}
+            onClick={routeWorkbookAdd}
           >
             <StyledPlusIcon />
           </Button>
         </WorkbookHeader>
         <WorkbookList
           workbooks={workbooks}
-          onClickWorkbook={(workbookId) =>
-            history.push(`${ROUTE.CARDS.PATH}?id=${workbookId}`)
-          }
+          onClickWorkbook={(workbookId) => routeCards(workbookId)}
         />
       </section>
     </Container>

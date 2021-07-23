@@ -1,12 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
-import { ROUTE } from '../constants';
+import { useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 interface SearchStyleProps {
@@ -16,7 +15,7 @@ interface SearchStyleProps {
 const PublicWorkbookPage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
-  const history = useHistory();
+  const { routePublicCards } = useRouter();
 
   return (
     <Container>
@@ -36,9 +35,7 @@ const PublicWorkbookPage = () => {
         )}
       </SearchBar>
       <PublicWorkbookList
-        onClickPublicWorkbook={(publicWorkbookId) =>
-          history.push(`${ROUTE.PUBLIC_CARDS.PATH}?id=${publicWorkbookId}`)
-        }
+        onClickPublicWorkbook={(workbookId) => routePublicCards(workbookId)}
       />
     </Container>
   );

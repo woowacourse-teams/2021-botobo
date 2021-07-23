@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import BackIcon from '../assets/chevron-left-solid.svg';
+import { useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 interface Props {
@@ -17,12 +17,12 @@ interface StyledHeaderProps {
 }
 
 const PageHeader = ({ title, rightContent, sticky = false }: Props) => {
-  const history = useHistory();
+  const { routePrevPage } = useRouter();
 
   return (
     <StyledHeader sticky={sticky}>
       <LeftContent>
-        <PageBackButton onClick={history.goBack}>
+        <PageBackButton onClick={routePrevPage}>
           <BackIcon width="1.5rem" height="1.5rem" />
         </PageBackButton>
         <Title>{title}</Title>
