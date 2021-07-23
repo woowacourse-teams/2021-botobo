@@ -5,9 +5,7 @@ export interface AccessTokenResponse {
 export interface WorkbookResponse {
   id: number;
   name: string;
-  description: string;
   cardCount: number;
-  logoUrl: string;
 }
 
 export interface PublicWorkbookResponse extends WorkbookResponse {
