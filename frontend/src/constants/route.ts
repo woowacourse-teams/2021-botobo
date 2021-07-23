@@ -28,7 +28,7 @@ const ROUTE = {
   },
   SHARED_CARDS: {
     PATH: '/sharedCards',
-    TITLE: '공유 문제집 상세',
+    TITLE: '문제집 상세',
   },
   GITHUB_CALLBACK: {
     PATH: '/github/callback',

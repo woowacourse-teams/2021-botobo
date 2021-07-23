@@ -2,7 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
-import { Button, Checkbox, SharedQnACard } from '../components';
+import { Button, Checkbox, PageHeader, SharedQnACard } from '../components';
+import { ROUTE } from '../constants';
 import { Flex } from '../styles';
 
 const data = {
@@ -68,40 +69,59 @@ const SharedCardsPage = () => {
   }, [checkedCardCount]);
 
   return (
-    <Container>
-      <WorkbookName>{data.workbookName}</WorkbookName>
-      <CardCount>{data.cardCount}개의 카드</CardCount>
-      {data.tags.map((tag, index) => (
-        <Tag key={index}>#{tag}</Tag>
-      ))}
-      <ul>
-        {cards.map(({ id, question, answer, isChecked }) => (
-          <li key={id}>
-            <SharedQnACard
-              question={question}
-              answer={answer}
-              isChecked={isChecked}
-              onClick={() => checkCard(id)}
+    <>
+      <PageHeader
+        title={ROUTE.SHARED_CARDS.TITLE}
+        sticky={true}
+        rightContent={
+          <StyledButton size="full" shape="square" backgroundColor="blue">
+            바로 풀어보기
+          </StyledButton>
+        }
+      />
+      <Container>
+        <WorkbookName>{data.workbookName}</WorkbookName>
+        <CardCount>{data.cardCount}개의 카드</CardCount>
+        <TagList>
+          {data.tags.map((tag, index) => (
+            <li key={index}>
+              <Tag>#{tag}</Tag>
+            </li>
+          ))}
+        </TagList>
+        <ul>
+          {cards.map(({ id, question, answer, isChecked }) => (
+            <CardItem key={id}>
+              <SharedQnACard
+                question={question}
+                answer={answer}
+                isChecked={isChecked}
+                onClick={() => checkCard(id)}
+              />
+            </CardItem>
+          ))}
+        </ul>
+        <BottomContent>
+          <CheckboxWrapper>
+            <Checkbox
+              labelText="전체"
+              name="checkAll"
+              checked={isAllCardChecked}
+              onChange={checkAllCard}
             />
-          </li>
-        ))}
-      </ul>
-      <BottomContent>
-        <CheckboxWrapper>
-          <Checkbox
-            labelText="전체"
-            name="checkAll"
-            checked={isAllCardChecked}
-            onChange={checkAllCard}
-          />
-        </CheckboxWrapper>
-        <Button size="full" shape="rectangle">
-          <span>문제집으로 가져가기 ({checkedCardCount})</span>
-        </Button>
-      </BottomContent>
-    </Container>
+          </CheckboxWrapper>
+          <Button size="full" shape="rectangle">
+            <span>문제집으로 가져가기 ({checkedCardCount})</span>
+          </Button>
+        </BottomContent>
+      </Container>
+    </>
   );
 };
+
+const StyledButton = styled(Button)`
+  width: 8rem;
+`;
 
 const Container = styled.div`
   margin-bottom: 3rem;
@@ -125,6 +145,10 @@ const CardCount = styled.div`
   `};
 `;
 
+const TagList = styled.li`
+  ${Flex({ items: 'center' })};
+`;
+
 const Tag = styled.button`
   margin-right: 0.5rem;
 
@@ -134,6 +158,14 @@ const Tag = styled.button`
   `};
 `;
 
+const CardItem = styled.li`
+  margin-top: 1rem;
+
+  &:not(:first-of-type) {
+    margin-top: 2rem;
+  }
+`;
+
 const BottomContent = styled.div`
   ${Flex()};
   opacity: 0.9;
@@ -141,8 +173,6 @@ const BottomContent = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-
-  flex-grow: 3;
 `;
 
 const CheckboxWrapper = styled.div`

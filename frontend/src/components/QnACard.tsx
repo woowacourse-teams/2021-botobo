@@ -26,6 +26,7 @@ const Container = styled.div`
   min-height: 3rem;
   padding: 1rem;
   margin-top: 2rem;
+  word-break: break-all;
 
   ${({ theme }) => css`
     background-color: ${theme.color.white};

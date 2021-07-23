@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { MainHeader, PageHeader } from './components';
+import { Button, MainHeader, PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
   CardsLoadable,
@@ -79,7 +79,6 @@ const Router = () => (
         <SharedWorkbookPage />
       </Route>
       <Route exact path={ROUTE.SHARED_CARDS.PATH}>
-        <PageHeader title={ROUTE.SHARED_CARDS.TITLE} />
         <SharedCardsPage />
       </Route>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>

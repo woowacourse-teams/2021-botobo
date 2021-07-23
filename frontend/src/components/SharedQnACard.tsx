@@ -20,7 +20,6 @@ const SharedQnACard = ({ question, answer, isChecked, onClick }: Props) => (
 
 const Container = styled.div<Pick<Props, 'isChecked'>>`
   padding: 2rem 1rem;
-  margin-top: 2rem;
   word-break: break-all;
 
   ${({ theme, isChecked }) => css`

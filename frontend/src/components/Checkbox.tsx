@@ -55,7 +55,6 @@ const StyledInput = styled.input`
 `;
 
 const Label = styled.label`
-  user-select: none;
   cursor: pointer;
 
   &:hover span:first-of-type {
@@ -68,9 +67,8 @@ const Label = styled.label`
 const CheckboxShape = styled.span`
   display: inline-block;
   position: relative;
-  width: 18px;
-  height: 18px;
-  border-radius: 3px;
+  width: 1.125rem;
+  height: 1.125rem;
   transform: scale(1);
   vertical-align: middle;
   transition: all 0.3s ease;
@@ -90,7 +88,8 @@ const CheckSvg = styled(CheckIcon)`
 
 const LabelText = styled.span`
   vertical-align: middle;
-  padding-left: 8px;
+  padding-left: 0.5rem;
+  line-height: 1rem;
 `;
 
 export default Checkbox;
