@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import PlusIcon from '../assets/plus.svg';
 import { Button, QuizStarter, WorkbookList } from '../components';
 import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
@@ -18,14 +17,8 @@ const MainPage = () => {
       <section>
         <WorkbookHeader>
           <WorkbookTitle>학습 중</WorkbookTitle>
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-            onClick={routeWorkbookAdd}
-          >
-            <StyledPlusIcon />
+          <Button shape="square" onClick={routeWorkbookAdd}>
+            문제집 추가
           </Button>
         </WorkbookHeader>
         <WorkbookList
@@ -59,18 +52,6 @@ const WorkbookTitle = styled.h2`
     css`
       font-size: ${theme.fontSize.semiLarge};
     `};
-`;
-
-// TODO: 타입 체크하기
-const StyledPlusIcon = styled(PlusIcon)`
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
-
-  ${({ theme }) =>
-    css`
-      fill: ${theme.color.green};
-    `}
 `;
 
 export default MainPage;
