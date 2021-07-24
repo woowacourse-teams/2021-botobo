@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class CardUpdateResponse {
+
     private Long id;
     private String question;
     private String answer;

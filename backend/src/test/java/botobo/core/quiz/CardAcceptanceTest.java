@@ -188,6 +188,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
+        // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
                 .auth()
@@ -233,6 +234,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
+        // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
                 .auth()
@@ -254,6 +256,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
+        // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
                 .auth()

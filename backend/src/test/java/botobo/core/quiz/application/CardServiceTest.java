@@ -82,7 +82,7 @@ class CardServiceTest {
     @Test
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() {
-        // given // when
+        // given, when
         cardService.deleteCard(1L);
 
         // then
