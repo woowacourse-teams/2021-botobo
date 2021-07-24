@@ -25,8 +25,7 @@ pipeline {
                                 sshTransfer(
                                      sourceFiles: "${workspace}/frontend/dist/**", 
                                      removePrefix: "${workspace}/frontend",
-                                    remoteDirectory: "/2021-botobo/frontend",
-                                    execCommand: "hi~~" //원격지에서 실행할 커맨드
+                                    remoteDirectory: "/2021-botobo/frontend"
   )
                             ]
                         )
