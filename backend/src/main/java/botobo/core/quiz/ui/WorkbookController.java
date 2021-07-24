@@ -1,6 +1,8 @@
 package botobo.core.quiz.ui;
 
 import botobo.core.quiz.application.WorkbookService;
+import botobo.core.quiz.domain.workbook.WorkbookCriteria;
+import botobo.core.quiz.domain.workbook.WorkbookSearchParams;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,9 @@ public class WorkbookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkbookResponse>> findAllWorkbooks() {
+    public ResponseEntity<List<WorkbookResponse>> findAllWorkbooks(
+            @WorkbookSearchParams WorkbookCriteria workbookCriteria) {
+
         return ResponseEntity.ok(
                 workbookService.findAll()
         );

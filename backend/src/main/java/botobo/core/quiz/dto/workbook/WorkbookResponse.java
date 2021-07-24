@@ -1,6 +1,7 @@
 package botobo.core.quiz.dto.workbook;
 
 import botobo.core.quiz.domain.workbook.Workbook;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class WorkbookResponse {
     private String workbookName;
     private int cardCount;
     private String author;
+    private boolean opened;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
@@ -26,6 +28,7 @@ public class WorkbookResponse {
                 .workbookName(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
+                .opened(workbook.isPublic())
                 .build();
     }
 
