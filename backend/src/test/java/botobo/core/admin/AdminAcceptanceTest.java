@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static botobo.core.utils.TestUtils.extractId;
-import static botobo.core.utils.TestUtils.longStringGenerator;
+import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
@@ -105,7 +105,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     void createCategoryWithInvalidLengthWith31() {
         //given
         AdminWorkbookRequest adminWorkbookRequestWithInvalidName = new AdminWorkbookRequest(
-                longStringGenerator(31));
+                stringGenerator(31));
         ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName);
 
         //when

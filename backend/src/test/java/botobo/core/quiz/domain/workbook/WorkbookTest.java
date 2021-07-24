@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static botobo.core.utils.TestUtils.longStringGenerator;
+import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +41,7 @@ class WorkbookTest {
     void createWithValidLengthName() {
         // when, then
         assertThatCode(() -> Workbook.builder()
-                .name(longStringGenerator(30))
+                .name(stringGenerator(30))
                 .build()
         ).doesNotThrowAnyException();
     }
@@ -51,7 +51,7 @@ class WorkbookTest {
     void createWithLongName() {
         // whenm, then
         assertThatThrownBy(() -> Workbook.builder()
-                .name(longStringGenerator(31))
+                .name(stringGenerator(31))
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
