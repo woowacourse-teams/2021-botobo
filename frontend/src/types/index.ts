@@ -1,12 +1,14 @@
-export interface CategoryResponse {
-  id: number;
-  name: string;
-  description: string;
-  cardCount: number;
-  logoUrl: string;
+export interface AccessTokenResponse {
+  accessToken: string;
 }
 
-export interface SharedWorkbookResponse extends CategoryResponse {
+export interface WorkbookResponse {
+  id: number;
+  name: string;
+  cardCount: number;
+}
+
+export interface PublicWorkbookResponse extends WorkbookResponse {
   author: string;
 }
 
@@ -14,7 +16,7 @@ export interface QuizResponse {
   id: number;
   question: string;
   answer: string;
-  categoryName: string;
+  workbookName: string;
 }
 
 export interface CardResponse {
@@ -24,6 +26,25 @@ export interface CardResponse {
 }
 
 export interface CardsResponse {
-  categoryName: string;
+  workbookName: string;
   cards: CardResponse[];
+}
+
+export interface TagResponse {
+  id: number;
+  name: string;
+}
+
+export interface PublicCardsResponse {
+  id: number;
+  workbookName: string;
+  cardCount: number;
+  tags: TagResponse[];
+  cards: CardResponse[];
+}
+
+export interface UserInfoResponse {
+  id: number;
+  userName: string;
+  profileUrl: string;
 }

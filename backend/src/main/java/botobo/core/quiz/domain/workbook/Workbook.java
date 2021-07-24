@@ -77,7 +77,7 @@ public class Workbook extends BaseEntity {
     }
 
     public int cardCount() {
-        return cards.size();
+        return cards.counts();
     }
 
     public List<Card> getCardsAsList() {

@@ -1,4 +1,4 @@
-package botobo.core;
+package botobo.core.utils;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

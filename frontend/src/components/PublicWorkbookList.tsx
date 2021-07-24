@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import SharedWorkbook from './SharedWorkbook';
+import PublicWorkbook from './PublicWorkbook';
 
 const workbooks = [
   {
@@ -43,20 +43,20 @@ const workbooks = [
 ];
 
 interface Props {
-  onClickSharedWorkbook: (id: number) => void;
+  onClickPublicWorkbook: (id: number) => void;
 }
 
 // TODO: workbooks props로 받기(api 준비되면)
-const SharedWorkbookList = ({ onClickSharedWorkbook }: Props) => {
+const PublicWorkbookList = ({ onClickPublicWorkbook }: Props) => {
   return (
     <StyledUl>
       {workbooks.map(({ id, name, cardCount, author }) => (
         <li key={id}>
-          <SharedWorkbook
+          <PublicWorkbook
             name={name}
             cardCount={cardCount}
             author={author}
-            onClick={() => onClickSharedWorkbook(id)}
+            onClick={() => onClickPublicWorkbook(id)}
           />
         </li>
       ))}
@@ -70,4 +70,4 @@ const StyledUl = styled.ul`
   gap: 1rem;
 `;
 
-export default SharedWorkbookList;
+export default PublicWorkbookList;

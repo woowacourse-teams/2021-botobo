@@ -17,23 +17,25 @@ import {
   LoginPage,
   MainLoadable,
   MainPage,
+  PublicCardsPage,
+  PublicWorkbookPage,
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
-  SharedWorkbookPage,
+  WorkbookAddPage,
 } from './pages';
-import { loginState } from './recoil';
+import { userState } from './recoil';
 
 interface PrivateRouteProps extends RouteProps {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
-  const isLogin = useRecoilValue(loginState);
+  const userInfo = useRecoilValue(userState);
 
   return (
     <Route {...props}>
-      {isLogin ? children : <Redirect to={ROUTE.LOGIN.PATH} />}
+      {userInfo ? children : <Redirect to={ROUTE.LOGIN.PATH} />}
     </Route>
   );
 };
@@ -51,8 +53,12 @@ const Router = () => (
         <PageHeader title={ROUTE.LOGIN.TITLE} />
         <LoginPage />
       </Route>
+      <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
+        <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
+        <WorkbookAddPage />
+      </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
-        {/* TODO: 비 로그인 상태일 때, QuizStarter에서 분기 처리 */}
+        {/* TODO: 스켈레톤으로 변경 */}
         <Suspense fallback={<div>loading</div>}>
           <PageHeader title={ROUTE.QUIZ_SETTING.TITLE} />
           <QuizSettingPage />
@@ -73,9 +79,12 @@ const Router = () => (
           <CardsPage />
         </Suspense>
       </Route>
-      <Route exact path={ROUTE.SHARED_WORKBOOK.PATH}>
-        <PageHeader title={ROUTE.SHARED_WORKBOOK.TITLE} />
-        <SharedWorkbookPage />
+      <Route exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
+        <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+        <PublicWorkbookPage />
+      </Route>
+      <Route exact path={ROUTE.PUBLIC_CARDS.PATH}>
+        <PublicCardsPage />
       </Route>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />

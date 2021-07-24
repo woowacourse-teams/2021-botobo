@@ -1,25 +1,25 @@
 import { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { cardState } from './../recoil/cardState';
-import { ROUTE } from '../constants';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useCards = () => {
-  const history = useHistory();
+  const { routeMain } = useRouter();
   const { search } = useLocation();
-  const categoryId = new URLSearchParams(search).get('categoryId');
+  const workbookId = new URLSearchParams(search).get('id');
   const showSnackbar = useSnackbar();
 
-  if (!categoryId) {
-    history.push(ROUTE.HOME.PATH);
+  if (!workbookId) {
+    routeMain();
   }
 
   const {
-    data: { categoryName, cards },
+    data: { workbookName, cards },
     errorMessage,
-  } = useRecoilValue(cardState(Number(categoryId)));
+  } = useRecoilValue(cardState(Number(workbookId)));
 
   useEffect(() => {
     if (errorMessage) {
@@ -27,7 +27,7 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { categoryName, cards };
+  return { workbookName, cards };
 };
 
 export default useCards;

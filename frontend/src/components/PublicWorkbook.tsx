@@ -3,18 +3,19 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Flex } from '../styles';
-import { SharedWorkbookResponse } from '../types';
+import { PublicWorkbookResponse } from '../types';
+import CardTemplate from './CardTemplate';
 
-type PickedSharedWorkbook = Pick<
-  SharedWorkbookResponse,
+type PickedPublicWorkbook = Pick<
+  PublicWorkbookResponse,
   'name' | 'cardCount' | 'author'
 >;
 
-interface Props extends PickedSharedWorkbook {
+interface Props extends PickedPublicWorkbook {
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const SharedWorkbook = ({ name, cardCount, author, onClick }: Props) => (
+const PublicWorkbook = ({ name, cardCount, author, onClick }: Props) => (
   <Container onClick={onClick}>
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 카드</CardCount>
@@ -22,17 +23,8 @@ const SharedWorkbook = ({ name, cardCount, author, onClick }: Props) => (
   </Container>
 );
 
-const Container = styled.div`
+const Container = styled(CardTemplate)`
   ${Flex({ direction: 'column', justify: 'center', items: 'center' })};
-  cursor: pointer;
-  padding: 1rem;
-  word-break: break-all;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `}
 `;
 
 const Name = styled.span`
@@ -60,4 +52,4 @@ const Author = styled.span`
   `};
 `;
 
-export default SharedWorkbook;
+export default PublicWorkbook;

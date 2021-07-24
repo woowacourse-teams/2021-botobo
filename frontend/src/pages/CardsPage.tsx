@@ -28,12 +28,12 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { categoryName, cards } = useCards();
+  const { workbookName, cards } = useCards();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
   return (
     <Container>
-      <CategoryName>{categoryName}</CategoryName>
+      <WorkbookName>{workbookName}</WorkbookName>
       <span>{cards.length}개의 카드를 학습 중이에요.</span>
       <Filter>
         {filters.map(({ id, name }) => (
@@ -51,13 +51,13 @@ const CardsPage = () => {
       <Button size="full" backgroundColor="blue">
         새로운 카드 추가하기
       </Button>
-      <ul>
+      <CardList>
         {filter[currentFilterId](cards).map(({ id, question, answer }) => (
           <li key={id}>
             <QnACard question={question} answer={answer} />
           </li>
         ))}
-      </ul>
+      </CardList>
     </Container>
   );
 };
@@ -69,7 +69,7 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryName = styled.h2`
+const WorkbookName = styled.h2`
   margin-bottom: 1rem;
 `;
 
@@ -80,6 +80,13 @@ const Filter = styled.div`
   & > button {
     margin-right: 0.8rem;
   }
+`;
+
+const CardList = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(1);
+  gap: 2rem;
+  margin-top: 2rem;
 `;
 
 export default CardsPage;

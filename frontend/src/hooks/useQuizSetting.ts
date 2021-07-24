@@ -1,55 +1,54 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { categoryState, quizState } from './../recoil';
+import { quizState, workbookState } from './../recoil';
 import { postQuizzesAsync } from '../api';
-import { ROUTE } from '../constants';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useQuizSetting = () => {
-  const { data, errorMessage } = useRecoilValue(categoryState);
-  const [categories, setCategories] = useState(
+  const { data, errorMessage } = useRecoilValue(workbookState);
+  const [workbooks, setWorkbooks] = useState(
     data
       .filter(({ cardCount }) => cardCount > 0)
-      .map((category) => ({
-        ...category,
+      .map((workbook) => ({
+        ...workbook,
         isChecked: false,
       }))
   );
   const setQuizState = useSetRecoilState(quizState);
-  const history = useHistory();
   const showSnackbar = useSnackbar();
+  const { routeQuiz } = useRouter();
 
-  const checkCategory = (id: number) => {
-    const newCategories = categories.map((category) => {
-      if (category.id !== id) return category;
+  const checkWorkbook = (id: number) => {
+    const newWorkbooks = workbooks.map((workbook) => {
+      if (workbook.id !== id) return workbook;
 
       return {
-        ...category,
-        isChecked: !category.isChecked,
+        ...workbook,
+        isChecked: !workbook.isChecked,
       };
     });
 
-    setCategories(newCategories);
+    setWorkbooks(newWorkbooks);
   };
 
   const startQuiz = async () => {
-    const categoryIds = categories
+    const workbookIds = workbooks
       .filter(({ isChecked }) => isChecked)
-      .map((category) => category.id);
+      .map((workbook) => workbook.id);
 
-    if (categoryIds.length === 0) {
+    if (workbookIds.length === 0) {
       alert('카테고리를 선택해주세요!');
 
       return;
     }
 
     try {
-      const quizzes = await postQuizzesAsync(categoryIds);
+      const quizzes = await postQuizzesAsync(workbookIds);
 
       setQuizState(quizzes);
-      history.push(ROUTE.QUIZ.PATH);
+      routeQuiz();
     } catch (error) {
       showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
     }
@@ -61,7 +60,7 @@ const useQuizSetting = () => {
     }
   }, [errorMessage]);
 
-  return { categories, checkCategory, startQuiz };
+  return { workbooks, checkWorkbook, startQuiz };
 };
 
 export default useQuizSetting;

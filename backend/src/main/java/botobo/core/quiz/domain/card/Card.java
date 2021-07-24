@@ -77,11 +77,15 @@ public class Card extends BaseEntity {
         encounterCount++;
     }
 
-    public void makeNextQuizCard() {
+    public void makeNextQuiz() {
         isNextQuiz = true;
     }
 
-    public void cancelNextQuizCard() {
+    public void cancelNextQuiz() {
         isNextQuiz = false;
+    }
+
+    public boolean equalsNextQuizWith(boolean isNextQuiz) {
+        return this.isNextQuiz == isNextQuiz;
     }
 }

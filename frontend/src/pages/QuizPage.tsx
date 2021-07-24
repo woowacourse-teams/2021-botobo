@@ -32,12 +32,12 @@ const QuizPage = () => {
         </Tooltip>
         {quizzes && (
           <QuizList quizCount={quizzes.length} currentIndex={currentQuizIndex}>
-            {quizzes.map(({ id, question, answer, categoryName }, index) => (
+            {quizzes.map(({ id, question, answer, workbookName }, index) => (
               <QuizItem key={id} quizIndex={index}>
                 <Quiz
                   question={question}
                   answer={answer}
-                  categoryName={categoryName}
+                  workbookName={workbookName}
                   isChanged={id === prevQuizId}
                 />
               </QuizItem>

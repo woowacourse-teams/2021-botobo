@@ -5,9 +5,10 @@ import React from 'react';
 import EmptyStarIcon from '../assets/star-empty.svg';
 // import FillStarIcon from '../assets/star-fill.svg';
 import { CardResponse } from '../types';
+import CardTemplate from './CardTemplate';
 
 const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
-  <Container>
+  <CardTemplate editable={true}>
     <Header>
       <BookmarkButton>
         <EmptyStarIcon />
@@ -15,25 +16,8 @@ const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
     </Header>
     <Question>Q. {question}</Question>
     <Answer>A. {answer}</Answer>
-    <Footer>
-      <button>수정</button>
-      <button>삭제</button>
-    </Footer>
-  </Container>
+  </CardTemplate>
 );
-
-const Container = styled.div`
-  min-height: 3rem;
-  padding: 1rem;
-  margin-top: 2rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    box-shadow: ${theme.boxShadow.card};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `};
-`;
 
 const Header = styled.div`
   text-align: right;
@@ -58,15 +42,6 @@ const Question = styled.div`
 
 const Answer = styled.div`
   padding-top: 1.5rem;
-`;
-
-const Footer = styled.div`
-  margin-top: 1rem;
-  text-align: right;
-
-  & > button {
-    margin-left: 1rem;
-  }
 `;
 
 export default QnACard;

@@ -1,16 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Button, QuizResult } from '../components';
-import { ROUTE } from '../constants';
+import { useRouter } from '../hooks';
 import useQuizResult from '../hooks/useQuizResult';
 import { Flex } from '../styles';
 
 const QuizResultPage = () => {
   const { quizResults, checkQuizResult } = useQuizResult();
-  const history = useHistory();
+  const { routeMain } = useRouter();
 
   return (
     <Container>
@@ -18,11 +17,11 @@ const QuizResultPage = () => {
       <br />
       <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
       <QuizResultList>
-        {quizResults.map(({ id, question, categoryName, isChecked }) => (
+        {quizResults.map(({ id, question, workbookName, isChecked }) => (
           <li key={id}>
             <QuizResult
               question={question}
-              categoryName={categoryName}
+              workbookName={workbookName}
               isChecked={isChecked}
               onClick={() => checkQuizResult(id)}
             />
@@ -35,15 +34,11 @@ const QuizResultPage = () => {
           backgroundColor="white"
           color="green"
           shape="rectangle"
-          onClick={() => history.push(ROUTE.HOME.PATH)}
+          onClick={routeMain}
         >
           저장 안하고 나가기
         </Button>
-        <Button
-          size="full"
-          shape="rectangle"
-          onClick={() => history.push(ROUTE.HOME.PATH)}
-        >
+        <Button size="full" shape="rectangle" onClick={routeMain}>
           다음에 또 보기
         </Button>
       </ButtonWrapper>

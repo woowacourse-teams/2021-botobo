@@ -21,6 +21,6 @@ public class CardService {
     @Transactional
     public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
         List<Card> nextQuizCards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());
-        nextQuizCards.forEach(Card::makeNextQuizCard);
+        nextQuizCards.forEach(Card::makeNextQuiz);
     }
 }

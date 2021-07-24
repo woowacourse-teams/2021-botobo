@@ -1,38 +1,30 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
-import PlusIcon from '../assets/plus.svg';
-import { Button, CategoryList, QuizStarter } from '../components';
-import { ROUTE } from '../constants';
-import { useMain } from '../hooks';
+import { Button, QuizStarter, WorkbookList } from '../components';
+import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
-  const { categories } = useMain();
-  const history = useHistory();
+  const { workbooks, userInfo } = useMain();
+  const { routeWorkbookAdd, routeCards } = useRouter();
 
   return (
     <Container>
+      {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
       <QuizStarter />
       <section>
-        <CategoryHeader>
-          <CategoryTitle>학습 중</CategoryTitle>
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-          >
-            <StyledPlusIcon />
+        <WorkbookHeader>
+          <WorkbookTitle>학습 중</WorkbookTitle>
+          <Button shape="square" onClick={routeWorkbookAdd}>
+            문제집 추가
           </Button>
-        </CategoryHeader>
-        <CategoryList
-          categories={categories}
-          onClickCategory={(categoryId) =>
-            history.push(`${ROUTE.CARDS.PATH}?categoryId=${categoryId}`)
-          }
+        </WorkbookHeader>
+        <WorkbookList
+          workbooks={workbooks}
+          onClickWorkbook={(workbookId) => routeCards(workbookId)}
+          editable={true}
         />
       </section>
     </Container>
@@ -46,28 +38,20 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryHeader = styled.div`
+const Greeting = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
-const CategoryTitle = styled.h2`
+const WorkbookTitle = styled.h2`
   ${({ theme }) =>
     css`
       font-size: ${theme.fontSize.semiLarge};
     `};
-`;
-
-// TODO: 타입 체크하기
-const StyledPlusIcon = styled(PlusIcon)`
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
-
-  ${({ theme }) =>
-    css`
-      fill: ${theme.color.green};
-    `}
 `;
 
 export default MainPage;
