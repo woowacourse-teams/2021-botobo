@@ -266,6 +266,22 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("카드 삭제 - 성공")
+    void deleteCard() {
+        // given
+        Long cardId = 1L;
+
+        // when
+        final HttpResponse response = request()
+                .delete("/api/cards/" + cardId)
+                .auth()
+                .build();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
     @DisplayName("또 보기 원하는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given

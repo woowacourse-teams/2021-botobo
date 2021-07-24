@@ -46,6 +46,11 @@ public class CardService {
     }
 
     @Transactional
+    public void deleteCard(Long id) {
+        cardRepository.deleteById(id);
+    }
+
+    @Transactional
     public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
         List<Card> cards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());
         cards.forEach(Card::makeNextQuiz);

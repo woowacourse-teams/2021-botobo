@@ -7,6 +7,7 @@ import botobo.core.quiz.dto.CardUpdateRequest;
 import botobo.core.quiz.dto.CardUpdateResponse;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +38,12 @@ public class CardController {
     public ResponseEntity<CardUpdateResponse> updateCard(@PathVariable Long id, @Valid @RequestBody CardUpdateRequest cardUpdateRequest) {
         CardUpdateResponse cardUpdateResponse = cardService.updateCard(id, cardUpdateRequest);
         return ResponseEntity.ok(cardUpdateResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
+        cardService.deleteCard(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/next-quiz")

@@ -80,6 +80,18 @@ class CardServiceTest {
     }
 
     @Test
+    @DisplayName("카드 삭제 - 성공")
+    void deleteCard() {
+        // given // when
+        cardService.deleteCard(1L);
+
+        // then
+        then(cardRepository)
+                .should(times(1))
+                .deleteById(any());
+    }
+
+    @Test
     @DisplayName("다음에 또 보는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given

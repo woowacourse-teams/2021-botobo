@@ -67,7 +67,7 @@ public class CardDocumentationTest extends DocumentationTest {
                 .post("/api/cards", request)
                 .auth(token)
                 .build()
-                .status(status().isOk())
+                .status(status().isCreated())
                 .identifier("cards-post-success");
     }
 
@@ -94,11 +94,28 @@ public class CardDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/cards/1", request)
+                .put("/api/cards/1", request)
                 .auth(token)
                 .build()
                 .status(status().isOk())
                 .identifier("cards-put-success");
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 성공")
+    void deleteCard() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .delete("/api/cards/1")
+                .auth(token)
+                .build()
+                .status(status().isNoContent())
+                .identifier("cards-delete-success");
     }
 
     @Test
