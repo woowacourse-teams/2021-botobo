@@ -1,5 +1,6 @@
 package botobo.core.common.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(of = "id")
 @MappedSuperclass
 @Getter
 @EntityListeners(AuditingEntityListener.class)

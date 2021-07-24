@@ -4,6 +4,7 @@ import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.QuizService;
 import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
+import botobo.core.quiz.exception.QuizEmptyException;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import botobo.core.quiz.ui.QuizController;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -68,6 +70,25 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isNotFound())
                 .identifier("quizzes-post-fail-invalid-category-id");
+    }
+
+    @Test
+    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
+    void createQuizWithEmptyCards() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L));
+        given(quizService.createQuiz(Collections.singletonList(100L))).willThrow(new QuizEmptyException());
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/quizzes", quizRequest)
+                .auth(token)
+                .build()
+                .status(status().isBadRequest())
+                .identifier("quizzes-post-fail-empty-cards");
     }
 
     @Test
