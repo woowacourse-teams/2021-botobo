@@ -1,0 +1,38 @@
+pipeline {
+     agent any
+     tools {
+        nodejs "nodejs"
+        git "git"
+    }
+     stages {
+        stage("Build") {
+            steps {
+              dir('frontend'){
+                sh "yarn"
+                sh "yarn build:dev"
+               }
+            }
+        }
+      }
+     stage('SSH transfer') {
+            steps([$class: 'BapSshPromotionPublisherPlugin']) {
+                sshPublisher(
+                    continueOnError: false, failOnError: true,
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: "botobo-frontend-develop",
+                            verbose: true,
+                            transfers: [
+                                sshTransfer(
+                                     sourceFiles: "${workspace}/frontend/dist/**", 
+                                     removePrefix: "${workspace}/frontend", //파일에서 삭제할 경로가 있다면 작성
+                                    remoteDirectory: "/2021-botobo/frontend" //배포할 위치
+                                    execCommand: "hi~~" //원격지에서 실행할 커맨드
+  )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+}

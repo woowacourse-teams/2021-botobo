@@ -48,6 +48,6 @@ public class CardService {
     @Transactional
     public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
         List<Card> cards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());
-        cards.forEach(Card::makeNextQuizCard);
+        cards.forEach(Card::makeNextQuiz);
     }
 }

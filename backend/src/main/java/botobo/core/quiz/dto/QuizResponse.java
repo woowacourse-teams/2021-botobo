@@ -1,6 +1,7 @@
 package botobo.core.quiz.dto;
 
 import botobo.core.quiz.domain.card.Card;
+import botobo.core.quiz.domain.card.Cards;
 import botobo.core.quiz.domain.workbook.Workbook;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,9 @@ public class QuizResponse {
     private String question;
     private String answer;
     private String workbookName;
+    private int encounterCount;
 
-    public static QuizResponse of(Card card) {
+    private static QuizResponse of(Card card) {
         final Workbook workbook = card.getWorkbook();
         final String answer = card.getAnswer();
         return QuizResponse.builder()
@@ -29,6 +31,7 @@ public class QuizResponse {
                 .question(card.getQuestion())
                 .answer(answer)
                 .workbookName(workbook.getName())
+                .encounterCount(card.getEncounterCount())
                 .build();
     }
 
@@ -36,5 +39,9 @@ public class QuizResponse {
         return cards.stream()
                 .map(QuizResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public static List<QuizResponse> cardsOf(Cards nextCards) {
+        return listOf(nextCards.getCards());
     }
 }

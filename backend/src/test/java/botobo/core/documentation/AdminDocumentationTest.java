@@ -8,37 +8,23 @@ import botobo.core.admin.dto.AdminWorkbookResponse;
 import botobo.core.admin.ui.AdminController;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
-import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("관리자용 API 문서화 테스트")
 @WebMvcTest(AdminController.class)
-@AutoConfigureRestDocs
-@MockBean(JpaMetamodelMappingContext.class)
-public class AdminDocumentationTest {
+public class AdminDocumentationTest extends DocumentationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private AdminService adminService;
@@ -60,18 +46,14 @@ public class AdminDocumentationTest {
                         .build()
         );
 
-        // when, then
-        mockMvc.perform(post("/api/admin/workbooks")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminWorkbookRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/api/admin/workbooks/1"))
-                .andDo(document("admin-workbooks-post-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth(token)
+                .locationHeader("/api/admin/workbooks/1")
+                .build()
+                .status(status().isCreated())
+                .identifier("admin-workbooks-post-success");
     }
 
     @Test
@@ -90,17 +72,14 @@ public class AdminDocumentationTest {
         );
 
         // when, then
-        mockMvc.perform(post("/api/admin/cards")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminCardRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/api/admin/cards/1"))
-                .andDo(document("admin-cards-post-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/admin/cards", adminCardRequest)
+                .auth(token)
+                .locationHeader("/api/admin/cards/1")
+                .build()
+                .status(status().isCreated())
+                .identifier("admin-cards-post-success");
     }
 
     @Test
@@ -113,15 +92,13 @@ public class AdminDocumentationTest {
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
-        mockMvc.perform(post("/api/admin/cards")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(adminCardRequest)))
-                .andExpect(status().isNotFound())
-                .andDo(document("admin-cards-post-fail-invalid-workbook",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/admin/cards", adminCardRequest)
+                .auth(token)
+                .build()
+                .status(status().isNotFound())
+                .identifier("admin-cards-post-fail-invalid-workbook");
+
     }
 }

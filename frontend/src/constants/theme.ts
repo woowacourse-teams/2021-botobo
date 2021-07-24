@@ -24,7 +24,7 @@ const theme: Theme = {
     card: `rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px`,
     button: `rgba(99, 99, 99, 0.2) 0px 2px 8px 0px`,
-    inset: '0 0 0 2px inset',
+    inset: '0 0 0 1.5px inset',
   },
   borderRadius: {
     circle: '50%',
@@ -33,6 +33,13 @@ const theme: Theme = {
     square: '8px',
     square_1: '12px',
     square_2: '16px',
+    square_3: '20px',
+    square_4: '24px',
+    square_5: '28px',
+    square_6: '32px',
+    square_7: '36px',
+    square_8: '40px',
+    square_9: '44px',
   },
   fontSize: {
     small: '0.8rem',

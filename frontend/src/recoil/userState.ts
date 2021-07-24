@@ -1,11 +1,17 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
-import { STORAGE_KEY } from '../constants';
-import { getLocalStorage } from '../utils';
+import { getUserInfoAsync } from './../api/index';
 
-const token = getLocalStorage(STORAGE_KEY.TOKEN);
-
-export const loginState = atom({
-  key: 'loginState',
-  default: Boolean(token),
+export const userState = atom({
+  key: 'userState',
+  default: selector({
+    key: 'userRequest',
+    get: async () => {
+      try {
+        return await getUserInfoAsync();
+      } catch (error) {
+        return null;
+      }
+    },
+  }),
 });

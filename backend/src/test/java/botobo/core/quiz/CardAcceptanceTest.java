@@ -7,9 +7,7 @@ import botobo.core.quiz.dto.CardResponse;
 import botobo.core.quiz.dto.CardUpdateRequest;
 import botobo.core.quiz.dto.CardUpdateResponse;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import botobo.core.utils.RequestBuilder.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,15 +15,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.Fixture.CARD_REQUEST_1;
-import static botobo.core.Fixture.CARD_REQUEST_2;
-import static botobo.core.Fixture.CARD_REQUEST_3;
-import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
+import static botobo.core.utils.Fixture.CARD_REQUEST_1;
+import static botobo.core.utils.Fixture.CARD_REQUEST_2;
+import static botobo.core.utils.Fixture.CARD_REQUEST_3;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -316,22 +313,18 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given
-        NextQuizCardsRequest nextQuizCardsRequest = NextQuizCardsRequest.builder()
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(1L, 2L, 3L))
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(nextQuizCardsRequest)
-                        .when().put("/api/cards/next-quiz")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/next-quiz", request)
+                .auth()
+                .build();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

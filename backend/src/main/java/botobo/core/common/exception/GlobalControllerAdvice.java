@@ -36,6 +36,13 @@ public class GlobalControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(message));
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleException(BadRequestException e) {
+        log.info("BadRequestException", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(e.getMessage()));
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.info("Exception", e);
