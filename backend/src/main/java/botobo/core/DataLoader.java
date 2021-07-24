@@ -4,6 +4,9 @@ import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
+import botobo.core.user.domain.Role;
+import botobo.core.user.domain.User;
+import botobo.core.user.domain.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -34,14 +37,19 @@ public class DataLoader implements CommandLineRunner {
 
     private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
-    public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository) {
+    private User adminUser;
+
+    public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) {
+        this.adminUser = saveAdminUser();
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
@@ -85,9 +93,20 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
+    private User saveAdminUser() {
+        User user = User.builder()
+                .userName("보또보")
+                .githubId(-1L)
+                .profileUrl("botobo.profile.url")
+                .role(Role.ADMIN)
+                .build();
+        return userRepository.save(user);
+    }
+
     private Workbook saveWorkbook(String workbookName) {
         Workbook workbook = Workbook.builder()
                 .name(workbookName)
+                .user(this.adminUser)
                 .build();
         return workbookRepository.save(workbook);
     }
