@@ -33,6 +33,13 @@ const theme: Theme = {
     square: '8px',
     square_1: '12px',
     square_2: '16px',
+    square_3: '20px',
+    square_4: '24px',
+    square_5: '28px',
+    square_6: '32px',
+    square_7: '36px',
+    square_8: '40px',
+    square_9: '44px',
   },
   fontSize: {
     small: '0.8rem',

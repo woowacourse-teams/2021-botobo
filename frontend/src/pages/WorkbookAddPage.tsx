@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import useModal from '../hooks/useModal';
 import { Flex } from '../styles';
 
 /**
@@ -18,6 +19,7 @@ const WORKBOOK_NAME_MAXIMUM_LENGTH = 20;
 const WorkbookAddPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
+  const { openModal } = useModal();
 
   const onChangeInput: React.ChangeEventHandler<HTMLInputElement> = ({
     target,
@@ -42,7 +44,7 @@ const WorkbookAddPage = () => {
         </Limiter>
       </InputWrapper>
       <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
-      <AccessSelectorWrapper>
+      <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
         <AccessSelector id="access-select">전체 공개</AccessSelector>
       </AccessSelectorWrapper>
     </Container>
