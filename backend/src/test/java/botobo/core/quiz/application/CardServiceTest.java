@@ -5,6 +5,7 @@ import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.CardRequest;
+import botobo.core.quiz.dto.CardUpdateRequest;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,26 @@ class CardServiceTest {
     }
 
     @Test
+    @DisplayName("카드 수정 - 성공")
+    void updateCard() {
+        // given
+        CardUpdateRequest cardUpdateRequest = cardUpdateRequest();
+        Long cardId = 1L;
+        Workbook workbook = workbook(1L);
+        Card card = card(cardId, workbook);
+
+        given(cardRepository.findById(any())).willReturn(Optional.of(card));
+
+        // when
+        cardService.updateCard(1L, cardUpdateRequest);
+
+        // then
+        then(cardRepository)
+                .should(times(1))
+                .findById(any());
+    }
+
+    @Test
     @DisplayName("다음에 또 보는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given
@@ -93,20 +114,28 @@ class CardServiceTest {
                 .build();
     }
 
-    private List<Card> listOfThreeCards() {
-        return List.of(
-                card(1L, workbook(1L)),
-                card(2L, workbook(1L)),
-                card(3L, workbook(1L))
-        );
-    }
-
     private CardRequest cardRequest() {
         return CardRequest.builder()
                 .question("question")
                 .answer("answer")
                 .workbookId(1L)
                 .build();
+    }
+
+    private CardUpdateRequest cardUpdateRequest() {
+        return CardUpdateRequest.builder()
+                .question("changed question")
+                .answer("changed answer")
+                .bookmark(true)
+                .build();
+    }
+
+    private List<Card> listOfThreeCards() {
+        return List.of(
+                card(1L, workbook(1L)),
+                card(2L, workbook(1L)),
+                card(3L, workbook(1L))
+        );
     }
 
     private NextQuizCardsRequest nextQuizCardsRequestWithThreeIds() {

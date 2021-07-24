@@ -4,6 +4,8 @@ import botobo.core.DomainAcceptanceTest;
 import botobo.core.common.exception.ErrorResponse;
 import botobo.core.quiz.dto.CardRequest;
 import botobo.core.quiz.dto.CardResponse;
+import botobo.core.quiz.dto.CardUpdateRequest;
+import botobo.core.quiz.dto.CardUpdateResponse;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -24,6 +26,7 @@ import static botobo.core.Fixture.CARD_REQUEST_1;
 import static botobo.core.Fixture.CARD_REQUEST_2;
 import static botobo.core.Fixture.CARD_REQUEST_3;
 import static botobo.core.Fixture.WORKBOOK_REQUEST_1;
+import static botobo.core.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
@@ -171,6 +174,142 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(errorResponse).extracting("message").isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 성공")
+    void updateCard() {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question("question")
+                .answer("answer")
+                .bookmark(true)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(cardUpdateRequest)
+                        .when().put("/api/cards/1")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        CardUpdateResponse cardUpdateResponse = response.as(CardUpdateResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(cardUpdateResponse).extracting("question").isEqualTo(cardUpdateRequest.getQuestion());
+        assertThat(cardUpdateResponse).extracting("answer").isEqualTo(cardUpdateRequest.getAnswer());
+        assertThat(cardUpdateResponse).extracting("bookmark").isEqualTo(cardUpdateRequest.getBookmark());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    @DisplayName("카드 수정 - 실패, 유효하지 않은 question")
+    void updateCardWithInvalidQuestion(String question) {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question(question)
+                .answer("answer")
+                .bookmark(true)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(cardUpdateRequest)
+                        .when().put("/api/cards/1")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 질문이 필요합니다.");
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 실패, 225자를 넘긴 question")
+    void updateCardWithLongQuestion() {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question(longStringGenerator(266))
+                .answer("answer")
+                .bookmark(true)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(cardUpdateRequest)
+                        .when().put("/api/cards/1")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse).extracting("message").isEqualTo("질문은 최대 255자까지 입력 가능합니다.");
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    @DisplayName("카드 수정 - 실패, 유효하지 않은 answer")
+    void updateCardWithInvalidAnswer(String answer) {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question("question")
+                .answer(answer)
+                .bookmark(true)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(cardUpdateRequest)
+                        .when().put("/api/cards/1")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 답변이 필요합니다.");
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 실패, 225자를 넘긴 answer")
+    void updateCardWithLongAnswer() {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question("question")
+                .answer(longStringGenerator(266))
+                .bookmark(true)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(cardUpdateRequest)
+                        .when().put("/api/cards/1")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse).extracting("message").isEqualTo("답변은 최대 255자까지 입력 가능합니다.");
     }
 
     @Test
