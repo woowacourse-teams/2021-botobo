@@ -7,6 +7,7 @@ import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const MainPage = () => {
+  console.log('테스트');
   const { workbooks, userInfo } = useMain();
   const { routeWorkbookAdd, routeCards } = useRouter();
 
