@@ -6,7 +6,10 @@ import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.CardRequest;
 import botobo.core.quiz.dto.CardResponse;
+import botobo.core.quiz.dto.CardUpdateRequest;
+import botobo.core.quiz.dto.CardUpdateResponse;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
+import botobo.core.quiz.exception.CardNotFoundException;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,14 @@ public class CardService {
         Card card = cardRequest.toCardWithWorkbook(workbook);
         cardRepository.save(card);
         return CardResponse.of(card);
+    }
+
+    @Transactional
+    public CardUpdateResponse updateCard(Long id, CardUpdateRequest cardUpdateRequest) {
+        Card card = cardRepository.findById(id)
+                .orElseThrow(CardNotFoundException::new);
+        card.updateFrom(cardUpdateRequest.toCard());
+        return CardUpdateResponse.of(card);
     }
 
     @Transactional

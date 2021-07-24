@@ -87,4 +87,10 @@ public class Card extends BaseEntity {
     public void cancelNextQuizCard() {
         isNextQuiz = false;
     }
+
+    public void updateFrom(Card other) {
+        this.question = other.question;
+        this.answer = other.answer;
+        this.isBookmark = other.isBookmark;
+    }
 }
