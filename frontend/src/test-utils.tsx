@@ -7,21 +7,23 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
 import { theme } from './constants';
-import { SnackbarProvider } from './contexts';
+import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
 
 // eslint-disable-next-line react/prop-types
 const AllTheProviders: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <RecoilRoot>
-          <Suspense fallback={<div></div>}>
-            <GlobalStyle />
-            <BrowserRouter>{children}</BrowserRouter>
-          </Suspense>
-        </RecoilRoot>
-      </SnackbarProvider>
+      <ModalProvider>
+        <SnackbarProvider>
+          <RecoilRoot>
+            <Suspense fallback={<div></div>}>
+              <GlobalStyle />
+              <BrowserRouter>{children}</BrowserRouter>
+            </Suspense>
+          </RecoilRoot>
+        </SnackbarProvider>
+      </ModalProvider>
     </ThemeProvider>
   );
 };
