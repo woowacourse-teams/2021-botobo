@@ -7,8 +7,10 @@ pipeline {
      stages {
         stage("Build") {
             steps {
+              dir('frontend'){
                 sh "yarn"
                 sh "yarn build:dev"
+               }
             }
         }
     }
