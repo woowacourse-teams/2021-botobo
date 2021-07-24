@@ -11,27 +11,32 @@ import java.util.Objects;
 public class WorkbookCriteria {
 
     private SearchKeyword searchKeyword;
-    private boolean opened;
+    private AccessType accessType;
 
-    private WorkbookCriteria(SearchKeyword searchKeyword, boolean opened) {
+    private WorkbookCriteria(SearchKeyword searchKeyword, AccessType accessType) {
         this.searchKeyword = searchKeyword;
-        this.opened = opened;
+        this.accessType = accessType;
     }
 
     @Builder
-    public WorkbookCriteria(String keyword, String opened) {
-        this(SearchKeyword.from(keyword), applyOpenedRule(opened));
-    }
-
-    private static boolean applyOpenedRule(String opened) {
-        if (Objects.isNull(opened) || !opened.equalsIgnoreCase("false")) {
-            return true;
-        }
-        return false;
+    public WorkbookCriteria(String keyword, String access) {
+        this(SearchKeyword.from(keyword), AccessType.from(access));
     }
 
     public boolean isNoSearchKeyword() {
         return searchKeyword.isNoKeyword();
+    }
+
+    public boolean isPublicAccess() {
+        return accessType.isPublic();
+    }
+
+    public boolean isPrivateAccess() {
+        return accessType.isPrivate();
+    }
+
+    public boolean isAllAccess() {
+        return accessType.isAll();
     }
 
     @Override
@@ -39,11 +44,11 @@ public class WorkbookCriteria {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WorkbookCriteria that = (WorkbookCriteria) o;
-        return opened == that.opened && Objects.equals(searchKeyword, that.searchKeyword);
+        return Objects.equals(getSearchKeyword(), that.getSearchKeyword()) && getAccessType() == that.getAccessType();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(searchKeyword, opened);
+        return Objects.hash(getSearchKeyword(), getAccessType());
     }
 }

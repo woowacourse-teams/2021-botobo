@@ -16,7 +16,7 @@ import java.util.Map;
 public class WorkbookCriteriaArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String KEYWORD = "keyword";
-    private static final String OPENED = "opened";
+    private static final String ACCESS = "access";
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -30,7 +30,7 @@ public class WorkbookCriteriaArgumentResolver implements HandlerMethodArgumentRe
 
         return WorkbookCriteria.builder()
                 .keyword(parameterMap.getOrDefault(KEYWORD, null))
-                .opened(parameterMap.getOrDefault(OPENED, null))
+                .access(parameterMap.getOrDefault(ACCESS, null))
                 .build();
     }
 
