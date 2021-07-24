@@ -32,7 +32,7 @@ class WorkbookTest {
         assertFalse(workbook.isDeleted());
         assertFalse(workbook.isPublic());
         assertNotNull(workbook.getCards());
-        assertThat(workbook.getCards().size()).isEqualTo(0);
+        assertThat(workbook.getCards().getCards()).hasSize(0);
         assertNull(workbook.getUser());
     }
 
