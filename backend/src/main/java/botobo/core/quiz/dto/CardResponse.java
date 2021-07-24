@@ -18,9 +18,7 @@ public class CardResponse {
     private Long id;
     private String question;
     private String answer;
-    private Long workbookId;
-    private boolean isBookmark;
-    private boolean isNextQuiz;
+    private boolean bookmark;;
     private int encounterCount;
 
     public static CardResponse of(Card card) {
@@ -28,9 +26,7 @@ public class CardResponse {
                 .id(card.getId())
                 .question(card.getQuestion())
                 .answer(card.getAnswer())
-                .workbookId(card.getWorkbook().getId())
-                .isBookmark(card.isBookmark())
-                .isNextQuiz(card.isNextQuiz())
+                .bookmark(card.isBookmark())
                 .encounterCount(card.getEncounterCount())
                 .build();
     }
