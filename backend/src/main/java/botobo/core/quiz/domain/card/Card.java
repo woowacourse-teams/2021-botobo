@@ -44,7 +44,7 @@ public class Card extends BaseEntity {
     private boolean isDeleted;
 
     @Builder
-    public Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
+    private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
         validateNull(question, workbook);
         this.id = id;
         this.question = question;
