@@ -2,7 +2,8 @@ package botobo.core.auth.ui;
 
 import botobo.core.auth.infrastructure.AuthorizationExtractor;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
-import botobo.core.user.domain.LoginUser;
+import botobo.core.user.domain.AppUser;
+import botobo.core.user.domain.Role;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -27,9 +28,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        if (credentials == null) {
+            return AppUser.anonymous();
+        }
         Long userId = jwtTokenProvider.getIdFromPayLoad(credentials);
-        return LoginUser.builder()
+        return AppUser.builder()
                 .id(userId)
+                .role(Role.USER)
                 .build();
     }
 }
