@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,9 +19,11 @@ import javax.validation.constraints.NotNull;
 public class CardRequest {
 
     @NotBlank(message = "질문은 필수 입력값입니다.")
+    @Length(max = 255)
     private String question;
 
     @NotBlank(message = "답변은 필수 입력값입니다.")
+    @Length(max = 255)
     private String answer;
 
     @NotNull(message = "카드가 포함될 문제집 아이디는 필수 입력값입니다.")

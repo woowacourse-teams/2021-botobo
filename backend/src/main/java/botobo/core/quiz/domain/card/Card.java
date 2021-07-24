@@ -45,7 +45,7 @@ public class Card extends BaseEntity {
 
     @Builder
     private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
-        validateNull(question, workbook);
+        validateNull(question, answer, workbook);
         this.id = id;
         this.question = question;
         this.answer = answer;
@@ -56,9 +56,12 @@ public class Card extends BaseEntity {
         changeWorkbook(workbook);
     }
 
-    private void validateNull(String question, Workbook workbook) {
+    private void validateNull(String question, String answer, Workbook workbook) {
         if (Objects.isNull(question)) {
-            throw new IllegalArgumentException("Card의 Question에는 null이 들어갈 수 없습니다.");
+            throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
+        }
+        if (Objects.isNull(answer)) {
+            throw new IllegalArgumentException("Card의 answer에는 null이 들어갈 수 없습니다.");
         }
         if (Objects.isNull(workbook)) {
             throw new IllegalArgumentException("Card의 Workbook에는 null이 들어갈 수 없습니다.");

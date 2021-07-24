@@ -32,7 +32,7 @@ public class CardController {
     }
 
     @PutMapping("/next-quiz")
-    public ResponseEntity<Void> selectNextQuizCards(@RequestBody NextQuizCardsRequest nextQuizCardsRequest) {
+    public ResponseEntity<Void> selectNextQuizCards(@Valid @RequestBody NextQuizCardsRequest nextQuizCardsRequest) {
         cardService.selectNextQuizCards(nextQuizCardsRequest);
         return ResponseEntity.noContent().build();
     }

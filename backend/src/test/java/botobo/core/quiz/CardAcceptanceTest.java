@@ -194,4 +194,28 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    @Test
+    @DisplayName("또 보기 원하는 카드 선택 - 실패, 요청으로 null 들어오는 경우")
+    void selectNextQuizCardsWithNullList() {
+        // given
+        NextQuizCardsRequest nextQuizCardsRequest = NextQuizCardsRequest.builder()
+                .cardIds(null)
+                .build();
+
+        // when
+        final ExtractableResponse<Response> response =
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(로그인되어_있음().getAccessToken())
+                        .body(nextQuizCardsRequest)
+                        .when().put("/api/cards/next-quiz")
+                        .then().log().all()
+                        .extract();
+
+        // then
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(errorResponse).extracting("message").isEqualTo("유효하지 않은 또 보기 카드 등록 요청입니다.");
+    }
 }
