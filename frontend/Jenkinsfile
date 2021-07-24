@@ -23,8 +23,8 @@ pipeline {
                             verbose: true,
                             transfers: [
                                 sshTransfer(
-                                     sourceFiles: "/frontend/dist/index.html", 
-                                     removePrefix: "/frontend",
+                                     sourceFiles: "frontend/dist/index.html", 
+                                     removePrefix: "frontend/dist",
                                     remoteDirectory: ""
   )
                             ]
