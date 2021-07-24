@@ -13,6 +13,13 @@ pipeline {
                }
             }
         }
+        stage("Test") {
+             steps {
+                  dir('frontend') {
+                    sh "yarn test"
+                  }
+             }
+        }
         stage('SSH transfer') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
                 sshPublisher(
