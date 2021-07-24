@@ -24,7 +24,7 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                      sourceFiles: "frontend/dist/*", 
-                                     removePrefix: "frontend/dist",
+                                     removePrefix: "frontend",
                                     remoteDirectory: ""
   )
                             ]
