@@ -1,5 +1,9 @@
 pipeline {
      agent any
+     tools {
+        nodejs "nodejs"
+        git "git"
+    }
      stages {
         stage("Build") {
             steps {
