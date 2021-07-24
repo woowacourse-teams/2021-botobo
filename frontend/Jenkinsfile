@@ -23,9 +23,9 @@ pipeline {
                             verbose: true,
                             transfers: [
                                 sshTransfer(
-                                     sourceFiles: "${workspace}/frontend/dist/**", 
+                                     sourceFiles: "${workspace}/frontend/dist/index.html", 
                                      removePrefix: "${workspace}/frontend",
-                                    remoteDirectory: "/2021-botobo/frontend"
+                                    remoteDirectory: ""
   )
                             ]
                         )
