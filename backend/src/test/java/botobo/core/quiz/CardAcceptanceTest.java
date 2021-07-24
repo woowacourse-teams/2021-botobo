@@ -23,7 +23,7 @@ import static botobo.core.utils.Fixture.CARD_REQUEST_1;
 import static botobo.core.utils.Fixture.CARD_REQUEST_2;
 import static botobo.core.utils.Fixture.CARD_REQUEST_3;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
-import static botobo.core.TestUtils.longStringGenerator;
+import static botobo.core.utils.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
@@ -46,18 +46,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardRequest)
-                        .when().post("/api/cards")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
 
         // then
-        CardResponse cardResponse = response.as(CardResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        CardResponse cardResponse = response.convertBody(CardResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(cardResponse).extracting("id").isNotNull();
         assertThat(cardResponse).extracting("question").isEqualTo(cardRequest.getQuestion());
         assertThat(cardResponse).extracting("answer").isEqualTo(cardRequest.getAnswer());
@@ -76,18 +72,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardRequest)
-                        .when().post("/api/cards")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("질문은 필수 입력값입니다.");
     }
 
@@ -104,18 +96,13 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardRequest)
-                        .when().post("/api/cards")
-                        .then().log().all()
-                        .extract();
-
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("답변은 필수 입력값입니다.");
     }
 
@@ -130,18 +117,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardRequest)
-                        .when().post("/api/cards")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
 
     }
@@ -158,18 +141,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardRequest)
-                        .when().post("/api/cards")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse).extracting("message").isEqualTo("해당 문제집을 찾을 수 없습니다.");
     }
 
@@ -184,18 +163,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardUpdateRequest)
-                        .when().put("/api/cards/1")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
 
         // then
-        CardUpdateResponse cardUpdateResponse = response.as(CardUpdateResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        CardUpdateResponse cardUpdateResponse = response.convertBody(CardUpdateResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(cardUpdateResponse).extracting("question").isEqualTo(cardUpdateRequest.getQuestion());
         assertThat(cardUpdateResponse).extracting("answer").isEqualTo(cardUpdateRequest.getAnswer());
         assertThat(cardUpdateResponse).extracting("bookmark").isEqualTo(cardUpdateRequest.getBookmark());
@@ -213,19 +188,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
-        // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardUpdateRequest)
-                        .when().put("/api/cards/1")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 질문이 필요합니다.");
     }
 
@@ -240,18 +210,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardUpdateRequest)
-                        .when().put("/api/cards/1")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("질문은 최대 255자까지 입력 가능합니다.");
     }
 
@@ -267,19 +233,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
-        // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardUpdateRequest)
-                        .when().put("/api/cards/1")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 답변이 필요합니다.");
     }
 
@@ -293,19 +254,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .build();
 
-        // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(cardUpdateRequest)
-                        .when().put("/api/cards/1")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("답변은 최대 255자까지 입력 가능합니다.");
     }
 
@@ -331,23 +287,19 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, 요청으로 null 들어오는 경우")
     void selectNextQuizCardsWithNullList() {
         // given
-        NextQuizCardsRequest nextQuizCardsRequest = NextQuizCardsRequest.builder()
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(null)
                 .build();
 
         // when
-        final ExtractableResponse<Response> response =
-                RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .auth().oauth2(로그인되어_있음().getAccessToken())
-                        .body(nextQuizCardsRequest)
-                        .when().put("/api/cards/next-quiz")
-                        .then().log().all()
-                        .extract();
+        final HttpResponse response = request()
+                .put("/api/cards/next-quiz", request)
+                .auth()
+                .build();
 
         // then
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("유효하지 않은 또 보기 카드 등록 요청입니다.");
     }
 }

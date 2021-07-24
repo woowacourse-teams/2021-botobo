@@ -18,14 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static botobo.core.documentation.DocumentationUtils.getDocumentRequest;
-import static botobo.core.documentation.DocumentationUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("카드 문서화 테스트")
@@ -67,16 +62,13 @@ public class CardDocumentationTest extends DocumentationTest {
         given(cardService.createCard(any())).willReturn(response);
 
         // when, then
-        mockMvc.perform(post("/api/cards")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andDo(document("cards-post-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/cards", request)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("cards-post-success");
     }
 
     @Test
@@ -100,16 +92,13 @@ public class CardDocumentationTest extends DocumentationTest {
         given(cardService.updateCard(anyLong(), any())).willReturn(response);
 
         // when, then
-        mockMvc.perform(put("/api/cards/1")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("cards-put-success",
-                        getDocumentRequest(),
-                        getDocumentResponse())
-                );
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/cards/1", request)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("cards-put-success");
     }
 
     @Test
