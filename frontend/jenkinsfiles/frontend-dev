@@ -5,6 +5,12 @@ pipeline {
         git "git"
     }
      stages {
+        stage('Start') {
+            agent any
+            steps {
+                slackSend (channel: 'github-botobo', color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+        }
         stage("Build") {
             steps {
               dir('frontend'){
@@ -22,23 +28,31 @@ pipeline {
         }
         stage('SSH transfer') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
-                sshPublisher(
+                sshPublisher (
                     continueOnError: false, failOnError: true,
                     publishers: [
-                        sshPublisherDesc(
+                        sshPublisherDesc (
                             configName: "botobo-frontend-develop",
                             verbose: true,
                             transfers: [
-                                sshTransfer(
-                                     sourceFiles: "frontend/dist/*", 
-                                     removePrefix: "frontend",
+                                sshTransfer (
+                                    sourceFiles: "frontend/dist/*",
+                                    removePrefix: "frontend",
                                     remoteDirectory: ""
-  )
+                                )
                             ]
                         )
                     ]
                 )
             }
         }
-      }
+     }
+     post {
+         success {
+             slackSend (channel: 'github-botobo', color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+         }
+         failure {
+             slackSend (channel: 'github-botobo', color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+         }
+     }
 }
