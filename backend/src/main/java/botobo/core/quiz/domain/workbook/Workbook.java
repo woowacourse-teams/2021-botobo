@@ -76,6 +76,11 @@ public class Workbook extends BaseEntity {
         return user.getUserName();
     }
 
+    public boolean containsWord(String word) {
+        return name.toLowerCase()
+                .contains(word.toLowerCase());
+    }
+
     public int cardCount() {
         return cards.counts();
     }
