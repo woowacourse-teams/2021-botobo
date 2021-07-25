@@ -14,31 +14,27 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
-public class CardResponse {
+public class CardSimpleResponse {
 
     private Long id;
     private String question;
     private String answer;
-    private Long workbookId;
-    private int encounterCount;
     private boolean bookmark;
-    private boolean nextQuiz;
+    private int encounterCount;
 
-    public static CardResponse of(Card card) {
-        return CardResponse.builder()
+    public static CardSimpleResponse of(Card card) {
+        return CardSimpleResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())
                 .answer(card.getAnswer())
-                .workbookId(card.getWorkbook().getId())
-                .encounterCount(card.getEncounterCount())
                 .bookmark(card.isBookmark())
-                .nextQuiz(card.isNextQuiz())
+                .encounterCount(card.getEncounterCount())
                 .build();
     }
 
-    public static List<CardResponse> listOf(List<Card> cards) {
+    public static List<CardSimpleResponse> listOf(List<Card> cards) {
         return cards.stream()
-                .map(CardResponse::of)
+                .map(CardSimpleResponse::of)
                 .collect(Collectors.toList());
     }
 }
