@@ -22,6 +22,7 @@ public class AdminWorkbookRequest {
     public Workbook toWorkbook() {
         return Workbook.builder()
                 .name(name)
+                .isPublic(true)
                 .isDeleted(false)
                 .build();
     }
