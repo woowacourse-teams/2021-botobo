@@ -28,6 +28,9 @@ class QuizTest {
         return cards.stream().filter(Card::isNextQuiz).collect(Collectors.toList());
     }
 
+    private List<Integer> getEncounterCounts(List<Card> cards) {
+        return cards.stream().map(Card::getEncounterCount).collect(Collectors.toList());
+    }
 
     @DisplayName("isNextQuiz 3개를 포함하여 10개의 카드가 담긴 퀴즈를 생성한다. - 성공")
     @Test
@@ -89,5 +92,22 @@ class QuizTest {
 
         // then
         assertThat(afterNextQuizzes).isEmpty();
+    }
+
+    @DisplayName("마주친 횟수는 퀴즈 생성시 1 증가한다. - 성공")
+    @Test
+    void incrementEncounterCount() {
+        // given
+        final List<Integer> beforeEncounterCounts = getEncounterCounts(tenCards);
+        Quiz quiz = new Quiz(tenCards, 10);
+        quiz.makeQuiz();
+
+        // when
+        // 이후 tenCards에 대해 NextQuiz 옵션이 포함된 카드를 조회한다.
+        final List<Integer> afterEncounterCounts = getEncounterCounts(tenCards);
+
+        // then
+        beforeEncounterCounts.forEach(count -> assertThat(count).isEqualTo(0));
+        afterEncounterCounts.forEach(count -> assertThat(count).isEqualTo(1));
     }
 }
