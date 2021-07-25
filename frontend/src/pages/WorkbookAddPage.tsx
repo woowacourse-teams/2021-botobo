@@ -2,54 +2,56 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import { InputField, PageHeader } from '../components';
+import { ROUTE } from '../constants';
+import { FormProvider } from '../contexts';
 import useModal from '../hooks/useModal';
 import { Flex } from '../styles';
 
-/**
- * TODO: 문제집 추가 헤더에 확인 버튼 추가
- * TODO: 공개 범위 셀렉트 눌렀을 때 바텀 모달 띄우기
- */
-
-interface InputWrapperStyleProps {
-  isFocus: boolean;
-}
-
 const WORKBOOK_NAME_MAXIMUM_LENGTH = 20;
 
+const validateWorkbookName = (value: string) => {
+  if (value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) {
+    throw new Error('문제집 이름은 20자 이하여야 합니다.');
+  }
+};
+
 const WorkbookAddPage = () => {
-  const [inputValue, setInputValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const { openModal } = useModal();
 
-  const onChangeInput: React.ChangeEventHandler<HTMLInputElement> = ({
-    target,
-  }) => {
-    if (target.value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) return;
-    setInputValue(target.value);
-  };
-
   return (
-    <Container>
-      <InputWrapper isFocus={isFocus}>
+    <FormProvider
+      initialValues={{ name: '' }}
+      validators={{ name: validateWorkbookName }}
+      onSubmit={() => {
+        console.log('hi');
+      }}
+    >
+      <PageHeader
+        title={ROUTE.WORKBOOK_ADD.TITLE}
+        rightContent={<SubmitButton>확인</SubmitButton>}
+      />
+      <Container>
         <Input
-          value={inputValue}
-          onChange={onChangeInput}
-          type="text"
+          name="name"
           placeholder="문제집 이름"
+          isFocus={isFocus}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        <Limiter>
-          {inputValue.length}/{WORKBOOK_NAME_MAXIMUM_LENGTH}
-        </Limiter>
-      </InputWrapper>
-      <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
-      <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
-        <AccessSelector id="access-select">전체 공개</AccessSelector>
-      </AccessSelectorWrapper>
-    </Container>
+        <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
+        <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
+          <AccessSelector id="access-select">전체 공개</AccessSelector>
+        </AccessSelectorWrapper>
+      </Container>
+    </FormProvider>
   );
 };
+
+const SubmitButton = styled.button`
+  margin-right: 1rem;
+`;
 
 const Container = styled.div`
   ${({ theme }) =>
@@ -58,36 +60,17 @@ const Container = styled.div`
     `}
 `;
 
-const InputWrapper = styled.div<InputWrapperStyleProps>`
-  ${Flex({ justify: 'space-between', items: 'center' })};
-  height: 2rem;
-  margin-bottom: 1.5rem;
-  padding: 0 1rem;
+const Input = styled(InputField)`
+  width: 100%;
+  padding: 0.5rem 1rem;
   transition: border 0.1s linear;
-
-  ${({ theme, isFocus }) => css`
-    border-bottom: 1px solid
-      ${isFocus ? theme.color.gray_8 : theme.color.gray_5};
-  `};
-`;
-
-const Input = styled.input`
-  width: 85%;
   outline: none;
   border: none;
   background-color: transparent;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
-  `}
-`;
-
-const Limiter = styled.span`
-  width: 15%;
-  text-align: center;
-
-  ${({ theme }) => css`
-    color: ${theme.color.gray_6};
+    border-bottom: 1px solid ${theme.color.gray_5};
   `}
 `;
 
@@ -113,7 +96,7 @@ const AccessSelectorWrapper = styled.div`
     font-size: ${theme.fontSize.default};
   `}
 
-  &:after {
+  &::after {
     content: '';
     width: 0.8rem;
     height: 0.5rem;
