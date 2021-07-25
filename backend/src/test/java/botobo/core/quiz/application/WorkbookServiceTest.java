@@ -75,7 +75,7 @@ class WorkbookServiceTest {
         WorkbookCardResponse workbookCardResponse = workbookService.findWorkbookCardsById(workbook.getId());
 
         // then
-        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo("java");
+        assertThat(workbookCardResponse.getName()).isEqualTo("java");
         assertThat(workbookCardResponse.getCards().size()).isEqualTo(1);
 
         then(workbookRepository)

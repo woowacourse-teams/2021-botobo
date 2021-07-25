@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 public class WorkbookResponse {
 
     private Long id;
-    private String workbookName;
+    private String name;
     private int cardCount;
     private String author;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
                 .id(workbook.getId())
-                .workbookName(workbook.getName())
+                .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
                 .build();
