@@ -3,6 +3,9 @@ package botobo.core.quiz.application;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.domain.workbook.WorkbookRepository;
+import botobo.core.quiz.dto.CardRequest;
+import botobo.core.quiz.dto.CardUpdateRequest;
 import botobo.core.quiz.dto.NextQuizCardsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -25,8 +30,70 @@ class CardServiceTest {
     @Mock
     private CardRepository cardRepository;
 
+    @Mock
+    private WorkbookRepository workbookRepository;
+
     @InjectMocks
     private CardService cardService;
+
+    @Test
+    @DisplayName("카드 생성 - 성공")
+    void createCard() {
+        // given
+        CardRequest cardRequest = cardRequest();
+        Workbook workbook = workbook(1L);
+        Card card = card(1L, workbook);
+
+        given(workbookRepository.findById(cardRequest.getWorkbookId())).willReturn(Optional.of(workbook));
+        given(cardRepository.save(any())).willReturn(card);
+
+        // when
+        cardService.createCard(cardRequest);
+
+        // then
+        then(workbookRepository)
+                .should(times(1))
+                .findById(cardRequest.getWorkbookId());
+        then(cardRepository)
+                .should(times(1))
+                .save(any());
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 성공")
+    void updateCard() {
+        // given
+        Long cardId = 1L;
+        Workbook workbook = workbook(1L);
+        CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
+        Card card = card(cardId, workbook);
+
+        given(workbookRepository.findById(any())).willReturn(Optional.of(workbook));
+        given(cardRepository.findById(any())).willReturn(Optional.of(card));
+
+        // when
+        cardService.updateCard(1L, cardUpdateRequest);
+
+        // then
+        then(workbookRepository)
+                .should(times(1))
+                .findById(any());
+        then(cardRepository)
+                .should(times(1))
+                .findById(any());
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 성공")
+    void deleteCard() {
+        // given, when
+        cardService.deleteCard(1L);
+
+        // then
+        then(cardRepository)
+                .should(times(1))
+                .deleteById(any());
+    }
 
     @Test
     @DisplayName("다음에 또 보는 카드 선택 - 성공")
@@ -47,15 +114,11 @@ class CardServiceTest {
                 .findByIdIn(anyList());
     }
 
-    private List<Card> listOfThreeCards() {
-        Workbook workbook = Workbook.builder()
+    private Workbook workbook(Long id) {
+        return Workbook.builder()
+                .id(id)
                 .name("workbook")
                 .build();
-        return List.of(
-                card(1L, workbook),
-                card(2L, workbook),
-                card(3L, workbook)
-        );
     }
 
     private Card card(Long id, Workbook workbook) {
@@ -65,6 +128,33 @@ class CardServiceTest {
                 .answer("answer")
                 .workbook(workbook)
                 .build();
+    }
+
+    private CardRequest cardRequest() {
+        return CardRequest.builder()
+                .question("question")
+                .answer("answer")
+                .workbookId(1L)
+                .build();
+    }
+
+    private CardUpdateRequest cardUpdateRequest(Long workbookId) {
+        return CardUpdateRequest.builder()
+                .question("changed question")
+                .answer("changed answer")
+                .workbookId(workbookId)
+                .encounterCount(0)
+                .bookmark(true)
+                .nextQuiz(true)
+                .build();
+    }
+
+    private List<Card> listOfThreeCards() {
+        return List.of(
+                card(1L, workbook(1L)),
+                card(2L, workbook(1L)),
+                card(3L, workbook(1L))
+        );
     }
 
     private NextQuizCardsRequest nextQuizCardsRequestWithThreeIds() {

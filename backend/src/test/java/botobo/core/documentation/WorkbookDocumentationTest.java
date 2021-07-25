@@ -2,9 +2,9 @@ package botobo.core.documentation;
 
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
-import botobo.core.quiz.dto.CardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
+import botobo.core.quiz.dto.CardSimpleResponse;
 import botobo.core.quiz.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,42 +74,49 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         return Arrays.asList(
                 WorkbookResponse.builder()
                         .id(1L)
-                        .workbookName("피케이의 자바 문제 20선")
+                        .name("피케이의 자바 문제 20선")
                         .cardCount(20)
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
-                        .workbookName("오즈의 비올 때 푸는 Database 문제")
+                        .name("오즈의 비올 때 푸는 Database 문제")
                         .cardCount(15)
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
-                        .workbookName("조앤의 Network 정복 모음집")
+                        .name("조앤의 Network 정복 모음집")
                         .cardCount(8)
                         .build()
         );
     }
 
     private WorkbookCardResponse generateWorkbookCardsResponse() {
-        List<CardResponse> cardResponses = Arrays.asList(
-                CardResponse.builder()
+        List<CardSimpleResponse> cardSimpleResponse = Arrays.asList(
+                CardSimpleResponse.builder()
                         .id(1L)
                         .question("Java에는 a가 몇 개 들어갈까요?")
                         .answer("2개")
+                        .bookmark(true)
+                        .encounterCount(5)
                         .build(),
-                CardResponse.builder()
+                CardSimpleResponse.builder()
                         .id(2L)
                         .question("Java에는 v가 몇 개 들어갈까요?")
                         .answer("1개")
+                        .bookmark(true)
+                        .encounterCount(10)
                         .build(),
-                CardResponse.builder()
+                CardSimpleResponse.builder()
                         .id(3L)
                         .question("Java에는 j가 몇 개 들어갈까요?")
                         .answer("1개")
+                        .bookmark(false)
+                        .encounterCount(2)
                         .build());
         return WorkbookCardResponse.builder()
+                .workbookId(1L)
                 .workbookName("Java")
-                .cards(cardResponses)
+                .cards(cardSimpleResponse)
                 .build();
     }
 }
