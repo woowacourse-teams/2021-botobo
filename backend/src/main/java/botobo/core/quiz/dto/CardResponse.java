@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -31,5 +34,11 @@ public class CardResponse {
                 .bookmark(card.isBookmark())
                 .nextQuiz(card.isNextQuiz())
                 .build();
+    }
+
+    public static List<CardResponse> listOf(List<Card> cards) {
+        return cards.stream()
+                .map(CardResponse::of)
+                .collect(Collectors.toList());
     }
 }

@@ -2,8 +2,8 @@ package botobo.core.quiz.application;
 
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
+import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
