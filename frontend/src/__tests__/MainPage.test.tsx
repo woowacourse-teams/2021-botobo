@@ -2,13 +2,17 @@ import React from 'react';
 import { RecoilRoot } from 'recoil';
 
 import { MainPage } from '../pages';
-import { loginState } from '../recoil';
+import { userState } from '../recoil';
 import { render, screen, waitFor } from '../test-utils';
 
 describe('메인 페이지 테스트', () => {
   beforeAll(() => {
     render(
-      <RecoilRoot initializeState={(snap) => snap.set(loginState, true)}>
+      <RecoilRoot
+        initializeState={(snap) =>
+          snap.set(userState, { userName: 'ditto', id: 1, profileUrl: '' })
+        }
+      >
         <MainPage />
       </RecoilRoot>
     );
