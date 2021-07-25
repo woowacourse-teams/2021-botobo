@@ -36,9 +36,13 @@ public class CardService {
     }
 
     private Card convertToCard(CardRequest cardRequest) {
-        Workbook workbook = workbookRepository.findById(cardRequest.getWorkbookId())
-                .orElseThrow(WorkbookNotFoundException::new);
+        Workbook workbook = findWorkbook(cardRequest.getWorkbookId());
         return cardRequest.toCardWithWorkbook(workbook);
+    }
+
+    private Workbook findWorkbook(Long workbookId) {
+        return workbookRepository.findById(workbookId)
+                .orElseThrow(WorkbookNotFoundException::new);
     }
 
     @Transactional
@@ -51,8 +55,7 @@ public class CardService {
     }
 
     private Card convertToCard(CardUpdateRequest cardUpdateRequest) {
-        Workbook workbook = workbookRepository.findById(cardUpdateRequest.getWorkbookId())
-                .orElseThrow(WorkbookNotFoundException::new);
+        Workbook workbook = findWorkbook(cardUpdateRequest.getWorkbookId());
         return cardUpdateRequest.toCardWithWorkbook(workbook);
     }
 
