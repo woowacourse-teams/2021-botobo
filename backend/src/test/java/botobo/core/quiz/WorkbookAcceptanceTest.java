@@ -59,7 +59,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookCardResponse.getName()).isEqualTo(WORKBOOK_REQUEST_1.getName());
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_1.getName());
         assertThat(workbookCardResponse.getCards()).hasSize(3);
     }
 
@@ -76,7 +76,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookCardResponse.getName()).isEqualTo(WORKBOOK_REQUEST_2.getName());
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_2.getName());
         assertThat(workbookCardResponse.getCards()).isEmpty();
     }
 }

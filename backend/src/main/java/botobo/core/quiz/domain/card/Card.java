@@ -92,6 +92,8 @@ public class Card extends BaseEntity {
         this.question = other.question;
         this.answer = other.answer;
         this.isBookmark = other.isBookmark;
+        this.isNextQuiz = other.isNextQuiz;
+        changeWorkbook(workbook);
     }
 
     public boolean equalsNextQuizWith(boolean isNextQuiz) {

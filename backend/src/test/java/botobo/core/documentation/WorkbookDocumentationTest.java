@@ -114,7 +114,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .encounterCount(2)
                         .build());
         return WorkbookCardResponse.builder()
-                .name("Java")
+                .workbookId(1L)
+                .workbookName("Java")
                 .cards(cardSimpleResponse)
                 .build();
     }

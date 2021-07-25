@@ -203,7 +203,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
+                .workbookId(1L)
+                .encounterCount(0)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
 
         // when
@@ -217,7 +220,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(cardUpdateResponse).extracting("question").isEqualTo(cardUpdateRequest.getQuestion());
         assertThat(cardUpdateResponse).extracting("answer").isEqualTo(cardUpdateRequest.getAnswer());
+        assertThat(cardUpdateResponse).extracting("workbookId").isEqualTo(cardUpdateRequest.getWorkbookId());
+        assertThat(cardUpdateResponse).extracting("encounterCount").isEqualTo(cardUpdateRequest.getEncounterCount());
         assertThat(cardUpdateResponse).extracting("bookmark").isEqualTo(cardUpdateRequest.getBookmark());
+        assertThat(cardUpdateResponse).extracting("nextQuiz").isEqualTo(cardUpdateRequest.getNextQuiz());
     }
 
     @ParameterizedTest
@@ -229,7 +235,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(question)
                 .answer("answer")
+                .workbookId(1L)
+                .encounterCount(0)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
 
         // when
@@ -251,7 +260,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(longStringGenerator(266))
                 .answer("answer")
+                .workbookId(1L)
+                .encounterCount(0)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
 
         // when
@@ -275,7 +287,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(answer)
+                .workbookId(1L)
+                .encounterCount(0)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
 
         // when
@@ -297,7 +312,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(longStringGenerator(266))
+                .workbookId(1L)
+                .encounterCount(0)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
 
         // when

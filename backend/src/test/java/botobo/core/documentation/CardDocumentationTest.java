@@ -78,14 +78,19 @@ public class CardDocumentationTest extends DocumentationTest {
         CardUpdateRequest request = CardUpdateRequest.builder()
                 .question("수정된 질문입니다!")
                 .answer("그리고 수정된 답변입니다~")
+                .workbookId(1L)
+                .encounterCount(5)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
         CardUpdateResponse response = CardUpdateResponse.builder()
                 .id(1L)
                 .question("수정된 질문입니다!")
                 .answer("그리고 수정된 답변입니다~")
                 .workbookId(1L)
+                .encounterCount(5)
                 .bookmark(true)
+                .nextQuiz(true)
                 .build();
         String token = "botobo.access.token";
         given(jwtTokenProvider.isValidToken(token)).willReturn(true);

@@ -30,19 +30,30 @@ public class CardService {
 
     @Transactional
     public CardResponse createCard(CardRequest cardRequest) {
-        Workbook workbook = workbookRepository.findById(cardRequest.getWorkbookId())
-                .orElseThrow(WorkbookNotFoundException::new);
-        Card card = cardRequest.toCardWithWorkbook(workbook);
+        Card card = convertToCard(cardRequest);
         cardRepository.save(card);
         return CardResponse.of(card);
     }
 
+    private Card convertToCard(CardRequest cardRequest) {
+        Workbook workbook = workbookRepository.findById(cardRequest.getWorkbookId())
+                .orElseThrow(WorkbookNotFoundException::new);
+        return cardRequest.toCardWithWorkbook(workbook);
+    }
+
     @Transactional
     public CardUpdateResponse updateCard(Long id, CardUpdateRequest cardUpdateRequest) {
+        Card updateInfoCard = convertToCard(cardUpdateRequest);
         Card card = cardRepository.findById(id)
                 .orElseThrow(CardNotFoundException::new);
-        card.updateFrom(cardUpdateRequest.toCard());
+        card.updateFrom(updateInfoCard);
         return CardUpdateResponse.of(card);
+    }
+
+    private Card convertToCard(CardUpdateRequest cardUpdateRequest) {
+        Workbook workbook = workbookRepository.findById(cardUpdateRequest.getWorkbookId())
+                .orElseThrow(WorkbookNotFoundException::new);
+        return cardUpdateRequest.toCardWithWorkbook(workbook);
     }
 
     @Transactional
