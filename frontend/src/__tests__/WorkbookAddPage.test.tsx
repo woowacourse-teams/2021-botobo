@@ -4,13 +4,17 @@ import { RecoilRoot } from 'recoil';
 import { PageHeader } from '../components';
 import { ROUTE } from '../constants';
 import { WorkbookAddPage } from '../pages';
-import { loginState } from '../recoil';
+import { userState } from '../recoil';
 import { render, screen } from '../test-utils';
 
 describe('문제집 추가 페이지 테스트', () => {
   beforeAll(() => {
     render(
-      <RecoilRoot initializeState={(snap) => snap.set(loginState, true)}>
+      <RecoilRoot
+        initializeState={(snap) =>
+          snap.set(userState, { userName: 'ditto', id: 1, profileUrl: '' })
+        }
+      >
         <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
         <WorkbookAddPage />
       </RecoilRoot>

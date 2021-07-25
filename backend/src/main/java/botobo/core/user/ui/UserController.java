@@ -2,7 +2,7 @@ package botobo.core.user.ui;
 
 import botobo.core.auth.ui.AuthenticationPrincipal;
 import botobo.core.user.application.UserService;
-import botobo.core.user.domain.LoginUser;
+import botobo.core.user.domain.AppUser;
 import botobo.core.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +20,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> findUserOfMine(@AuthenticationPrincipal LoginUser loginUser) {
-        UserResponse userResponse = userService.findById(loginUser.getId());
+    public ResponseEntity<UserResponse> findUserOfMine(@AuthenticationPrincipal AppUser appUser) {
+        UserResponse userResponse = userService.findById(appUser.getId());
         return ResponseEntity.ok(userResponse);
     }
 }
