@@ -2,12 +2,9 @@ package botobo.core.documentation;
 
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
-import botobo.core.quiz.dto.CardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.quiz.dto.CardSimpleResponse;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
 import botobo.core.quiz.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -83,6 +83,28 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse).extracting("message").isEqualTo("질문은 필수 입력값입니다.");
     }
 
+    @Test
+    @DisplayName("카드 생성 - 실패, 255자를 넘긴 question")
+    void createCardWithLongQuestion() {
+        // given
+        CardRequest cardRequest = CardRequest.builder()
+                .question(longStringGenerator(266))
+                .answer("answer")
+                .workbookId(1L)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse).extracting("message").isEqualTo("질문은 최대 255자까지 입력 가능합니다.");
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -104,6 +126,28 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("답변은 필수 입력값입니다.");
+    }
+
+    @Test
+    @DisplayName("카드 생성 - 실패, 255자를 넘긴 answer")
+    void createCardWithLongAnswer() {
+        // given
+        CardRequest cardRequest = CardRequest.builder()
+                .question("question")
+                .answer(longStringGenerator(266))
+                .workbookId(1L)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth()
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse).extracting("message").isEqualTo("답변은 최대 255자까지 입력 가능합니다.");
     }
 
     @Test
@@ -201,7 +245,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("카드 수정 - 실패, 225자를 넘긴 question")
+    @DisplayName("카드 수정 - 실패, 255자를 넘긴 question")
     void updateCardWithLongQuestion() {
         // given
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
@@ -247,7 +291,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("카드 수정 - 실패, 225자를 넘긴 answer")
+    @DisplayName("카드 수정 - 실패, 255자를 넘긴 answer")
     void updateCardWithLongAnswer() {
         // given
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
