@@ -1,6 +1,7 @@
 package botobo.core.config;
 
-import botobo.core.auth.infrastructure.JwtTokenProvider;
+import botobo.core.auth.application.AuthService;
+import botobo.core.auth.ui.AdminInterceptor;
 import botobo.core.auth.ui.AuthenticationPrincipalArgumentResolver;
 import botobo.core.auth.ui.AuthorizationInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +15,10 @@ import java.util.List;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
-    public AuthenticationPrincipalConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthenticationPrincipalConfig(AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
@@ -25,6 +26,9 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         registry.addInterceptor(authorizationInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login", "/api/quizzes/guest", "/api/docs/**");
+
+        registry.addInterceptor(adminInterceptor())
+                .addPathPatterns("/api/admin/**");
     }
 
     @Override
@@ -34,11 +38,16 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthorizationInterceptor authorizationInterceptor() {
-        return new AuthorizationInterceptor(jwtTokenProvider);
+        return new AuthorizationInterceptor(authService);
+    }
+
+    @Bean
+    public AdminInterceptor adminInterceptor() {
+        return new AdminInterceptor(authService);
     }
 
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        return new AuthenticationPrincipalArgumentResolver(authService);
     }
 }

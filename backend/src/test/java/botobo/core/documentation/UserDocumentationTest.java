@@ -1,7 +1,10 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.application.AuthService;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.user.application.UserService;
+import botobo.core.user.domain.AppUser;
+import botobo.core.user.domain.Role;
 import botobo.core.user.dto.UserResponse;
 import botobo.core.user.ui.UserController;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +30,7 @@ public class UserDocumentationTest extends DocumentationTest {
     private UserService userService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
     @Test
     @DisplayName("현재 로그인 한 유저 조회 - 성공")
@@ -38,8 +41,12 @@ public class UserDocumentationTest extends DocumentationTest {
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();
+        AppUser appUser = AppUser.builder()
+                .id(1L)
+                .role(Role.USER)
+                .build();
 
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+        given(authService.findAppUserByToken(token)).willReturn(appUser);
         given(userService.findById(anyLong())).willReturn(userResponse);
 
         document()

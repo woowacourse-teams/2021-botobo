@@ -6,6 +6,7 @@ import botobo.core.admin.dto.AdminCardResponse;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.admin.dto.AdminWorkbookResponse;
 import botobo.core.admin.ui.AdminController;
+import botobo.core.auth.application.AuthService;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ public class AdminDocumentationTest extends DocumentationTest {
     private AdminService adminService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
@@ -38,7 +39,6 @@ public class AdminDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         AdminWorkbookRequest adminWorkbookRequest = new AdminWorkbookRequest("JAVA");
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(adminService.createWorkbook(any())).willReturn(
                 AdminWorkbookResponse.builder()
                         .id(1L)
@@ -62,7 +62,6 @@ public class AdminDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1L);
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(adminService.createCard(any())).willReturn(
                 AdminCardResponse.builder()
                         .id(1L)
@@ -89,7 +88,6 @@ public class AdminDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1000L);
         given(adminService.createCard(any())).willThrow(new WorkbookNotFoundException());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
