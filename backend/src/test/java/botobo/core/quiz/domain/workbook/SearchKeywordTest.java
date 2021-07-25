@@ -1,6 +1,6 @@
 package botobo.core.quiz.domain.workbook;
 
-import botobo.core.quiz.exception.SearchKeywordCreationFailureException;
+import botobo.core.quiz.exception.WorkbookSearchFailureException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class SearchKeywordTest {
     void createWithLongString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.from(TestUtils.stringGenerator(31)))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
+                .isInstanceOf(WorkbookSearchFailureException.class)
                 .hasMessageContaining("검색어는 30자 이하여야 합니다.");
     }
 
@@ -75,7 +75,7 @@ class SearchKeywordTest {
     void createWithForbiddenString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.from("바보"))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
+                .isInstanceOf(WorkbookSearchFailureException.class)
                 .hasMessageContaining("금지어를 입력했습니다");
     }
 

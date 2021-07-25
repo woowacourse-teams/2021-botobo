@@ -1,6 +1,6 @@
 package botobo.core.quiz.domain.workbook;
 
-import botobo.core.quiz.exception.SearchKeywordCreationFailureException;
+import botobo.core.quiz.exception.WorkbookSearchFailureException;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -30,7 +30,7 @@ public class SearchKeyword {
 
     private void validateLength(String value) {
         if (value.length() > KEYWORD_MAX_LENGTH) {
-            throw new SearchKeywordCreationFailureException(
+            throw new WorkbookSearchFailureException(
                     String.format("검색어는 %d자 이하여야 합니다.", KEYWORD_MAX_LENGTH)
             );
         }
@@ -39,7 +39,7 @@ public class SearchKeyword {
     // TODO: 검토 후 개선
     private void validateNotForbidden(String value) {
         if (value.contains("바보")) {
-            throw new SearchKeywordCreationFailureException(
+            throw new WorkbookSearchFailureException(
                     String.format("금지어를 입력했습니다. (%s)", value)
             );
         }
