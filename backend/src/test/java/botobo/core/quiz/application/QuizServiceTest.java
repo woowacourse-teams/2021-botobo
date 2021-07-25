@@ -5,6 +5,8 @@ import botobo.core.quiz.domain.card.CardRepository;
 import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.QuizResponse;
+import botobo.core.quiz.exception.QuizEmptyException;
+import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,11 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -74,7 +78,7 @@ class QuizServiceTest {
         // given
         List<Long> ids = Collections.singletonList(1L);
         given(workbookRepository.existsById(any())).willReturn(true);
-        given(cardRepository.findCardsByWorkbookId(any())).willReturn(cards);
+        given(cardRepository.findCardsByWorkbookIds(any())).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -84,7 +88,41 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findCardsByWorkbookId(any());
+                .findCardsByWorkbookIds(any());
+    }
+
+    @Test
+    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 실패, 문제집 아이디가 존재하지 않음")
+    void createQuizFailedWhenIdNotFound() {
+        // given
+        List<Long> ids = Collections.singletonList(100L);
+        given(workbookRepository.existsById(any())).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuiz(ids))
+                .isInstanceOf(WorkbookNotFoundException.class);
+
+        then(cardRepository)
+                .should(times(0))
+                .findCardsByWorkbookIds(any());
+    }
+
+    @Test
+    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 실패, 퀴즈에 문제가 존재하지 않음")
+    void createQuizFailedWhenQuizIsEmpty() {
+        // given
+        List<Long> ids = Collections.singletonList(100L);
+        List<Card> emptyCards = new ArrayList<>();
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookIds(ids)).willReturn(emptyCards);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuiz(ids))
+                .isInstanceOf(QuizEmptyException.class);
+
+        then(cardRepository)
+                .should(times(1))
+                .findCardsByWorkbookIds(any());
     }
 
     @Test
@@ -93,7 +131,7 @@ class QuizServiceTest {
         // given
         List<Long> ids = Collections.singletonList(1L);
         given(workbookRepository.existsById(any())).willReturn(true);
-        given(cardRepository.findCardsByWorkbookId(any())).willReturn(cards);
+        given(cardRepository.findCardsByWorkbookIds(any())).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuiz(ids);
@@ -103,7 +141,7 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findCardsByWorkbookId(any());
+                .findCardsByWorkbookIds(any());
     }
 
     @Test
@@ -114,5 +152,58 @@ class QuizServiceTest {
 
         //then
         assertThat(quizResponses.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 성공")
+    void createQuizFromWorkbook() {
+        // given
+        Long workbookId = 1L;
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
+
+        // when
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
+
+        // then
+        assertThat(quizResponses.size()).isEqualTo(10);
+
+        then(cardRepository)
+                .should(times(1))
+                .findCardsByWorkbookId(any());
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집 아이디가 존재하지 않음.")
+    void createQuizFromWorkbookFailed() {
+        // given
+        Long workbookId = 1L;
+        given(workbookRepository.existsById(any())).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+                .isInstanceOf(WorkbookNotFoundException.class);
+
+        then(cardRepository)
+                .should(times(0))
+                .findCardsByWorkbookId(any());
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 퀴즈에 문제가 존재하지 않음.")
+    void createQuizFromWorkbookFailedWhenQuizIsEmpty() {
+        // given
+        Long workbookId = 1L;
+        List<Card> emptyCards = new ArrayList<>();
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(emptyCards);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+                .isInstanceOf(QuizEmptyException.class);
+
+        then(cardRepository)
+                .should(times(1))
+                .findCardsByWorkbookId(any());
     }
 }

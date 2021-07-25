@@ -201,4 +201,58 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(secondQuizResponses.size()).isEqualTo(10);
     }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 성공")
+    void createQuizFromWorkbook() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 1L)
+                .auth()
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(quizResponses).isNotEmpty();
+        assertThat(quizResponses.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 존재하지 않는 문제집 아이디")
+    void createQuizFromWorkbookWithNotExistId() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 100L)
+                .auth()
+                .build();
+
+        // when
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 퀴즈에 문제가 존재하지 않음")
+    void createQuizFromWorkbookWithEmptyCards() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 4L)
+                .auth()
+                .build();
+
+        // when
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("퀴즈에 문제가 존재하지 않습니다.");
+    }
 }

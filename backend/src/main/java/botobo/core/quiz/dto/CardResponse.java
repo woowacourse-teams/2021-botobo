@@ -18,7 +18,8 @@ public class CardResponse {
     private Long id;
     private String question;
     private String answer;
-    private boolean bookmark;;
+    private boolean bookmark;
+    ;
     private int encounterCount;
 
     public static CardResponse of(Card card) {

@@ -17,6 +17,7 @@ public class Quiz {
         if (isInsufficientCounts(quiz.counts())) {
             quiz.addAll(cards.chooseCard(false, remainCounts(quiz.counts())));
         }
+        quiz.incrementEncounterCount();
         quiz.cancelNextQuiz();
         return quiz;
     }
