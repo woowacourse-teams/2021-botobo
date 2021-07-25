@@ -54,7 +54,6 @@ const Router = () => (
         <LoginPage />
       </Route>
       <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
-        <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
         <WorkbookAddPage />
       </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
