@@ -1,10 +1,12 @@
 package botobo.core.quiz.ui;
 
+import botobo.core.auth.ui.AuthenticationPrincipal;
 import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.domain.workbook.WorkbookCriteria;
 import botobo.core.quiz.domain.workbook.WorkbookSearchParams;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
+import botobo.core.user.domain.LoginUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,11 +26,11 @@ public class WorkbookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkbookResponse>> findAllWorkbooks(
-            @WorkbookSearchParams WorkbookCriteria workbookCriteria) {
+    public ResponseEntity<List<WorkbookResponse>> findWorkbookByCriteria(
+            @WorkbookSearchParams WorkbookCriteria workbookCriteria, @AuthenticationPrincipal LoginUser loginUser) {
 
         return ResponseEntity.ok(
-                workbookService.findAll()
+                workbookService.searchByCriteria(workbookCriteria, loginUser.getId())
         );
     }
 

@@ -81,6 +81,10 @@ public class Workbook extends BaseEntity {
                 .contains(word.toLowerCase());
     }
 
+    public boolean isPrivate() {
+        return !isPublic();
+    }
+
     public int cardCount() {
         return cards.counts();
     }
