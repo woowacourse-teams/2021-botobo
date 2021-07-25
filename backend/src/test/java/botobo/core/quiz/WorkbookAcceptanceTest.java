@@ -1,8 +1,8 @@
 package botobo.core.quiz;
 
 import botobo.core.DomainAcceptanceTest;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
+import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.utils.RequestBuilder.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

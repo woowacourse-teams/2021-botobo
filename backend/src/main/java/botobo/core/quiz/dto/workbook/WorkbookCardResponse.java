@@ -1,6 +1,7 @@
-package botobo.core.quiz.dto;
+package botobo.core.quiz.dto.workbook;
 
 import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.dto.CardResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

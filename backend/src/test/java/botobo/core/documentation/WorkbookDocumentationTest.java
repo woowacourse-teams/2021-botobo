@@ -3,8 +3,8 @@ package botobo.core.documentation;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.dto.CardResponse;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
+import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.quiz.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,17 +74,17 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         return Arrays.asList(
                 WorkbookResponse.builder()
                         .id(1L)
-                        .name("피케이의 자바 문제 20선")
+                        .workbookName("피케이의 자바 문제 20선")
                         .cardCount(20)
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
-                        .name("오즈의 비올 때 푸는 Database 문제")
+                        .workbookName("오즈의 비올 때 푸는 Database 문제")
                         .cardCount(15)
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
-                        .name("조앤의 Network 정복 모음집")
+                        .workbookName("조앤의 Network 정복 모음집")
                         .cardCount(8)
                         .build()
         );
