@@ -73,6 +73,30 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 시 encounterCount가 1 증가한다. - 성공")
+    void checkEncounterCount() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest =
+                new QuizRequest(ids);
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(quizResponses.size()).isEqualTo(10);
+        for (QuizResponse quizResponse : quizResponses) {
+            assertThat(quizResponse.getEncounterCount()).isEqualTo(1);
+        }
+    }
+
+    @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집 id가 비어있음")
     void createQuizWithEmptyCategoryIdList() {
         // given
