@@ -93,21 +93,4 @@ class QuizTest {
         // then
         assertThat(afterNextQuizzes).isEmpty();
     }
-
-    @DisplayName("마주친 횟수는 퀴즈 생성시 1 증가한다. - 성공")
-    @Test
-    void incrementEncounterCount() {
-        // given
-        final List<Integer> beforeEncounterCounts = getEncounterCounts(tenCards);
-        Quiz quiz = new Quiz(tenCards, 10);
-        quiz.makeQuiz();
-
-        // when
-        // 이후 tenCards에 대해 NextQuiz 옵션이 포함된 카드를 조회한다.
-        final List<Integer> afterEncounterCounts = getEncounterCounts(tenCards);
-
-        // then
-        beforeEncounterCounts.forEach(count -> assertThat(count).isEqualTo(0));
-        afterEncounterCounts.forEach(count -> assertThat(count).isEqualTo(1));
-    }
 }

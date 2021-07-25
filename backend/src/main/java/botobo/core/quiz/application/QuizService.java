@@ -35,7 +35,7 @@ public class QuizService {
     public List<QuizResponse> createQuiz(List<Long> workbookIds) {
         validateWorkbookIds(workbookIds);
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), DEFAULT_QUIZ_COUNT);
-        return QuizResponse.cardsOf(quiz);
+        return QuizResponse.cardsOf(quiz.incrementEncounterCount());
     }
 
     public List<QuizResponse> createQuizFromWorkbook(Long workbookId) {

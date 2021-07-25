@@ -54,8 +54,9 @@ public class Cards {
                 .collect(Collectors.toList()));
     }
 
-    public void incrementEncounterCount() {
+    public Cards incrementEncounterCount() {
         cards.forEach(Card::incrementEncounterCount);
+        return this;
     }
 
     public void cancelNextQuiz() {

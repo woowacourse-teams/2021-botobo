@@ -42,6 +42,7 @@ class QuizServiceTest {
     private Workbook workbook;
     private Workbook workbookWithOneCard;
     private List<Card> cards;
+    private List<Card> twoCards;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +71,7 @@ class QuizServiceTest {
                 .build();
 
         cards = Arrays.asList(card1, card1, card1, card1, card1, card1, card1, card1, card1, card1);
+        twoCards = Arrays.asList(card1, card2);
     }
 
     @Test
@@ -85,6 +87,28 @@ class QuizServiceTest {
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
+
+        then(cardRepository)
+                .should(times(1))
+                .findCardsByWorkbookIds(any());
+    }
+
+    @Test
+    @DisplayName("문제집 id를 이용해 퀴즈 생성 시 마주친 횟수가 증가한다. - 성공")
+    void createQuizIncrementEncounterCount() {
+        // given
+        List<Long> ids = Collections.singletonList(1L);
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookIds(any())).willReturn(twoCards);
+
+        // when
+        List<QuizResponse> quizResponses = quizService.createQuiz(ids);
+
+        // then
+        assertThat(quizResponses.size()).isEqualTo(2);
+        for (QuizResponse quizResponse : quizResponses) {
+            assertThat(quizResponse.getEncounterCount()).isEqualTo(1);
+        }
 
         then(cardRepository)
                 .should(times(1))
@@ -167,6 +191,28 @@ class QuizServiceTest {
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
+
+        then(cardRepository)
+                .should(times(1))
+                .findCardsByWorkbookId(any());
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 시 마주친 횟수는 증가하지 않는다. - 성공")
+    void createQuizFromWorkbookNotIncrementEncounterCount() {
+        // given
+        Long workbookId = 1L;
+        given(workbookRepository.existsById(any())).willReturn(true);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
+
+        // when
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
+
+        // then
+        assertThat(quizResponses.size()).isEqualTo(10);
+        for (QuizResponse quizResponse : quizResponses) {
+            assertThat(quizResponse.getEncounterCount()).isEqualTo(0);
+        }
 
         then(cardRepository)
                 .should(times(1))
