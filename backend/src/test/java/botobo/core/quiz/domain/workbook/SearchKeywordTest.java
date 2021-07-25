@@ -45,10 +45,20 @@ class SearchKeywordTest {
     @DisplayName("중간에 연속된 공백이 있으면 하나로 변경하여 생성한다.")
     void createWithMultipleSpace() {
         // given
-        final SearchKeyword expected = SearchKeyword.from("  j    a    v    a  ");
+        final SearchKeyword expected = SearchKeyword.from("j a v a");
 
         // when, then
-        assertThat(SearchKeyword.from("j a v a")).isEqualTo(expected);
+        assertThat(SearchKeyword.from("  j   a    v    a  ")).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("탭문자나 개행문자가 있으면 공백으로 변경하여 생성한다.")
+    void createWithTabOrNewlineCharacter() {
+        // given
+        final SearchKeyword expected = SearchKeyword.from("j a v a");
+
+        // when, then
+        assertThat(SearchKeyword.from("\tj \t a\nv\n\n\na\n\t")).isEqualTo(expected);
     }
 
     @Test
@@ -70,7 +80,7 @@ class SearchKeywordTest {
     }
 
     @NullAndEmptySource
-    @ValueSource(strings = {" ", "    "})
+    @ValueSource(strings = {" ", "    ", "\t", "\n", "\r\n", "\r"})
     @ParameterizedTest
     @DisplayName("null, 빈 문자열, 공백 문자열은 캐싱 된 NO_SEARCH_KEYWORD 객체가 생성된다.")
     void createWithNoKeyword(String value) {

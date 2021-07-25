@@ -23,7 +23,9 @@ public class SearchKeyword {
     }
 
     private String refineValue(String value) {
-        return value.trim().replaceAll("[ ]+", " ");
+        return value.trim()
+                .replaceAll("(\\t|\r\n|\r|\n|\n\r)", " ")
+                .replaceAll("[ ]+", " ");
     }
 
     private void validateLength(String value) {
