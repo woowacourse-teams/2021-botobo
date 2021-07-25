@@ -61,7 +61,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
+    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 생성 - 실패, 유효하지 않은 question")
     void createCardWithInvalidQuestion(String question) {
         // given
@@ -107,7 +107,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
+    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 생성 - 실패, 유효하지 않은 answer")
     void createCardWithInvalidAnswer(String answer) {
         // given
@@ -222,7 +222,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
+    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 수정 - 실패, 유효하지 않은 question")
     void updateCardWithInvalidQuestion(String question) {
         // given
@@ -268,7 +268,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
+    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 수정 - 실패, 유효하지 않은 answer")
     void updateCardWithInvalidAnswer(String answer) {
         // given
