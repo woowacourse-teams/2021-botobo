@@ -1,6 +1,7 @@
-package botobo.core.quiz.dto;
+package botobo.core.quiz.dto.workbook;
 
 import botobo.core.quiz.domain.workbook.Workbook;
+import botobo.core.quiz.dto.CardSimpleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,14 +15,16 @@ import java.util.List;
 @Builder
 public class WorkbookCardResponse {
 
+    private Long workbookId;
     private String workbookName;
-    private List<CardResponse> cards;
+    private List<CardSimpleResponse> cards;
 
     public static WorkbookCardResponse of(Workbook workbook) {
-        List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCardsAsList());
+        List<CardSimpleResponse> cardSimpleResponses = CardSimpleResponse.listOf(workbook.getCardsAsList());
         return WorkbookCardResponse.builder()
+                .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
-                .cards(cardResponses)
+                .cards(cardSimpleResponses)
                 .build();
     }
 }

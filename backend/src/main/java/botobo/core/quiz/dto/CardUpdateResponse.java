@@ -7,14 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
-public class CardResponse {
+public class CardUpdateResponse {
 
     private Long id;
     private String question;
@@ -24,8 +21,8 @@ public class CardResponse {
     private boolean bookmark;
     private boolean nextQuiz;
 
-    public static CardResponse of(Card card) {
-        return CardResponse.builder()
+    public static CardUpdateResponse of(Card card) {
+        return CardUpdateResponse.builder()
                 .id(card.getId())
                 .question(card.getQuestion())
                 .answer(card.getAnswer())
@@ -34,11 +31,5 @@ public class CardResponse {
                 .bookmark(card.isBookmark())
                 .nextQuiz(card.isNextQuiz())
                 .build();
-    }
-
-    public static List<CardResponse> listOf(List<Card> cards) {
-        return cards.stream()
-                .map(CardResponse::of)
-                .collect(Collectors.toList());
     }
 }

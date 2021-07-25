@@ -1,8 +1,8 @@
 package botobo.core.quiz.ui;
 
 import botobo.core.quiz.application.WorkbookService;
-import botobo.core.quiz.dto.WorkbookCardResponse;
-import botobo.core.quiz.dto.WorkbookResponse;
+import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
+import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +23,15 @@ public class WorkbookController {
 
     @GetMapping
     public ResponseEntity<List<WorkbookResponse>> findAllWorkbooks() {
-        List<WorkbookResponse> workbookRespons = workbookService.findAll();
-        return ResponseEntity.ok(workbookRespons);
+        return ResponseEntity.ok(
+                workbookService.findAll()
+        );
     }
 
     @GetMapping("/{id}/cards")
     public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id) {
-        WorkbookCardResponse workbookCardResponse = workbookService.findWorkbookCardsById(id);
-        return ResponseEntity.ok(workbookCardResponse);
+        return ResponseEntity.ok(
+                workbookService.findWorkbookCardsById(id)
+        );
     }
 }

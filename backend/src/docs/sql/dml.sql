@@ -1,10 +1,15 @@
+-- 데이터 베이스에 아무것도 없는 경우 초기 데이터 셋팅용으로만 사용해야함 !!!
+
+-- 어드민 생성
+INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (-1, "보또보", 'botobo.profile.url', 'ADMIN', now(), now());
+
 -- 문제집 생성
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ( '데이터베이스', false, false, now(), now());
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ('자바', false, false, now(), now());
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ('자바스크립트', false, false, now(), now());
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ('네트워크', false, false, now(), now());
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ('리액트', false, false, now(), now());
-INSERT INTO workbook (name, is_public, is_deleted, created_at, updated_at) VALUES ('스프링', false, false, now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('데이터베이스', 1, false, false, now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('자바', 1, false, false   , now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('자바스크립트', 1, false, false, now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('네트워크', 1, false, false, now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('리액트', 1, false, false, now(), now());
+INSERT INTO workbook (name, user_id, is_public, is_deleted, created_at, updated_at) VALUES ('스프링', 1, false, false, now(), now());
 
 -- 카드 생성
 -- 데이터 베이스

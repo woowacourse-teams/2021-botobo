@@ -3,6 +3,7 @@ package botobo.core.quiz.domain.workbook;
 import botobo.core.common.domain.BaseEntity;
 import botobo.core.quiz.domain.card.Card;
 import botobo.core.quiz.domain.card.Cards;
+import botobo.core.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,21 +30,29 @@ public class Workbook extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
+    private boolean isPublic;
+
+    @Column(nullable = false)
     private boolean isDeleted;
 
     @Embedded
     private Cards cards = new Cards();
 
-    @Column(nullable = false)
-    private boolean isPublic;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_workbook_to_user"))
+    private User user;
 
     @Builder
-    public Workbook(Long id, String name, boolean isDeleted, boolean isPublic) {
+    public Workbook(Long id, String name, boolean isPublic, boolean isDeleted, Cards cards, User user) {
         validateName(name);
         this.id = id;
         this.name = name;
-        this.isDeleted = isDeleted;
         this.isPublic = isPublic;
+        this.isDeleted = isDeleted;
+        this.user = user;
+        if (Objects.nonNull(cards)) {
+            this.cards = cards;
+        }
     }
 
     private void validateName(String name) {
@@ -54,6 +67,13 @@ public class Workbook extends BaseEntity {
                     String.format("Workbook의 Name %d자 이하여야 합니다.", NAME_MAX_LENGTH)
             );
         }
+    }
+
+    public String author() {
+        if (Objects.isNull(user)) {
+            return "존재하지 않는 유저";
+        }
+        return user.getUserName();
     }
 
     public int cardCount() {

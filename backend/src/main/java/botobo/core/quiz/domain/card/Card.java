@@ -44,8 +44,8 @@ public class Card extends BaseEntity {
     private boolean isDeleted;
 
     @Builder
-    public Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
-        validateNull(question, workbook);
+    private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
+        validateNull(question, answer, workbook);
         this.id = id;
         this.question = question;
         this.answer = answer;
@@ -56,9 +56,12 @@ public class Card extends BaseEntity {
         changeWorkbook(workbook);
     }
 
-    private void validateNull(String question, Workbook workbook) {
+    private void validateNull(String question, String answer, Workbook workbook) {
         if (Objects.isNull(question)) {
-            throw new IllegalArgumentException("Card의 Question에는 null이 들어갈 수 없습니다.");
+            throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
+        }
+        if (Objects.isNull(answer)) {
+            throw new IllegalArgumentException("Card의 answer에는 null이 들어갈 수 없습니다.");
         }
         if (Objects.isNull(workbook)) {
             throw new IllegalArgumentException("Card의 Workbook에는 null이 들어갈 수 없습니다.");
@@ -83,6 +86,14 @@ public class Card extends BaseEntity {
 
     public void cancelNextQuiz() {
         isNextQuiz = false;
+    }
+
+    public void updateFrom(Card other) {
+        this.question = other.question;
+        this.answer = other.answer;
+        this.isBookmark = other.isBookmark;
+        this.isNextQuiz = other.isNextQuiz;
+        changeWorkbook(workbook);
     }
 
     public boolean equalsNextQuizWith(boolean isNextQuiz) {

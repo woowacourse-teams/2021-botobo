@@ -10,7 +10,9 @@ import static botobo.core.utils.TestUtils.longStringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class WorkbookTest {
 
@@ -29,6 +31,9 @@ class WorkbookTest {
         assertThat(workbook.getName()).isEqualTo(workbookName);
         assertFalse(workbook.isDeleted());
         assertFalse(workbook.isPublic());
+        assertNotNull(workbook.getCards());
+        assertThat(workbook.getCards().getCards()).hasSize(0);
+        assertNull(workbook.getUser());
     }
 
     @Test
@@ -63,4 +68,17 @@ class WorkbookTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+
+    @Test
+    @DisplayName("문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
+    void authorWithNullUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("단계별 자바 문제집")
+                .user(null)
+                .build();
+
+        // when, then
+        assertThat(workbook.author()).isEqualTo("존재하지 않는 유저");
+    }
 }
