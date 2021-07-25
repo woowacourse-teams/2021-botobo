@@ -7,7 +7,6 @@ import botobo.core.quiz.domain.card.GuestCards;
 import botobo.core.quiz.domain.card.Quiz;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.QuizResponse;
-import botobo.core.quiz.exception.QuizEmptyException;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +33,9 @@ public class QuizService {
 
     public List<QuizResponse> createQuiz(List<Long> workbookIds) {
         validateWorkbookIds(workbookIds);
-        final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), DEFAULT_QUIZ_COUNT);
-        return QuizResponse.cardsOf(quiz.incrementEncounterCount());
+        final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), DEFAULT_QUIZ_COUNT)
+                .postProcess();
+        return QuizResponse.cardsOf(quiz);
     }
 
     public List<QuizResponse> createQuizFromWorkbook(Long workbookId) {
@@ -46,15 +46,7 @@ public class QuizService {
 
     private Cards makeQuiz(List<Card> cards, int counts) {
         final Quiz preparedQuizSet = new Quiz(cards, counts);
-        final Cards quiz = preparedQuizSet.makeQuiz();
-        validateQuizIsEmpty(quiz);
-        return quiz;
-    }
-
-    private void validateQuizIsEmpty(Cards quiz) {
-        if (quiz.isEmpty()) {
-            throw new QuizEmptyException();
-        }
+        return preparedQuizSet.makeQuiz();
     }
 
     private void validateWorkbookIds(List<Long> workbookIds) {

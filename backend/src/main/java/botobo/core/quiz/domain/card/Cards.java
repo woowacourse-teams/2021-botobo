@@ -54,12 +54,17 @@ public class Cards {
                 .collect(Collectors.toList()));
     }
 
-    public Cards incrementEncounterCount() {
-        cards.forEach(Card::incrementEncounterCount);
+    public Cards postProcess() {
+        incrementEncounterCount();
+        cancelNextQuiz();
         return this;
     }
 
-    public void cancelNextQuiz() {
+    private void incrementEncounterCount() {
+        cards.forEach(Card::incrementEncounterCount);
+    }
+
+    private void cancelNextQuiz() {
         cards.forEach(Card::cancelNextQuiz);
     }
 }
