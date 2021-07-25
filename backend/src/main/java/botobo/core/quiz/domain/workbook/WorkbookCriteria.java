@@ -1,26 +1,25 @@
 package botobo.core.quiz.domain.workbook;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
+@EqualsAndHashCode
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class WorkbookCriteria {
 
     private SearchKeyword searchKeyword;
     private AccessType accessType;
-
-    private WorkbookCriteria(SearchKeyword searchKeyword, AccessType accessType) {
-        this.searchKeyword = searchKeyword;
-        this.accessType = accessType;
-    }
+    private OwnerType ownerType;
 
     @Builder
-    public WorkbookCriteria(String keyword, String access) {
-        this(SearchKeyword.from(keyword), AccessType.from(access));
+    public WorkbookCriteria(String keyword, String access, String owner) {
+        this(SearchKeyword.from(keyword), AccessType.from(access), OwnerType.from(owner));
     }
 
     public boolean isNoSearchKeyword() {
@@ -39,16 +38,11 @@ public class WorkbookCriteria {
         return accessType.isAll();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WorkbookCriteria that = (WorkbookCriteria) o;
-        return Objects.equals(getSearchKeyword(), that.getSearchKeyword()) && getAccessType() == that.getAccessType();
+    public boolean isMineType() {
+        return ownerType.isMine();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getSearchKeyword(), getAccessType());
+    public String getSearchKeywordValue() {
+        return searchKeyword.getValue();
     }
 }

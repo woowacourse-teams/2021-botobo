@@ -17,6 +17,7 @@ public class WorkbookCriteriaArgumentResolver implements HandlerMethodArgumentRe
 
     private static final String KEYWORD = "keyword";
     private static final String ACCESS = "access";
+    private static final String OWNER = "owner";
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -31,6 +32,7 @@ public class WorkbookCriteriaArgumentResolver implements HandlerMethodArgumentRe
         return WorkbookCriteria.builder()
                 .keyword(parameterMap.getOrDefault(KEYWORD, null))
                 .access(parameterMap.getOrDefault(ACCESS, null))
+                .owner(parameterMap.getOrDefault(OWNER, null))
                 .build();
     }
 
