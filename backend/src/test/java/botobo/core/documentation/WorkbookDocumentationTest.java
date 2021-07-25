@@ -74,17 +74,17 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         return Arrays.asList(
                 WorkbookResponse.builder()
                         .id(1L)
-                        .workbookName("피케이의 자바 문제 20선")
+                        .name("피케이의 자바 문제 20선")
                         .cardCount(20)
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
-                        .workbookName("오즈의 비올 때 푸는 Database 문제")
+                        .name("오즈의 비올 때 푸는 Database 문제")
                         .cardCount(15)
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
-                        .workbookName("조앤의 Network 정복 모음집")
+                        .name("조앤의 Network 정복 모음집")
                         .cardCount(8)
                         .build()
         );
