@@ -57,6 +57,13 @@ public class User extends BaseEntity {
         }
     }
 
+    public AppUser toAppUser() {
+        return AppUser.builder()
+                .id(id)
+                .role(role)
+                .build();
+    }
+
     public boolean isAdmin() {
         return role.isAdmin();
     }
