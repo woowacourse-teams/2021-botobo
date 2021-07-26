@@ -17,6 +17,10 @@ const useRouter = () => {
   const routeQuizResult = () => history.push(ROUTE.QUIZ_RESULT.PATH);
   const routeCards = (workbookId: number) =>
     history.push(`${ROUTE.CARDS.PATH}?id=${workbookId}`);
+  const routeCardAdd = (workbookId: number) =>
+    history.push(`${ROUTE.CARD_ADD.PATH}?id=${workbookId}`);
+  const routeCardEdit = (workbookId: number) =>
+    history.push(`${ROUTE.CARD_EDIT.PATH}?id=${workbookId}`);
   const routePublicWorkbook = () => history.push(ROUTE.PUBLIC_WORKBOOK.PATH);
   const routePublicCards = (workbookId: number) =>
     history.push(`${ROUTE.PUBLIC_CARDS.PATH}?id=${workbookId}`);
@@ -31,6 +35,8 @@ const useRouter = () => {
     routeQuiz,
     routeQuizResult,
     routeCards,
+    routeCardAdd,
+    routeCardEdit,
     routePublicWorkbook,
     routePublicCards,
     routeGithubCallback,

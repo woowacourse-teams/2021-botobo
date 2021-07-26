@@ -19,7 +19,7 @@ interface Props {
 
 interface FormContextType {
   values: Values;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   errorMessages: ErrorMessages;
 }
 
