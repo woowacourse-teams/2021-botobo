@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { InputField, PageHeader } from '../components';
 import { ROUTE } from '../constants';
@@ -17,7 +17,6 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookAddPage = () => {
-  const [isFocus, setIsFocus] = useState(false);
   const { openModal } = useModal();
 
   return (
@@ -33,13 +32,7 @@ const WorkbookAddPage = () => {
         rightContent={<SubmitButton>확인</SubmitButton>}
       />
       <Container>
-        <Input
-          name="name"
-          placeholder="문제집 이름"
-          isFocus={isFocus}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-        />
+        <Input name="name" placeholder="문제집 이름" focusColor="gray" />
         <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
         <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
           <AccessSelector id="access-select">전체 공개</AccessSelector>
@@ -63,7 +56,7 @@ const Container = styled.div`
 const Input = styled(InputField)`
   width: 100%;
   padding: 0.5rem 1rem;
-  transition: border 0.1s linear;
+  transition: border 0.2s linear;
   outline: none;
   border: none;
   background-color: transparent;
