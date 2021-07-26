@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
-import { Flex } from '../styles';
 import { QuizResponse } from '../types';
 
 interface Props extends Omit<QuizResponse, 'id'> {
@@ -25,11 +24,15 @@ const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
       <Card isFlipped={isFlipped}>
         <Question>
           <WorkbookName>{workbookName}</WorkbookName>
-          <Text>Q. {question}</Text>
+          <Text>
+            <span>Q. {question}</span>
+          </Text>
         </Question>
         <Answer>
           <WorkbookName>{workbookName}</WorkbookName>
-          <Text>A. {answer}</Text>
+          <Text>
+            <span>A. {answer}</span>
+          </Text>
         </Answer>
       </Card>
     </Container>
@@ -57,10 +60,9 @@ const Card = styled.div<CardStyleProps>`
     `}
 
   & > div {
-    ${Flex({ justify: 'center', items: 'center' })};
     position: absolute;
     padding: 1rem;
-    padding-top: 2rem;
+    padding-top: 2.5rem;
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
@@ -104,7 +106,23 @@ const Answer = styled.div`
 
 const Text = styled.div`
   overflow-y: auto;
-  height: 8rem;
+  height: 9rem;
+  line-height: 9rem;
+
+  ${({ theme }) => css`
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: ${theme.color.gray_4};
+    }
+  `}
+
+  & > span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.4rem;
+  }
 `;
 
 export default Quiz;
