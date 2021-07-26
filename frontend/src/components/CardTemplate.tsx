@@ -50,6 +50,15 @@ const Footer = styled.div`
   margin-top: 1rem;
   text-align: right;
 
+  ${({ theme }) => css`
+    & > button:first-of-type {
+      color: ${theme.color.gray_7};
+    }
+    & > button:last-of-type {
+      color: ${theme.color.red};
+    }
+  `}
+
   & > button {
     margin-left: 1rem;
   }

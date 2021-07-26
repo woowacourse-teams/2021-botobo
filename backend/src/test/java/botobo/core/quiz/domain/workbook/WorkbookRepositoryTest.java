@@ -54,4 +54,19 @@ public class WorkbookRepositoryTest {
         Optional<Workbook> findWorkbook = workbookRepository.findById(savedWorkbook.getId());
         assertThat(findWorkbook).containsSame(savedWorkbook);
     }
+
+    @Test
+    @DisplayName("Public하고 Id가 존재하는 Workbook 조회 - 성공")
+    void isPublic() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("java")
+                .isDeleted(false)
+                .opened(true)
+                .build();
+        Workbook savedWorkbook = workbookRepository.save(workbook);
+
+        // when, then
+        assertThat(workbookRepository.existsByIdAndOpenedTrue(savedWorkbook.getId())).isTrue();
+    }
 }

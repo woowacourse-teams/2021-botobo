@@ -25,11 +25,11 @@ const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
       <Card isFlipped={isFlipped}>
         <Question>
           <WorkbookName>{workbookName}</WorkbookName>
-          <span>Q. {question}</span>
+          <Text>Q. {question}</Text>
         </Question>
         <Answer>
           <WorkbookName>{workbookName}</WorkbookName>
-          <span>A. {answer}</span>
+          <Text>A. {answer}</Text>
         </Answer>
       </Card>
     </Container>
@@ -100,6 +100,11 @@ const Answer = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `}
+`;
+
+const Text = styled.div`
+  overflow-y: auto;
+  height: 8rem;
 `;
 
 export default Quiz;

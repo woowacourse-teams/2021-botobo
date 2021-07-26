@@ -28,6 +28,9 @@ class QuizTest {
         return cards.stream().filter(Card::isNextQuiz).collect(Collectors.toList());
     }
 
+    private List<Integer> getEncounterCounts(List<Card> cards) {
+        return cards.stream().map(Card::getEncounterCount).collect(Collectors.toList());
+    }
 
     @DisplayName("isNextQuiz 3개를 포함하여 10개의 카드가 담긴 퀴즈를 생성한다. - 성공")
     @Test
@@ -72,22 +75,5 @@ class QuizTest {
         // then
         assertThat(createdQuiz.counts()).isEqualTo(10);
         assertThat(createdQuiz.getCards()).containsAll(nextQuiz);
-    }
-
-    @DisplayName("다음에 또 보기는 1회 포함 후 취소된다. - 성공")
-    @Test
-    void cancelNextQuiz() {
-        // given
-        // 10개의 다음에 또보기 옵션이 추가된 카드인 tenCards로 퀴즈를 생성한다.
-        makeNextQuiz(10);
-        Quiz quiz = new Quiz(tenCards, 10);
-        quiz.makeQuiz();
-
-        // when
-        // 이후 tenCards에 대해 NextQuiz 옵션이 포함된 카드를 조회한다.
-        final List<Card> afterNextQuizzes = getNextQuiz(tenCards);
-
-        // then
-        assertThat(afterNextQuizzes).isEmpty();
     }
 }

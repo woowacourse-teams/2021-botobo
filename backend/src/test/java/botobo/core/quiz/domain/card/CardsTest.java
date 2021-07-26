@@ -57,18 +57,21 @@ public class CardsTest {
         assertThat(chosenCards.counts()).isEqualTo(10);
     }
 
-    @DisplayName("cards 필드의 모든 카드의 isNextQuiz 옵션을 취소한다. - 성공")
+    @DisplayName("마주친 횟수 증가 및 또보기 옵션 취소를 한다. - 성공")
     @Test
-    void cancelNextQuiz() {
+    void postProcess() {
         // given
         tenCards.forEach(Card::makeNextQuiz);
         Cards cards = new Cards(tenCards);
 
         // when
-        cards.cancelNextQuiz();
+        cards.postProcess();
 
         // then
         final Cards chosenCards = cards.chooseCard(true, 10);
         assertThat(chosenCards.counts()).isEqualTo(0);
+        for (Card card : tenCards) {
+            assertThat(card.getEncounterCount()).isEqualTo(1);
+        }
     }
 }

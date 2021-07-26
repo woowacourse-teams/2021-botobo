@@ -37,6 +37,7 @@ const GlobalStyle = () => {
           cursor: pointer;
           border: 0;
           background-color: transparent;
+          font-size: ${theme.fontSize.default};
         }
       `}
     />
