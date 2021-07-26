@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import { Button, QnACard } from '../components';
-import { useCards } from '../hooks';
+import { useCards, useRouter } from '../hooks';
 import { CardResponse } from '../types';
 
 interface Filter {
@@ -28,7 +28,8 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards } = useCards();
+  const { workbookName, cards, workbookId } = useCards();
+  const { routeCardAdd } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
   return (
@@ -48,7 +49,11 @@ const CardsPage = () => {
           </Button>
         ))}
       </Filter>
-      <Button size="full" backgroundColor="blue">
+      <Button
+        size="full"
+        backgroundColor="blue"
+        onClick={() => routeCardAdd(workbookId)}
+      >
         새로운 카드 추가하기
       </Button>
       <CardList>

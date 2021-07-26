@@ -27,7 +27,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
-                .opened(workbook.isPublic())
+                .opened(workbook.isOpened())
                 .build();
     }
 

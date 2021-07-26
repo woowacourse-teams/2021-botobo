@@ -29,8 +29,8 @@ public class Workbook extends BaseEntity {
     @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
-    @Column(nullable = false)
-    private boolean isPublic;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean opened;
 
     @Column(nullable = false)
     private boolean isDeleted;
@@ -43,11 +43,11 @@ public class Workbook extends BaseEntity {
     private User user;
 
     @Builder
-    public Workbook(Long id, String name, boolean isPublic, boolean isDeleted, Cards cards, User user) {
+    public Workbook(Long id, String name, boolean opened, boolean isDeleted, Cards cards, User user) {
         validateName(name);
         this.id = id;
         this.name = name;
-        this.isPublic = isPublic;
+        this.opened = opened;
         this.isDeleted = isDeleted;
         this.user = user;
         if (Objects.nonNull(cards)) {
@@ -82,7 +82,7 @@ public class Workbook extends BaseEntity {
     }
 
     public boolean isPrivate() {
-        return !isPublic();
+        return !isOpened();
     }
 
     public int cardCount() {

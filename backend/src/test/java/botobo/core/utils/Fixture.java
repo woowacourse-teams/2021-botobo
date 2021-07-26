@@ -9,6 +9,7 @@ public class Fixture {
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_2 = new AdminWorkbookRequest("2");
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_3 = new AdminWorkbookRequest("3");
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_4 = new AdminWorkbookRequest("4");
+    public static final AdminWorkbookRequest WORKBOOK_REQUEST_5 = new AdminWorkbookRequest("5", false);
 
     public static final AdminCardRequest CARD_REQUEST_1 = new AdminCardRequest("1", "answer", 1L);
     public static final AdminCardRequest CARD_REQUEST_2 = new AdminCardRequest("2", "answer", 1L);

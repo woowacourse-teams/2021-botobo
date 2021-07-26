@@ -37,6 +37,7 @@ import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_4;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_5;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -45,7 +46,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3, WORKBOOK_REQUEST_4));
+        여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3,
+                WORKBOOK_REQUEST_4, WORKBOOK_REQUEST_5));
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
                 CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
                 CARD_REQUEST_11, CARD_REQUEST_12, CARD_REQUEST_13, CARD_REQUEST_14, CARD_REQUEST_15));
@@ -70,6 +72,30 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 시 encounterCount가 1 증가한다. - 성공")
+    void checkEncounterCount() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest =
+                new QuizRequest(ids);
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth()
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(quizResponses.size()).isEqualTo(10);
+        for (QuizResponse quizResponse : quizResponses) {
+            assertThat(quizResponse.getEncounterCount()).isEqualTo(1);
+        }
     }
 
     @Test
@@ -200,5 +226,78 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(secondQuizResponses.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 성공")
+    void createQuizFromWorkbook() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 1L)
+                .auth()
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(quizResponses).isNotEmpty();
+        assertThat(quizResponses.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 존재하지 않는 문제집 아이디")
+    void createQuizFromWorkbookWithNotExistId() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 100L)
+                .auth()
+                .build();
+
+        // when
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집이 Public하지 않음")
+    void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() {
+        // given
+        // 1번 문제집에는 5개의 카드가 존재한다.
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 5L)
+                .auth()
+                .build();
+
+        // when
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 퀴즈에 문제가 존재하지 않음")
+    void createQuizFromWorkbookWithEmptyCards() {
+        // given
+        // 4번 문제집에는 카드가 존재하지 않는다.
+        // 4번 문제집은 isPublic = true
+        final HttpResponse response = request()
+                .get("/api/quizzes/{workbookId}", 4L)
+                .auth()
+                .build();
+
+        // when
+        final ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("퀴즈에 문제가 존재하지 않습니다.");
     }
 }

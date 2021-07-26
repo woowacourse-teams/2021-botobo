@@ -5,6 +5,7 @@ import botobo.core.quiz.dto.QuizRequest;
 import botobo.core.quiz.dto.QuizResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,12 @@ public class QuizController {
     @GetMapping("/guest")
     public ResponseEntity<List<QuizResponse>> createQuizForGuest() {
         List<QuizResponse> quizResponses = quizService.createQuizForGuest();
+        return ResponseEntity.ok(quizResponses);
+    }
+
+    @GetMapping("/{workbookId}")
+    public ResponseEntity<List<QuizResponse>> createQuizFromWorkbook(@PathVariable Long workbookId) {
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
         return ResponseEntity.ok(quizResponses);
     }
 }

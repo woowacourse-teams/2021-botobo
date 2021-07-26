@@ -62,12 +62,12 @@ class WorkbookFinderTest {
     private List<Workbook> generateDummyWorkbooks() {
         User adminUser = User.builder().id(1L).build();
         return Arrays.asList(
-                Workbook.builder().id(1L).name("데이터베이스").isPublic(false).user(adminUser).build(),
-                Workbook.builder().id(2L).name("자바").isPublic(true).user(adminUser).build(),
-                Workbook.builder().id(3L).name("자바스크립트").isPublic(true).user(adminUser).build(),
-                Workbook.builder().id(4L).name("네트워크").isPublic(true).user(adminUser).build(),
-                Workbook.builder().id(5L).name("리액트").isPublic(true).user(adminUser).build(),
-                Workbook.builder().id(6L).name("스프링").isPublic(true).user(adminUser).build()
+                Workbook.builder().id(1L).name("데이터베이스").opened(false).user(adminUser).build(),
+                Workbook.builder().id(2L).name("자바").opened(true).user(adminUser).build(),
+                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(adminUser).build(),
+                Workbook.builder().id(4L).name("네트워크").opened(true).user(adminUser).build(),
+                Workbook.builder().id(5L).name("리액트").opened(true).user(adminUser).build(),
+                Workbook.builder().id(6L).name("스프링").opened(true).user(adminUser).build()
         );
     }
 }

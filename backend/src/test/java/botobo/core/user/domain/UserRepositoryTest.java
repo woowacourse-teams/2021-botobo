@@ -1,5 +1,6 @@
 package botobo.core.user.domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,21 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    @DisplayName("User 저장 - 성공")
-    void save() {
-        // given
-        User user = User.builder()
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = User.builder()
                 .githubId(1L)
                 .userName("user")
                 .profileUrl("profile.io")
+                .role(Role.USER)
                 .build();
+    }
 
+    @Test
+    @DisplayName("User 저장 - 성공")
+    void save() {
         // when
         User savedUser = userRepository.save(user);
 
@@ -39,11 +45,6 @@ public class UserRepositoryTest {
     @DisplayName("User id로 조회 - 성공")
     void findById() {
         // given
-        User user = User.builder()
-                .githubId(1L)
-                .userName("user")
-                .profileUrl("profile.io")
-                .build();
         User savedUser = userRepository.save(user);
 
         // when, then
@@ -55,11 +56,6 @@ public class UserRepositoryTest {
     @DisplayName("User Github Id로 조회 - 성공")
     void findByGithubId() {
         // given
-        User user = User.builder()
-                .githubId(1L)
-                .userName("user")
-                .profileUrl("profile.io")
-                .build();
         userRepository.save(user);
 
         // when, then

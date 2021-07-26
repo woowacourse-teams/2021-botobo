@@ -30,9 +30,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String profileUrl;
 
-    // 로그인 관련 테스트가 깨져서 일단 null 가능하게 해 두었음 (nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @Column(nullable = false)
+    private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();

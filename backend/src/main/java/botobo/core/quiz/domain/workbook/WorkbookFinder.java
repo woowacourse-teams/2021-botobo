@@ -27,7 +27,7 @@ public class WorkbookFinder {
 
     private Predicate<Workbook> filterAccessType(WorkbookCriteria workbookCriteria) {
         return workbook -> (workbookCriteria.isAllAccess() ||
-                (workbook.isPublic() && workbookCriteria.isPublicAccess()) ||
+                (workbook.isOpened() && workbookCriteria.isPublicAccess()) ||
                 (workbook.isPrivate() && workbookCriteria.isPrivateAccess())
         );
     }

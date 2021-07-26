@@ -4,6 +4,7 @@ import botobo.core.quiz.domain.workbook.Workbook;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.user.domain.AppUser;
+import botobo.core.user.domain.Role;
 import botobo.core.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,13 +37,13 @@ class WorkbookServiceTest {
 
     @BeforeEach
     void setUp() {
-        normalUser = User.builder().id(2L).userName("ggyool").build();
+        normalUser = User.builder().id(2L).userName("ggyool").role(Role.USER).build();
 
         workbooks = Arrays.asList(
-                Workbook.builder().id(1L).name("데이터베이스").isPublic(true).user(normalUser).build(),
-                Workbook.builder().id(2L).name("자바").isPublic(true).user(normalUser).build(),
-                Workbook.builder().id(3L).name("자바스크립트").isPublic(true).user(normalUser).build(),
-                Workbook.builder().id(4L).name("네트워크").isPublic(true).user(normalUser).build()
+                Workbook.builder().id(1L).name("데이터베이스").opened(true).user(normalUser).build(),
+                Workbook.builder().id(2L).name("자바").opened(true).user(normalUser).build(),
+                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(normalUser).build(),
+                Workbook.builder().id(4L).name("네트워크").opened(true).user(normalUser).build()
         );
     }
 

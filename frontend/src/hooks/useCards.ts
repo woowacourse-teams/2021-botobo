@@ -27,7 +27,7 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { workbookName, cards };
+  return { workbookName, cards, workbookId: Number(workbookId) };
 };
 
 export default useCards;

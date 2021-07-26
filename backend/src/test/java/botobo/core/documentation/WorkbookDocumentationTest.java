@@ -1,10 +1,10 @@
 package botobo.core.documentation;
 
-import botobo.core.auth.infrastructure.JwtTokenProvider;
+import botobo.core.auth.application.AuthService;
 import botobo.core.quiz.application.WorkbookService;
+import botobo.core.quiz.dto.CardSimpleResponse;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
-import botobo.core.quiz.dto.CardSimpleResponse;
 import botobo.core.quiz.ui.WorkbookController;
 import botobo.core.user.domain.AppUser;
 import botobo.core.user.domain.Role;
@@ -33,7 +33,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     private WorkbookService workbookService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
     @Test
     @DisplayName("문제집 전체 조회 - 성공")
@@ -42,7 +42,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         AppUser normalUser = AppUser.builder().id(2L).role(Role.USER).build();
         given(workbookService.findWorkbooksByUser(normalUser)).willReturn(generateWorkbookResponse());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
@@ -60,7 +59,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generateWorkbookCardsResponse());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()

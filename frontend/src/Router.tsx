@@ -11,6 +11,8 @@ import { useRecoilValue } from 'recoil';
 import { MainHeader, PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
+  CardAddPage,
+  CardEditPage,
   CardsLoadable,
   CardsPage,
   GithubCallbackPage,
@@ -54,7 +56,6 @@ const Router = () => (
         <LoginPage />
       </Route>
       <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
-        <PageHeader title={ROUTE.WORKBOOK_ADD.TITLE} />
         <WorkbookAddPage />
       </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
@@ -64,7 +65,6 @@ const Router = () => (
           <QuizSettingPage />
         </Suspense>
       </PrivateRoute>
-      {/* TODO: Quiz, QuizResult에 진입 시, length로 분기 처리 */}
       <Route exact path={ROUTE.QUIZ.PATH}>
         <PageHeader title={ROUTE.QUIZ.TITLE} />
         <QuizPage />
@@ -79,6 +79,12 @@ const Router = () => (
           <CardsPage />
         </Suspense>
       </Route>
+      <PrivateRoute exact path={ROUTE.CARD_ADD.PATH}>
+        <CardAddPage />
+      </PrivateRoute>
+      <PrivateRoute exact path={ROUTE.CARD_EDIT.PATH}>
+        <CardEditPage />
+      </PrivateRoute>
       <Route exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
         <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
         <PublicWorkbookPage />

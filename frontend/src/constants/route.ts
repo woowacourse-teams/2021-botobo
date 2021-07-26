@@ -26,6 +26,14 @@ const ROUTE = {
     PATH: '/cards',
     TITLE: '모아보기',
   },
+  CARD_ADD: {
+    PATH: '/cardAdd',
+    TITLE: '카드 추가',
+  },
+  CARD_EDIT: {
+    PATH: '/cardEdit',
+    TITLE: '카드 수정',
+  },
   PUBLIC_WORKBOOK: {
     PATH: '/publicWorkbook',
     TITLE: '공유 문제집',
