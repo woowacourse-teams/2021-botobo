@@ -5,6 +5,7 @@ import botobo.core.auth.dto.GithubUserInfoResponse;
 import botobo.core.auth.dto.LoginRequest;
 import botobo.core.auth.dto.TokenResponse;
 import botobo.core.auth.infrastructure.GithubOauthManager;
+import botobo.core.user.domain.UserRepository;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Auth Acceptance 테스트")

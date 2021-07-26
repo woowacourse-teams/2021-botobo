@@ -27,9 +27,6 @@ public class LoginDocumentationTest extends DocumentationTest {
     @MockBean
     private AuthService authService;
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-
     @Test
     @DisplayName("로그인 - 성공")
     void login() throws Exception {

@@ -8,11 +8,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthorizationInterceptor implements HandlerInterceptor {
+public class AdminInterceptor implements HandlerInterceptor {
 
     private final AuthService authService;
 
-    public AuthorizationInterceptor(AuthService authService) {
+    public AdminInterceptor(AuthService authService) {
         this.authService = authService;
     }
 
@@ -22,7 +22,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return true;
         }
         String credentials = AuthorizationExtractor.extract(request);
-        authService.validateToken(credentials);
+        authService.validateAdmin(credentials);
         return true;
     }
 }

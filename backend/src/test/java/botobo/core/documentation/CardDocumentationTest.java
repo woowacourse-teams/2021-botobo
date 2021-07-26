@@ -1,5 +1,6 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.application.AuthService;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.CardService;
 import botobo.core.quiz.dto.CardRequest;
@@ -37,7 +38,7 @@ public class CardDocumentationTest extends DocumentationTest {
     private CardService cardService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
     @Test
     @DisplayName("카드 생성 - 성공")
@@ -131,7 +132,6 @@ public class CardDocumentationTest extends DocumentationTest {
                 .cardIds(List.of(1L, 2L, 3L))
                 .build();
         String token = "botobo.access.token";
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()

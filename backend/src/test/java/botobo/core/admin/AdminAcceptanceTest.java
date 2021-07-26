@@ -5,11 +5,17 @@ import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminCardResponse;
 import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.admin.dto.AdminWorkbookResponse;
+import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.common.exception.ErrorResponse;
+import botobo.core.user.domain.Role;
+import botobo.core.user.domain.User;
+import botobo.core.user.domain.UserRepository;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static botobo.core.utils.TestUtils.extractId;
@@ -19,31 +25,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Admin 인수 테스트")
 public class AdminAcceptanceTest extends AcceptanceTest {
 
-    private static final AdminWorkbookRequest ADMIN_CATEGORY_REQUEST =
+    private static final AdminWorkbookRequest ADMIN_WORKBOOK_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
 
-    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
-        return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth()
-                .build()
-                .extract();
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest) {
-        return request()
-                .post("/api/admin/cards", adminCardRequest)
-                .auth()
-                .build()
-                .extract();
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private User admin;
+
+    @BeforeEach
+    void setUser() {
+        admin = User.builder()
+                .githubId(1L)
+                .userName("admin")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
+        userRepository.save(admin);
     }
 
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
-    void createCategory() {
+    void createWorkbook() {
         // given
-        final ExtractableResponse<Response> response = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
+
+        final ExtractableResponse<Response> response = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
 
         // when
         final AdminWorkbookResponse adminWorkbookResponse = response.as(AdminWorkbookResponse.class);
@@ -56,10 +66,10 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 실패, name이 null일 때")
-    void createCategoryWithNullName() {
+    void createWorkbookWithNullName() {
         //given
         AdminWorkbookRequest adminWorkbookRequestWithNullName = new AdminWorkbookRequest(null);
-        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithNullName);
+        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithNullName, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -72,10 +82,10 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 실패, name은 최소 1글자")
-    void createCategoryWithInvalidLengthWithZero() {
+    void createWorkbookWithInvalidLengthWithZero() {
         //given
         AdminWorkbookRequest adminWorkbookRequestWithInvalidName = new AdminWorkbookRequest("");
-        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName);
+        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -87,10 +97,10 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 실패, name에 공백만 들어가는 경우")
-    void createCategoryWithOnlyWhiteSpace() {
+    void createWorkbookWithOnlyWhiteSpace() {
         //given
         AdminWorkbookRequest adminWorkbookRequestWithInvalidName = new AdminWorkbookRequest("     ");
-        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName);
+        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -102,11 +112,11 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 실패, name은 최대 30글자")
-    void createCategoryWithInvalidLengthWith31() {
+    void createWorkbookWithInvalidLengthWith31() {
         //given
         AdminWorkbookRequest adminWorkbookRequestWithInvalidName = new AdminWorkbookRequest(
                 longStringGenerator(31));
-        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName);
+        ExtractableResponse<Response> response = 문제집_생성_요청(adminWorkbookRequestWithInvalidName, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -117,13 +127,35 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("관리자 문제집 생성 - 실패, admin이 아닐 경우")
+    void createWorkbookWithNotAdmin() {
+        //given
+        User newUser = User.builder()
+                .githubId(2L)
+                .userName("user")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(newUser);
+
+        ExtractableResponse<Response> response = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, newUser);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("Admin 권한이 아니기에 접근할 수 없습니다.");
+    }
+
+    @Test
     @DisplayName("관리자 카드 생성 - 성공")
     void createCard() {
-        ExtractableResponse<Response> workbookResponse = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
+        ExtractableResponse<Response> workbookResponse = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
         final Long workbookId = extractId(workbookResponse);
 
         AdminCardRequest adminCardRequest = new AdminCardRequest("Question", "Answer", workbookId);
-        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
+        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest, admin);
 
         //when
         final AdminCardResponse adminCardResponse = response.as(AdminCardResponse.class);
@@ -139,11 +171,11 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("관리자 카드 생성 - 실패, question이 공백일 때")
     void createCardWithBlankQuestion() {
-        ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
-        final Long workbookId = extractId(categoryResponse);
+        ExtractableResponse<Response> workbookResponse = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
+        final Long workbookId = extractId(workbookResponse);
 
         AdminCardRequest adminCardRequest = new AdminCardRequest("     ", "Answer", workbookId);
-        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
+        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -156,11 +188,11 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("관리자 카드 생성 - 실패, question이 null일 때")
     void createCardWithNullQuestion() {
-        ExtractableResponse<Response> categoryResponse = 문제집_생성_요청(ADMIN_CATEGORY_REQUEST);
-        final Long workbookId = extractId(categoryResponse);
+        ExtractableResponse<Response> workbookResponse = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
+        final Long workbookId = extractId(workbookResponse);
 
         AdminCardRequest adminCardRequest = new AdminCardRequest(null, "Answer", workbookId);
-        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
+        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -172,9 +204,9 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("관리자 카드 생성 - 실패, workbookId가 null일 때")
-    void createCardWithNullCategoryId() {
+    void createCardWithNullWorkbookId() {
         AdminCardRequest adminCardRequest = new AdminCardRequest("Question", "Answer", null);
-        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest);
+        final ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest, admin);
 
         //when
         final ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -184,4 +216,48 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
     }
 
+    @Test
+    @DisplayName("관리자 카드 생성 - 실패, admin이 아닐 경우")
+    void createCardWithNotAdmin() {
+        //given
+        ExtractableResponse<Response> workbookResponse = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
+        final Long workbookId = extractId(workbookResponse);
+
+        User newUser = User.builder()
+                .githubId(2L)
+                .userName("user")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(newUser);
+
+        AdminCardRequest adminCardRequest = new AdminCardRequest("Question", "Answer", workbookId);
+
+        ExtractableResponse<Response> response = 카드_생성_요청(adminCardRequest, newUser);
+
+        //when
+        final ErrorResponse errorResponse = response.as(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(errorResponse.getMessage()).isEqualTo("Admin 권한이 아니기에 접근할 수 없습니다.");
+    }
+
+    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User user) {
+        return request()
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth(jwtTokenProvider.createToken(user.getId()))
+                .build()
+                .extract();
+    }
+
+    public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest, User user) {
+        return request()
+                .post("/api/admin/cards", adminCardRequest)
+                .auth(jwtTokenProvider.createToken(user.getId()))
+                .build()
+                .extract();
+    }
 }
+
+

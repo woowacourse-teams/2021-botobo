@@ -1,5 +1,6 @@
 package botobo.core.documentation;
 
+import botobo.core.auth.application.AuthService;
 import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.QuizService;
 import botobo.core.quiz.dto.QuizRequest;
@@ -32,7 +33,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     private QuizService quizService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
     @Test
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
@@ -40,7 +41,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         // given
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L));
         String token = "botobo.access.token";
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
 
         // when, then
@@ -60,7 +60,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L));
         given(quizService.createQuiz(Arrays.asList(1L, 2L, 1000L))).willThrow(new WorkbookNotFoundException());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
@@ -79,7 +78,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L));
         given(quizService.createQuiz(Collections.singletonList(100L))).willThrow(new QuizEmptyException());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()

@@ -1,5 +1,6 @@
 package botobo.core.auth.dto;
 
+import botobo.core.user.domain.Role;
 import botobo.core.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class GithubUserInfoResponse {
                 .githubId(githubId)
                 .userName(userName)
                 .profileUrl(profileUrl)
+                .role(Role.USER)
                 .build();
     }
 
