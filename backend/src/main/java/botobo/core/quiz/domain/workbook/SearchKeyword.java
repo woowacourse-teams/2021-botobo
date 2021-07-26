@@ -38,7 +38,6 @@ public class SearchKeyword {
         }
     }
 
-    // TODO: 검토 후 개선
     private void validateNotForbidden(String value) {
         if (value.contains("바보")) {
             throw new WorkbookSearchFailureException(

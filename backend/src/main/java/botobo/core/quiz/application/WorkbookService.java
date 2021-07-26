@@ -6,7 +6,6 @@ import botobo.core.quiz.domain.workbook.WorkbookCriteria;
 import botobo.core.quiz.domain.workbook.WorkbookFinder;
 import botobo.core.quiz.domain.workbook.WorkbookRepository;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
-import botobo.core.quiz.dto.workbook.WorkbookRequest;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import botobo.core.user.domain.AppUser;
