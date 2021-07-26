@@ -2,13 +2,12 @@ package botobo.core;
 
 import botobo.core.admin.dto.AdminCardRequest;
 import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.auth.AuthAcceptanceTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 import java.util.List;
 
-public class DomainAcceptanceTest extends AuthAcceptanceTest {
+public class DomainAcceptanceTest extends AcceptanceTest {
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return request()

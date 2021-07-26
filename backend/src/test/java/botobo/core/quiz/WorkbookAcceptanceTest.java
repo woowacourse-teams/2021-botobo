@@ -35,7 +35,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks")
-                .auth(로그인되어_있음().getAccessToken())
+                .auth()
                 .build();
 
         // then
