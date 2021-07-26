@@ -15,7 +15,7 @@ class CardTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("완벽한 자바 문제집")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         // when, then
@@ -24,7 +24,7 @@ class CardTest {
                 .question("질문")
                 .answer("답변")
                 .workbook(workbook)
-                .isDeleted(false)
+                .deleted(false)
                 .build()
         ).doesNotThrowAnyException();
     }
@@ -35,7 +35,7 @@ class CardTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("또 다른 완벽한 자바 문제집")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         // when, then
@@ -44,7 +44,7 @@ class CardTest {
                 .question(null)
                 .answer("답변")
                 .workbook(workbook)
-                .isDeleted(false)
+                .deleted(false)
                 .build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Card의 question에는 null이 들어갈 수 없습니다.");
@@ -56,7 +56,7 @@ class CardTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("또또 다른 완벽한 자바 문제집")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         // when, then
@@ -65,7 +65,7 @@ class CardTest {
                 .question("질문")
                 .answer(null)
                 .workbook(workbook)
-                .isDeleted(false)
+                .deleted(false)
                 .build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Card의 answer에는 null이 들어갈 수 없습니다.");
@@ -80,7 +80,7 @@ class CardTest {
                 .question("질문")
                 .answer("답변")
                 .workbook(null)
-                .isDeleted(false)
+                .deleted(false)
                 .build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Card의 Workbook에는 null이 들어갈 수 없습니다.");

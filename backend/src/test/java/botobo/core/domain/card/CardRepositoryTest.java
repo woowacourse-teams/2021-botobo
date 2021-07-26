@@ -33,7 +33,7 @@ class CardRepositoryTest {
     void setUp() {
         workbook = Workbook.builder()
                 .name("java")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
         workbookRepository.save(workbook);
     }

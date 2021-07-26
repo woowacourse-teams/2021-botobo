@@ -19,11 +19,11 @@ import javax.validation.constraints.NotNull;
 public class CardRequest {
 
     @NotBlank(message = "질문은 필수 입력값입니다.")
-    @Length(max = 255, message = "질문은 최대 255자까지 입력 가능합니다.")
+    @Length(max = 2000, message = "질문은 최대 2000자까지 입력 가능합니다.")
     private String question;
 
     @NotBlank(message = "답변은 필수 입력값입니다.")
-    @Length(max = 255, message = "답변은 최대 255자까지 입력 가능합니다.")
+    @Length(max = 2000, message = "답변은 최대 2000자까지 입력 가능합니다.")
     private String answer;
 
     @NotNull(message = "카드가 포함될 문제집 아이디는 필수 입력값입니다.")

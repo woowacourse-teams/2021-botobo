@@ -25,7 +25,7 @@ public class WorkbookRepositoryTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("중간곰의 스프링 완전정복")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         // when
@@ -46,7 +46,7 @@ public class WorkbookRepositoryTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("java")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
         Workbook savedWorkbook = workbookRepository.save(workbook);
 
@@ -61,7 +61,7 @@ public class WorkbookRepositoryTest {
         // given
         Workbook workbook = Workbook.builder()
                 .name("java")
-                .isDeleted(false)
+                .deleted(false)
                 .opened(true)
                 .build();
         Workbook savedWorkbook = workbookRepository.save(workbook);

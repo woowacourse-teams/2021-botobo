@@ -32,8 +32,8 @@ public class Workbook extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean opened;
 
-    @Column(nullable = false)
-    private boolean isDeleted;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
 
     @Embedded
     private Cards cards = new Cards();
@@ -43,12 +43,12 @@ public class Workbook extends BaseEntity {
     private User user;
 
     @Builder
-    public Workbook(Long id, String name, boolean opened, boolean isDeleted, Cards cards, User user) {
+    public Workbook(Long id, String name, boolean opened, boolean deleted, Cards cards, User user) {
         validateName(name);
         this.id = id;
         this.name = name;
         this.opened = opened;
-        this.isDeleted = isDeleted;
+        this.deleted = deleted;
         this.user = user;
         if (Objects.nonNull(cards)) {
             this.cards = cards;

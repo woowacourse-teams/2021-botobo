@@ -20,11 +20,11 @@ import javax.validation.constraints.Positive;
 public class CardUpdateRequest {
 
     @NotBlank(message = "카드를 업데이트하기 위해서는 질문이 필요합니다.")
-    @Length(max = 255, message = "질문은 최대 255자까지 입력 가능합니다.")
+    @Length(max = 2000, message = "질문은 최대 2000자까지 입력 가능합니다.")
     private String question;
 
     @NotBlank(message = "카드를 업데이트하기 위해서는 답변이 필요합니다.")
-    @Length(max = 255, message = "답변은 최대 255자까지 입력 가능합니다.")
+    @Length(max = 2000, message = "답변은 최대 2000자까지 입력 가능합니다.")
     private String answer;
 
     @NotNull
@@ -46,8 +46,8 @@ public class CardUpdateRequest {
                 .answer(answer)
                 .workbook(workbook)
                 .encounterCount(encounterCount)
-                .isBookmark(bookmark)
-                .isNextQuiz(nextQuiz)
+                .bookmark(bookmark)
+                .nextQuiz(nextQuiz)
                 .build();
     }
 }

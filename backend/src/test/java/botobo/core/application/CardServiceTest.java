@@ -107,7 +107,7 @@ class CardServiceTest {
         cardService.selectNextQuizCards(requestWithThreeIds);
 
         // then
-        assertThat(threeCards).extracting("isNextQuiz")
+        assertThat(threeCards).extracting("nextQuiz")
                 .containsExactly(true, true, true);
         then(cardRepository)
                 .should(times(1))

@@ -29,7 +29,7 @@ public class AdminWorkbookRequest {
         return Workbook.builder()
                 .name(name)
                 .opened(true)
-                .isDeleted(false)
+                .deleted(false)
                 .opened(opened)
                 .build();
     }

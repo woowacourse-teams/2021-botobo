@@ -48,12 +48,12 @@ class QuizServiceTest {
     void setUp() {
         workbook = Workbook.builder()
                 .name("name")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         workbookWithOneCard = Workbook.builder()
                 .name("name")
-                .isDeleted(false)
+                .deleted(false)
                 .build();
 
         Card card1 = Card.builder()

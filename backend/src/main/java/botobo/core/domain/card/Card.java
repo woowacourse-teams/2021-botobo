@@ -34,25 +34,25 @@ public class Card extends BaseEntity {
     @Column(nullable = false)
     private int encounterCount;
 
-    @Column(nullable = false)
-    private boolean isNextQuiz;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean nextQuiz;
 
-    @Column(nullable = false)
-    private boolean isBookmark;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean bookmark;
 
-    @Column(nullable = false)
-    private boolean isDeleted;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
 
     @Builder
-    private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean isNextQuiz, boolean isBookmark, boolean isDeleted) {
+    private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean nextQuiz, boolean bookmark, boolean deleted) {
         validateNull(question, answer, workbook);
         this.id = id;
         this.question = question;
         this.answer = answer;
         this.encounterCount = encounterCount;
-        this.isNextQuiz = isNextQuiz;
-        this.isBookmark = isBookmark;
-        this.isDeleted = isDeleted;
+        this.nextQuiz = nextQuiz;
+        this.bookmark = bookmark;
+        this.deleted = deleted;
         changeWorkbook(workbook);
     }
 
@@ -81,22 +81,22 @@ public class Card extends BaseEntity {
     }
 
     public void makeNextQuiz() {
-        isNextQuiz = true;
+        nextQuiz = true;
     }
 
     public void cancelNextQuiz() {
-        isNextQuiz = false;
+        nextQuiz = false;
     }
 
     public void updateFrom(Card other) {
         this.question = other.question;
         this.answer = other.answer;
-        this.isBookmark = other.isBookmark;
-        this.isNextQuiz = other.isNextQuiz;
+        this.bookmark = other.bookmark;
+        this.nextQuiz = other.nextQuiz;
         changeWorkbook(workbook);
     }
 
     public boolean equalsNextQuizWith(boolean isNextQuiz) {
-        return this.isNextQuiz == isNextQuiz;
+        return this.nextQuiz == isNextQuiz;
     }
 }
