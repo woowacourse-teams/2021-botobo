@@ -92,6 +92,82 @@ public class QuizDocumentationTest extends DocumentationTest {
     }
 
     @Test
+    @DisplayName("문제집에서 바로 풀기 - 성공")
+    void createQuizFromWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        Long workbookId = 1L;
+        given(quizService.createQuizFromWorkbook(workbookId)).willReturn(generateQuizResponses());
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/quizzes/{workbookId}", workbookId)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("quizzes-from-workbook-get-success");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집 아이디 없음")
+    void createQuizFromWorkbookFailedWhenIdNotFound() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        Long workbookId = 100L;
+        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/quizzes/{workbookId}", workbookId)
+                .auth(token)
+                .build()
+                .status(status().isNotFound())
+                .identifier("quizzes-from-workbook-get-fail-id-not-found");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 퀴즈에 문제가 존재하지 않음")
+    void createQuizFromWorkbookFailedWhenQuizIsEmpty() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        Long workbookId = 1L;
+        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(QuizEmptyException.class);
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/quizzes/{workbookId}", workbookId)
+                .auth(token)
+                .build()
+                .status(status().isBadRequest())
+                .identifier("quizzes-from-workbook-get-fail-quiz-empty");
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집이 Public이 아님")
+    void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        Long workbookId = 1L;
+        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
+        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/quizzes/{workbookId}", workbookId)
+                .auth(token)
+                .build()
+                .status(status().isNotFound())
+                .identifier("quizzes-from-workbook-get-fail-workbook-not-public");
+    }
+
+    @Test
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() throws Exception {
         // given

@@ -1,10 +1,13 @@
 package botobo.core.quiz.domain.card;
 
+import botobo.core.quiz.exception.QuizEmptyException;
+
 import java.util.List;
 
 public class Quiz {
     private final Cards cards;
     private final int targetCounts;
+
 
     public Quiz(List<Card> cards, int targetCounts) {
         this.cards = new Cards(cards);
@@ -17,7 +20,7 @@ public class Quiz {
         if (isInsufficientCounts(quiz.counts())) {
             quiz.addAll(cards.chooseCard(false, remainCounts(quiz.counts())));
         }
-        quiz.cancelNextQuiz();
+        validateQuizIsEmpty(quiz);
         return quiz;
     }
 
@@ -27,5 +30,11 @@ public class Quiz {
 
     private int remainCounts(int preparedCounts) {
         return targetCounts - preparedCounts;
+    }
+
+    private void validateQuizIsEmpty(Cards quiz) {
+        if (quiz.isEmpty()) {
+            throw new QuizEmptyException();
+        }
     }
 }
