@@ -22,6 +22,7 @@ const PublicWorkbookPage = () => {
       <SearchBar isFocus={isFocus}>
         <SearchIcon width="1.3rem" height="1.3rem" />
         <SearchInput
+          autoFocus={true}
           value={searchValue}
           onChange={({ target }) => setSearchValue(target.value)}
           placeholder="검색어를 입력해주세요"

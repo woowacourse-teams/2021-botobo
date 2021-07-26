@@ -1,12 +1,14 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useForm } from '../hooks';
 
+type FocusColor = 'gray' | 'green';
+
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
-  isFocus: boolean;
+  focusColor?: FocusColor;
 }
 
 interface ContainerStyleProps {
@@ -15,15 +17,20 @@ interface ContainerStyleProps {
 
 interface InputStyleProps {
   isFocus: boolean;
+  focusColor: FocusColor;
 }
 
-const InputField = ({ name, isFocus, ...props }: Props) => {
+const InputField = ({ name, focusColor = 'green', ...props }: Props) => {
   const { values, errorMessages, onChange } = useForm();
+  const [isFocus, setIsFocus] = useState(false);
 
   return (
     <Container errorMessage={errorMessages[name]}>
       <Input
         isFocus={isFocus}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        focusColor={focusColor}
         name={name}
         value={values[name]}
         onChange={onChange}
@@ -50,11 +57,13 @@ const Container = styled.div<ContainerStyleProps>`
 `;
 
 const Input = styled.input<InputStyleProps>`
-  ${({ theme, isFocus }) => css`
+  ${({ theme, isFocus, focusColor }) => css`
     ${isFocus &&
     css`
       && {
-        border-color: ${theme.color.gray_8};
+        border-color: ${focusColor === 'gray'
+          ? theme.color.gray_8
+          : theme.color.green};
       }
     `}
   `}
