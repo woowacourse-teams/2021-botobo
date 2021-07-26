@@ -10,7 +10,7 @@ public class TestUtils {
         return Long.parseLong(location.split("/")[4]);
     }
 
-    public static String longStringGenerator(int max) {
+    public static String stringGenerator(int max) {
         return "a".repeat(max);
     }
 }

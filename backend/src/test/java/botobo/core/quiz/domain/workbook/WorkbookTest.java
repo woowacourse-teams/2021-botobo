@@ -6,13 +6,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static botobo.core.utils.TestUtils.longStringGenerator;
+import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WorkbookTest {
 
@@ -41,7 +42,7 @@ class WorkbookTest {
     void createWithValidLengthName() {
         // when, then
         assertThatCode(() -> Workbook.builder()
-                .name(longStringGenerator(30))
+                .name(stringGenerator(30))
                 .build()
         ).doesNotThrowAnyException();
     }
@@ -51,14 +52,14 @@ class WorkbookTest {
     void createWithLongName() {
         // whenm, then
         assertThatThrownBy(() -> Workbook.builder()
-                .name(longStringGenerator(31))
+                .name(stringGenerator(31))
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @NullAndEmptySource
     @ParameterizedTest
-    @ValueSource(strings = {" ", "    "})
+    @ValueSource(strings = {" ", "    ", "\t", "\r", "\r\n", "\n"})
     @DisplayName("Builder를 이용한 Workbook 생성 - 실패, name은 null, empty or blank String이 될 수 없다.")
     void createWithInvalidName(String name) {
         // when, then
@@ -67,7 +68,6 @@ class WorkbookTest {
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
 
     @Test
     @DisplayName("문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
@@ -80,5 +80,18 @@ class WorkbookTest {
 
         // when, then
         assertThat(workbook.author()).isEqualTo("존재하지 않는 유저");
+    }
+
+    @ValueSource(strings = {"java", "Java", "JAVA", "JaVa"})
+    @ParameterizedTest
+    @DisplayName("문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")
+    void containsWord(String word) {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("Javascript")
+                .build();
+
+        // when, then
+        assertTrue(workbook.containsWord(word));
     }
 }

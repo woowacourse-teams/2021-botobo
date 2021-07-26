@@ -19,6 +19,7 @@ public class WorkbookResponse {
     private String name;
     private int cardCount;
     private String author;
+    private boolean opened;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
@@ -26,6 +27,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
+                .opened(workbook.isOpened())
                 .build();
     }
 

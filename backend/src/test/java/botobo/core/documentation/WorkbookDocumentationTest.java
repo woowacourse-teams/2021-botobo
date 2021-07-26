@@ -1,12 +1,13 @@
 package botobo.core.documentation;
 
 import botobo.core.auth.application.AuthService;
-import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.application.WorkbookService;
 import botobo.core.quiz.dto.CardSimpleResponse;
 import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
 import botobo.core.quiz.dto.workbook.WorkbookResponse;
 import botobo.core.quiz.ui.WorkbookController;
+import botobo.core.user.domain.AppUser;
+import botobo.core.user.domain.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findAllWorkbooks() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findAll()).willReturn(generateWorkbookResponse());
+        AppUser normalUser = AppUser.builder().id(2L).role(Role.USER).build();
+        given(workbookService.findWorkbooksByUser(normalUser)).willReturn(generateWorkbookResponse());
 
         // when, then
         document()

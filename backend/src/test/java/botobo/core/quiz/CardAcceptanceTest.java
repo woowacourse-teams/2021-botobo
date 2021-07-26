@@ -23,7 +23,7 @@ import static botobo.core.utils.Fixture.CARD_REQUEST_1;
 import static botobo.core.utils.Fixture.CARD_REQUEST_2;
 import static botobo.core.utils.Fixture.CARD_REQUEST_3;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
-import static botobo.core.utils.TestUtils.longStringGenerator;
+import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
@@ -88,7 +88,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     void createCardWithLongQuestion() {
         // given
         CardRequest cardRequest = CardRequest.builder()
-                .question(longStringGenerator(266))
+                .question(stringGenerator(266))
                 .answer("answer")
                 .workbookId(1L)
                 .build();
@@ -134,7 +134,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // given
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
-                .answer(longStringGenerator(266))
+                .answer(stringGenerator(266))
                 .workbookId(1L)
                 .build();
 
@@ -258,7 +258,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     void updateCardWithLongQuestion() {
         // given
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
-                .question(longStringGenerator(266))
+                .question(stringGenerator(266))
                 .answer("answer")
                 .workbookId(1L)
                 .encounterCount(0)
@@ -311,7 +311,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // given
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
-                .answer(longStringGenerator(266))
+                .answer(stringGenerator(266))
                 .workbookId(1L)
                 .encounterCount(0)
                 .bookmark(true)

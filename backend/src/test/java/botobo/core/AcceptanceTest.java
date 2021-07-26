@@ -35,6 +35,7 @@ public class AcceptanceTest {
      * <로그인이 필요한 경우>
      * request()
      * .get(path, params)   http method type
+     * .queryParam(name, value)     optional
      * .auth()         default: false
      * .log()          default: false
      * .build();

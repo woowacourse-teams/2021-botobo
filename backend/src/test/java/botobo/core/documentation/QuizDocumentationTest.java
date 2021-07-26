@@ -96,7 +96,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         Long workbookId = 1L;
         given(quizService.createQuizFromWorkbook(workbookId)).willReturn(generateQuizResponses());
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
@@ -115,7 +114,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         Long workbookId = 100L;
         given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
@@ -134,7 +132,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         Long workbookId = 1L;
         given(quizService.createQuizFromWorkbook(workbookId)).willThrow(QuizEmptyException.class);
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()
@@ -153,7 +150,6 @@ public class QuizDocumentationTest extends DocumentationTest {
         String token = "botobo.access.token";
         Long workbookId = 1L;
         given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()

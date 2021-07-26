@@ -59,7 +59,6 @@ public class CardDocumentationTest extends DocumentationTest {
                 .nextQuiz(false)
                 .build();
         String token = "botobo.access.token";
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(cardService.createCard(any())).willReturn(response);
 
         // when, then
@@ -94,7 +93,6 @@ public class CardDocumentationTest extends DocumentationTest {
                 .nextQuiz(true)
                 .build();
         String token = "botobo.access.token";
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
         given(cardService.updateCard(anyLong(), any())).willReturn(response);
 
         // when, then
@@ -112,7 +110,6 @@ public class CardDocumentationTest extends DocumentationTest {
     void deleteCard() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(jwtTokenProvider.isValidToken(token)).willReturn(true);
 
         // when, then
         document()

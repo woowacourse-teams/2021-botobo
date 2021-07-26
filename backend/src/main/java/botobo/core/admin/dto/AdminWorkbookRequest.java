@@ -28,6 +28,7 @@ public class AdminWorkbookRequest {
     public Workbook toWorkbook() {
         return Workbook.builder()
                 .name(name)
+                .opened(true)
                 .isDeleted(false)
                 .opened(opened)
                 .build();

@@ -9,7 +9,10 @@ import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RequestBuilder {
     private static String accessToken;
@@ -45,12 +48,14 @@ public class RequestBuilder {
         private RequestSpecification requestSpecification;
         private boolean loginFlag;
         private boolean logFlag;
+        private final List<Map.Entry<String, String>> queryParams;
 
         public Options(RestAssuredRequest request) {
             this.request = request;
             this.requestSpecification = RestAssured.given();
             this.loginFlag = false;
             this.logFlag = false;
+            this.queryParams = new ArrayList<>();
         }
 
         public Options log() {
@@ -70,10 +75,18 @@ public class RequestBuilder {
             return this;
         }
 
+        public Options queryParam(String key, String value) {
+            this.queryParams.add(new AbstractMap.SimpleEntry<>(key, value));
+            return this;
+        }
+
         public HttpResponse build() {
             if (loginFlag) {
                 requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
             }
+            queryParams.forEach(entry -> {
+                requestSpecification.queryParam(entry.getKey(), entry.getValue());
+            });
             ValidatableResponse response = request.action(requestSpecification);
             if (logFlag) {
                 response = response.log().all();

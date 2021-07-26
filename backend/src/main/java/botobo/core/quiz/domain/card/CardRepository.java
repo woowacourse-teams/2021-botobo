@@ -14,4 +14,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("select c from Card c where c.workbook.id = :workbookId")
     List<Card> findCardsByWorkbookId(Long workbookId);
+
+    List<Card> findAllByWorkbookId(Long workbookId);
 }

@@ -7,7 +7,6 @@ import botobo.core.admin.dto.AdminWorkbookRequest;
 import botobo.core.admin.dto.AdminWorkbookResponse;
 import botobo.core.admin.ui.AdminController;
 import botobo.core.auth.application.AuthService;
-import botobo.core.auth.infrastructure.JwtTokenProvider;
 import botobo.core.quiz.exception.WorkbookNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
