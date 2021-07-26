@@ -1,7 +1,7 @@
 package botobo.core.utils;
 
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminWorkbookRequest;
+import botobo.core.dto.admin.AdminCardRequest;
+import botobo.core.dto.admin.AdminWorkbookRequest;
 
 public class Fixture {
 

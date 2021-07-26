@@ -1,12 +1,12 @@
 package botobo.core;
 
-import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.workbook.Workbook;
-import botobo.core.quiz.domain.workbook.WorkbookRepository;
-import botobo.core.user.domain.Role;
-import botobo.core.user.domain.User;
-import botobo.core.user.domain.UserRepository;
+import botobo.core.domain.card.Card;
+import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.user.Role;
+import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

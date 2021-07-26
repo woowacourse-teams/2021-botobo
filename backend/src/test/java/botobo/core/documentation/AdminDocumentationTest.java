@@ -1,13 +1,13 @@
 package botobo.core.documentation;
 
-import botobo.core.admin.application.AdminService;
-import botobo.core.admin.dto.AdminCardRequest;
-import botobo.core.admin.dto.AdminCardResponse;
-import botobo.core.admin.dto.AdminWorkbookRequest;
-import botobo.core.admin.dto.AdminWorkbookResponse;
-import botobo.core.admin.ui.AdminController;
-import botobo.core.auth.application.AuthService;
-import botobo.core.quiz.exception.WorkbookNotFoundException;
+import botobo.core.application.AdminService;
+import botobo.core.application.AuthService;
+import botobo.core.dto.admin.AdminCardRequest;
+import botobo.core.dto.admin.AdminCardResponse;
+import botobo.core.dto.admin.AdminWorkbookRequest;
+import botobo.core.dto.admin.AdminWorkbookResponse;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
+import botobo.core.ui.AdminController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

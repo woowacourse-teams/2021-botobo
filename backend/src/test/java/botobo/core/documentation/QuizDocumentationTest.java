@@ -1,13 +1,12 @@
 package botobo.core.documentation;
 
-import botobo.core.auth.application.AuthService;
-import botobo.core.auth.infrastructure.JwtTokenProvider;
-import botobo.core.quiz.application.QuizService;
-import botobo.core.quiz.dto.QuizRequest;
-import botobo.core.quiz.dto.QuizResponse;
-import botobo.core.quiz.exception.QuizEmptyException;
-import botobo.core.quiz.exception.WorkbookNotFoundException;
-import botobo.core.quiz.ui.QuizController;
+import botobo.core.application.AuthService;
+import botobo.core.application.QuizService;
+import botobo.core.dto.card.QuizRequest;
+import botobo.core.dto.card.QuizResponse;
+import botobo.core.exception.card.QuizEmptyException;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
+import botobo.core.ui.QuizController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

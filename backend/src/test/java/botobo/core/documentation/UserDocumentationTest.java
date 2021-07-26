@@ -1,12 +1,11 @@
 package botobo.core.documentation;
 
-import botobo.core.auth.application.AuthService;
-import botobo.core.auth.infrastructure.JwtTokenProvider;
-import botobo.core.user.application.UserService;
-import botobo.core.user.domain.AppUser;
-import botobo.core.user.domain.Role;
-import botobo.core.user.dto.UserResponse;
-import botobo.core.user.ui.UserController;
+import botobo.core.application.AuthService;
+import botobo.core.application.UserService;
+import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.Role;
+import botobo.core.dto.user.UserResponse;
+import botobo.core.ui.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

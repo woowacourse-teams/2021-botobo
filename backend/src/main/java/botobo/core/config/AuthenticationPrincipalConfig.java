@@ -1,9 +1,9 @@
 package botobo.core.config;
 
-import botobo.core.auth.application.AuthService;
-import botobo.core.auth.ui.AdminInterceptor;
-import botobo.core.auth.ui.AuthenticationPrincipalArgumentResolver;
-import botobo.core.auth.ui.AuthorizationInterceptor;
+import botobo.core.application.AuthService;
+import botobo.core.ui.auth.AdminInterceptor;
+import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
+import botobo.core.ui.auth.AuthorizationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

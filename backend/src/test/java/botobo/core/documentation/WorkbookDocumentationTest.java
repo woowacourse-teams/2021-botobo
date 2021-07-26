@@ -1,13 +1,13 @@
 package botobo.core.documentation;
 
-import botobo.core.auth.application.AuthService;
-import botobo.core.quiz.application.WorkbookService;
-import botobo.core.quiz.dto.CardSimpleResponse;
-import botobo.core.quiz.dto.workbook.WorkbookCardResponse;
-import botobo.core.quiz.dto.workbook.WorkbookResponse;
-import botobo.core.quiz.ui.WorkbookController;
-import botobo.core.user.domain.AppUser;
-import botobo.core.user.domain.Role;
+import botobo.core.application.AuthService;
+import botobo.core.application.WorkbookService;
+import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.Role;
+import botobo.core.dto.card.CardSimpleResponse;
+import botobo.core.dto.workbook.WorkbookCardResponse;
+import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
