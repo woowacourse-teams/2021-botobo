@@ -1,10 +1,12 @@
 package botobo.core.quiz.domain.workbook;
 
 import botobo.core.quiz.exception.WorkbookSearchFailureException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Objects;
 
+@EqualsAndHashCode
 @Getter
 public class SearchKeyword {
 
@@ -58,21 +60,5 @@ public class SearchKeyword {
 
     public boolean isNoKeyword() {
         return this == NO_SEARCH_KEYWORD;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SearchKeyword that = (SearchKeyword) o;
-        if (isNoKeywordValue(this.value) && isNoKeywordValue(this.value)) {
-            return true;
-        }
-        return Objects.equals(getValue(), that.getValue());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getValue());
     }
 }
