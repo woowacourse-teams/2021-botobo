@@ -40,9 +40,7 @@ public class QuizService {
 
     public List<QuizResponse> createQuizFromWorkbook(Long workbookId) {
         validateWorkbook(workbookId);
-        // TODO: 임시 수정
-//        final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookId(workbookId), DEFAULT_QUIZ_COUNT);
-        final Cards quiz = makeQuiz(cardRepository.findAllByWorkbookId(workbookId), DEFAULT_QUIZ_COUNT);
+        final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookId(workbookId), DEFAULT_QUIZ_COUNT);
         return QuizResponse.cardsOf(quiz);
     }
 

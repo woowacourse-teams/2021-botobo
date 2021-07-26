@@ -184,9 +184,7 @@ class QuizServiceTest {
         // given
         Long workbookId = 1L;
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
-        // TODO: 임시 수정
-//        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
-        given(cardRepository.findAllByWorkbookId(workbookId)).willReturn(cards);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
@@ -196,7 +194,7 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findAllByWorkbookId(any());
+                .findCardsByWorkbookId(any());
     }
 
     @Test
@@ -205,8 +203,7 @@ class QuizServiceTest {
         // given
         Long workbookId = 1L;
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
-        // TODO: 임시 수정
-        given(cardRepository.findAllByWorkbookId(workbookId)).willReturn(cards);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
         // when
         List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
@@ -219,7 +216,7 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findAllByWorkbookId(any());
+                .findCardsByWorkbookId(any());
     }
 
     @Test
@@ -261,8 +258,7 @@ class QuizServiceTest {
         Long workbookId = 1L;
         List<Card> emptyCards = new ArrayList<>();
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
-        // TODO: 임시 수정
-        given(cardRepository.findAllByWorkbookId(workbookId)).willReturn(emptyCards);
+        given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(emptyCards);
 
         // when
         assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
@@ -270,6 +266,6 @@ class QuizServiceTest {
 
         then(cardRepository)
                 .should(times(1))
-                .findAllByWorkbookId(any());
+                .findCardsByWorkbookId(any());
     }
 }
