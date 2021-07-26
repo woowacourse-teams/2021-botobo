@@ -1,25 +1,28 @@
 package botobo.core.quiz.domain.workbook;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @EqualsAndHashCode
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class WorkbookCriteria {
 
-    private SearchKeyword searchKeyword;
-    private AccessType accessType;
-    private OwnerType ownerType;
+    private SearchKeyword searchKeyword = SearchKeyword.from(null);
+    private AccessType accessType = AccessType.PUBLIC;
 
     @Builder
-    public WorkbookCriteria(String keyword, String access, String owner) {
-        this(SearchKeyword.from(keyword), AccessType.from(access), OwnerType.from(owner));
+    private WorkbookCriteria(SearchKeyword searchKeyword, AccessType accessType) {
+        if (Objects.nonNull(searchKeyword)) {
+            this.searchKeyword = searchKeyword;
+        }
+        if (Objects.nonNull(accessType)) {
+            this.accessType = accessType;
+        }
     }
 
     public boolean isNoSearchKeyword() {
@@ -36,10 +39,6 @@ public class WorkbookCriteria {
 
     public boolean isAllAccess() {
         return accessType.isAll();
-    }
-
-    public boolean isMineType() {
-        return ownerType.isMine();
     }
 
     public String getSearchKeywordValue() {
