@@ -13,13 +13,14 @@ interface Props {
   validators?: {
     [key: string]: (value: string) => never | void;
   };
-  onSubmit: () => void;
+  onSubmit: (values: Values) => void;
   children: React.ReactElement | React.ReactElement[];
 }
 
 interface FormContextType {
   values: Values;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   errorMessages: ErrorMessages;
 }
 
@@ -38,9 +39,15 @@ const FormProvider = ({
   const onChange: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const key = target.name;
     const value = target.value;
-    const validator = validators?.[key];
 
     setValues({ ...values, [key]: value });
+    setErrorMessages({ ...errorMessages, [key]: null });
+  };
+
+  const onBlur: React.FocusEventHandler<HTMLInputElement> = ({ target }) => {
+    const key = target.name;
+    const value = target.value;
+    const validator = validators?.[key];
 
     try {
       validator?.(value);
@@ -53,6 +60,14 @@ const FormProvider = ({
 
   const onSubmitForm: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+
+    try {
+      Object.keys(values).forEach((key) => validators?.[key](values[key]));
+    } catch (error) {
+      console.error(error);
+
+      return;
+    }
 
     const emptyInput = Object.keys(values).find((key) => values[key] === '');
 
@@ -72,11 +87,11 @@ const FormProvider = ({
       return;
     }
 
-    onSubmit();
+    onSubmit(values);
   };
 
   return (
-    <FormContext.Provider value={{ values, errorMessages, onChange }}>
+    <FormContext.Provider value={{ values, errorMessages, onChange, onBlur }}>
       <form onSubmit={onSubmitForm}>{children}</form>
     </FormContext.Provider>
   );

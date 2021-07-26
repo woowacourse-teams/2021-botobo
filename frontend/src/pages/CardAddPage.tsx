@@ -5,14 +5,15 @@ import React from 'react';
 import { Button, CardTextArea, PageHeader } from '../components';
 import { ROUTE } from '../constants';
 import { FormProvider } from '../contexts';
+import { useCards } from '../hooks';
 
 const CardAddPage = () => {
+  const { createCard } = useCards();
+
   return (
     <FormProvider
       initialValues={{ question: '', answer: '' }}
-      onSubmit={() => {
-        console.log('hi');
-      }}
+      onSubmit={({ question, answer }) => createCard(question, answer)}
     >
       <PageHeader title={ROUTE.CARD_ADD.TITLE} />
       <Container>

@@ -7,7 +7,10 @@ import EmptyStarIcon from '../assets/star-empty.svg';
 import { CardResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
-const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
+const QnACard = ({
+  question,
+  answer,
+}: Pick<CardResponse, 'question' | 'answer'>) => (
   <CardTemplate editable={true}>
     <Header>
       <BookmarkButton>

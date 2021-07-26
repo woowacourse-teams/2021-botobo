@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { userState } from './../recoil/userState';
-import { workbookState } from '../recoil';
+import { workbookIdState, workbookState } from '../recoil';
 import useSnackbar from './useSnackbar';
 
 const useMain = () => {
   const { data: workbooks, errorMessage } = useRecoilValue(workbookState);
   const userInfo = useRecoilValue(userState);
   const showSnackbar = useSnackbar();
+  const setWorkbookId = useSetRecoilState(workbookIdState);
 
   useEffect(() => {
     if (errorMessage) {
@@ -16,7 +17,7 @@ const useMain = () => {
     }
   }, [errorMessage]);
 
-  return { workbooks, userInfo };
+  return { workbooks, userInfo, setWorkbookId };
 };
 
 export default useMain;

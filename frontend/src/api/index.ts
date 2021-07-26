@@ -10,6 +10,12 @@ import {
 } from '../types';
 import { getLocalStorage } from '../utils';
 
+interface PostCardAsync {
+  question: string;
+  answer: string;
+  workbookId: number;
+}
+
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
 });
@@ -60,4 +66,16 @@ export const getUserInfoAsync = async () => {
   const { data } = await request.get<UserInfoResponse>('/users/me');
 
   return data;
+};
+
+export const postCardAsync = async ({
+  workbookId,
+  question,
+  answer,
+}: PostCardAsync) => {
+  await request.post('/cards', {
+    workbookId,
+    question,
+    answer,
+  });
 };

@@ -28,7 +28,7 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards, workbookId } = useCards();
+  const { workbookName, cards } = useCards();
   const { routeCardAdd } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
@@ -49,11 +49,7 @@ const CardsPage = () => {
           </Button>
         ))}
       </Filter>
-      <Button
-        size="full"
-        backgroundColor="blue"
-        onClick={() => routeCardAdd(workbookId)}
-      >
+      <Button size="full" backgroundColor="blue" onClick={routeCardAdd}>
         새로운 카드 추가하기
       </Button>
       <CardList>

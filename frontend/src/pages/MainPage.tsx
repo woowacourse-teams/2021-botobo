@@ -4,11 +4,13 @@ import React from 'react';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, QuizStarter, WorkbookList } from '../components';
+import { STORAGE_KEY } from '../constants';
 import { useMain, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
-  const { workbooks, userInfo } = useMain();
+  const { workbooks, userInfo, setWorkbookId } = useMain();
   const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
 
   return (
@@ -30,7 +32,11 @@ const MainPage = () => {
         </WorkbookHeader>
         <WorkbookList
           workbooks={workbooks}
-          onClickWorkbook={(workbookId) => routeCards(workbookId)}
+          onClickWorkbook={async (id) => {
+            await setWorkbookId(id);
+            setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
+            routeCards();
+          }}
           editable={true}
         />
       </section>
@@ -52,7 +58,7 @@ const Greeting = styled.div`
 const Banner = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   cursor: pointer;
-  height: 4rem;
+  height: 3rem;
   margin-bottom: 1rem;
   padding: 0 1rem;
 
@@ -66,18 +72,16 @@ const Banner = styled.div`
 
 const BannerText = styled.span`
   word-spacing: -2px;
-
-  ${({ theme }) => css`
-    font-size: ${theme.fontSize.medium};
-  `}
 `;
 
 const StyledButton = styled(Button)`
-  width: 2rem;
-  height: 2rem;
+  ${Flex({ justify: 'center', items: 'center' })}
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
 
   & > svg {
-    margin-left: 0.07rem;
+    margin-left: 0.1rem;
   }
 `;
 

@@ -23,9 +23,12 @@ export interface CardResponse {
   id: number;
   question: string;
   answer: string;
+  bookmark: boolean;
+  encounterCount: number;
 }
 
 export interface CardsResponse {
+  workbookId: number;
   workbookName: string;
   cards: CardResponse[];
 }

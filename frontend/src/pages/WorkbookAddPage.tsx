@@ -32,7 +32,12 @@ const WorkbookAddPage = () => {
         rightContent={<SubmitButton>확인</SubmitButton>}
       />
       <Container>
-        <Input name="name" placeholder="문제집 이름" focusColor="gray" />
+        <Input
+          name="name"
+          placeholder="문제집 이름"
+          focusColor="gray"
+          maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+        />
         <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
         <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
           <AccessSelector id="access-select">전체 공개</AccessSelector>

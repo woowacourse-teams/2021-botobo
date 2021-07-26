@@ -1,25 +1,34 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { cardState } from './../recoil/cardState';
+import { postCardAsync } from '../api';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useCards = () => {
-  const { routeMain } = useRouter();
-  const { search } = useLocation();
-  const workbookId = new URLSearchParams(search).get('id');
+  const { routeMain, routeCards } = useRouter();
   const showSnackbar = useSnackbar();
-
-  if (!workbookId) {
-    routeMain();
-  }
-
   const {
-    data: { workbookName, cards },
+    data: { workbookId, workbookName, cards },
     errorMessage,
-  } = useRecoilValue(cardState(Number(workbookId)));
+  } = useRecoilValue(cardState);
+
+  const createCard = async (question: string, answer: string) => {
+    try {
+      await postCardAsync({ workbookId, question, answer });
+      showSnackbar({ message: '1장의 카드가 추가되었어요.' });
+      routeCards();
+    } catch (error) {
+      showSnackbar({ message: '카드를 생성하지 못했어요.', type: 'error' });
+    }
+  };
+
+  useEffect(() => {
+    if (workbookId === -1) {
+      routeMain();
+    }
+  }, []);
 
   useEffect(() => {
     if (errorMessage) {
@@ -27,7 +36,7 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { workbookName, cards, workbookId: Number(workbookId) };
+  return { workbookName, cards, createCard };
 };
 
 export default useCards;
