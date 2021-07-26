@@ -183,7 +183,7 @@ class QuizServiceTest {
     void createQuizFromWorkbook() {
         // given
         Long workbookId = 1L;
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
         // when
@@ -202,7 +202,7 @@ class QuizServiceTest {
     void createQuizFromWorkbookNotIncrementEncounterCount() {
         // given
         Long workbookId = 1L;
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
         // when
@@ -223,8 +223,24 @@ class QuizServiceTest {
     @DisplayName("문제집에서 바로 풀기 - 실패, 문제집 아이디가 존재하지 않음.")
     void createQuizFromWorkbookFailed() {
         // given
+        Long workbookId = 100L;
+        given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+                .isInstanceOf(WorkbookNotFoundException.class);
+
+        then(cardRepository)
+                .should(times(0))
+                .findCardsByWorkbookId(any());
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집이 Public 아님.")
+    void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() {
+        // given
         Long workbookId = 1L;
-        given(workbookRepository.existsById(any())).willReturn(false);
+        given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(false);
 
         // when
         assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
@@ -241,7 +257,7 @@ class QuizServiceTest {
         // given
         Long workbookId = 1L;
         List<Card> emptyCards = new ArrayList<>();
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(emptyCards);
 
         // when

@@ -39,7 +39,7 @@ public class QuizService {
     }
 
     public List<QuizResponse> createQuizFromWorkbook(Long workbookId) {
-        validateWorkbookId(workbookId);
+        validateWorkbook(workbookId);
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookId(workbookId), DEFAULT_QUIZ_COUNT);
         return QuizResponse.cardsOf(quiz);
     }
@@ -58,6 +58,12 @@ public class QuizService {
 
     private void validateWorkbookId(Long workbookId) {
         if (!workbookRepository.existsById(workbookId)) {
+            throw new WorkbookNotFoundException();
+        }
+    }
+
+    private void validateWorkbook(Long workbookId) {
+        if (!workbookRepository.existsByIdAndOpenedTrue(workbookId)) {
             throw new WorkbookNotFoundException();
         }
     }
