@@ -30,7 +30,7 @@ class WorkbookTest {
         // then
         assertThat(workbook.getName()).isEqualTo(workbookName);
         assertFalse(workbook.isDeleted());
-        assertFalse(workbook.isPublic());
+        assertFalse(workbook.isOpened());
         assertNotNull(workbook.getCards());
         assertThat(workbook.getCards().getCards()).hasSize(0);
         assertNull(workbook.getUser());

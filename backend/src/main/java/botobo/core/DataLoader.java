@@ -108,7 +108,7 @@ public class DataLoader implements CommandLineRunner {
         Workbook workbook = Workbook.builder()
                 .name(workbookName)
                 .user(this.adminUser)
-                .isPublic(true)
+                .opened(true)
                 .build();
         return workbookRepository.save(workbook);
     }

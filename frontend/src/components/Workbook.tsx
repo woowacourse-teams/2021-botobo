@@ -16,7 +16,7 @@ interface Props extends PickedWorkbook {
 const Workbook = ({ name, cardCount, isChecked, editable, onClick }: Props) => (
   <CardTemplate editable={editable} isChecked={isChecked} onClick={onClick}>
     <Name>{name}</Name>
-    <CardCount>{cardCount}개의 문제</CardCount>
+    <CardCount>{cardCount}개의 카드</CardCount>
   </CardTemplate>
 );
 
