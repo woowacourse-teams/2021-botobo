@@ -21,11 +21,11 @@ interface Props {
 const QnACard = ({ cardInfo, deleteCard, toggleBookmark }: Props) => {
   const { routeCardEdit } = useRouter();
   const setCardId = useSetRecoilState(cardIdState);
-  const [isBookmark, setIsBookmark] = useState(false);
+  const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
 
   const onClickBookmark = () => {
     setIsBookmark((prevState) => !prevState);
-    debounce(() => toggleBookmark({ ...cardInfo, bookmark: isBookmark }), 500);
+    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 500);
   };
 
   return (
