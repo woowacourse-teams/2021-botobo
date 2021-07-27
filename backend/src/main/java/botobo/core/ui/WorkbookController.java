@@ -32,9 +32,7 @@ public class WorkbookController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<WorkbookResponse>> findPublicWorkbooksBySearch(
-            @RequestParam(required = false) String search) {
-
+    public ResponseEntity<List<WorkbookResponse>> findPublicWorkbooksBySearch(@RequestParam String search) {
         return ResponseEntity.ok(
                 workbookService.findPublicWorkbooksBySearch(search)
         );
