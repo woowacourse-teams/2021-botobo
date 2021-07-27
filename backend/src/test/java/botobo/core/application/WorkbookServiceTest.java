@@ -3,8 +3,10 @@ package botobo.core.application;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +17,11 @@ import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -27,6 +32,9 @@ class WorkbookServiceTest {
 
     @Mock
     private WorkbookRepository workbookRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private WorkbookService workbookService;
@@ -45,6 +53,42 @@ class WorkbookServiceTest {
                 Workbook.builder().id(3L).name("자바스크립트").opened(true).user(normalUser).build(),
                 Workbook.builder().id(4L).name("네트워크").opened(true).user(normalUser).build()
         );
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 생성 - 성공")
+    void createWorkbookByUser() {
+        // given
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .build();
+
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        given(userRepository.findById(any())).willReturn(Optional.of(normalUser));
+        given(workbookRepository.save(any())).willReturn(workbook);
+
+        // when
+        WorkbookResponse workbookResponse = workbookService.createWorkbookByUser(workbookRequest, normalUser.toAppUser());
+
+        //then
+        assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
+        assertThat(workbookResponse.getName()).isEqualTo(workbook.getName());
+        assertThat(workbookResponse.isOpened()).isEqualTo(workbook.isOpened());
+        assertThat(workbookResponse.getAuthor()).isEqualTo(workbook.author());
+        assertThat(workbookResponse.getCardCount()).isEqualTo(workbook.cardCount());
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
+        then(workbookRepository).should(times(1))
+                .save(any());
     }
 
     @Test

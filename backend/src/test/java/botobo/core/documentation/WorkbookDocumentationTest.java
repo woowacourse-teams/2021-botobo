@@ -2,8 +2,10 @@ package botobo.core.documentation;
 
 import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
+import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +35,33 @@ public class WorkbookDocumentationTest extends DocumentationTest {
 
     @MockBean
     private AuthService authService;
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 성공")
+    void createWorkbookByUser() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("Java 문제집")
+                .opened(true)
+                .build();
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집")
+                .opened(true)
+                .cardCount(0)
+                .build();
+        given(workbookService.createWorkbookByUser(any(), any())).willReturn(workbookResponse);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/workbooks", workbookRequest)
+                .auth(token)
+                .build()
+                .status(status().isCreated())
+                .identifier("workbooks-post-success");
+    }
 
     @Test
     @DisplayName("문제집 전체 조회 - 성공")

@@ -1,5 +1,11 @@
 == 문제집 API
 
+=== 문제집 추가 하기
+==== 요청
+include::{snippets}/workbooks-post-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-post-success/http-response.adoc[]
+
 === 문제집 전체 보기
 ==== 요청
 include::{snippets}/workbooks-get-success/http-request.adoc[]
