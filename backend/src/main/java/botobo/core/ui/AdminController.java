@@ -27,7 +27,7 @@ public class AdminController {
     }
 
     @PostMapping("/workbooks")
-    public ResponseEntity<AdminWorkbookResponse> createCategory(@Valid @RequestBody AdminWorkbookRequest adminWorkbookRequest,
+    public ResponseEntity<AdminWorkbookResponse> createWorkbook(@Valid @RequestBody AdminWorkbookRequest adminWorkbookRequest,
                                                                 @AuthenticationPrincipal AppUser appUser) {
         AdminWorkbookResponse adminWorkbookResponse = adminService.createWorkbook(adminWorkbookRequest, appUser);
         return ResponseEntity.created(URI.create("/api/admin/workbooks/" + adminWorkbookResponse.getId())).body(adminWorkbookResponse);

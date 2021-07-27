@@ -50,7 +50,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
         for (AdminCardRequest adminCardRequest : adminCardRequests) {
-            System.out.println(jwtTokenProvider.createToken(user.getId()));
             request()
                     .post("/api/admin/cards", adminCardRequest)
                     .auth(jwtTokenProvider.createToken(user.getId()))

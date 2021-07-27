@@ -111,7 +111,7 @@ public class WorkbookRepositoryTest {
         List<Workbook> workbooks = workbookRepository.findAllByUserId(user.getId());
 
         //then
-        assertThat(workbooks.size()).isEqualTo(2);
-        assertThat(workbooks).containsExactly(workbook2, workbook1);
+        assertThat(workbooks).hasSize(2)
+            .containsExactly(workbook2, workbook1);
     }
 }
