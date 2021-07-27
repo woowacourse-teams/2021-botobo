@@ -79,15 +79,14 @@ class SearchKeywordTest {
                 .hasMessageContaining("금지어를 입력했습니다");
     }
 
-    @NullAndEmptySource
-    @ValueSource(strings = {" ", "    ", "\t", "\n", "\r\n", "\r"})
-    @ParameterizedTest
-    @DisplayName("null, 빈 문자열, 공백 문자열은 캐싱 된 NO_SEARCH_KEYWORD 객체가 생성된다.")
-    void createWithNoKeyword(String value) {
+    @Test
+    @DisplayName("null로 생성시 캐싱 된 NO_SEARCH_KEYWORD 객체가 생성된다.")
+    void createWithNoKeyword() {
         // given
         SearchKeyword noSearchKeyword = SearchKeyword.from(null);
 
         // when, then
-        assertThat(SearchKeyword.from(value)).isSameAs(noSearchKeyword);
+        assertThat(noSearchKeyword.isNoKeyword()).isTrue();
+        assertThat(noSearchKeyword).isSameAs(SearchKeyword.from(null));
     }
 }

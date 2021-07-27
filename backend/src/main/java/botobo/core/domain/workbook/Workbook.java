@@ -85,6 +85,14 @@ public class Workbook extends BaseEntity {
         return !isOpened();
     }
 
+    public boolean ownedByAdmin() {
+        return user.isAdmin();
+    }
+
+    public boolean ownedByUser() {
+        return user.isUser();
+    }
+
     public int cardCount() {
         return cards.counts();
     }

@@ -11,7 +11,7 @@ import java.util.Objects;
 public class SearchKeyword {
 
     private static final int KEYWORD_MAX_LENGTH = 30;
-    private static final String NO_KEYWORD_VALUE = "";
+    private static final String NO_KEYWORD_VALUE = "IMPOSSIBLE   KEYWORD";
 
     private static final SearchKeyword NO_SEARCH_KEYWORD = new SearchKeyword(NO_KEYWORD_VALUE);
 
@@ -47,14 +47,10 @@ public class SearchKeyword {
     }
 
     public static SearchKeyword from(String value) {
-        if (isNoKeywordValue(value)) {
+        if (Objects.isNull(value)) {
             return NO_SEARCH_KEYWORD;
         }
         return new SearchKeyword(value);
-    }
-
-    private static boolean isNoKeywordValue(String value) {
-        return Objects.isNull(value) || value.isBlank();
     }
 
     public boolean isNoKeyword() {

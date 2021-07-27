@@ -34,8 +34,9 @@ public class WorkbookFinder {
     }
 
     private Predicate<Workbook> filterSearchKeyword(WorkbookCriteria workbookCriteria) {
-        return workbook -> (workbookCriteria.isNoSearchKeyword() ||
-                (workbook.containsWord(workbookCriteria.getSearchKeywordValue()))
-        );
+        final String keyword = workbookCriteria.getSearchKeywordValue();
+        Predicate<Workbook> noKeywordCase = workbook -> workbookCriteria.isNoSearchKeyword() && workbook.ownedByAdmin();
+        Predicate<Workbook> keywordCase = workbook -> !keyword.isEmpty() && workbook.containsWord(keyword);
+        return noKeywordCase.or(keywordCase);
     }
 }

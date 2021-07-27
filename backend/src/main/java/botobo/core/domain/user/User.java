@@ -61,4 +61,8 @@ public class User extends BaseEntity {
     public boolean isAdmin() {
         return role.isAdmin();
     }
+
+    public boolean isUser() {
+        return role.isUser();
+    }
 }
