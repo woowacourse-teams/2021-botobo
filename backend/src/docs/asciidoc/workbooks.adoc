@@ -23,9 +23,3 @@ include::{snippets}/workbooks-cards-get-success/http-response.adoc[]
 include::{snippets}/workbooks-public-search-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-public-search-get-success/http-response.adoc[]
-
-=== 검색어 없이 공유 문제집 검색
-==== 요청
-include::{snippets}/workbooks-public-search-dummy-get-success/http-request.adoc[]
-==== 응답
-include::{snippets}/workbooks-public-search-dummy-get-success/http-response.adoc[]

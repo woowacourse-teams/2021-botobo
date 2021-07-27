@@ -29,7 +29,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
 
     @Test
     @DisplayName("유저 문제집 전체 조회 - 성공")
-    void findAllWorkbooks() throws Exception {
+    void findWorkbooksByUser() throws Exception {
         // given
         String token = "botobo.access.token";
         given(workbookService.findWorkbooksByUser(any())).willReturn(generateUserWorkbookResponse());
@@ -94,44 +94,24 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .identifier("workbooks-public-search-get-success");
     }
 
-    @Test
-    @DisplayName("키워드 없이 공유 문제집 검색 - 성공")
-    void findPublicWorkbooksByNoKeywordSearch() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicDummyWorkbookResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/workbooks/public")
-                .auth(token)
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-public-search-dummy-get-success");
-    }
-
     private List<WorkbookResponse> generateUserWorkbookResponse() {
         return Arrays.asList(
                 WorkbookResponse.builder()
                         .id(1L)
                         .name("피케이의 자바 문제 20선")
                         .cardCount(20)
-                        .author("피케이")
                         .opened(false)
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
                         .name("피케이의 비올 때 푸는 Database 문제")
                         .cardCount(15)
-                        .author("피케이")
                         .opened(true)
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
-                        .author("피케이")
                         .opened(true)
                         .build()
         );
@@ -180,33 +160,12 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
                         .author("피케이")
-                        .opened(true)
                         .build(),
                 WorkbookResponse.builder()
                         .id(4L)
                         .name("오즈의 Network 정복 최종판")
                         .cardCount(20)
                         .author("오즈")
-                        .opened(true)
-                        .build()
-        );
-    }
-
-    private List<WorkbookResponse> generatePublicDummyWorkbookResponse() {
-        return Arrays.asList(
-                WorkbookResponse.builder()
-                        .id(1L)
-                        .name("자바 기본편")
-                        .cardCount(20)
-                        .author("보또보")
-                        .opened(true)
-                        .build(),
-                WorkbookResponse.builder()
-                        .id(2L)
-                        .name("자바 심화편")
-                        .cardCount(20)
-                        .author("보또보")
-                        .opened(true)
                         .build()
         );
     }
