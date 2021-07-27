@@ -69,6 +69,14 @@ public class Workbook extends BaseEntity {
         }
     }
 
+    private void changeUser(User user) {
+        if (Objects.nonNull(this.user)) {
+            this.user.getWorkbooks().remove(this);
+        }
+        this.user = user;
+        user.getWorkbooks().add(this);
+    }
+
     public String author() {
         if (Objects.isNull(user)) {
             return "존재하지 않는 유저";

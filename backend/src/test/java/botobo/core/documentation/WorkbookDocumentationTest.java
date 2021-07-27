@@ -2,7 +2,6 @@ package botobo.core.documentation;
 
 import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
-import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -38,24 +37,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     private AuthService authService;
 
     @Test
-    @DisplayName("비회원 문제집 조회 - 성공")
-    void findWorkbooksByAnonymous() throws Exception {
-        // given
-        given(workbookService.findWorkbooksByUser(any()))
-                .willReturn(Collections.emptyList());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/workbooks")
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-get-anonymous-success");
-    }
-
-    @Test
-    @DisplayName("유저 문제집 조회 - 성공")
-    void findWorkbooks() throws Exception {
+    @DisplayName("유저 문제집 전체 조회 - 성공")
+    void findAllWorkbooks() throws Exception {
         // given
         String token = "botobo.access.token";
         given(workbookService.findWorkbooksByUser(any())).willReturn(generateUserWorkbookResponse());
@@ -68,6 +51,21 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-success");
+    }
+
+    @Test
+    @DisplayName("비회원 문제집 조회 - 성공")
+    void findWorkbooksByAnonymous() throws Exception {
+        // given
+        given(workbookService.findWorkbooksByUser(any())).willReturn(Collections.emptyList());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks")
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-get-anonymous-success");
     }
 
     @Test

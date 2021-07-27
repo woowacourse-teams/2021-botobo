@@ -1,5 +1,6 @@
 package botobo.core.dto.admin;
 
+import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,13 @@ public class AdminWorkbookRequest {
         this.opened = isPublic;
     }
 
-    public Workbook toWorkbook() {
+    public Workbook toWorkbook(User user) {
         return Workbook.builder()
                 .name(name)
                 .opened(true)
                 .deleted(false)
                 .opened(opened)
+                .user(user)
                 .build();
     }
 }

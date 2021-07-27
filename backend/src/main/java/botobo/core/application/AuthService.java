@@ -47,10 +47,10 @@ public class AuthService {
             return AppUser.anonymous();
         }
         Long userId = jwtTokenProvider.getIdFromPayLoad(credentials);
-        return AppUser.builder()
-                .id(userId)
-                .role(Role.USER)
-                .build();
+        if (userRepository.existsByIdAndRole(userId, Role.ADMIN)) {
+            return AppUser.admin(userId);
+        }
+        return AppUser.user(userId);
     }
 
     public void validateAdmin(String credentials) {
