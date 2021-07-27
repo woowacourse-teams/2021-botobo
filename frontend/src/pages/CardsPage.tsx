@@ -28,7 +28,7 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards, toggleBookmark } = useCards();
+  const { workbookName, cards, toggleBookmark, updateCardInfo } = useCards();
   const { routeCardAdd } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
@@ -43,7 +43,12 @@ const CardsPage = () => {
             shape="round"
             backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
             inversion={true}
-            onClick={() => setCurrentFilterId(id)}
+            onClick={() => {
+              if (id === currentFilterId) return;
+
+              setCurrentFilterId(id);
+              updateCardInfo();
+            }}
           >
             {name}
           </Button>

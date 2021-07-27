@@ -60,7 +60,14 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { workbookName, cards, createCard, editCard, toggleBookmark };
+  return {
+    workbookName,
+    cards,
+    createCard,
+    editCard,
+    toggleBookmark,
+    updateCardInfo,
+  };
 };
 
 export default useCards;
