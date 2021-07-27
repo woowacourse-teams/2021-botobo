@@ -20,7 +20,7 @@ public class WorkbookCardResponse {
     private List<CardSimpleResponse> cards;
 
     public static WorkbookCardResponse of(Workbook workbook) {
-        List<CardSimpleResponse> cardSimpleResponses = CardSimpleResponse.listOf(workbook.getCardsAsList());
+        List<CardSimpleResponse> cardSimpleResponses = CardSimpleResponse.listOf(workbook.getCardsOrderByCreatedAt());
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())

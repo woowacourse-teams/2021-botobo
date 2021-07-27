@@ -9,7 +9,9 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +27,14 @@ public class Cards {
 
     public void shuffle() {
         Collections.shuffle(cards);
+    }
+
+    public void orderByCreatedAtDesc() {
+        Collections.sort(cards, (first, second) -> {
+            if (Objects.isNull(first.getCreatedAt()) || Objects.isNull(second.getCreatedAt()))
+                return 0;
+            return second.getCreatedAt().compareTo(first.getCreatedAt());
+        });
     }
 
     public void addCard(Card card) {
@@ -66,5 +76,9 @@ public class Cards {
 
     private void cancelNextQuiz() {
         cards.forEach(Card::cancelNextQuiz);
+    }
+
+    public Stream<Card> stream() {
+        return cards.stream();
     }
 }
