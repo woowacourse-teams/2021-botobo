@@ -1,25 +1,70 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
+import { deleteCardAsync, putCardAsync } from './../api/index';
 import { cardState } from './../recoil/cardState';
+import { CardResponse } from './../types/index';
+import { postCardAsync } from '../api';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useCards = () => {
-  const { routeMain } = useRouter();
-  const { search } = useLocation();
-  const workbookId = new URLSearchParams(search).get('id');
+  const { routeMain, routeCards } = useRouter();
   const showSnackbar = useSnackbar();
-
-  if (!workbookId) {
-    routeMain();
-  }
-
   const {
-    data: { workbookName, cards },
+    data: { workbookId, workbookName, cards },
     errorMessage,
-  } = useRecoilValue(cardState(Number(workbookId)));
+  } = useRecoilValue(cardState);
+  const updateCardInfo = useResetRecoilState(cardState);
+
+  const createCard = async (question: string, answer: string) => {
+    try {
+      await postCardAsync({ workbookId, question, answer });
+      updateCardInfo();
+      showSnackbar({ message: '1장의 카드가 추가되었어요.' });
+      routeCards();
+    } catch (error) {
+      console.error(error);
+      showSnackbar({ message: '카드를 생성하지 못했어요.', type: 'error' });
+    }
+  };
+
+  const editCard = async (cardInfo: CardResponse) => {
+    try {
+      await putCardAsync(cardInfo);
+      updateCardInfo();
+      showSnackbar({ message: '1장의 카드가 수정되었어요.' });
+      routeCards();
+    } catch (error) {
+      console.error(error);
+      showSnackbar({ message: '카드를 수정하지 못했어요.', type: 'error' });
+    }
+  };
+
+  const deleteCard = async (id: number) => {
+    try {
+      await deleteCardAsync(id);
+      updateCardInfo();
+      showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
+    } catch (error) {
+      console.error(error);
+      showSnackbar({ message: '카드를 삭제하지 못했어요.', type: 'error' });
+    }
+  };
+
+  const toggleBookmark = async (cardInfo: CardResponse) => {
+    try {
+      await putCardAsync(cardInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (workbookId === -1) {
+      routeMain();
+    }
+  }, []);
 
   useEffect(() => {
     if (errorMessage) {
@@ -27,7 +72,15 @@ const useCards = () => {
     }
   }, [errorMessage]);
 
-  return { workbookName, cards, workbookId: Number(workbookId) };
+  return {
+    workbookName,
+    cards,
+    createCard,
+    editCard,
+    deleteCard,
+    toggleBookmark,
+    updateCardInfo,
+  };
 };
 
 export default useCards;

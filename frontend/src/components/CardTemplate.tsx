@@ -6,6 +6,8 @@ interface Props {
   editable?: boolean;
   isChecked?: boolean;
   className?: string;
+  onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
+  onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   children: React.ReactElement | React.ReactElement[];
 }
@@ -18,6 +20,8 @@ const CardTemplate = ({
   editable = false,
   isChecked = false,
   className,
+  onClickEditButton,
+  onClickDeleteButton,
   onClick,
   children,
 }: Props) => (
@@ -25,8 +29,8 @@ const CardTemplate = ({
     {children}
     {editable && (
       <Footer>
-        <button>수정</button>
-        <button>삭제</button>
+        <button onClick={onClickEditButton}>수정</button>
+        <button onClick={onClickDeleteButton}>삭제</button>
       </Footer>
     )}
   </Container>

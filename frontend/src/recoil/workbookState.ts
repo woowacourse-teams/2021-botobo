@@ -1,7 +1,9 @@
 import { atom, selector } from 'recoil';
 
 import { getWorkbooksAsync } from '../api';
+import { STORAGE_KEY } from '../constants';
 import { WorkbookResponse } from '../types';
+import { getSessionStorage } from '../utils';
 import { userState } from './userState';
 
 interface WorkbookState {
@@ -10,6 +12,11 @@ interface WorkbookState {
 }
 
 const workbookInitialState = <never[]>[];
+
+export const workbookIdState = atom<number>({
+  key: 'workbookIdState',
+  default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,
+});
 
 export const workbookState = atom<WorkbookState>({
   key: 'workbookState',

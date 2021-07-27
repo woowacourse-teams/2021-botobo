@@ -22,7 +22,7 @@ const PageHeader = ({ title, rightContent, sticky = false }: Props) => {
   return (
     <StyledHeader sticky={sticky}>
       <LeftContent>
-        <PageBackButton onClick={routePrevPage}>
+        <PageBackButton type="button" onClick={routePrevPage}>
           <BackIcon width="1.5rem" height="1.5rem" />
         </PageBackButton>
         <Title>{title}</Title>

@@ -3,16 +3,24 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Button, CardTextArea, PageHeader } from '../components';
-import { ROUTE } from '../constants';
+import { CARD_TEXT_MAX_LENGTH, ROUTE } from '../constants';
 import { FormProvider } from '../contexts';
+import { useCards } from '../hooks';
+
+const validateCardText = (value: string) => {
+  if (value.length > CARD_TEXT_MAX_LENGTH) {
+    throw new Error(`본문 내용은 ${CARD_TEXT_MAX_LENGTH}자 이하여야 합니다.`);
+  }
+};
 
 const CardAddPage = () => {
+  const { createCard } = useCards();
+
   return (
     <FormProvider
       initialValues={{ question: '', answer: '' }}
-      onSubmit={() => {
-        console.log('hi');
-      }}
+      validators={{ question: validateCardText, answer: validateCardText }}
+      onSubmit={({ question, answer }) => createCard(question, answer)}
     >
       <PageHeader title={ROUTE.CARD_ADD.TITLE} />
       <Container>
