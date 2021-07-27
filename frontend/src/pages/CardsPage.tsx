@@ -2,8 +2,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import { Button, QnACard } from '../components';
-import { useCards, useRouter } from '../hooks';
+import { Button, CardAddForm, QnACard } from '../components';
+import { useCards } from '../hooks';
+import useModal from '../hooks/useModal';
 import { CardResponse } from '../types';
 
 interface Filter {
@@ -28,10 +29,16 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards, updateCardInfo, deleteCard, toggleBookmark } =
-    useCards();
-  const { routeCardAdd } = useRouter();
+  const {
+    workbookName,
+    cards,
+    createCard,
+    updateCardInfo,
+    deleteCard,
+    toggleBookmark,
+  } = useCards();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
+  const { openModal } = useModal();
 
   return (
     <Container>
@@ -55,7 +62,17 @@ const CardsPage = () => {
           </Button>
         ))}
       </Filter>
-      <Button size="full" backgroundColor="blue" onClick={routeCardAdd}>
+      <Button
+        size="full"
+        backgroundColor="blue"
+        onClick={() =>
+          openModal({
+            content: <CardAddForm onSubmit={createCard} />,
+            title: workbookName,
+            type: 'full',
+          })
+        }
+      >
         새로운 카드 추가하기
       </Button>
       <CardList>

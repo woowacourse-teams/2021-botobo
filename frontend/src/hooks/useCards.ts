@@ -5,6 +5,7 @@ import { deleteCardAsync, putCardAsync } from './../api/index';
 import { cardState } from './../recoil/cardState';
 import { CardResponse } from './../types/index';
 import { postCardAsync } from '../api';
+import useModal from './useModal';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -16,13 +17,14 @@ const useCards = () => {
     errorMessage,
   } = useRecoilValue(cardState);
   const updateCardInfo = useResetRecoilState(cardState);
+  const { closeModal } = useModal();
 
   const createCard = async (question: string, answer: string) => {
     try {
       await postCardAsync({ workbookId, question, answer });
       updateCardInfo();
+      closeModal();
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
-      routeCards();
     } catch (error) {
       console.error(error);
       showSnackbar({ message: '카드를 생성하지 못했어요.', type: 'error' });

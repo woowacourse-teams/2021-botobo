@@ -11,7 +11,6 @@ import { useRecoilValue } from 'recoil';
 import { MainHeader, PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
-  CardAddPage,
   CardEditPage,
   CardsLoadable,
   CardsPage,
@@ -79,9 +78,6 @@ const Router = () => (
           <CardsPage />
         </Suspense>
       </Route>
-      <PrivateRoute exact path={ROUTE.CARD_ADD.PATH}>
-        <CardAddPage />
-      </PrivateRoute>
       <PrivateRoute exact path={ROUTE.CARD_EDIT.PATH}>
         <CardEditPage />
       </PrivateRoute>

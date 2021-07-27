@@ -7,7 +7,7 @@ export { default as QuizPage } from './QuizPage';
 export { default as QuizResultPage } from './QuizResultPage';
 export { default as CardsLoadable } from './CardsLoadable';
 export { default as CardsPage } from './CardsPage';
-export { default as CardAddPage } from './CardAddPage';
+export { default as CardAddPage } from '../components/CardAddForm';
 export { default as CardEditPage } from './CardEditPage';
 export { default as GithubCallbackPage } from './GithubCallbackPage';
 export { default as PublicWorkbookPage } from './PublicWorkbookPage';

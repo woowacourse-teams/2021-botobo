@@ -78,7 +78,7 @@ const Text = styled.textarea`
   border: none;
   outline: none;
   resize: none;
-  height: 11rem;
+  height: 12rem;
   overflow-y: auto;
 
   ${({ theme }) => css`

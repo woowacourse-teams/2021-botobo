@@ -9,16 +9,16 @@ import Router from './Router';
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <ModalProvider>
-      <SnackbarProvider>
-        <RecoilRoot>
-          <GlobalStyle />
-          <Suspense fallback={<div>loading</div>}>
+    <RecoilRoot>
+      <Suspense fallback={<div>loading</div>}>
+        <SnackbarProvider>
+          <ModalProvider>
+            <GlobalStyle />
             <Router />
-          </Suspense>
-        </RecoilRoot>
-      </SnackbarProvider>
-    </ModalProvider>
+          </ModalProvider>
+        </SnackbarProvider>
+      </Suspense>
+    </RecoilRoot>
   </ThemeProvider>
 );
 
