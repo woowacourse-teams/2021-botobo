@@ -5,11 +5,13 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +32,8 @@ public class WorkbookController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkbookResponse> createWorkbookByUser(@RequestBody @Valid WorkbookRequest workbookRequest,
-                                                                 @AuthenticationPrincipal AppUser appUser) {
+    public ResponseEntity<WorkbookResponse> createWorkbook(@RequestBody @Valid WorkbookRequest workbookRequest,
+                                                           @AuthenticationPrincipal AppUser appUser) {
         WorkbookResponse workbookResponse = workbookService.createWorkbookByUser(workbookRequest, appUser);
         return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId())).body(workbookResponse);
     }
@@ -40,6 +42,15 @@ public class WorkbookController {
     public ResponseEntity<List<WorkbookResponse>> findWorkbooksByUser(@AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
                 workbookService.findWorkbooksByUser(appUser)
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<WorkbookResponse> updateWorkbook(@PathVariable Long id,
+                                                           @RequestBody @Valid WorkbookUpdateRequest workbookUpdateRequest,
+                                                           @AuthenticationPrincipal AppUser appUser) {
+        return ResponseEntity.ok(
+                workbookService.updateWorkbook(id, workbookUpdateRequest, appUser)
         );
     }
 

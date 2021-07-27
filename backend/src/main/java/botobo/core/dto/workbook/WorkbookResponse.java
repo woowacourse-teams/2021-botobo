@@ -18,10 +18,10 @@ public class WorkbookResponse {
 
     private Long id;
     private String name;
-    private int cardCount;
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    private String author;
     private boolean opened;
+    private int cardCount;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String author;
 
     //TODO: 메서드명 생각해봐야함
     public static WorkbookResponse convert(Workbook workbook) {

@@ -8,6 +8,7 @@ import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.ErrorResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import io.restassured.response.ExtractableResponse;
@@ -41,10 +42,17 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @MockBean
     private GithubOauthManager githubOauthManager;
 
+    private GithubUserInfoResponse userInfo;
+
     @BeforeEach
     void setFixture() {
         여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3));
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
+        userInfo = GithubUserInfoResponse.builder()
+                .userName("githubUser")
+                .githubId(2L)
+                .profileUrl("github.io")
+                .build();
     }
 
     @Test
@@ -57,10 +65,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/workbooks", workbookRequest)
-                .auth(로그인되어_있음().getAccessToken())
-                .build();
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
 
         // then
         WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
@@ -83,10 +88,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/workbooks", workbookRequest)
-                .auth(로그인되어_있음().getAccessToken())
-                .build();
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -104,10 +106,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/workbooks", workbookRequest)
-                .auth(로그인되어_있음().getAccessToken())
-                .build();
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -130,6 +129,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookResponses.size()).isEqualTo(3);
     }
+
     @Test
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공")
     void findCategoryCardsById() {
@@ -163,20 +163,154 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookCardResponse.getCards()).isEmpty();
     }
 
-    private TokenResponse 로그인되어_있음() {
-        ExtractableResponse<Response> response = 로그인_요청();
-        return response.as(TokenResponse.class);
+    @Test
+    @DisplayName("유저가 문제집 수정 - 성공")
+    void updateWorkbook() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집 비공개버전")
+                .opened(false)
+                .cardCount(0)
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, userInfo);
+
+        // then
+        WorkbookResponse updateResponse = response.convertBody(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(updateResponse).extracting("id").isNotNull();
+        assertThat(updateResponse).extracting("name").isEqualTo(workbookUpdateRequest.getName());
+        assertThat(updateResponse).extracting("cardCount").isEqualTo(0);
+        assertThat(updateResponse).extracting("opened").isEqualTo(workbookUpdateRequest.isOpened());
     }
 
-    private ExtractableResponse<Response> 로그인_요청() {
-        LoginRequest loginRequest = new LoginRequest("githubCode");
-        GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .userName("githubUser")
-                .githubId(1L)
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
+    @DisplayName("유저가 문제집 수정 - 실패, name이 없을 때")
+    void updateWorkbookWhenNameNotExist(String name) {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name(name)
+                .opened(true)
+                .cardCount(0)
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("이름은 필수 입력값입니다.");;
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 수정 - 실패, name이 30자 초과")
+    void updateWorkbookWhenNameLengthOver30() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name(stringGenerator(31))
+                .opened(true)
+                .cardCount(0)
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("이름은 최대 30자까지 입력 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 수정 - 실패, cardCount가 음수")
+    void updateWorkbookWhenCardCountNegative() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집 비공개버전")
+                .opened(true)
+                .cardCount(-5)
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("카드 개수는 0이상 입니다.");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 수정 - 실패, 다른 유저가 수정을 시도할 때")
+    void updateWorkbookWithOtherUser() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집 비공개버전")
+                .opened(false)
+                .cardCount(0)
+                .build();
+        GithubUserInfoResponse otherUserInfo = GithubUserInfoResponse.builder()
+                .userName("otherUser")
+                .githubId(3L)
                 .profileUrl("github.io")
                 .build();
 
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, otherUserInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
+
+    private WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, GithubUserInfoResponse userInfo) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .build();
+        return 유저_문제집_등록되어_있음(workbookRequest, userInfo);
+    }
+
+    private WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, GithubUserInfoResponse userInfo) {
+        return 유저_문제집_생성_요청(workbookRequest, userInfo).convertBody(WorkbookResponse.class);
+    }
+
+    private HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, GithubUserInfoResponse userInfo) {
+        return request()
+                .post("/api/workbooks", workbookRequest)
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+    }
+
+    private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,
+                                      WorkbookResponse workbookResponse,
+                                      GithubUserInfoResponse userInfo) {
+        return request()
+                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+    }
+
+    private TokenResponse 로그인되어_있음(GithubUserInfoResponse userInfo) {
+        ExtractableResponse<Response> response = 로그인_요청(userInfo);
+        return response.as(TokenResponse.class);
+    }
+
+    private ExtractableResponse<Response> 로그인_요청(GithubUserInfoResponse userInfo) {
+        LoginRequest loginRequest = new LoginRequest("githubCode");
+
+        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(userInfo);
 
         return request()
                 .post("/api/login", loginRequest)

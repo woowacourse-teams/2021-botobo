@@ -7,6 +7,7 @@ import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,7 +96,34 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-cards-get-success");
+    }
 
+    @Test
+    @DisplayName("유저가 문제집 수정 - 성공")
+    void updateWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집")
+                .opened(true)
+                .cardCount(0)
+                .build();
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집 수정")
+                .opened(false)
+                .cardCount(0)
+                .build();
+        given(workbookService.updateWorkbook(anyLong(), any(), any())).willReturn(workbookResponse);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-put-success");
     }
 
     private List<WorkbookResponse> generateWorkbookResponse() {

@@ -3,6 +3,7 @@ package botobo.core.domain.workbook;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class WorkbookRepositoryTest {
@@ -113,5 +115,71 @@ public class WorkbookRepositoryTest {
         //then
         assertThat(workbooks).hasSize(2)
             .containsExactly(workbook2, workbook1);
+    }
+
+    @Test
+    @DisplayName("유저가 자신의 문제집을 수정한다. - 성공")
+    void updateWorkbook() {
+        // given
+        User user = User.builder()
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(user)
+                .build();
+        workbookRepository.save(workbook);
+
+        // when
+        workbook.updateIfCan("오즈의 Java를 다 잡아", false, user.getId());
+        testEntityManager.flush();
+
+        // then
+        assertThat(workbook.getName()).isEqualTo("오즈의 Java를 다 잡아");
+        assertThat(workbook.isOpened()).isFalse();
+        assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
+    }
+
+    @Test
+    @DisplayName("유저가 자신의 문제집을 수정한다. - 실패, 다른 유저가 수정을 시도할 경우")
+    void updateWorkbookWithOtherUser() {
+        // given
+        User user1 = User.builder()
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        User user2 = User.builder()
+                .githubId(2L)
+                .userName("pk")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(user1)
+                .build();
+        workbookRepository.save(workbook);
+
+        // when, then
+        assertThatThrownBy(() ->
+                workbook.updateIfCan("오즈의 Java를 다 잡아", false, 2L))
+                .isInstanceOf(NotAuthorException.class);
+
     }
 }

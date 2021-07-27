@@ -82,7 +82,6 @@ class WorkbookServiceTest {
         assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
         assertThat(workbookResponse.getName()).isEqualTo(workbook.getName());
         assertThat(workbookResponse.isOpened()).isEqualTo(workbook.isOpened());
-        assertThat(workbookResponse.getAuthor()).isEqualTo(workbook.author());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbook.cardCount());
 
         then(userRepository).should(times(1))

@@ -11,6 +11,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,16 @@ public class WorkbookService {
                 .build();
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return WorkbookResponse.convert(savedWorkbook);
+    }
+
+    @Transactional
+    public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
+        Workbook workbook = workbookRepository.findById(id)
+                .orElseThrow(WorkbookNotFoundException::new);
+        workbook.updateIfCan(workbookUpdateRequest.getName(),
+                workbookUpdateRequest.isOpened(),
+                appUser.getId());
+        return WorkbookResponse.convert(workbook);
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
