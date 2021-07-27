@@ -1,11 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
 import FillStarIcon from '../assets/star-fill.svg';
+import { STORAGE_KEY } from '../constants';
+import { useRouter } from '../hooks';
+import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
-import { debounce } from '../utils';
+import { debounce, setSessionStorage } from '../utils';
 import CardTemplate from './CardTemplate';
 
 interface Props {
@@ -14,6 +18,8 @@ interface Props {
 }
 
 const QnACard = ({ cardInfo, toggleBookmark }: Props) => {
+  const { routeCardEdit } = useRouter();
+  const setCardId = useSetRecoilState(cardIdState);
   const [isBookmark, setIsBookmark] = useState(false);
 
   const onClickBookmark = () => {
@@ -22,7 +28,14 @@ const QnACard = ({ cardInfo, toggleBookmark }: Props) => {
   };
 
   return (
-    <CardTemplate editable={true}>
+    <CardTemplate
+      editable={true}
+      onClickEditButton={async () => {
+        await setCardId(cardInfo.id);
+        setSessionStorage(STORAGE_KEY.CARD_ID, cardInfo.id);
+        routeCardEdit();
+      }}
+    >
       <Header>
         <BookmarkButton onClick={onClickBookmark}>
           {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}

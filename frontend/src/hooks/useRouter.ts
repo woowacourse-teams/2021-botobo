@@ -17,8 +17,7 @@ const useRouter = () => {
   const routeQuizResult = () => history.push(ROUTE.QUIZ_RESULT.PATH);
   const routeCards = () => history.push(ROUTE.CARDS.PATH);
   const routeCardAdd = () => history.push(ROUTE.CARD_ADD.PATH);
-  const routeCardEdit = (workbookId: number) =>
-    history.push(`${ROUTE.CARD_EDIT.PATH}?id=${workbookId}`);
+  const routeCardEdit = () => history.push(ROUTE.CARD_EDIT.PATH);
   const routePublicWorkbook = () => history.push(ROUTE.PUBLIC_WORKBOOK.PATH);
   const routePublicCards = (workbookId: number) =>
     history.push(`${ROUTE.PUBLIC_CARDS.PATH}?id=${workbookId}`);

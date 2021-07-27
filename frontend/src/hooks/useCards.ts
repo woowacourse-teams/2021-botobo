@@ -34,6 +34,7 @@ const useCards = () => {
       await putCardAsync(cardInfo);
       updateCardInfo();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
+      routeCards();
     } catch (error) {
       console.error(error);
       showSnackbar({ message: '카드를 수정하지 못했어요.', type: 'error' });

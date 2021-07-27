@@ -33,8 +33,7 @@ const FormProvider = ({
   children,
 }: Props) => {
   const [values, setValues] = useState<Values>(initialValues);
-  const [errorMessages, setErrorMessages] =
-    useState<ErrorMessages>(initialValues);
+  const [errorMessages, setErrorMessages] = useState<ErrorMessages>({});
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const key = target.name;
