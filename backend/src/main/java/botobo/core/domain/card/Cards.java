@@ -9,7 +9,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,11 +29,7 @@ public class Cards {
     }
 
     public void orderByCreatedAtDesc() {
-        Collections.sort(cards, (first, second) -> {
-            if (Objects.isNull(first.getCreatedAt()) || Objects.isNull(second.getCreatedAt()))
-                return 0;
-            return second.getCreatedAt().compareTo(first.getCreatedAt());
-        });
+        cards.sort((first, second) -> second.getCreatedAt().compareTo(first.getCreatedAt()));
     }
 
     public void addCard(Card card) {
