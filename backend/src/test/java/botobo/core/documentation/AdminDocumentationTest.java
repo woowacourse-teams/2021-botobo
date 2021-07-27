@@ -38,7 +38,7 @@ public class AdminDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         AdminWorkbookRequest adminWorkbookRequest = new AdminWorkbookRequest("JAVA");
-        given(adminService.createWorkbook(any())).willReturn(
+        given(adminService.createWorkbook(any(), any())).willReturn(
                 AdminWorkbookResponse.builder()
                         .id(1L)
                         .name("JAVA")
