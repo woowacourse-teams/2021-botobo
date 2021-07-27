@@ -21,10 +21,12 @@ export interface QuizResponse {
 
 export interface CardResponse {
   id: number;
+  workbookId: number;
   question: string;
   answer: string;
   bookmark: boolean;
   encounterCount: number;
+  nextQuiz: boolean;
 }
 
 export interface CardsResponse {

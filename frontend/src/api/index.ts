@@ -3,6 +3,7 @@ import axios from 'axios';
 import { STORAGE_KEY } from '../constants';
 import {
   AccessTokenResponse,
+  CardResponse,
   CardsResponse,
   QuizResponse,
   UserInfoResponse,
@@ -68,14 +69,12 @@ export const getUserInfoAsync = async () => {
   return data;
 };
 
-export const postCardAsync = async ({
-  workbookId,
-  question,
-  answer,
-}: PostCardAsync) => {
-  await request.post('/cards', {
-    workbookId,
-    question,
-    answer,
-  });
+export const postCardAsync = async (params: PostCardAsync) => {
+  await request.post('/cards', params);
+};
+
+export const putCardAsync = async (cardInfo: CardResponse) => {
+  const { id, ...params } = cardInfo;
+
+  await request.put(`/cards/${id}`, params);
 };

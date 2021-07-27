@@ -12,14 +12,14 @@ interface Filter {
 
 const filterByLatest = (cards: CardResponse[]) => cards;
 
-// const filterByBookMark = (cards: CardResponse[]) =>
-//   [...cards].sort((card1, card2) =>
-//     card1.isBookmark === card2.isBookmark ? 0 : card1.isBookmark ? -1 : 1
-//   );
+const filterByBookMark = (cards: CardResponse[]) =>
+  [...cards].sort((card1, card2) =>
+    card1.bookmark === card2.bookmark ? 0 : card1.bookmark ? -1 : 1
+  );
 
 const filter: Filter = {
   1: filterByLatest,
-  // 2: filterByBookMark,
+  2: filterByBookMark,
 };
 
 const filters = [
@@ -28,7 +28,7 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards } = useCards();
+  const { workbookName, cards, toggleBookmark } = useCards();
   const { routeCardAdd } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
@@ -53,9 +53,9 @@ const CardsPage = () => {
         새로운 카드 추가하기
       </Button>
       <CardList>
-        {filter[currentFilterId](cards).map(({ id, question, answer }) => (
-          <li key={id}>
-            <QnACard question={question} answer={answer} />
+        {filter[currentFilterId](cards).map((cardInfo) => (
+          <li key={cardInfo.id}>
+            <QnACard cardInfo={cardInfo} toggleBookmark={toggleBookmark} />
           </li>
         ))}
       </CardList>
