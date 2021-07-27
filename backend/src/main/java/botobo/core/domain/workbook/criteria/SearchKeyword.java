@@ -1,4 +1,4 @@
-package botobo.core.domain.workbook;
+package botobo.core.domain.workbook.criteria;
 
 import botobo.core.exception.workbook.WorkbookSearchFailureException;
 import lombok.EqualsAndHashCode;

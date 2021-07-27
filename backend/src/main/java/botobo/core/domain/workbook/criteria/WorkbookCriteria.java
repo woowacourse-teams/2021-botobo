@@ -1,4 +1,4 @@
-package botobo.core.domain.workbook;
+package botobo.core.domain.workbook.criteria;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

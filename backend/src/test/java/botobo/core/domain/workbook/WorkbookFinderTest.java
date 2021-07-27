@@ -1,6 +1,9 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.user.User;
+import botobo.core.domain.workbook.criteria.AccessType;
+import botobo.core.domain.workbook.criteria.SearchKeyword;
+import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

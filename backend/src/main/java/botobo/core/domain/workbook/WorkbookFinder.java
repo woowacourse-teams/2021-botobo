@@ -1,5 +1,6 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

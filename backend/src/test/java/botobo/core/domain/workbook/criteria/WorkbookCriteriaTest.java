@@ -1,4 +1,4 @@
-package botobo.core.domain.workbook;
+package botobo.core.domain.workbook.criteria;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
