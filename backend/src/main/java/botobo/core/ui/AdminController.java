@@ -1,10 +1,12 @@
 package botobo.core.ui;
 
 import botobo.core.application.AdminService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
+import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +27,9 @@ public class AdminController {
     }
 
     @PostMapping("/workbooks")
-    public ResponseEntity<AdminWorkbookResponse> createCategory(@Valid @RequestBody AdminWorkbookRequest adminWorkbookRequest) {
-        AdminWorkbookResponse adminWorkbookResponse = adminService.createWorkbook(adminWorkbookRequest);
+    public ResponseEntity<AdminWorkbookResponse> createCategory(@Valid @RequestBody AdminWorkbookRequest adminWorkbookRequest,
+                                                                @AuthenticationPrincipal AppUser appUser) {
+        AdminWorkbookResponse adminWorkbookResponse = adminService.createWorkbook(adminWorkbookRequest, appUser);
         return ResponseEntity.created(URI.create("/api/admin/workbooks/" + adminWorkbookResponse.getId())).body(adminWorkbookResponse);
     }
 
