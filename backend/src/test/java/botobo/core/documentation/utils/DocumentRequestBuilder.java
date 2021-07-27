@@ -30,8 +30,8 @@ public class DocumentRequestBuilder {
             return new Options(new PostPerform<>(path, body));
         }
 
-        public <T> Options put(String path, T body) {
-            return new Options(new PutPerform<>(path, body));
+        public <T> Options put(String path, T body, Object... params) {
+            return new Options(new PutPerform<>(path, body, params));
         }
 
         public Options get(String path, Object... params) {
@@ -121,14 +121,16 @@ public class DocumentRequestBuilder {
     private static class PutPerform<T> implements HttpMethodRequest {
         private final String path;
         private final T body;
+        private final Object[] params;
 
-        public PutPerform(String path, T body) {
+        public PutPerform(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
+            this.params = params;
         }
 
         public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
-            return put(path)
+            return put(path, params)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(body));
