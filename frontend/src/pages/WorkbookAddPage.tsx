@@ -3,16 +3,16 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { InputField, PageHeader } from '../components';
-import { ROUTE } from '../constants';
+import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
 import useModal from '../hooks/useModal';
 import { Flex } from '../styles';
 
-const WORKBOOK_NAME_MAXIMUM_LENGTH = 20;
-
 const validateWorkbookName = (value: string) => {
   if (value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) {
-    throw new Error('문제집 이름은 20자 이하여야 합니다.');
+    throw new Error(
+      `문제집 이름은 ${WORKBOOK_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`
+    );
   }
 };
 
