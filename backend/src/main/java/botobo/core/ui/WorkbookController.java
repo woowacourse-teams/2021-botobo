@@ -25,7 +25,7 @@ public class WorkbookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkbookResponse>> findWorkbooks(@AuthenticationPrincipal AppUser appUser) {
+    public ResponseEntity<List<WorkbookResponse>> findWorkbooksByUser(@AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
                 workbookService.findWorkbooksByUser(appUser)
         );

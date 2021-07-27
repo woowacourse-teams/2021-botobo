@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,8 +41,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findAllWorkbooks() throws Exception {
         // given
         String token = "botobo.access.token";
-        AppUser normalUser = AppUser.builder().id(2L).role(Role.USER).build();
-        given(workbookService.findWorkbooksByUser(normalUser)).willReturn(generateWorkbookResponse());
+        given(workbookService.findWorkbooksByUser(any())).willReturn(generateWorkbookResponse());
 
         // when, then
         document()
@@ -77,16 +77,19 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .id(1L)
                         .name("피케이의 자바 문제 20선")
                         .cardCount(20)
+                        .author("pk")
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
                         .name("오즈의 비올 때 푸는 Database 문제")
                         .cardCount(15)
+                        .author("oz")
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
                         .name("조앤의 Network 정복 모음집")
                         .cardCount(8)
+                        .author("joanne")
                         .build()
         );
     }

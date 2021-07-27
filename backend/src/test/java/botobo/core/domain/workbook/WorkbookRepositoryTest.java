@@ -2,6 +2,9 @@ package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.user.Role;
+import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,9 @@ public class WorkbookRepositoryTest {
 
     @Autowired
     private WorkbookRepository workbookRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -106,5 +112,43 @@ public class WorkbookRepositoryTest {
                 .answer("답변")
                 .workbook(workbook)
                 .build();
+    }
+
+    @Test
+    @DisplayName("유저의 Workbook 최신순으로 조회 - 성공")
+    void findAllByUserId() {
+        // given
+        User user = User.builder()
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        Workbook workbook1 = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(user)
+                .build();
+
+        workbookRepository.save(workbook1);
+
+        Workbook workbook2 = Workbook.builder()
+                .name("오즈의 Spring")
+                .opened(true)
+                .deleted(false)
+                .user(user)
+                .build();
+
+        workbookRepository.save(workbook2);
+
+        // when
+        List<Workbook> workbooks = workbookRepository.findAllByUserId(user.getId());
+
+        //then
+        assertThat(workbooks).hasSize(2)
+            .containsExactly(workbook2, workbook1);
     }
 }

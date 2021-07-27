@@ -19,14 +19,13 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    protected JwtTokenProvider jwtTokenProvider;
 
-    private User user;
+    protected User user;
 
     @BeforeEach
     void setUser() {
         user = User.builder()
-                .id(1L)
                 .githubId(1L)
                 .userName("admin")
                 .profileUrl("github.io")
