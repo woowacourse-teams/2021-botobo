@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { putCardAsync } from './../api/index';
+import { deleteCardAsync, putCardAsync } from './../api/index';
 import { cardState } from './../recoil/cardState';
 import { CardResponse } from './../types/index';
 import { postCardAsync } from '../api';
@@ -41,6 +41,17 @@ const useCards = () => {
     }
   };
 
+  const deleteCard = async (id: number) => {
+    try {
+      await deleteCardAsync(id);
+      updateCardInfo();
+      showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
+    } catch (error) {
+      console.error(error);
+      showSnackbar({ message: '카드를 삭제하지 못했어요.', type: 'error' });
+    }
+  };
+
   const toggleBookmark = async (cardInfo: CardResponse) => {
     try {
       await putCardAsync(cardInfo);
@@ -66,6 +77,7 @@ const useCards = () => {
     cards,
     createCard,
     editCard,
+    deleteCard,
     toggleBookmark,
     updateCardInfo,
   };

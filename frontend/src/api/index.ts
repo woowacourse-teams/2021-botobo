@@ -78,3 +78,7 @@ export const putCardAsync = async (cardInfo: CardResponse) => {
 
   await request.put(`/cards/${id}`, params);
 };
+
+export const deleteCardAsync = async (id: number) => {
+  await request.delete(`/cards/${id}`);
+};

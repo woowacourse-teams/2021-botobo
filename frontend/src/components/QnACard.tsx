@@ -14,10 +14,11 @@ import CardTemplate from './CardTemplate';
 
 interface Props {
   cardInfo: CardResponse;
+  deleteCard: (id: number) => Promise<void>;
   toggleBookmark: (cardInfo: CardResponse) => Promise<void>;
 }
 
-const QnACard = ({ cardInfo, toggleBookmark }: Props) => {
+const QnACard = ({ cardInfo, deleteCard, toggleBookmark }: Props) => {
   const { routeCardEdit } = useRouter();
   const setCardId = useSetRecoilState(cardIdState);
   const [isBookmark, setIsBookmark] = useState(false);
@@ -35,6 +36,7 @@ const QnACard = ({ cardInfo, toggleBookmark }: Props) => {
         setSessionStorage(STORAGE_KEY.CARD_ID, cardInfo.id);
         routeCardEdit();
       }}
+      onClickDeleteButton={() => deleteCard(cardInfo.id)}
     >
       <Header>
         <BookmarkButton onClick={onClickBookmark}>

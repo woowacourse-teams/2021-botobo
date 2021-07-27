@@ -28,7 +28,8 @@ const filters = [
 ];
 
 const CardsPage = () => {
-  const { workbookName, cards, toggleBookmark, updateCardInfo } = useCards();
+  const { workbookName, cards, updateCardInfo, deleteCard, toggleBookmark } =
+    useCards();
   const { routeCardAdd } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
@@ -60,7 +61,11 @@ const CardsPage = () => {
       <CardList>
         {filter[currentFilterId](cards).map((cardInfo) => (
           <li key={cardInfo.id}>
-            <QnACard cardInfo={cardInfo} toggleBookmark={toggleBookmark} />
+            <QnACard
+              cardInfo={cardInfo}
+              deleteCard={deleteCard}
+              toggleBookmark={toggleBookmark}
+            />
           </li>
         ))}
       </CardList>
