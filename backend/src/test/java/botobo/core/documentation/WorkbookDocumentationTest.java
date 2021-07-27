@@ -3,7 +3,6 @@ package botobo.core.documentation;
 import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
 import botobo.core.domain.user.AppUser;
-import botobo.core.domain.user.Role;
 import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -16,9 +15,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,12 +38,27 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     private AuthService authService;
 
     @Test
-    @DisplayName("문제집 전체 조회 - 성공")
-    void findAllWorkbooks() throws Exception {
+    @DisplayName("비회원 문제집 조회 - 성공")
+    void findWorkbooksByAnonymous() throws Exception {
+        // given
+        given(workbookService.findWorkbooksByUser(any()))
+                .willReturn(Collections.emptyList());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks")
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-get-anonymous-success");
+    }
+
+    @Test
+    @DisplayName("유저 문제집 조회 - 성공")
+    void findWorkbooks() throws Exception {
         // given
         String token = "botobo.access.token";
-        AppUser normalUser = AppUser.builder().id(2L).role(Role.USER).build();
-        given(workbookService.findWorkbooksByUser(normalUser)).willReturn(generateWorkbookResponse());
+        given(workbookService.findWorkbooksByUser(any())).willReturn(generateUserWorkbookResponse());
 
         // when, then
         document()
@@ -68,25 +85,64 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-cards-get-success");
-
     }
 
-    private List<WorkbookResponse> generateWorkbookResponse() {
+    @Test
+    @DisplayName("공유 문제집 검색 - 성공")
+    void findPublicWorkbooksBySearch() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicWorkbookResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks/public?search=Network")
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-public-search-get-success");
+    }
+
+    @Test
+    @DisplayName("키워드 없이 공유 문제집 검색 - 성공")
+    void findPublicWorkbooksByNoKeywordSearch() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicDummyWorkbookResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks/public")
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-public-search-dummy-get-success");
+    }
+
+    private List<WorkbookResponse> generateUserWorkbookResponse() {
         return Arrays.asList(
                 WorkbookResponse.builder()
                         .id(1L)
                         .name("피케이의 자바 문제 20선")
                         .cardCount(20)
+                        .author("피케이")
+                        .opened(false)
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
-                        .name("오즈의 비올 때 푸는 Database 문제")
+                        .name("피케이의 비올 때 푸는 Database 문제")
                         .cardCount(15)
+                        .author("피케이")
+                        .opened(true)
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
-                        .name("조앤의 Network 정복 모음집")
+                        .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
+                        .author("피케이")
+                        .opened(true)
                         .build()
         );
     }
@@ -119,5 +175,43 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .workbookName("Java")
                 .cards(cardSimpleResponse)
                 .build();
+    }
+
+    private List<WorkbookResponse> generatePublicWorkbookResponse() {
+        return Arrays.asList(
+                WorkbookResponse.builder()
+                        .id(3L)
+                        .name("피케이의 Network 정복 모음집")
+                        .cardCount(8)
+                        .author("피케이")
+                        .opened(true)
+                        .build(),
+                WorkbookResponse.builder()
+                        .id(4L)
+                        .name("오즈의 Network 정복 최종판")
+                        .cardCount(20)
+                        .author("오즈")
+                        .opened(true)
+                        .build()
+        );
+    }
+
+    private List<WorkbookResponse> generatePublicDummyWorkbookResponse() {
+        return Arrays.asList(
+                WorkbookResponse.builder()
+                        .id(1L)
+                        .name("자바 기본편")
+                        .cardCount(20)
+                        .author("보또보")
+                        .opened(true)
+                        .build(),
+                WorkbookResponse.builder()
+                        .id(2L)
+                        .name("자바 심화편")
+                        .cardCount(20)
+                        .author("보또보")
+                        .opened(true)
+                        .build()
+        );
     }
 }
