@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import { cardState } from './../recoil/cardState';
 import { postCardAsync } from '../api';
@@ -13,10 +13,12 @@ const useCards = () => {
     data: { workbookId, workbookName, cards },
     errorMessage,
   } = useRecoilValue(cardState);
+  const updateCardInfo = useResetRecoilState(cardState);
 
   const createCard = async (question: string, answer: string) => {
     try {
       await postCardAsync({ workbookId, question, answer });
+      updateCardInfo();
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
       routeCards();
     } catch (error) {
