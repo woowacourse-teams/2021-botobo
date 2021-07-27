@@ -52,7 +52,7 @@ public class WorkbookService {
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id) {
-        Workbook workbook = workbookRepository.findById(id)
+        Workbook workbook = workbookRepository.findByIdAndOrderCardByNew(id)
                 .orElseThrow(WorkbookNotFoundException::new);
         return WorkbookCardResponse.of(workbook);
     }

@@ -55,7 +55,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         // then
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
-
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_1.getName());
         assertThat(workbookCardResponse.getCards()).hasSize(3);
