@@ -1,18 +1,14 @@
 package botobo.core.documentation;
 
-import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
 import botobo.core.dto.card.CardResponse;
-import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,14 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(WorkbookController.class)
 public class WorkbookDocumentationTest extends DocumentationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     private WorkbookService workbookService;
-
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("유저 문제집 전체 조회 - 성공")

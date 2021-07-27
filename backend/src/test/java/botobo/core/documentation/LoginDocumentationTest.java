@@ -1,16 +1,12 @@
 package botobo.core.documentation;
 
 
-import botobo.core.application.AuthService;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.ui.auth.AuthController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -19,12 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("로그인 문서화 테스트")
 @WebMvcTest(AuthController.class)
 public class LoginDocumentationTest extends DocumentationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("로그인 - 성공")
