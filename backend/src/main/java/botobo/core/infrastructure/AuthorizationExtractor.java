@@ -19,7 +19,7 @@ public class AuthorizationExtractor {
                 return getAuthHeaderValue(request, headerValue);
             }
         }
-        throw new UnauthorizedException("토큰 추출에 실패했습니다.");
+        return null;
     }
 
 

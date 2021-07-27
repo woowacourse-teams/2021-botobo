@@ -54,7 +54,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .get("/api/workbooks")
-                .auth(null)
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-anonymous-success");
