@@ -1,6 +1,6 @@
 package botobo.core.domain.workbook.criteria;
 
-import botobo.core.exception.workbook.WorkbookSearchFailureException;
+import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,11 +61,20 @@ class SearchKeywordTest {
     }
 
     @Test
+    @DisplayName("SearchKeyword 객체 생성 - 실패, null 입력")
+    void createWithNoKeyword() {
+        // when, then
+        assertThatThrownBy(() -> SearchKeyword.from(null))
+                .isInstanceOf(SearchKeywordCreationFailureException.class)
+                .hasMessageContaining("검색어는 null일 수 없습니다.");
+    }
+
+    @Test
     @DisplayName("SearchKeyword 객체 생성 - 실패, 긴 문자열")
     void createWithLongString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.from(TestUtils.stringGenerator(31)))
-                .isInstanceOf(WorkbookSearchFailureException.class)
+                .isInstanceOf(SearchKeywordCreationFailureException.class)
                 .hasMessageContaining("검색어는 30자 이하여야 합니다.");
     }
 
@@ -74,18 +83,7 @@ class SearchKeywordTest {
     void createWithForbiddenString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.from("바보"))
-                .isInstanceOf(WorkbookSearchFailureException.class)
+                .isInstanceOf(SearchKeywordCreationFailureException.class)
                 .hasMessageContaining("금지어를 입력했습니다");
-    }
-
-    @Test
-    @DisplayName("null로 생성시 캐싱 된 NO_SEARCH_KEYWORD 객체가 생성된다.")
-    void createWithNoKeyword() {
-        // given
-        SearchKeyword noSearchKeyword = SearchKeyword.from(null);
-
-        // when, then
-        assertThat(noSearchKeyword.isNoKeyword()).isTrue();
-        assertThat(noSearchKeyword).isSameAs(SearchKeyword.from(null));
     }
 }

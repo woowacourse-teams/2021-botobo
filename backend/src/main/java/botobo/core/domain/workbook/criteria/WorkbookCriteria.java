@@ -12,7 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class WorkbookCriteria {
 
-    private SearchKeyword searchKeyword = SearchKeyword.from(null);
+    private SearchKeyword searchKeyword = SearchKeyword.from("");
     private AccessType accessType = AccessType.PUBLIC;
 
     @Builder
@@ -23,10 +23,6 @@ public class WorkbookCriteria {
         if (Objects.nonNull(accessType)) {
             this.accessType = accessType;
         }
-    }
-
-    public boolean isNoSearchKeyword() {
-        return searchKeyword.isNoKeyword();
     }
 
     public boolean isPublicAccess() {
