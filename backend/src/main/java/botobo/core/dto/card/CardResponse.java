@@ -1,6 +1,7 @@
 package botobo.core.dto.card;
 
 import botobo.core.domain.card.Card;
+import botobo.core.domain.card.Cards;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class CardResponse {
                 .build();
     }
 
-    public static List<CardResponse> listOf(List<Card> cards) {
+    public static List<CardResponse> listOf(Cards cards) {
         return cards.stream()
                 .map(CardResponse::of)
                 .collect(Collectors.toList());

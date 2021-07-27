@@ -1,11 +1,14 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.card.Card;
+import botobo.core.domain.card.CardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,5 +71,40 @@ public class WorkbookRepositoryTest {
 
         // when, then
         assertThat(workbookRepository.existsByIdAndOpenedTrue(savedWorkbook.getId())).isTrue();
+    }
+
+    @Test
+    @DisplayName("워크북 조회할 때 포함된 카드가 최근에 생성된 순으로 정렬 - 성공")
+    void findByIdAndOrderCardByNew() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("피케이의 자바 100문")
+                .deleted(false)
+                .opened(true)
+                .build();
+        Card firstCard = generateCard(workbook);
+        Card secondCard = generateCard(workbook);
+        Card thirdCard = generateCard(workbook);
+
+        workbookRepository.save(workbook);
+
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // when
+        Optional<Workbook> findWorkbook = workbookRepository.findByIdAndOrderCardByNew(workbook.getId());
+
+        // then
+        List<Card> cards = findWorkbook.get().getCards().getCards();
+        assertThat(cards).hasSize(3)
+                .containsExactly(thirdCard, secondCard, firstCard);
+    }
+
+    private Card generateCard(Workbook workbook) {
+        return Card.builder()
+                .question("질문")
+                .answer("답변")
+                .workbook(workbook)
+                .build();
     }
 }

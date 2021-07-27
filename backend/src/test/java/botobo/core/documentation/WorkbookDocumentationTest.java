@@ -4,7 +4,7 @@ import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
-import botobo.core.dto.card.CardSimpleResponse;
+import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.WorkbookController;
@@ -92,32 +92,38 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     private WorkbookCardResponse generateWorkbookCardsResponse() {
-        List<CardSimpleResponse> cardSimpleResponse = Arrays.asList(
-                CardSimpleResponse.builder()
+        List<CardResponse> cardResponse = Arrays.asList(
+                CardResponse.builder()
                         .id(1L)
                         .question("Java에는 a가 몇 개 들어갈까요?")
                         .answer("2개")
-                        .bookmark(true)
+                        .workbookId(1L)
                         .encounterCount(5)
+                        .bookmark(true)
+                        .nextQuiz(false)
                         .build(),
-                CardSimpleResponse.builder()
+                CardResponse.builder()
                         .id(2L)
                         .question("Java에는 v가 몇 개 들어갈까요?")
                         .answer("1개")
-                        .bookmark(true)
+                        .workbookId(1L)
                         .encounterCount(10)
+                        .bookmark(true)
+                        .nextQuiz(false)
                         .build(),
-                CardSimpleResponse.builder()
+                CardResponse.builder()
                         .id(3L)
                         .question("Java에는 j가 몇 개 들어갈까요?")
                         .answer("1개")
-                        .bookmark(false)
+                        .workbookId(1L)
                         .encounterCount(2)
+                        .bookmark(false)
+                        .nextQuiz(true)
                         .build());
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
-                .cards(cardSimpleResponse)
+                .cards(cardResponse)
                 .build();
     }
 }

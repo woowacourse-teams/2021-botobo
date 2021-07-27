@@ -28,10 +28,6 @@ public class Cards {
         Collections.shuffle(cards);
     }
 
-    public void orderByCreatedAtDesc() {
-        cards.sort((first, second) -> second.getCreatedAt().compareTo(first.getCreatedAt()));
-    }
-
     public void addCard(Card card) {
         cards.add(card);
     }

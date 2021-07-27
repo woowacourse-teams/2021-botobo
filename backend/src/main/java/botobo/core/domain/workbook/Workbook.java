@@ -86,9 +86,4 @@ public class Workbook extends BaseEntity {
     public int cardCount() {
         return cards.counts();
     }
-
-    public Cards getCardsOrderByCreatedAt() {
-        cards.orderByCreatedAtDesc();
-        return cards;
-    }
 }
