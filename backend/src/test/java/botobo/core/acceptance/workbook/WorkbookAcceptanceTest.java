@@ -95,7 +95,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     void findPublicWorkbooksBySearch() {
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks/public?search=1")
+                .get("/api/workbooks/public")
+                .queryParam("search", "1")
                 .auth(jwtTokenProvider.createToken(user.getId()))
                 .build();
 
