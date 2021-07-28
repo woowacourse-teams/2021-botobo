@@ -45,11 +45,13 @@ class CardServiceTest {
 
     private Workbook workbook;
     private User user;
+    private AppUser appUser;
 
     @BeforeEach
     void setUp() {
         user = User.builder().id(1L).build();
         workbook = workbook(1L, user);
+        appUser = AppUser.user(1L);
     }
 
     @Test
@@ -58,7 +60,6 @@ class CardServiceTest {
         // given
         CardRequest cardRequest = cardRequest();
         Card card = card(1L, workbook);
-        AppUser appUser = AppUser.user(1L);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.findById(cardRequest.getWorkbookId())).willReturn(Optional.of(workbook));
@@ -68,9 +69,9 @@ class CardServiceTest {
         cardService.createCard(cardRequest, appUser);
 
         // then
-        then(workbookRepository)
+        then(userRepository)
                 .should(times(1))
-                .findById(cardRequest.getWorkbookId());
+                .findById(appUser.getId());
         then(cardRepository)
                 .should(times(1))
                 .save(any());
@@ -83,20 +84,19 @@ class CardServiceTest {
     void updateCard() {
         // given
         Long cardId = 1L;
-        Workbook workbook = workbook(1L, user);
         CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
         Card card = card(cardId, workbook);
 
-        given(workbookRepository.findById(any())).willReturn(Optional.of(workbook));
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(cardRepository.findById(any())).willReturn(Optional.of(card));
 
         // when
-        cardService.updateCard(1L, cardUpdateRequest);
+        cardService.updateCard(1L, cardUpdateRequest, appUser);
 
         // then
-        then(workbookRepository)
+        then(userRepository)
                 .should(times(1))
-                .findById(any());
+                .findById(appUser.getId());
         then(cardRepository)
                 .should(times(1))
                 .findById(any());
@@ -105,10 +105,19 @@ class CardServiceTest {
     @Test
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() {
-        // given, when
-        cardService.deleteCard(1L);
+        // given
+        Card card = card(1L, workbook);
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
+        given(cardRepository.findById(any())).willReturn(Optional.of(card));
+
+        // when
+        cardService.deleteCard(1L, appUser);
 
         // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(cardRepository)
                 .should(times(1))
                 .deleteById(any());
@@ -137,6 +146,7 @@ class CardServiceTest {
         return Workbook.builder()
                 .id(id)
                 .name("workbook")
+                .user(user)
                 .build();
     }
 

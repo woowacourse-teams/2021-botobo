@@ -41,7 +41,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .profileUrl("github.io")
                 .role(Role.USER)
                 .build();
-        return userRepository.save(user);
+        return userRepository.save(anyUser);
     }
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {

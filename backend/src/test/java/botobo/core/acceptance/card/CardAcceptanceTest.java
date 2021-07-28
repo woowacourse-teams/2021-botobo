@@ -35,6 +35,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
     }
 
+    private String createToken(Long id) {
+        return jwtTokenProvider.createToken(id);
+    }
+
     @Test
     @DisplayName("카드 생성 - 성공")
     void createCard() {
@@ -48,7 +52,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -74,7 +78,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -96,7 +100,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -120,7 +124,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -141,7 +145,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -163,7 +167,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -187,7 +191,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(1L))
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -231,13 +235,13 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth(jwtTokenProvider.createToken(anyUser().getId()))
+                .auth(createToken(anyUser().getId()))
                 .build();
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
+        assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
     @Test
@@ -256,7 +260,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -288,7 +292,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -313,7 +317,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -340,7 +344,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -365,7 +369,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -375,10 +379,76 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("카드 수정 - 실패, 존재하지 않는 유저")
+    void updateCardWithNotExistUser() {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question("question")
+                .answer("answer")
+                .workbookId(1L)
+                .encounterCount(0)
+                .bookmark(true)
+                .nextQuiz(true)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth()
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 실패, 작성자가 아닌 유저")
+    void updateCardWithNotAuthor() {
+        // given
+        CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
+                .question("question")
+                .answer("answer")
+                .workbookId(1L)
+                .encounterCount(0)
+                .bookmark(true)
+                .nextQuiz(true)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .put("/api/cards/1", cardUpdateRequest)
+                .auth(createToken(anyUser().getId()))
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
+    @Test
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() {
         // given
-        Long cardId = 1L;
+        long cardId = 1L;
+
+        // when
+        final HttpResponse response = request()
+                .delete("/api/cards/" + cardId)
+                .auth(createToken(1L))
+                .build();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 실패, 존재하지 않는 유저")
+    void deleteCardWithNotExistUser() {
+        // given
+        long cardId = 1L;
 
         // when
         final HttpResponse response = request()
@@ -387,7 +457,27 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 실패, 일치하지 않는 유저")
+    void deleteCardWithNotAuthor() {
+        // given
+        long cardId = 1L;
+
+        // when
+        final HttpResponse response = request()
+                .delete("/api/cards/" + cardId)
+                .auth(createToken(anyUser().getId()))
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
     @Test

@@ -1,10 +1,13 @@
 package botobo.core.domain.card;
 
 import botobo.core.domain.BaseEntity;
+import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +20,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE card SET deleted = true WHERE id = ?") // TODO 이 두 어노테이션에 대해서 알아보기
+@Where(clause = "deleted = false")
 public class Card extends BaseEntity {
 
     @Lob
@@ -98,5 +103,9 @@ public class Card extends BaseEntity {
 
     public boolean equalsNextQuizWith(boolean isNextQuiz) {
         return this.nextQuiz == isNextQuiz;
+    }
+
+    public boolean hasSameUser(User user) {
+        return workbook.hasSameUser(user);
     }
 }

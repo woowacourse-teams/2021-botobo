@@ -37,16 +37,19 @@ public class CardService {
 
     @Transactional
     public CardResponse createCard(CardRequest cardRequest, AppUser appUser) {
-        final User user = userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
+        final User user = findUser(appUser);
         Card card = convertToCard(cardRequest, user);
         cardRepository.save(card);
         return CardResponse.of(card);
     }
 
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId()).orElseThrow(UserNotFoundException::new);
+    }
+
     private Card convertToCard(CardRequest cardRequest, User user) {
         Workbook workbook = findWorkbook(cardRequest.getWorkbookId());
-        if (!workbook.isSameUser(user)) {
+        if (!workbook.hasSameUser(user)) {
             throw new NotAuthorException();
         }
         return cardRequest.toCardWithWorkbook(workbook);
@@ -58,15 +61,31 @@ public class CardService {
     }
 
     @Transactional
-    public CardUpdateResponse updateCard(Long id, CardUpdateRequest cardUpdateRequest) {
-        Card card = cardRepository.findById(id)
-                .orElseThrow(CardNotFoundException::new);
+    public CardUpdateResponse updateCard(Long id,
+                                         CardUpdateRequest cardUpdateRequest,
+                                         AppUser appUser) {
+        final User user = findUser(appUser);
+        Card card = findCard(id);
+
+        if (!card.hasSameUser(user)) {
+            throw new NotAuthorException();
+        }
+
         card.updateFrom(cardUpdateRequest.toCard(Workbook.temporaryWorkbook()));
         return CardUpdateResponse.of(card);
     }
 
+    private Card findCard(Long id) {
+        return cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
+    }
+
     @Transactional
-    public void deleteCard(Long id) {
+    public void deleteCard(Long id, AppUser appUser) {
+        final User user = findUser(appUser);
+        final Card card = findCard(id);
+        if (!card.hasSameUser(user)) {
+            throw new NotAuthorException();
+        }
         cardRepository.deleteById(id);
     }
 

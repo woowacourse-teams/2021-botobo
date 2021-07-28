@@ -87,7 +87,7 @@ public class Workbook extends BaseEntity {
         return user.getUserName();
     }
 
-    public boolean isSameUser(User user) {
+    public boolean hasSameUser(User user) {
         return this.user == user;
     }
 
