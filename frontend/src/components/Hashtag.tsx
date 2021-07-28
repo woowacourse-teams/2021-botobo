@@ -52,7 +52,7 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
           <Input
             value={value}
             onChange={({ target }) => setValue(target.value)}
-            onKeyDown={submitHashtag}
+            onKeyPress={submitHashtag}
             name="hashtag"
             placeholder="태그입력"
           />
@@ -64,6 +64,7 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
 
 const Container = styled.div`
   margin-top: 2rem;
+  margin-left: 0.5rem;
 `;
 
 const Hash = styled.span`

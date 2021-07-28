@@ -2,10 +2,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import { Hashtag, InputField, PageHeader } from '../components';
+import { Hashtag, InputField, PageHeader, Toggle } from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
-import useModal from '../hooks/useModal';
 import { Flex } from '../styles';
 
 const validateWorkbookName = (value: string) => {
@@ -17,8 +16,8 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookAddPage = () => {
-  const { openModal } = useModal();
   const [hashtags, setHashtags] = useState<string[]>([]);
+  const [isPublic, setIsPublic] = useState(true);
 
   return (
     <FormProvider
@@ -33,6 +32,13 @@ const WorkbookAddPage = () => {
         rightContent={<SubmitButton>확인</SubmitButton>}
       />
       <Container>
+        <ToggleWrapper>
+          <Toggle
+            labelText={'전체 공개'}
+            isChecked={isPublic}
+            onChange={({ target }) => setIsPublic(target.checked)}
+          />
+        </ToggleWrapper>
         <Input
           name="name"
           placeholder="문제집 이름"
@@ -40,10 +46,6 @@ const WorkbookAddPage = () => {
           autoFocus={true}
           maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
         />
-        <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
-        <AccessSelectorWrapper>
-          <AccessSelector id="access-select">전체 공개</AccessSelector>
-        </AccessSelectorWrapper>
         <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
       </Container>
     </FormProvider>
@@ -61,6 +63,16 @@ const Container = styled.div`
     `}
 `;
 
+const ToggleWrapper = styled.div`
+  ${Flex({ justify: 'flex-end', items: 'center' })};
+  margin-bottom: 1rem;
+  width: 100%;
+
+  & > span {
+    margin-right: 1rem;
+  }
+`;
+
 const Input = styled(InputField)`
   width: 100%;
   padding: 0.5rem 1rem;
@@ -73,47 +85,6 @@ const Input = styled(InputField)`
     font-size: ${theme.fontSize.default};
     border-bottom: 1px solid ${theme.color.gray_5};
   `}
-`;
-
-const AccessLabel = styled.label`
-  margin-left: 1rem;
-
-  ${({ theme }) => css`
-    font-size: ${theme.fontSize.small};
-  `}
-`;
-
-const AccessSelectorWrapper = styled.div`
-  ${Flex({ justify: 'space-between', items: 'center' })};
-  width: 100%;
-  height: 2rem;
-  margin-top: 0.3rem;
-  padding: 0 1rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    border: 1px solid ${theme.color.gray_5};
-    border-radius: ${theme.borderRadius.square};
-    font-size: ${theme.fontSize.default};
-  `}
-
-  &::after {
-    content: '';
-    width: 0.8rem;
-    height: 0.5rem;
-    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-
-    ${({ theme }) => css`
-      background-color: ${theme.color.gray_7};
-    `}
-  }
-`;
-
-const AccessSelector = styled.span`
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  line-height: 2rem;
 `;
 
 export default WorkbookAddPage;

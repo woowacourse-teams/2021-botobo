@@ -43,7 +43,7 @@ const InputField = ({
         name={name}
         value={values[name]}
         onChange={onChange}
-        onKeyDown={(event) => {
+        onKeyPress={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
           }
