@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 import { Button, CardAddForm, QnACard } from '../components';
 import { useCards } from '../hooks';
-import useModal from '../hooks/useModal';
 import { CardResponse } from '../types';
 
 interface Filter {
@@ -33,12 +32,13 @@ const CardsPage = () => {
     workbookName,
     cards,
     createCard,
-    updateCardInfo,
+    editCard,
     deleteCard,
     toggleBookmark,
+    updateCardInfo,
+    openModal,
   } = useCards();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
-  const { openModal } = useModal();
 
   return (
     <Container>
@@ -80,6 +80,8 @@ const CardsPage = () => {
           <li key={cardInfo.id}>
             <QnACard
               cardInfo={cardInfo}
+              workbookName={workbookName}
+              editCard={editCard}
               deleteCard={deleteCard}
               toggleBookmark={toggleBookmark}
             />

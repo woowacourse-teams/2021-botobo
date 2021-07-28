@@ -10,14 +10,14 @@ import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useCards = () => {
-  const { routeMain, routeCards } = useRouter();
+  const { routeMain } = useRouter();
   const showSnackbar = useSnackbar();
   const {
     data: { workbookId, workbookName, cards },
     errorMessage,
   } = useRecoilValue(cardState);
   const updateCardInfo = useResetRecoilState(cardState);
-  const { closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   const createCard = async (question: string, answer: string) => {
     try {
@@ -35,8 +35,8 @@ const useCards = () => {
     try {
       await putCardAsync(cardInfo);
       updateCardInfo();
+      closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
-      routeCards();
     } catch (error) {
       console.error(error);
       showSnackbar({ message: '카드를 수정하지 못했어요.', type: 'error' });
@@ -82,6 +82,7 @@ const useCards = () => {
     deleteCard,
     toggleBookmark,
     updateCardInfo,
+    openModal,
   };
 };
 

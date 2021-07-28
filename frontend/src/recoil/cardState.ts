@@ -2,8 +2,6 @@ import { DefaultValue, atom, selector } from 'recoil';
 
 import { CardResponse, CardsResponse } from './../types/index';
 import { getCardsAsync } from '../api';
-import { STORAGE_KEY } from '../constants';
-import { getSessionStorage } from '../utils';
 import { workbookIdState } from './workbookState';
 
 interface CardState {
@@ -34,7 +32,7 @@ const cardUpdateTrigger = atom({
 
 export const cardIdState = atom({
   key: 'cardIdState',
-  default: getSessionStorage(STORAGE_KEY.CARD_ID) ?? -1,
+  default: -1,
 });
 
 export const cardState = selector<CardState>({
