@@ -11,6 +11,7 @@ import { CardResponse } from '../types';
 import { debounce } from '../utils';
 import CardEditForm from './CardEditForm';
 import CardTemplate from './CardTemplate';
+import Confirm from './Confirm';
 
 interface Props {
   cardInfo: CardResponse;
@@ -47,7 +48,16 @@ const QnACard = ({
           type: 'full',
         });
       }}
-      onClickDeleteButton={() => deleteCard(cardInfo.id)}
+      onClickDeleteButton={() => {
+        openModal({
+          content: (
+            <Confirm onConfirm={() => deleteCard(cardInfo.id)}>
+              해당 카드를 정말 삭제하시겠어요?
+            </Confirm>
+          ),
+          type: 'center',
+        });
+      }}
     >
       <Header>
         <BookmarkButton onClick={onClickBookmark}>

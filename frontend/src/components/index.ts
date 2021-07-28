@@ -20,3 +20,4 @@ export { default as InputField } from './InputField';
 export { default as CardTextArea } from './CardTextArea';
 export { default as CardAddForm } from './CardAddForm';
 export { default as CardEditForm } from './CardEditForm';
+export { default as Confirm } from './Confirm';

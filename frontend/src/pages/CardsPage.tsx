@@ -69,6 +69,7 @@ const CardsPage = () => {
           openModal({
             content: <CardAddForm onSubmit={createCard} />,
             title: workbookName,
+            closeIcon: 'back',
             type: 'full',
           })
         }

@@ -38,6 +38,7 @@ const GlobalStyle = () => {
           border: 0;
           background-color: transparent;
           font-size: ${theme.fontSize.default};
+          color: ${theme.color.gray_9};
         }
       `}
     />

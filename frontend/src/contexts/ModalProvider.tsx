@@ -9,23 +9,26 @@ import { Flex } from '../styles';
 
 type ModalType = 'center' | 'bottom' | 'full';
 
+type CloseIconType = '' | 'back' | 'crossMark';
+
 interface Props {
   children: React.ReactElement | React.ReactElement[];
 }
 
 interface BottomSheetProps {
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
   type: ModalType;
   isOpened: boolean;
 }
 interface ModalInfo {
   content: React.ReactElement;
   title?: string;
+  closeIcon?: CloseIconType;
   type?: ModalType;
 }
 
 interface ModalContextType {
-  openModal: ({ content, title, type }: ModalInfo) => void;
+  openModal: ({ content, title, closeIcon, type }: ModalInfo) => void;
   closeModal: () => void;
 }
 
@@ -35,7 +38,7 @@ const modalStyle = {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    border-radius: ${theme.borderRadius.square_4};
+    border-radius: ${theme.borderRadius.square_1};
   `,
   bottom: css`
     bottom: 0;
@@ -52,19 +55,21 @@ const modalStyle = {
   `,
 };
 
-export const ModalContext = createContext<null | ModalContextType>(null);
+export const ModalContext = createContext<ModalContextType | null>(null);
 
 const ModalProvider = ({ children }: Props) => {
-  const [modalContent, setModalContent] = useState<null | React.ReactElement>(
+  const [modalContent, setModalContent] = useState<React.ReactElement | null>(
     null
   );
   const [title, setTitle] = useState('');
+  const [closeIcon, setCloseIcon] = useState<CloseIconType>('');
   const [type, setType] = useState<ModalType>('bottom');
   const [isOpened, setIsOpened] = useState(false);
 
-  const openModal = ({ content, title, type }: ModalInfo) => {
+  const openModal = ({ content, title, closeIcon, type }: ModalInfo) => {
     setModalContent(content);
     setTitle(title ?? '');
+    setCloseIcon(closeIcon ?? '');
     setType(type ?? 'bottom');
     setIsOpened(true);
   };
@@ -87,18 +92,19 @@ const ModalProvider = ({ children }: Props) => {
       {isOpened && <Dimmed onClick={closeWithDimmed} />}
       {modalContent && (
         <Modal isOpened={isOpened} type={type}>
-          <Header>
-            {type === 'full' ? (
-              <BackIcon width="1.2rem" height="1.2rem" onClick={closeModal} />
-            ) : (
-              <CloseButton
-                width="0.8rem"
-                height="0.8rem"
-                onClick={closeModal}
-              />
-            )}
-            <h2>{title}</h2>
-          </Header>
+          {(closeIcon || title) && (
+            <Header>
+              <button type="button" onClick={closeModal}>
+                {closeIcon === 'back' && (
+                  <BackIcon width="1.2rem" height="1.2rem" />
+                )}
+                {closeIcon === 'crossMark' && (
+                  <CloseButton width="0.8rem" height="0.8rem" />
+                )}
+              </button>
+              <h2>{title}</h2>
+            </Header>
+          )}
           {modalContent}
         </Modal>
       )}
@@ -139,7 +145,7 @@ const Dimmed = styled.div`
   right: 0;
 
   ${({ theme }) => css`
-    background-color: ${`${theme.color.black}1A`};
+    background-color: ${`${theme.color.black}80`};
   `};
 `;
 
@@ -149,7 +155,7 @@ const Header = styled.div`
   margin-top: 0.5rem;
   margin-bottom: 2rem;
 
-  & > svg {
+  & > button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
