@@ -3,12 +3,19 @@ import axios from 'axios';
 import { STORAGE_KEY } from '../constants';
 import {
   AccessTokenResponse,
+  CardResponse,
   CardsResponse,
   QuizResponse,
   UserInfoResponse,
   WorkbookResponse,
 } from '../types';
 import { getLocalStorage } from '../utils';
+
+interface PostCardAsync {
+  question: string;
+  answer: string;
+  workbookId: number;
+}
 
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
@@ -60,4 +67,18 @@ export const getUserInfoAsync = async () => {
   const { data } = await request.get<UserInfoResponse>('/users/me');
 
   return data;
+};
+
+export const postCardAsync = async (params: PostCardAsync) => {
+  await request.post('/cards', params);
+};
+
+export const putCardAsync = async (cardInfo: CardResponse) => {
+  const { id, ...params } = cardInfo;
+
+  await request.put(`/cards/${id}`, params);
+};
+
+export const deleteCardAsync = async (id: number) => {
+  await request.delete(`/cards/${id}`);
 };

@@ -1,7 +1,6 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.BaseEntity;
-import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.User;
 import lombok.Builder;
@@ -15,7 +14,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -103,9 +101,5 @@ public class Workbook extends BaseEntity {
 
     public int cardCount() {
         return cards.counts();
-    }
-
-    public List<Card> getCardsAsList() {
-        return cards.getCards();
     }
 }
