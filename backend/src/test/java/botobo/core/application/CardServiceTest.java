@@ -2,11 +2,15 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.NextQuizCardsRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,22 +37,35 @@ class CardServiceTest {
     @Mock
     private WorkbookRepository workbookRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private CardService cardService;
+
+    private Workbook workbook;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = User.builder().id(1L).build();
+        workbook = workbook(1L, user);
+    }
 
     @Test
     @DisplayName("카드 생성 - 성공")
     void createCard() {
         // given
         CardRequest cardRequest = cardRequest();
-        Workbook workbook = workbook(1L);
         Card card = card(1L, workbook);
+        AppUser appUser = AppUser.user(1L);
 
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.findById(cardRequest.getWorkbookId())).willReturn(Optional.of(workbook));
         given(cardRepository.save(any())).willReturn(card);
 
         // when
-        cardService.createCard(cardRequest);
+        cardService.createCard(cardRequest, appUser);
 
         // then
         then(workbookRepository)
@@ -59,12 +76,14 @@ class CardServiceTest {
                 .save(any());
     }
 
+    // TODO 카드 추가 테스트 추가
+
     @Test
     @DisplayName("카드 수정 - 성공")
     void updateCard() {
         // given
         Long cardId = 1L;
-        Workbook workbook = workbook(1L);
+        Workbook workbook = workbook(1L, user);
         CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
         Card card = card(cardId, workbook);
 
@@ -114,7 +133,7 @@ class CardServiceTest {
                 .findByIdIn(anyList());
     }
 
-    private Workbook workbook(Long id) {
+    private Workbook workbook(Long id, User user) {
         return Workbook.builder()
                 .id(id)
                 .name("workbook")
@@ -151,9 +170,9 @@ class CardServiceTest {
 
     private List<Card> listOfThreeCards() {
         return List.of(
-                card(1L, workbook(1L)),
-                card(2L, workbook(1L)),
-                card(3L, workbook(1L))
+                card(1L, workbook(1L, user)),
+                card(2L, workbook(1L, user)),
+                card(3L, workbook(1L, user))
         );
     }
 

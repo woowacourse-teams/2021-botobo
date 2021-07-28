@@ -48,7 +48,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
@@ -74,7 +74,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
@@ -96,7 +96,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
@@ -120,7 +120,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -141,7 +141,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
@@ -163,7 +163,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
@@ -187,13 +187,57 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth()
+                .auth(jwtTokenProvider.createToken(1L))
                 .build();
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse).extracting("message").isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("카드 생성 - 실패, 유저가 존재하지 않음.")
+    void createCardWithNotExistUser() {
+        // given
+        CardRequest cardRequest = CardRequest.builder()
+                .question("question")
+                .answer("answer")
+                .workbookId(1L)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth() // 100L
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("카드 생성 - 실패, 문제집의 유저와 일치하지 않음.")
+    void createCardWithNotSameUser() {
+        // given
+        CardRequest cardRequest = CardRequest.builder()
+                .question("question")
+                .answer("answer")
+                .workbookId(1L)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/cards", cardRequest)
+                .auth(jwtTokenProvider.createToken(anyUser().getId()))
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
     }
 
     @Test

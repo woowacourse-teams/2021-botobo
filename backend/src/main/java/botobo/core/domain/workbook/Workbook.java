@@ -23,6 +23,7 @@ import java.util.Objects;
 public class Workbook extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 30;
+    private static final Workbook TEMPORARY_WORKBOOK = Workbook.builder().name("temporary").build();
 
     @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
@@ -53,6 +54,10 @@ public class Workbook extends BaseEntity {
         }
     }
 
+    public static Workbook temporaryWorkbook() {
+        return TEMPORARY_WORKBOOK;
+    }
+
     private void validateName(String name) {
         if (Objects.isNull(name)) {
             throw new IllegalArgumentException("Workbook의 Name에는 null이 들어갈 수 없습니다.");
@@ -80,6 +85,10 @@ public class Workbook extends BaseEntity {
             return "존재하지 않는 유저";
         }
         return user.getUserName();
+    }
+
+    public boolean isSameUser(User user) {
+        return this.user == user;
     }
 
     public boolean containsWord(String word) {

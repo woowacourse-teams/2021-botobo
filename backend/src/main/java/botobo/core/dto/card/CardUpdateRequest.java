@@ -40,7 +40,7 @@ public class CardUpdateRequest {
     @NotNull(message = "카드를 업데이트하기 위해서는 또 보기 정보가 필요합니다.")
     private Boolean nextQuiz;
 
-    public Card toCardWithWorkbook(Workbook workbook) {
+    public Card toCard(Workbook workbook) {
         return Card.builder()
                 .question(question)
                 .answer(answer)

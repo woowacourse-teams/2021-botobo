@@ -58,7 +58,7 @@ public class CardDocumentationTest extends DocumentationTest {
                 .nextQuiz(false)
                 .build();
         String token = "botobo.access.token";
-        given(cardService.createCard(any())).willReturn(response);
+        given(cardService.createCard(any(), any())).willReturn(response);
 
         // when, then
         document()
