@@ -64,27 +64,7 @@ class WorkbookFinderTest {
     }
 
     @Test
-    @DisplayName("검색어 없이 문제집을 찾으면 관리자가 등록한 공개 문제집이 찾아진다.")
-    void applyByNoSearchKeyword() {
-        // given
-        WorkbookFinder workbookFinder = WorkbookFinder.builder()
-                .workbooks(workbooks)
-                .build();
-
-        WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from(null))
-                .accessType(AccessType.PUBLIC)
-                .build();
-
-        // when
-        List<Workbook> workbooks = workbookFinder.apply(workbookCriteria);
-
-        // then
-        assertThat(workbooks).hasSize(3);
-    }
-
-    @Test
-    @DisplayName("비공개 문제집을 찾는다.")
+    @DisplayName("비공개 문제집을 검색한다.")
     void applyByAccess() {
         // given
         WorkbookFinder workbookFinder = WorkbookFinder.builder()
@@ -92,6 +72,7 @@ class WorkbookFinderTest {
                 .build();
 
         WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
+                .searchKeyword(SearchKeyword.from("데이터"))
                 .accessType(AccessType.PRIVATE)
                 .build();
 
@@ -100,20 +81,20 @@ class WorkbookFinderTest {
 
         // then
         assertThat(workbooks).extracting("name")
-                .containsExactly("데이터베이스");
+                .containsExactlyInAnyOrder("데이터베이스", "빅데이터");
     }
 
     private List<Workbook> generateDummyWorkbooks() {
-        User adminUser = User.builder().id(1L).role(Role.ADMIN).build();
-        User normalUser = User.builder().id(2L).role(Role.USER).build();
+        User user = User.builder().id(2L).role(Role.USER).build();
 
         return Arrays.asList(
-                Workbook.builder().id(1L).name("데이터베이스").opened(false).user(adminUser).build(),
-                Workbook.builder().id(2L).name("자바").opened(true).user(adminUser).build(),
-                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(adminUser).build(),
-                Workbook.builder().id(4L).name("네트워크").opened(true).user(adminUser).build(),
-                Workbook.builder().id(5L).name("리액트").opened(true).user(normalUser).build(),
-                Workbook.builder().id(6L).name("스프링").opened(true).user(normalUser).build()
+                Workbook.builder().id(1L).name("데이터베이스").opened(false).user(user).build(),
+                Workbook.builder().id(2L).name("자바").opened(true).user(user).build(),
+                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(user).build(),
+                Workbook.builder().id(4L).name("네트워크").opened(true).user(user).build(),
+                Workbook.builder().id(5L).name("리액트").opened(true).user(user).build(),
+                Workbook.builder().id(6L).name("스프링").opened(true).user(user).build(),
+                Workbook.builder().id(1L).name("빅데이터").opened(false).user(user).build()
         );
     }
 }

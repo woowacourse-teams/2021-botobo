@@ -93,21 +93,4 @@ class WorkbookServiceTest {
         then(workbookRepository).should(times(1))
                 .findAll();
     }
-
-    @Test
-    @DisplayName("null 문자열을 검색어로 공유 문제집을 검색하면 관리자의 공개 문제집을 조회한다.")
-    void findPublicWorkbooksByNullSearch() {
-        // given
-        given(workbookRepository.findAll()).willReturn(workbooks);
-
-        // when
-        List<WorkbookResponse> workbooks = workbookService.findPublicWorkbooksBySearch(null);
-
-        // then
-        assertThat(workbooks).extracting("name")
-                .containsExactlyInAnyOrder("데이터베이스");
-
-        then(workbookRepository).should(times(1))
-                .findAll();
-    }
 }

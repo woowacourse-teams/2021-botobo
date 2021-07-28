@@ -5,7 +5,7 @@ import React from 'react';
 import { CardResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
-type PickedCardResponse = Omit<CardResponse, 'id'>;
+type PickedCardResponse = Pick<CardResponse, 'question' | 'answer'>;
 
 interface Props extends PickedCardResponse {
   isChecked?: boolean;
