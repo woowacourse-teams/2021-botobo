@@ -11,7 +11,6 @@ import { useRecoilValue } from 'recoil';
 import { MainHeader, PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
-  CardEditPage,
   CardsLoadable,
   CardsPage,
   GithubCallbackPage,
@@ -74,13 +73,9 @@ const Router = () => (
       </Route>
       <Route exact path={ROUTE.CARDS.PATH}>
         <Suspense fallback={<CardsLoadable />}>
-          <PageHeader title={ROUTE.CARDS.TITLE} />
           <CardsPage />
         </Suspense>
       </Route>
-      <PrivateRoute exact path={ROUTE.CARD_EDIT.PATH}>
-        <CardEditPage />
-      </PrivateRoute>
       <Route exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
         <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
         <PublicWorkbookPage />

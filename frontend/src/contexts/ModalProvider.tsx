@@ -1,6 +1,6 @@
 import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 import BackIcon from '../assets/chevron-left-solid.svg';
 import CloseButton from '../assets/cross-mark.svg';
@@ -86,6 +86,13 @@ const ModalProvider = ({ children }: Props) => {
 
     closeModal();
   };
+
+  useEffect(() => {
+    window.addEventListener('popstate', () => {
+      setModalContent(null);
+      closeModal();
+    });
+  }, []);
 
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>

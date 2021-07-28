@@ -45,6 +45,7 @@ const QnACard = ({
         openModal({
           content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
           title: workbookName,
+          closeIcon: 'back',
           type: 'full',
         });
       }}
