@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Hashtag, InputField, PageHeader, Toggle } from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
+import { useWorkbook } from '../hooks';
 import { Flex } from '../styles';
 
 const validateWorkbookName = (value: string) => {
@@ -18,14 +19,13 @@ const validateWorkbookName = (value: string) => {
 const WorkbookAddPage = () => {
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState(true);
+  const { createWorkbook } = useWorkbook();
 
   return (
     <FormProvider
       initialValues={{ name: '' }}
       validators={{ name: validateWorkbookName }}
-      onSubmit={() => {
-        console.log('hi');
-      }}
+      onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
     >
       <PageHeader
         title={ROUTE.WORKBOOK_ADD.TITLE}

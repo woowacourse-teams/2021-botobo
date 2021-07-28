@@ -17,6 +17,12 @@ interface PostCardAsync {
   workbookId: number;
 }
 
+interface PostWorkbookAsync {
+  name: string;
+  opened: boolean;
+  tags: string[];
+}
+
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
 });
@@ -81,4 +87,8 @@ export const putCardAsync = async (cardInfo: CardResponse) => {
 
 export const deleteCardAsync = async (id: number) => {
   await request.delete(`/cards/${id}`);
+};
+
+export const postWorkbookAsync = async (params: PostWorkbookAsync) => {
+  await request.post('/workbook', params);
 };

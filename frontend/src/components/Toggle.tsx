@@ -60,7 +60,7 @@ const Switch = styled.span`
   position: relative;
 
   border-radius: ${TOGGLE_RADIUS}px;
-  transition: background-color 0.15s ease-in;
+  transition: background-color 0.1s ease-in;
 
   ${({ theme }) => css`
     background-color: ${theme.color.gray_5};
@@ -78,7 +78,7 @@ const Switch = styled.span`
     width: ${TOGGLE_SWITCH_SIZE}px;
     height: ${TOGGLE_SWITCH_SIZE}px;
     border-radius: ${TOGGLE_RADIUS}px;
-    transition: left 0.15s ease-in;
+    transition: left 0.1s ease-in;
   }
 `;
 
