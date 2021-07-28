@@ -2,7 +2,6 @@ package botobo.core.documentation;
 
 import botobo.core.application.AuthService;
 import botobo.core.application.WorkbookService;
-import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.CardSimpleResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -124,6 +123,28 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-put-success");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 삭제 - 성공")
+    void deleteWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집 수정")
+                .opened(false)
+                .cardCount(0)
+                .build();
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .delete("/api/workbooks/{id}", workbookResponse.getId())
+                .auth(token)
+                .build()
+                .status(status().isNoContent())
+                .identifier("workbooks-delete-success");
     }
 
     private List<WorkbookResponse> generateWorkbookResponse() {

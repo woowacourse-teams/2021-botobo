@@ -114,7 +114,7 @@ public class WorkbookRepositoryTest {
 
         //then
         assertThat(workbooks).hasSize(2)
-            .containsExactly(workbook2, workbook1);
+                .containsExactly(workbook2, workbook1);
     }
 
     @Test
@@ -180,6 +180,33 @@ public class WorkbookRepositoryTest {
         assertThatThrownBy(() ->
                 workbook.updateIfCan("오즈의 Java를 다 잡아", false, 2L))
                 .isInstanceOf(NotAuthorException.class);
+    }
 
+    @Test
+    @DisplayName("유저가 자신의 문제집을 삭제한다. - 성공")
+    void deleteWorkbook() {
+        // given
+        User user = User.builder()
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .build();
+        workbook.createBy(user);
+
+        workbookRepository.save(workbook);
+
+        // when
+        workbookRepository.delete(workbook);
+
+        //then
+        assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);
     }
 }

@@ -205,7 +205,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("이름은 필수 입력값입니다.");;
+        assertThat(errorResponse.getMessage()).isEqualTo("이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -273,6 +273,39 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
+    @Test
+    @DisplayName("유저가 문제집 삭제 - 성공")
+    void deleteWorkbook() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+
+        // when
+        final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, userInfo);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 삭제 - 실패, 다른 유저가 삭제를 시도할 때")
+    void deleteWorkbookWithOtherUser() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        GithubUserInfoResponse otherUserInfo = GithubUserInfoResponse.builder()
+                .userName("otherUser")
+                .githubId(3L)
+                .profileUrl("github.io")
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, otherUserInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
 
     private WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, GithubUserInfoResponse userInfo) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
@@ -298,6 +331,13 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                                       GithubUserInfoResponse userInfo) {
         return request()
                 .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+    }
+
+    private HttpResponse 유저_문제집_삭제_요청(WorkbookResponse workbookResponse, GithubUserInfoResponse userInfo) {
+        return request()
+                .delete("/api/workbooks/{id}", workbookResponse.getId())
                 .auth(로그인되어_있음(userInfo).getAccessToken())
                 .build();
     }

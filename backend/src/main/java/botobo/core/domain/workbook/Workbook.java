@@ -8,6 +8,8 @@ import botobo.core.exception.NotAuthorException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -23,6 +25,8 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Entity
+@SQLDelete(sql = "UPDATE workbook SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Workbook extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 30;
@@ -70,7 +74,7 @@ public class Workbook extends BaseEntity {
         }
     }
 
-    private void changeUser(User user) {
+    public void createBy(User user) {
         if (Objects.nonNull(this.user)) {
             this.user.getWorkbooks().remove(this);
         }
@@ -108,5 +112,13 @@ public class Workbook extends BaseEntity {
         }
         this.name = name;
         this.opened = opened;
+    }
+
+    public void deleteIfCan(Long userId) {
+        if (!this.user.isSameId(userId)) {
+            throw new NotAuthorException();
+        }
+        user.getWorkbooks().remove(this);
+        this.deleted = true;
     }
 }

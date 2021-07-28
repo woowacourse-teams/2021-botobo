@@ -40,8 +40,8 @@ public class WorkbookService {
                 .name(workbookRequest.getName())
                 .opened(workbookRequest.isOpened())
                 .deleted(false)
-                .user(user)
                 .build();
+        workbook.createBy(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return WorkbookResponse.convert(savedWorkbook);
     }
@@ -86,5 +86,13 @@ public class WorkbookService {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
         return WorkbookCardResponse.of(workbook);
+    }
+
+    @Transactional
+    public void deleteWorkbook(Long id, AppUser appUser) {
+        Workbook workbook = workbookRepository.findById(id)
+                .orElseThrow(WorkbookNotFoundException::new);
+        workbook.deleteIfCan(appUser.getId());
+        workbookRepository.delete(workbook);
     }
 }

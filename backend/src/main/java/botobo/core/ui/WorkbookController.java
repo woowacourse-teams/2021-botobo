@@ -8,6 +8,7 @@ import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,5 +69,12 @@ public class WorkbookController {
         return ResponseEntity.ok(
                 workbookService.findWorkbookCardsById(id)
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorkbook(@PathVariable Long id,
+                                               @AuthenticationPrincipal AppUser appUser) {
+        workbookService.deleteWorkbook(id, appUser);
+        return ResponseEntity.noContent().build();
     }
 }
