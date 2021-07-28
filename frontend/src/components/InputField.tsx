@@ -9,7 +9,7 @@ type FocusColor = 'gray' | 'green';
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   focusColor?: FocusColor;
-  maxLength: number;
+  maxLength?: number;
 }
 
 interface ContainerStyleProps {

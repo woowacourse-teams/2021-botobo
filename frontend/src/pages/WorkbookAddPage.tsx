@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { InputField, PageHeader } from '../components';
+import { Hashtag, InputField, PageHeader } from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
 import useModal from '../hooks/useModal';
@@ -18,6 +18,7 @@ const validateWorkbookName = (value: string) => {
 
 const WorkbookAddPage = () => {
   const { openModal } = useModal();
+  const [hashtags, setHashtags] = useState<string[]>([]);
 
   return (
     <FormProvider
@@ -36,12 +37,14 @@ const WorkbookAddPage = () => {
           name="name"
           placeholder="문제집 이름"
           focusColor="gray"
+          autoFocus={true}
           maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
         />
         <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
         <AccessSelectorWrapper>
           <AccessSelector id="access-select">전체 공개</AccessSelector>
         </AccessSelectorWrapper>
+        <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
       </Container>
     </FormProvider>
   );
