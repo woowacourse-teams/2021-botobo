@@ -1,7 +1,5 @@
 package botobo.core.infrastructure;
 
-import botobo.core.exception.UnauthorizedException;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
@@ -21,7 +19,6 @@ public class AuthorizationExtractor {
         }
         return null;
     }
-
 
     private static String getAuthHeaderValue(HttpServletRequest request, String headerValue) {
         String authHeaderValue = headerValue.substring(BEARER_TYPE.length()).trim();

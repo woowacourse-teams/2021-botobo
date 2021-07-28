@@ -1,6 +1,6 @@
 <included>
-    <logger name="org.hibernate.SQL" level="DEBUG" />
-    <logger name="org.hibernate.type" level="TRACE" />
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type" level="TRACE"/>
 
     <property name="QUERY_LOG_PATH" value="logs/query"/>
     <property name="QUERY_LOG_FILE_NAME" value="query"/>

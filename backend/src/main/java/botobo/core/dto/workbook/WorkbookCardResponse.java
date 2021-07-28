@@ -2,7 +2,6 @@ package botobo.core.dto.workbook;
 
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.card.CardResponse;
-import botobo.core.dto.card.CardSimpleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

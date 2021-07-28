@@ -112,6 +112,6 @@ public class WorkbookRepositoryTest {
 
         //then
         assertThat(workbooks).hasSize(2)
-            .containsExactly(workbook2, workbook1);
+                .containsExactly(workbook2, workbook1);
     }
 }
