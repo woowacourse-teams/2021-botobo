@@ -31,19 +31,19 @@ class WorkbookServiceTest {
     @InjectMocks
     private WorkbookService workbookService;
 
-    private User normalUser;
+    private User pk;
 
     private List<Workbook> workbooks;
 
     @BeforeEach
     void setUp() {
-        normalUser = User.builder().id(2L).userName("ggyool").role(Role.USER).build();
+        pk = User.builder().id(1L).userName("pkeugine").role(Role.USER).build();
 
         workbooks = Arrays.asList(
-                Workbook.builder().id(1L).name("데이터베이스").opened(true).user(normalUser).build(),
-                Workbook.builder().id(2L).name("자바").opened(true).user(normalUser).build(),
-                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(normalUser).build(),
-                Workbook.builder().id(4L).name("네트워크").opened(true).user(normalUser).build()
+                Workbook.builder().id(1L).name("데이터베이스").opened(true).user(pk).build(),
+                Workbook.builder().id(2L).name("자바").opened(true).user(pk).build(),
+                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(pk).build(),
+                Workbook.builder().id(4L).name("네트워크").opened(true).user(pk).build()
         );
     }
 
@@ -51,16 +51,16 @@ class WorkbookServiceTest {
     @DisplayName("일반 유저 문제집 전체 조회 - 성공")
     void findWorkbooksByUser() {
         // given
-        given(workbookRepository.findAllByUserId(normalUser.getId())).willReturn(workbooks);
+        given(workbookRepository.findAllByUserId(pk.getId())).willReturn(workbooks);
 
         // when
-        List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(normalUser.toAppUser());
+        List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(pk.toAppUser());
 
         // then
         assertThat(workbooks).hasSize(4);
 
         then(workbookRepository).should(times(1))
-                .findAllByUserId(normalUser.getId());
+                .findAllByUserId(pk.getId());
     }
 
     @Test

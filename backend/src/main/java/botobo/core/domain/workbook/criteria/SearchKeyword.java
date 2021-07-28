@@ -1,6 +1,6 @@
-package botobo.core.domain.workbook;
+package botobo.core.domain.workbook.criteria;
 
-import botobo.core.exception.workbook.WorkbookSearchFailureException;
+import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -11,17 +11,21 @@ import java.util.Objects;
 public class SearchKeyword {
 
     private static final int KEYWORD_MAX_LENGTH = 30;
-    private static final String NO_KEYWORD_VALUE = "";
-
-    private static final SearchKeyword NO_SEARCH_KEYWORD = new SearchKeyword(NO_KEYWORD_VALUE);
 
     private final String value;
 
     private SearchKeyword(String value) {
+        validateNonNull(value);
         String refinedValue = refineValue(value);
         validateLength(refinedValue);
         validateNotForbidden(refinedValue);
         this.value = refinedValue;
+    }
+
+    private void validateNonNull(String value) {
+        if (Objects.isNull(value)) {
+            throw new SearchKeywordCreationFailureException("검색어는 null일 수 없습니다.");
+        }
     }
 
     private String refineValue(String value) {
@@ -32,7 +36,7 @@ public class SearchKeyword {
 
     private void validateLength(String value) {
         if (value.length() > KEYWORD_MAX_LENGTH) {
-            throw new WorkbookSearchFailureException(
+            throw new SearchKeywordCreationFailureException(
                     String.format("검색어는 %d자 이하여야 합니다.", KEYWORD_MAX_LENGTH)
             );
         }
@@ -40,24 +44,13 @@ public class SearchKeyword {
 
     private void validateNotForbidden(String value) {
         if (value.contains("바보")) {
-            throw new WorkbookSearchFailureException(
+            throw new SearchKeywordCreationFailureException(
                     String.format("금지어를 입력했습니다. (%s)", value)
             );
         }
     }
 
     public static SearchKeyword from(String value) {
-        if (isNoKeywordValue(value)) {
-            return NO_SEARCH_KEYWORD;
-        }
         return new SearchKeyword(value);
-    }
-
-    private static boolean isNoKeywordValue(String value) {
-        return Objects.isNull(value) || value.isBlank();
-    }
-
-    public boolean isNoKeyword() {
-        return this == NO_SEARCH_KEYWORD;
     }
 }
