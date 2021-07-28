@@ -39,7 +39,7 @@ const WorkbookAddPage = () => {
           maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
         />
         <AccessLabel htmlFor="access-select">공개 범위</AccessLabel>
-        <AccessSelectorWrapper onClick={() => openModal(<div>모달</div>)}>
+        <AccessSelectorWrapper>
           <AccessSelector id="access-select">전체 공개</AccessSelector>
         </AccessSelectorWrapper>
       </Container>

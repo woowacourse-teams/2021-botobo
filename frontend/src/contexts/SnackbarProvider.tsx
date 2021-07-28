@@ -13,7 +13,7 @@ interface SnackbarInfo {
 }
 
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 interface ContainerStyleProps extends Required<Omit<SnackbarInfo, 'message'>> {

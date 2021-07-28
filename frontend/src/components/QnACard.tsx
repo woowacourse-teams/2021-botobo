@@ -5,27 +5,36 @@ import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
 import FillStarIcon from '../assets/star-fill.svg';
-import { STORAGE_KEY } from '../constants';
-import { useRouter } from '../hooks';
+import useModal from '../hooks/useModal';
 import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
-import { debounce, setSessionStorage } from '../utils';
+import { debounce } from '../utils';
+import CardEditForm from './CardEditForm';
 import CardTemplate from './CardTemplate';
+import Confirm from './Confirm';
 
 interface Props {
   cardInfo: CardResponse;
+  workbookName: string;
+  editCard: (cardInfo: CardResponse) => Promise<void>;
   deleteCard: (id: number) => Promise<void>;
   toggleBookmark: (cardInfo: CardResponse) => Promise<void>;
 }
 
-const QnACard = ({ cardInfo, deleteCard, toggleBookmark }: Props) => {
-  const { routeCardEdit } = useRouter();
+const QnACard = ({
+  cardInfo,
+  workbookName,
+  editCard,
+  deleteCard,
+  toggleBookmark,
+}: Props) => {
+  const { openModal } = useModal();
   const setCardId = useSetRecoilState(cardIdState);
-  const [isBookmark, setIsBookmark] = useState(false);
+  const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
 
   const onClickBookmark = () => {
     setIsBookmark((prevState) => !prevState);
-    debounce(() => toggleBookmark({ ...cardInfo, bookmark: isBookmark }), 500);
+    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 500);
   };
 
   return (
@@ -33,10 +42,23 @@ const QnACard = ({ cardInfo, deleteCard, toggleBookmark }: Props) => {
       editable={true}
       onClickEditButton={async () => {
         await setCardId(cardInfo.id);
-        setSessionStorage(STORAGE_KEY.CARD_ID, cardInfo.id);
-        routeCardEdit();
+        openModal({
+          content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
+          title: workbookName,
+          closeIcon: 'back',
+          type: 'full',
+        });
       }}
-      onClickDeleteButton={() => deleteCard(cardInfo.id)}
+      onClickDeleteButton={() => {
+        openModal({
+          content: (
+            <Confirm onConfirm={() => deleteCard(cardInfo.id)}>
+              해당 카드를 정말 삭제하시겠어요?
+            </Confirm>
+          ),
+          type: 'center',
+        });
+      }}
     >
       <Header>
         <BookmarkButton onClick={onClickBookmark}>
