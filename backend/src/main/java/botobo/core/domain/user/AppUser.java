@@ -2,10 +2,8 @@ package botobo.core.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -35,5 +33,16 @@ public class AppUser {
 
     public boolean isAnonymous() {
         return role.isAnonymous();
+    }
+
+    public long getId() {
+        if (isAnonymous()) {
+            throw new IllegalStateException("비회원의 ID는 조회할 수 없습니다.");
+        }
+        return id;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

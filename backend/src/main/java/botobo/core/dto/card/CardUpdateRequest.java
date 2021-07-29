@@ -1,7 +1,6 @@
 package botobo.core.dto.card;
 
 import botobo.core.domain.card.Card;
-import botobo.core.domain.workbook.Workbook;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,11 +39,10 @@ public class CardUpdateRequest {
     @NotNull(message = "카드를 업데이트하기 위해서는 또 보기 정보가 필요합니다.")
     private Boolean nextQuiz;
 
-    public Card toCardWithWorkbook(Workbook workbook) {
+    public Card toCard() {
         return Card.builder()
                 .question(question)
                 .answer(answer)
-                .workbook(workbook)
                 .encounterCount(encounterCount)
                 .bookmark(bookmark)
                 .nextQuiz(nextQuiz)

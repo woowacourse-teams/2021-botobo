@@ -26,7 +26,6 @@ public class CardDocumentationTest extends DocumentationTest {
     @MockBean
     private CardService cardService;
 
-
     @Test
     @DisplayName("카드 생성 - 성공")
     void createCard() throws Exception {
@@ -46,7 +45,7 @@ public class CardDocumentationTest extends DocumentationTest {
                 .nextQuiz(false)
                 .build();
         String token = "botobo.access.token";
-        given(cardService.createCard(any())).willReturn(response);
+        given(cardService.createCard(any(), any())).willReturn(response);
 
         // when, then
         document()
@@ -80,7 +79,7 @@ public class CardDocumentationTest extends DocumentationTest {
                 .nextQuiz(true)
                 .build();
         String token = "botobo.access.token";
-        given(cardService.updateCard(anyLong(), any())).willReturn(response);
+        given(cardService.updateCard(anyLong(), any(), any())).willReturn(response);
 
         // when, then
         document()

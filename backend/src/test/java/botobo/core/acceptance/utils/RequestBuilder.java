@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestBuilder {
+    private static String defaultToken;
     private static String accessToken;
 
-    public RequestBuilder(String accessToken) {
-        RequestBuilder.accessToken = accessToken;
+    public RequestBuilder(String defaultToken) {
+        RequestBuilder.defaultToken = defaultToken;
     }
 
     public HttpFunction build() {
@@ -82,7 +83,12 @@ public class RequestBuilder {
 
         public HttpResponse build() {
             if (loginFlag) {
-                requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
+                if (accessToken != null && !defaultToken.equals(accessToken)) {
+                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
+                    accessToken = null;
+                } else {
+                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + defaultToken);
+                }
             }
             queryParams.forEach(entry -> {
                 requestSpecification.queryParam(entry.getKey(), entry.getValue());
