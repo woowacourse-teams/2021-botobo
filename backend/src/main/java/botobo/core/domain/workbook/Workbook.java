@@ -3,9 +3,11 @@ package botobo.core.domain.workbook;
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.User;
+import botobo.core.exception.NotAuthorException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -16,10 +18,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Objects;
 
-
 @Getter
 @NoArgsConstructor
 @Entity
+@Where(clause = "deleted=false")
 public class Workbook extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 30;
@@ -67,12 +69,13 @@ public class Workbook extends BaseEntity {
         }
     }
 
-    private void changeUser(User user) {
+    public Workbook createBy(User user) {
         if (Objects.nonNull(this.user)) {
             this.user.getWorkbooks().remove(this);
         }
         this.user = user;
         user.getWorkbooks().add(this);
+        return this;
     }
 
     public String author() {
@@ -91,15 +94,33 @@ public class Workbook extends BaseEntity {
         return !isOpened();
     }
 
-    public boolean ownedByAdmin() {
+    public boolean authorIsAdmin() {
         return user.isAdmin();
     }
 
-    public boolean ownedByUser() {
+    public boolean authorIsUser() {
         return user.isUser();
     }
 
     public int cardCount() {
         return cards.counts();
+    }
+
+    public void updateIfUserIsAuthor(String name, boolean opened, Long userId) {
+        validateAuthor(userId);
+        this.name = name;
+        this.opened = opened;
+    }
+
+    private void validateAuthor(Long userId) {
+        if (!user.isSameId(userId)) {
+            throw new NotAuthorException();
+        }
+    }
+
+    public void deleteIfUserIsAuthor(Long userId) {
+        validateAuthor(userId);
+        user.getWorkbooks().remove(this);
+        this.deleted = true;
     }
 }

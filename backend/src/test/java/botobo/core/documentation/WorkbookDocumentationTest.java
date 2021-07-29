@@ -3,7 +3,9 @@ package botobo.core.documentation;
 import botobo.core.application.WorkbookService;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
+import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.WorkbookController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,33 @@ public class WorkbookDocumentationTest extends DocumentationTest {
 
     @MockBean
     private WorkbookService workbookService;
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 성공")
+    void createWorkbookByUser() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("Java 문제집")
+                .opened(true)
+                .build();
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집")
+                .opened(true)
+                .cardCount(0)
+                .build();
+        given(workbookService.createWorkbookByUser(any(), any())).willReturn(workbookResponse);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/workbooks", workbookRequest)
+                .auth(token)
+                .build()
+                .status(status().isCreated())
+                .identifier("workbooks-post-success");
+    }
 
     @Test
     @DisplayName("유저 문제집 전체 조회 - 성공")
@@ -77,6 +106,34 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
+    @DisplayName("유저가 문제집 수정 - 성공")
+    void updateWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집")
+                .opened(true)
+                .cardCount(0)
+                .build();
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집 수정")
+                .opened(false)
+                .cardCount(0)
+                .build();
+        given(workbookService.updateWorkbook(anyLong(), any(), any())).willReturn(workbookResponse);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-put-success");
+    }
+
+    @Test
     @DisplayName("공유 문제집 검색 - 성공")
     void findPublicWorkbooksBySearch() throws Exception {
         // given
@@ -91,6 +148,29 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-public-search-get-success");
+
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 삭제 - 성공")
+    void deleteWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        WorkbookResponse workbookResponse = WorkbookResponse.builder()
+                .id(1L)
+                .name("Java 문제집 수정")
+                .opened(false)
+                .cardCount(0)
+                .build();
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .delete("/api/workbooks/{id}", workbookResponse.getId())
+                .auth(token)
+                .build()
+                .status(status().isNoContent())
+                .identifier("workbooks-delete-success");
     }
 
     private List<WorkbookResponse> generateUserWorkbookResponse() {

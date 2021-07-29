@@ -34,8 +34,8 @@ public class RequestBuilder {
             return new Options(new PostRequest<>(path, body));
         }
 
-        public <T> Options put(String path, T body) {
-            return new Options(new PutRequest<>(path, body));
+        public <T> Options put(String path, T body, Object... params) {
+            return new Options(new PutRequest<>(path, body, params));
         }
 
         public Options delete(String path, Object... params) {
@@ -165,17 +165,19 @@ public class RequestBuilder {
     private static class PutRequest<T> implements RestAssuredRequest {
         private final String path;
         private final T body;
+        private final Object[] params;
 
-        public PutRequest(String path, T body) {
+        public PutRequest(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
+            this.params = params;
         }
 
         @Override
         public ValidatableResponse action(RequestSpecification specification) {
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .put(path)
+                    .put(path, params)
                     .then();
         }
     }

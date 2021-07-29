@@ -62,6 +62,10 @@ public class User extends BaseEntity {
         return role.isAdmin();
     }
 
+    public boolean isSameId(Long userId) {
+        return id == userId;
+    }
+
     public boolean isUser() {
         return role.isUser();
     }
