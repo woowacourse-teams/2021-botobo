@@ -22,6 +22,7 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -102,14 +103,19 @@ public class WorkbookService {
         if (!workbook.isAuthorOf(user)) {
             throw new NotAuthorException();
         }
-        saveScrappedCardsToWorkbook(scrapCardRequest.getCardIds(), workbook);
+        List<Card> scrappedCards = scrapCards(scrapCardRequest.getCardIds());
+        for (Card card: scrappedCards) {
+            workbook.addCard(card);
+        }
     }
 
-    private void saveScrappedCardsToWorkbook(List<Long> cardIds, Workbook targetWorkbook) {
+    private List<Card> scrapCards(List<Long> cardIds) {
+        List<Card> scrappedCards = new ArrayList<>();
         for (Long id: cardIds) {
             final Card sourceCard = cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
-            Card.createCopyAndLinkToWorkbook(sourceCard, targetWorkbook);
+            scrappedCards.add(Card.createCopyOf(sourceCard));
         }
+        return scrappedCards;
     }
 
     private Workbook findWorkbook(Long workbookId) {

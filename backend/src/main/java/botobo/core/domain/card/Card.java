@@ -61,11 +61,10 @@ public class Card extends BaseEntity {
         }
     }
 
-    public static Card createCopyAndLinkToWorkbook(Card other, Workbook workbook) {
+    public static Card createCopyOf(Card other) {
         return Card.builder()
                 .question(other.question)
                 .answer(other.answer)
-                .workbook(workbook)
                 .build();
     }
 
@@ -78,11 +77,10 @@ public class Card extends BaseEntity {
         }
     }
 
-    public Card addWorkbook(Workbook workbook) {
+    public void addWorkbook(Workbook workbook) {
         if (Objects.nonNull(workbook)) {
             changeWorkbook(workbook);
         }
-        return this;
     }
 
     public void update(Card other) {
