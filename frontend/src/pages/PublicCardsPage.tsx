@@ -1,14 +1,21 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useSetRecoilState } from 'recoil';
 
+import { getQuizzesAsync } from '../api';
 import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
-import { ROUTE } from '../constants';
-import { usePublicCard } from '../hooks';
+import { QUIZ_MODE, ROUTE } from '../constants';
+import { usePublicCard, useRouter } from '../hooks';
+import { quizState } from '../recoil';
+import { quizModeState } from '../recoil/quizState';
 import { Flex } from '../styles';
 
 const PublicCardsPage = () => {
+  const setQuiz = useSetRecoilState(quizState);
+  const setQuizMode = useSetRecoilState(quizModeState);
   const {
+    workbookId,
     workbookName,
     cardCount,
     tags,
@@ -18,6 +25,7 @@ const PublicCardsPage = () => {
     checkedCardCount,
     checkCard,
   } = usePublicCard();
+  const { routeQuiz } = useRouter();
 
   return (
     <>
@@ -25,7 +33,18 @@ const PublicCardsPage = () => {
         title={ROUTE.PUBLIC_CARDS.TITLE}
         sticky={true}
         rightContent={
-          <StyledButton size="full" shape="square" backgroundColor="blue">
+          <StyledButton
+            size="full"
+            shape="square"
+            backgroundColor="blue"
+            onClick={async () => {
+              const quizzes = await getQuizzesAsync(workbookId);
+
+              setQuiz(quizzes);
+              setQuizMode(QUIZ_MODE.OTHERS);
+              routeQuiz();
+            }}
+          >
             바로 풀어보기
           </StyledButton>
         }

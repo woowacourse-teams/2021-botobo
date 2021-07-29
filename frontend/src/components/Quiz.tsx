@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { QuizResponse } from '../types';
 
-interface Props extends Omit<QuizResponse, 'id'> {
+interface Props extends Omit<QuizResponse, 'id' | 'encounterCount'> {
   isChanged: boolean;
 }
 
