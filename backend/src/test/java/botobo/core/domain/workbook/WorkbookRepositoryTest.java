@@ -240,7 +240,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbookRepository.delete(workbook);
+        workbook.deleteIfUserIsOwner(user.getId());
 
         //then
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);

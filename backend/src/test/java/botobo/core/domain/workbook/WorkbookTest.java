@@ -114,9 +114,8 @@ class WorkbookTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
-                .build();
-
-        workbook.createBy(user);
+                .build()
+                .createBy(user);
 
         // when
         workbook.deleteIfUserIsOwner(user.getId());
@@ -150,9 +149,8 @@ class WorkbookTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
-                .build();
-
-        workbook.createBy(user1);
+                .build()
+                .createBy(user1);
 
         // when, then
         assertThatThrownBy(() -> workbook.deleteIfUserIsOwner(user2.getId()))

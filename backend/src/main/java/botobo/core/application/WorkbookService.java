@@ -89,6 +89,5 @@ public class WorkbookService {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
         workbook.deleteIfUserIsOwner(appUser.getId());
-        workbookRepository.delete(workbook);
     }
 }

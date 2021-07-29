@@ -192,7 +192,5 @@ class WorkbookServiceTest {
         //then
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
-        then(workbookRepository).should(times(1))
-                .delete(any());
     }
 }
