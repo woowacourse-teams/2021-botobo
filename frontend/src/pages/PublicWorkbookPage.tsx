@@ -38,10 +38,13 @@ const PublicWorkbookPage = () => {
   };
 
   useEffect(() => {
-    if (inputValue) return;
+    const resetKeyword = () => setKeyword('');
 
-    setPublicWorkbooks([]);
-  }, [inputValue]);
+    search(inputValue);
+    window.addEventListener('popstate', resetKeyword);
+
+    return () => window.removeEventListener('popstate', resetKeyword);
+  }, []);
 
   return (
     <Container>
@@ -59,7 +62,12 @@ const PublicWorkbookPage = () => {
           onBlur={() => setIsFocus(false)}
         />
         {inputValue && (
-          <button onClick={() => setInputValue('')}>
+          <button
+            onClick={() => {
+              setInputValue('');
+              setPublicWorkbooks([]);
+            }}
+          >
             <SearchCloseIcon width="0.5rem" height="0.5rem" />
           </button>
         )}
@@ -70,7 +78,7 @@ const PublicWorkbookPage = () => {
           await setPublicWorkbookId(id);
           setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
           setKeyword(inputValue);
-          routePublicCards(id);
+          routePublicCards();
         }}
       />
     </Container>

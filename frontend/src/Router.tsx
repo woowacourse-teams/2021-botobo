@@ -46,7 +46,6 @@ const Router = () => (
     <Switch>
       <Route exact path={ROUTE.HOME.PATH}>
         <Suspense fallback={<MainLoadable />}>
-          <MainHeader />
           <MainPage />
         </Suspense>
       </Route>

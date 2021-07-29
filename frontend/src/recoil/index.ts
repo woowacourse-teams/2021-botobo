@@ -5,6 +5,7 @@ export {
   workbookIdState,
   publicWorkbookIdState,
   workbookState,
+  editedWorkbookState,
 } from './workbookState';
 export {
   cardIdState,
