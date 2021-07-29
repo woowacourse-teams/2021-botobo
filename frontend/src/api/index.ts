@@ -5,6 +5,7 @@ import {
   AccessTokenResponse,
   CardResponse,
   CardsResponse,
+  PublicCardsResponse,
   PublicWorkbookResponse,
   QuizResponse,
   TagResponse,
@@ -108,6 +109,14 @@ export const deleteWorkbookAsync = async (id: number) => {
 export const getPublicWorkbookAsync = async (keyword: string) => {
   const { data } = await request.get<PublicWorkbookResponse[]>(
     `/workbooks/public?search=${keyword}`
+  );
+
+  return data;
+};
+
+export const getPublicCardsAsync = async (publicWorkbookId: number) => {
+  const { data } = await request.get<PublicCardsResponse>(
+    `/workbooks/public/${publicWorkbookId}/cards`
   );
 
   return data;

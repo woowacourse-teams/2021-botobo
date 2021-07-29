@@ -1,17 +1,18 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { getPublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
+import { STORAGE_KEY } from '../constants';
 import { useRouter } from '../hooks';
-import { searchKeywordState } from '../recoil/publicWorkbookState';
+import { publicWorkbookIdState, searchKeywordState } from '../recoil';
 import { Flex } from '../styles';
 import { PublicWorkbookResponse } from '../types';
-import { debounce } from '../utils';
+import { debounce, setSessionStorage } from '../utils';
 
 interface SearchStyleProps {
   isFocus: boolean;
@@ -22,6 +23,7 @@ const PublicWorkbookPage = () => {
   const [publicWorkbooks, setPublicWorkbooks] = useState<
     PublicWorkbookResponse[]
   >([]);
+  const setPublicWorkbookId = useSetRecoilState(publicWorkbookIdState);
   const [inputValue, setInputValue] = useState(keyword);
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
@@ -36,10 +38,10 @@ const PublicWorkbookPage = () => {
   };
 
   useEffect(() => {
-    if (!inputValue) return;
+    if (inputValue) return;
 
-    search(inputValue);
-  }, []);
+    setPublicWorkbooks([]);
+  }, [inputValue]);
 
   return (
     <Container>
@@ -50,7 +52,6 @@ const PublicWorkbookPage = () => {
           value={inputValue}
           onChange={({ target }) => {
             setInputValue(target.value);
-
             debounce(() => search(target.value), 200);
           }}
           placeholder="검색어를 입력해주세요"
@@ -65,9 +66,11 @@ const PublicWorkbookPage = () => {
       </SearchBar>
       <PublicWorkbookList
         publicWorkbooks={publicWorkbooks}
-        onClickPublicWorkbook={async (workbookId) => {
-          await setKeyword(inputValue);
-          routePublicCards(workbookId);
+        onClickPublicWorkbook={async (id) => {
+          await setPublicWorkbookId(id);
+          setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+          setKeyword(inputValue);
+          routePublicCards(id);
         }}
       />
     </Container>

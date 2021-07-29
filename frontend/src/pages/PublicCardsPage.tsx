@@ -1,51 +1,30 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
 import { ROUTE } from '../constants';
+import { useSnackbar } from '../hooks';
+import { publicCardState } from '../recoil';
 import { Flex } from '../styles';
 
-const data = {
-  workbookName: 'Java',
-  cardCount: 4,
-  tags: ['java', '자바', '피케이'],
-  cards: [
-    {
-      id: 1,
-      question: '자바란 무엇인가요?',
-      answer: '자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 2,
-      question: '자바란 무엇인가요?',
-      answer: '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 3,
-      question: '자바란 무엇인가요?',
-      answer:
-        '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 4,
-      question: '자바란 무엇인가요? 자바란 무엇인가요? 자바란 무엇인가요?',
-      answer:
-        '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-  ],
-};
-
 const PublicCardsPage = () => {
-  const [cards, setCards] = useState(
-    data.cards.map((card) => ({ ...card, isChecked: false }))
+  const showSnackbar = useSnackbar();
+  const {
+    data: { workbookName, cards, cardCount, tags },
+    errorMessage,
+  } = useRecoilValue(publicCardState);
+  const [publicCards, setPublicCards] = useState(
+    cards.map((card) => ({ ...card, isChecked: false }))
   );
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
-
-  const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
+  const checkedCardCount = publicCards.filter(
+    ({ isChecked }) => isChecked
+  ).length;
 
   const checkCard = (id: number) => {
-    const newCards = cards.map((card) => {
+    const newCards = publicCards.map((card) => {
       if (card.id !== id) return card;
 
       return {
@@ -54,19 +33,27 @@ const PublicCardsPage = () => {
       };
     });
 
-    setCards(newCards);
+    setPublicCards(newCards);
   };
 
   const checkAllCard: React.ChangeEventHandler<HTMLInputElement> = ({
     target,
   }) => {
     setIsAllCardChecked(target.checked);
-    setCards(cards.map((card) => ({ ...card, isChecked: target.checked })));
+    setPublicCards(
+      publicCards.map((card) => ({ ...card, isChecked: target.checked }))
+    );
   };
 
   useEffect(() => {
-    setIsAllCardChecked(checkedCardCount === data.cardCount);
+    setIsAllCardChecked(checkedCardCount === cardCount);
   }, [checkedCardCount]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      showSnackbar({ message: errorMessage, type: 'error' });
+    }
+  }, [errorMessage]);
 
   return (
     <>
@@ -80,17 +67,17 @@ const PublicCardsPage = () => {
         }
       />
       <Container>
-        <WorkbookName>{data.workbookName}</WorkbookName>
-        <CardCount>{data.cardCount}개의 카드</CardCount>
+        <WorkbookName>{workbookName}</WorkbookName>
+        <CardCount>{cardCount}개의 카드</CardCount>
         <TagList>
-          {data.tags.map((tag, index) => (
-            <li key={index}>
-              <Tag>#{tag}</Tag>
+          {tags.map((tag) => (
+            <li key={tag.id}>
+              <Tag>#{tag.name}</Tag>
             </li>
           ))}
         </TagList>
         <ul>
-          {cards.map(({ id, question, answer, isChecked }) => (
+          {publicCards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
               <PublicQnACard
                 question={question}
