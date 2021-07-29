@@ -1,59 +1,23 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import React from 'react';
 
 import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
 import { ROUTE } from '../constants';
-import { useSnackbar } from '../hooks';
-import { publicCardState } from '../recoil';
+import { usePublicCard } from '../hooks';
 import { Flex } from '../styles';
 
 const PublicCardsPage = () => {
-  const showSnackbar = useSnackbar();
   const {
-    data: { workbookName, cards, cardCount, tags },
-    errorMessage,
-  } = useRecoilValue(publicCardState);
-  const [publicCards, setPublicCards] = useState(
-    cards.map((card) => ({ ...card, isChecked: false }))
-  );
-  const [isAllCardChecked, setIsAllCardChecked] = useState(false);
-  const checkedCardCount = publicCards.filter(
-    ({ isChecked }) => isChecked
-  ).length;
-
-  const checkCard = (id: number) => {
-    const newCards = publicCards.map((card) => {
-      if (card.id !== id) return card;
-
-      return {
-        ...card,
-        isChecked: !card.isChecked,
-      };
-    });
-
-    setPublicCards(newCards);
-  };
-
-  const checkAllCard: React.ChangeEventHandler<HTMLInputElement> = ({
-    target,
-  }) => {
-    setIsAllCardChecked(target.checked);
-    setPublicCards(
-      publicCards.map((card) => ({ ...card, isChecked: target.checked }))
-    );
-  };
-
-  useEffect(() => {
-    setIsAllCardChecked(checkedCardCount === cardCount);
-  }, [checkedCardCount]);
-
-  useEffect(() => {
-    if (errorMessage) {
-      showSnackbar({ message: errorMessage, type: 'error' });
-    }
-  }, [errorMessage]);
+    workbookName,
+    cardCount,
+    tags,
+    publicCards,
+    isAllCardChecked,
+    checkAllCard,
+    checkedCardCount,
+    checkCard,
+  } = usePublicCard();
 
   return (
     <>

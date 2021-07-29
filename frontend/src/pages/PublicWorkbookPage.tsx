@@ -1,17 +1,13 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import React, { useState } from 'react';
 
-import { getPublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
 import { STORAGE_KEY } from '../constants';
-import { useRouter } from '../hooks';
-import { publicWorkbookIdState, searchKeywordState } from '../recoil';
+import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
-import { PublicWorkbookResponse } from '../types';
 import { debounce, setSessionStorage } from '../utils';
 
 interface SearchStyleProps {
@@ -19,32 +15,17 @@ interface SearchStyleProps {
 }
 
 const PublicWorkbookPage = () => {
-  const [keyword, setKeyword] = useRecoilState(searchKeywordState);
-  const [publicWorkbooks, setPublicWorkbooks] = useState<
-    PublicWorkbookResponse[]
-  >([]);
-  const setPublicWorkbookId = useSetRecoilState(publicWorkbookIdState);
-  const [inputValue, setInputValue] = useState(keyword);
+  const {
+    inputValue,
+    setInputValue,
+    publicWorkbooks,
+    setPublicWorkbooks,
+    setPublicWorkbookId,
+    setKeyword,
+    search,
+  } = usePublicWorkbook();
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
-
-  const search = async (value: string) => {
-    try {
-      const data = await getPublicWorkbookAsync(value);
-      setPublicWorkbooks(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    const resetKeyword = () => setKeyword('');
-
-    search(inputValue);
-    window.addEventListener('popstate', resetKeyword);
-
-    return () => window.removeEventListener('popstate', resetKeyword);
-  }, []);
 
   return (
     <Container>

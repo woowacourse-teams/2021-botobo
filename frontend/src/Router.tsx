@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { MainHeader, PageHeader } from './components';
+import { PageHeader } from './components';
 import { ROUTE } from './constants';
 import {
   CardsLoadable,
@@ -79,13 +79,13 @@ const Router = () => (
           <CardsPage />
         </Suspense>
       </Route>
-      <Route exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
+      <PrivateRoute exact path={ROUTE.PUBLIC_WORKBOOK.PATH}>
         <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
         <PublicWorkbookPage />
-      </Route>
-      <Route exact path={ROUTE.PUBLIC_CARDS.PATH}>
+      </PrivateRoute>
+      <PrivateRoute exact path={ROUTE.PUBLIC_CARDS.PATH}>
         <PublicCardsPage />
-      </Route>
+      </PrivateRoute>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />
       </Route>
