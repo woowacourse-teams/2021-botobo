@@ -35,7 +35,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     }
 
     protected User anyUser() {
-        User anyUser =  User.builder()
+        User anyUser = User.builder()
                 .githubId(1L)
                 .userName("joanne")
                 .profileUrl("github.io")

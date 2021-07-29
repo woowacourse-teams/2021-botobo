@@ -6,7 +6,6 @@ import botobo.core.domain.workbook.Workbook;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -20,7 +19,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE card SET deleted = true WHERE id = ?") // TODO 이 두 어노테이션에 대해서 알아보기
 @Where(clause = "deleted = false")
 public class Card extends BaseEntity {
 
@@ -73,7 +71,18 @@ public class Card extends BaseEntity {
         }
     }
 
-    public void changeWorkbook(Workbook workbook) {
+    public void update(Card other) {
+        this.question = other.question;
+        this.answer = other.answer;
+        this.bookmark = other.bookmark;
+        this.nextQuiz = other.nextQuiz;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    private void changeWorkbook(Workbook workbook) {
         if (Objects.nonNull(this.workbook)) {
             this.workbook.getCards().removeCard(this);
         }
@@ -93,19 +102,11 @@ public class Card extends BaseEntity {
         nextQuiz = false;
     }
 
-    public void updateFrom(Card other) {
-        this.question = other.question;
-        this.answer = other.answer;
-        this.bookmark = other.bookmark;
-        this.nextQuiz = other.nextQuiz;
-        changeWorkbook(workbook);
-    }
-
     public boolean equalsNextQuizWith(boolean isNextQuiz) {
         return this.nextQuiz == isNextQuiz;
     }
 
-    public boolean hasSameUser(User user) {
-        return workbook.hasSameUser(user);
+    public boolean isAuthorOf(User user) {
+        return workbook.isAuthorOf(user);
     }
 }

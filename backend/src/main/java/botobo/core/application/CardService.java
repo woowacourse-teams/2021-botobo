@@ -37,8 +37,8 @@ public class CardService {
 
     @Transactional
     public CardResponse createCard(CardRequest cardRequest, AppUser appUser) {
-        final User user = findUser(appUser);
-        Card card = convertToCard(cardRequest, user);
+        User author = findUser(appUser);
+        Card card = convertToCard(cardRequest, author);
         cardRepository.save(card);
         return CardResponse.of(card);
     }
@@ -47,9 +47,9 @@ public class CardService {
         return userRepository.findById(appUser.getId()).orElseThrow(UserNotFoundException::new);
     }
 
-    private Card convertToCard(CardRequest cardRequest, User user) {
+    private Card convertToCard(CardRequest cardRequest, User author) {
         Workbook workbook = findWorkbook(cardRequest.getWorkbookId());
-        if (!workbook.hasSameUser(user)) {
+        if (!workbook.isAuthorOf(author)) {
             throw new NotAuthorException();
         }
         return cardRequest.toCardWithWorkbook(workbook);
@@ -64,31 +64,28 @@ public class CardService {
     public CardUpdateResponse updateCard(Long id,
                                          CardUpdateRequest cardUpdateRequest,
                                          AppUser appUser) {
-        final User user = findUser(appUser);
-        Card card = findCard(id);
-
-        if (!card.hasSameUser(user)) {
-            throw new NotAuthorException();
-        }
-
-        card.updateFrom(cardUpdateRequest.toCard(Workbook.temporaryWorkbook()));
+        final User author = findUser(appUser);
+        Card card = findCardOfAuthor(id, author);
+        card.update(cardUpdateRequest.toCard(Workbook.temporaryWorkbook()));
         return CardUpdateResponse.of(card);
     }
 
-    private Card findCard(Long id) {
-        return cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
+    private Card findCardOfAuthor(Long id, User author) {
+        final Card findCard = cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
+        if (!findCard.isAuthorOf(author)) {
+            throw new NotAuthorException();
+        }
+        return findCard;
     }
 
     @Transactional
     public void deleteCard(Long id, AppUser appUser) {
-        final User user = findUser(appUser);
-        final Card card = findCard(id);
-        if (!card.hasSameUser(user)) {
-            throw new NotAuthorException();
-        }
-        cardRepository.deleteById(id);
+        final User author = findUser(appUser);
+        final Card card = findCardOfAuthor(id, author);
+        card.delete();
     }
 
+    // TODO nextQuizCard도 Interceptor 타도록 변경
     @Transactional
     public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
         List<Card> cards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());

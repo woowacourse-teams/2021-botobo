@@ -26,7 +26,6 @@ public class CardDocumentationTest extends DocumentationTest {
     @MockBean
     private CardService cardService;
 
-
     @Test
     @DisplayName("카드 생성 - 성공")
     void createCard() throws Exception {

@@ -463,7 +463,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("카드 삭제 - 실패, 일치하지 않는 유저")
+    @DisplayName("카드 삭제 - 실패, 작성자가 아닌 유저")
     void deleteCardWithNotAuthor() {
         // given
         long cardId = 1L;

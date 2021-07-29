@@ -10,6 +10,9 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.NextQuizCardsRequest;
+import botobo.core.exception.NotAuthorException;
+import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -44,12 +48,13 @@ class CardServiceTest {
     private CardService cardService;
 
     private Workbook workbook;
-    private User user;
+    private User user, anotherUser;
     private AppUser appUser;
 
     @BeforeEach
     void setUp() {
         user = User.builder().id(1L).build();
+        anotherUser = User.builder().id(2L).build();
         workbook = workbook(1L, user);
         appUser = AppUser.user(1L);
     }
@@ -77,13 +82,72 @@ class CardServiceTest {
                 .save(any());
     }
 
-    // TODO 카드 추가 테스트 추가
+    @Test
+    @DisplayName("카드 생성 - 실패, 유저가 존재하지 않음.")
+    void createCardFailedWhenUserNotExist() {
+        // given
+        CardRequest cardRequest = cardRequest();
+        Card card = card(1L, workbook);
+        AppUser appUser = AppUser.user(100L);
+
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when
+        assertThatThrownBy(() -> cardService.createCard(cardRequest, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("카드 생성 - 실패, 작성자가 아닌 유저")
+    void createCardFailedWhenNotAuthor() {
+        // given
+        CardRequest cardRequest = cardRequest();
+        Card card = card(1L, workbook);
+        AppUser appUser = AppUser.user(2L);
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(anotherUser));
+        given(workbookRepository.findById(cardRequest.getWorkbookId())).willReturn(Optional.of(workbook));
+
+        // when
+        assertThatThrownBy(() -> cardService.createCard(cardRequest, appUser))
+                .isInstanceOf(NotAuthorException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("카드 생성 - 실패, 문제집이 존재하지 않음.")
+    void createCardFailedWhenWorkbookNotExist() {
+        // given
+        CardRequest cardRequest = cardRequest();
+        Card card = card(1L, Workbook.temporaryWorkbook());
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
+        given(workbookRepository.findById(cardRequest.getWorkbookId())).willThrow(WorkbookNotFoundException.class);
+
+        // when
+        assertThatThrownBy(() -> cardService.createCard(cardRequest, appUser))
+                .isInstanceOf(WorkbookNotFoundException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+    }
 
     @Test
     @DisplayName("카드 수정 - 성공")
     void updateCard() {
         // given
-        Long cardId = 1L;
+        long cardId = 1L;
         CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
         Card card = card(cardId, workbook);
 
@@ -92,6 +156,51 @@ class CardServiceTest {
 
         // when
         cardService.updateCard(1L, cardUpdateRequest, appUser);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+        then(cardRepository)
+                .should(times(1))
+                .findById(any());
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 실패, 존재하지 않는 유저")
+    void updateCardFailedWhenNotExistUser() {
+        // given
+        long cardId = 1L;
+        CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
+        Card card = card(cardId, workbook);
+        AppUser appUser = AppUser.user(100L);
+
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when
+        assertThatThrownBy(() -> cardService.updateCard(1L, cardUpdateRequest, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("카드 수정 - 실패, 작성자가 아닌 유저")
+    void updateCardFailedWhenNotAuthor() {
+        // given
+        long cardId = 1L;
+        CardUpdateRequest cardUpdateRequest = cardUpdateRequest(1L);
+        Card card = card(cardId, workbook);
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(anotherUser));
+        given(cardRepository.findById(any())).willReturn(Optional.of(card));
+
+        // when
+        assertThatThrownBy(() -> cardService.updateCard(1L, cardUpdateRequest, appUser))
+                .isInstanceOf(NotAuthorException.class);
 
         // then
         then(userRepository)
@@ -120,7 +229,48 @@ class CardServiceTest {
                 .findById(appUser.getId());
         then(cardRepository)
                 .should(times(1))
-                .deleteById(any());
+                .findById(any());
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 실패, 존재하지 않는 유저")
+    void deleteCardFailedWhenNotExistUser() {
+        // given
+        Card card = card(1L, workbook);
+        AppUser appUser = AppUser.user(100L);
+
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when
+        assertThatThrownBy(() -> cardService.deleteCard(1L, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("카드 삭제 - 실패, 작성자가 아닌 유저")
+    void deleteCardFailedWhenNotAuthor() {
+        // given
+        Card card = card(1L, workbook);
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(anotherUser));
+        given(cardRepository.findById(any())).willReturn(Optional.of(card));
+
+        // when
+        assertThatThrownBy(() -> cardService.deleteCard(1L, appUser))
+                .isInstanceOf(NotAuthorException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+        then(cardRepository)
+                .should(times(1))
+                .findById(any());
     }
 
     @Test
@@ -142,7 +292,7 @@ class CardServiceTest {
                 .findByIdIn(anyList());
     }
 
-    private Workbook workbook(Long id, User user) {
+    private Workbook workbook(long id, User user) {
         return Workbook.builder()
                 .id(id)
                 .name("workbook")
@@ -150,7 +300,7 @@ class CardServiceTest {
                 .build();
     }
 
-    private Card card(Long id, Workbook workbook) {
+    private Card card(long id, Workbook workbook) {
         return Card.builder()
                 .id(id)
                 .question("question")
@@ -167,7 +317,7 @@ class CardServiceTest {
                 .build();
     }
 
-    private CardUpdateRequest cardUpdateRequest(Long workbookId) {
+    private CardUpdateRequest cardUpdateRequest(long workbookId) {
         return CardUpdateRequest.builder()
                 .question("changed question")
                 .answer("changed answer")
