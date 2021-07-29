@@ -129,6 +129,10 @@ public class Workbook extends BaseEntity {
         this.deleted = true;
     }
 
+    public void addCards(Cards cards) {
+        cards.getCards().forEach(this::addCard);
+    }
+
     public void addCard(Card card) {
         card.addWorkbook(this);
         cards.addCard(card);

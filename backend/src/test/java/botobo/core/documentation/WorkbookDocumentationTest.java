@@ -187,7 +187,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .delete("/api/workbooks/{id}/cards", workbookId)
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(token)
                 .build()
                 .status(status().isOk())

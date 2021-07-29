@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -16,8 +17,8 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.NotAuthorException;
-import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.card.CardNotFoundException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,17 +99,13 @@ public class WorkbookService {
 
     @Transactional
     public void scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
-        final User user = findUser(appUser);
-        final Workbook workbook = findWorkbook(workbookId);
+        User user = findUser(appUser);
+        Workbook workbook = findWorkbook(workbookId);
         if (!workbook.isAuthorOf(user)) {
             throw new NotAuthorException();
         }
-        List<Card> scrappedCards = scrapCards(scrapCardRequest.getCardIds());
+        Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
-    }
-
-    private void addScrappedCardsToWorkbook(Workbook workbook, List<Card> scrappedCards) {
-        scrappedCards.forEach(workbook::addCard);
     }
 
     private User findUser(AppUser appUser) {
@@ -123,12 +120,16 @@ public class WorkbookService {
 
     private List<Card> scrapCards(List<Long> cardIds) {
         List<Card> scrappedCards = new ArrayList<>();
-        for (Long id: cardIds) {
+        for (Long id : cardIds) {
             final Card sourceCard = cardRepository.findById(id)
                     .orElseThrow(CardNotFoundException::new);
 
             scrappedCards.add(Card.createCopyOf(sourceCard));
         }
         return scrappedCards;
+    }
+
+    private void addScrappedCardsToWorkbook(Workbook workbook, Cards scrappedCards) {
+        workbook.addCards(scrappedCards);
     }
 }
