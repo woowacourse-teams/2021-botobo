@@ -37,7 +37,9 @@ export const workbookState = selector<WorkbookState>({
   get: async ({ get }) => {
     try {
       return {
-        data: get(userState) ? await getWorkbooksAsync() : [],
+        data: get(userState)
+          ? await getWorkbooksAsync()
+          : [workbookInitialState],
         errorMessage: null,
       };
     } catch (error) {

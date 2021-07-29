@@ -9,15 +9,32 @@ import { useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
 import { Flex } from '../styles';
+import { WorkbookResponse } from '../types';
 import Button from './Button';
 import CardTemplate from './CardTemplate';
 
-const QuizStarter = () => {
+interface Props {
+  workbooks: WorkbookResponse[];
+}
+
+const QuizStarter = ({ workbooks }: Props) => {
   const userInfo = useRecoilValue(userState);
   const setQuizState = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
   const showSnackbar = useSnackbar();
   const { routeQuizSetting, routeQuiz } = useRouter();
+
+  const startQuiz = () => {
+    if (workbooks.find((workbook) => workbook.cardCount > 0)) {
+      routeQuizSetting();
+
+      return;
+    }
+
+    showSnackbar({
+      message: '먼저 문제집과 카드를 추가해주세요.',
+    });
+  };
 
   const startGuestQuiz = async () => {
     try {
@@ -38,7 +55,7 @@ const QuizStarter = () => {
           이제까지 정리한 <br />
           지식을 검증해보고 싶다면?
         </span>
-        <Button onClick={userInfo ? routeQuizSetting : startGuestQuiz}>
+        <Button onClick={userInfo ? startQuiz : startGuestQuiz}>
           퀴즈 풀러 가기
         </Button>
       </Content>
