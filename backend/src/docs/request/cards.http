@@ -1,7 +1,4 @@
-# https://github.com/login/oauth/authorize?client_id={client_id}
-
 ### 카드 생성
-
 POST /api/cards HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
@@ -15,7 +12,6 @@ Host: localhost:8080
 }
 
 ### 카드 수정
-
 PUT /api/cards/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
@@ -32,7 +28,6 @@ Host: localhost:8080
 }
 
 ### 카드 삭제
-
 DELETE /api/cards/1 HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: localhost:8080

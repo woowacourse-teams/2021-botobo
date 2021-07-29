@@ -1,5 +1,4 @@
 ### 퀴즈 생성하기
-
 POST /api/quizzes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
@@ -11,6 +10,5 @@ Host: localhost:8080
 }
 
 ### 비회원용 퀴즈 생성하기
-
 GET /api/quizzes/guest HTTP/1.1
 Host: botobo.r-e.kr

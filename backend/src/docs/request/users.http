@@ -1,0 +1,4 @@
+### 로그인 한 유저 정보 조회 요청
+GET /api/users/me HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: localhost:8080
