@@ -5,9 +5,10 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.SearchKeyword;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookCriteria;
 import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.domain.workbook.criteria.SearchKeyword;
+import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -58,9 +59,9 @@ public class WorkbookService {
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
         if (appUser.isAnonymous()) {
-            return WorkbookResponse.listOf(Collections.emptyList());
+            return WorkbookResponse.ownedListOf(Collections.emptyList());
         }
-        return WorkbookResponse.listOf(
+        return WorkbookResponse.ownedListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );
     }
@@ -79,11 +80,11 @@ public class WorkbookService {
                 .build()
                 .apply(workbookCriteria);
 
-        return WorkbookResponse.listOf(workbooks);
+        return WorkbookResponse.openedListOf(workbooks);
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id) {
-        Workbook workbook = workbookRepository.findById(id)
+        Workbook workbook = workbookRepository.findByIdAndOrderCardByNew(id)
                 .orElseThrow(WorkbookNotFoundException::new);
         return WorkbookCardResponse.of(workbook);
     }

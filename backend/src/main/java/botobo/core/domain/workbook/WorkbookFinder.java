@@ -1,5 +1,6 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +34,7 @@ public class WorkbookFinder {
     }
 
     private Predicate<Workbook> filterSearchKeyword(WorkbookCriteria workbookCriteria) {
-        return workbook -> (workbookCriteria.isNoSearchKeyword() ||
-                (workbook.containsWord(workbookCriteria.getSearchKeywordValue()))
-        );
+        final String keyword = workbookCriteria.getSearchKeywordValue();
+        return workbook -> !keyword.isEmpty() && workbook.containsWord(keyword);
     }
 }

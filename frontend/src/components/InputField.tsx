@@ -9,6 +9,7 @@ type FocusColor = 'gray' | 'green';
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   focusColor?: FocusColor;
+  maxLength: number;
 }
 
 interface ContainerStyleProps {
@@ -20,8 +21,13 @@ interface InputStyleProps {
   focusColor: FocusColor;
 }
 
-const InputField = ({ name, focusColor = 'green', ...props }: Props) => {
-  const { values, errorMessages, onChange } = useForm();
+const InputField = ({
+  name,
+  focusColor = 'green',
+  maxLength,
+  ...props
+}: Props) => {
+  const { values, errorMessages, onChange, onBlur } = useForm();
   const [isFocus, setIsFocus] = useState(false);
 
   return (
@@ -29,13 +35,26 @@ const InputField = ({ name, focusColor = 'green', ...props }: Props) => {
       <Input
         isFocus={isFocus}
         onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
+        onBlur={(event) => {
+          onBlur(event);
+          setIsFocus(false);
+        }}
         focusColor={focusColor}
         name={name}
         value={values[name]}
         onChange={onChange}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+          }
+        }}
         {...props}
       />
+      {maxLength && (
+        <Limiter>
+          {values[name].length}/{maxLength}
+        </Limiter>
+      )}
     </Container>
   );
 };
@@ -66,6 +85,16 @@ const Input = styled.input<InputStyleProps>`
           : theme.color.green};
       }
     `}
+  `}
+`;
+
+const Limiter = styled.span`
+  position: absolute;
+  right: 0;
+  bottom: -1.2rem;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.small};
   `}
 `;
 

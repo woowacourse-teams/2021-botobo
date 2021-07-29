@@ -1,23 +1,75 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
-// import FillStarIcon from '../assets/star-fill.svg';
+import FillStarIcon from '../assets/star-fill.svg';
+import useModal from '../hooks/useModal';
+import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
+import { debounce } from '../utils';
+import CardEditForm from './CardEditForm';
 import CardTemplate from './CardTemplate';
+import Confirm from './Confirm';
 
-const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
-  <CardTemplate editable={true}>
-    <Header>
-      <BookmarkButton>
-        <EmptyStarIcon />
-      </BookmarkButton>
-    </Header>
-    <Question>Q. {question}</Question>
-    <Answer>A. {answer}</Answer>
-  </CardTemplate>
-);
+interface Props {
+  cardInfo: CardResponse;
+  workbookName: string;
+  editCard: (cardInfo: CardResponse) => Promise<void>;
+  deleteCard: (id: number) => Promise<void>;
+  toggleBookmark: (cardInfo: CardResponse) => Promise<void>;
+}
+
+const QnACard = ({
+  cardInfo,
+  workbookName,
+  editCard,
+  deleteCard,
+  toggleBookmark,
+}: Props) => {
+  const { openModal } = useModal();
+  const setCardId = useSetRecoilState(cardIdState);
+  const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
+
+  const onClickBookmark = () => {
+    setIsBookmark((prevState) => !prevState);
+    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 500);
+  };
+
+  return (
+    <CardTemplate
+      editable={true}
+      onClickEditButton={async () => {
+        await setCardId(cardInfo.id);
+        openModal({
+          content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
+          title: workbookName,
+          closeIcon: 'back',
+          type: 'full',
+        });
+      }}
+      onClickDeleteButton={() => {
+        openModal({
+          content: (
+            <Confirm onConfirm={() => deleteCard(cardInfo.id)}>
+              해당 카드를 정말 삭제하시겠어요?
+            </Confirm>
+          ),
+          type: 'center',
+        });
+      }}
+    >
+      <Header>
+        <BookmarkButton onClick={onClickBookmark}>
+          {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
+        </BookmarkButton>
+      </Header>
+      <Question>Q. {cardInfo.question}</Question>
+      <Answer>A. {cardInfo.answer}</Answer>
+    </CardTemplate>
+  );
+};
 
 const Header = styled.div`
   text-align: right;

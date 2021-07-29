@@ -18,20 +18,11 @@ public class WorkbookResponse {
 
     private Long id;
     private String name;
-    private boolean opened;
     private int cardCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String author;
-
-    //TODO: 메서드명 생각해봐야함
-    public static WorkbookResponse convert(Workbook workbook) {
-        return WorkbookResponse.builder()
-                .id(workbook.getId())
-                .name(workbook.getName())
-                .cardCount(workbook.cardCount())
-                .opened(workbook.isOpened())
-                .build();
-    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean opened;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
@@ -43,9 +34,49 @@ public class WorkbookResponse {
                 .build();
     }
 
+    //TODO: 메서드명 생각해봐야함
+    public static WorkbookResponse convert(Workbook workbook) {
+        return WorkbookResponse.builder()
+                .id(workbook.getId())
+                .name(workbook.getName())
+                .cardCount(workbook.cardCount())
+                .opened(workbook.isOpened())
+                .build();
+    }
+
     public static List<WorkbookResponse> listOf(List<Workbook> workbooks) {
         return workbooks.stream()
                 .map(WorkbookResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public static List<WorkbookResponse> ownedListOf(List<Workbook> workbooks) {
+        return workbooks.stream()
+                .map(WorkbookResponse::ownedOf)
+                .collect(Collectors.toList());
+    }
+
+    private static WorkbookResponse ownedOf(Workbook workbook) {
+        return WorkbookResponse.builder()
+                .id(workbook.getId())
+                .name(workbook.getName())
+                .cardCount(workbook.cardCount())
+                .opened(workbook.isOpened())
+                .build();
+    }
+
+    public static List<WorkbookResponse> openedListOf(List<Workbook> workbooks) {
+        return workbooks.stream()
+                .map(WorkbookResponse::openedOf)
+                .collect(Collectors.toList());
+    }
+
+    private static WorkbookResponse openedOf(Workbook workbook) {
+        return WorkbookResponse.builder()
+                .id(workbook.getId())
+                .name(workbook.getName())
+                .cardCount(workbook.cardCount())
+                .author(workbook.author())
+                .build();
     }
 }

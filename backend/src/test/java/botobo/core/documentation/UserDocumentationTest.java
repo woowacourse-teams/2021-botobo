@@ -1,6 +1,5 @@
 package botobo.core.documentation;
 
-import botobo.core.application.AuthService;
 import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
@@ -8,10 +7,8 @@ import botobo.core.dto.user.UserResponse;
 import botobo.core.ui.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -22,14 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 public class UserDocumentationTest extends DocumentationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     private UserService userService;
-
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("현재 로그인 한 유저 조회 - 성공")

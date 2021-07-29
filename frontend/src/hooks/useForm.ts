@@ -13,6 +13,7 @@ const useForm = () => {
     values: formContext.values,
     errorMessages: formContext.errorMessages,
     onChange: formContext.onChange,
+    onBlur: formContext.onBlur,
   };
 };
 

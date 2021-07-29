@@ -2,7 +2,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { useForm } from '../hooks';
+import { Flex } from '../styles';
 import CardTemplate from './CardTemplate';
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -10,17 +12,27 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   inputName: string;
 }
 
+interface ContainerStyleProps {
+  errorMessage: string | null;
+}
+
 const CardTextArea = ({ title, inputName, ...props }: Props) => {
-  const { values, onChange } = useForm();
+  const { values, errorMessages, onChange, onBlur } = useForm();
 
   return (
-    <Container>
-      <Header>{title}</Header>
+    <Container errorMessage={errorMessages[inputName]}>
+      <Header>
+        <span>{title}</span>
+        <Limiter>
+          {values[inputName].length}/{CARD_TEXT_MAX_LENGTH}
+        </Limiter>
+      </Header>
       <CardTemplate>
         <Text
           name={inputName}
           value={values[inputName]}
           onChange={onChange}
+          onBlur={onBlur}
           {...props}
         />
       </CardTemplate>
@@ -28,12 +40,25 @@ const CardTextArea = ({ title, inputName, ...props }: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<ContainerStyleProps>`
+  position: relative;
   width: 100%;
   margin-bottom: 2rem;
+
+  &::after {
+    ${({ theme, errorMessage }) => css`
+      content: ${`'${errorMessage ?? ''}'`};
+      color: ${theme.color.red};
+      position: absolute;
+      left: 0;
+      bottom: -1.2rem;
+      font-size: ${theme.fontSize.small};
+    `};
+  }
 `;
 
 const Header = styled.div`
+  ${Flex({ justify: 'space-between', items: 'flex-end' })};
   margin-bottom: 0.5rem;
 
   ${({ theme }) => css`
@@ -42,12 +67,18 @@ const Header = styled.div`
   `}
 `;
 
+const Limiter = styled.span`
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.small};
+  `}
+`;
+
 const Text = styled.textarea`
   width: 100%;
   border: none;
   outline: none;
   resize: none;
-  height: 11rem;
+  height: 12rem;
   overflow-y: auto;
 
   ${({ theme }) => css`

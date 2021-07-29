@@ -1,7 +1,5 @@
 package botobo.core.infrastructure;
 
-import botobo.core.exception.UnauthorizedException;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
@@ -19,9 +17,8 @@ public class AuthorizationExtractor {
                 return getAuthHeaderValue(request, headerValue);
             }
         }
-        throw new UnauthorizedException("토큰 추출에 실패했습니다.");
+        return null;
     }
-
 
     private static String getAuthHeaderValue(HttpServletRequest request, String headerValue) {
         String authHeaderValue = headerValue.substring(BEARER_TYPE.length()).trim();
