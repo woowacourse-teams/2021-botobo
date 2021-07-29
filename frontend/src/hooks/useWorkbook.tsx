@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 
-import { postWorkbookAsync, putWorkbookAsync } from '../api';
+import {
+  deleteWorkbookAsync,
+  postWorkbookAsync,
+  putWorkbookAsync,
+} from '../api';
 import { workbookIdState, workbookState } from '../recoil';
 import { editedWorkbookState } from '../recoil/workbookState';
 import { TagResponse, WorkbookResponse } from '../types';
@@ -45,6 +49,17 @@ const useWorkbook = () => {
     }
   };
 
+  const deleteWorkbook = async (id: number) => {
+    try {
+      await deleteWorkbookAsync(id);
+      updateWorkbooks();
+      showSnackbar({ message: '문제집이 삭제되었어요.' });
+    } catch (error) {
+      console.error(error);
+      showSnackbar({ message: '문제집을 삭제하지 못했어요.', type: 'error' });
+    }
+  };
+
   useEffect(() => {
     if (errorMessage) {
       showSnackbar({ message: errorMessage, type: 'error' });
@@ -57,6 +72,7 @@ const useWorkbook = () => {
     setWorkbookId,
     createWorkbook,
     editWorkbook,
+    deleteWorkbook,
   };
 };
 

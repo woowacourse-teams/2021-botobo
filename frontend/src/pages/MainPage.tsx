@@ -11,7 +11,7 @@ import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
   const { userInfo } = useMain();
-  const { workbooks, setWorkbookId } = useWorkbook();
+  const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
 
   return (
@@ -39,6 +39,7 @@ const MainPage = () => {
             routeCards();
           }}
           editable={true}
+          deleteWorkbook={deleteWorkbook}
         />
       </section>
     </Container>

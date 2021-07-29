@@ -99,3 +99,7 @@ export const putWorkbookAsync = async (workbookInfo: WorkbookResponse) => {
 
   await request.put(`/workbook/${id}`, params);
 };
+
+export const deleteWorkbookAsync = async (id: number) => {
+  await request.delete(`/workbook/${id}`);
+};

@@ -11,6 +11,7 @@ interface Props extends PickedWorkbook {
   isChecked?: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
   onClickEditButton: React.MouseEventHandler<HTMLButtonElement>;
+  onClickDeleteButton: React.MouseEventHandler<HTMLButtonElement>;
   editable: boolean;
 }
 
@@ -21,12 +22,14 @@ const Workbook = ({
   editable,
   onClick,
   onClickEditButton,
+  onClickDeleteButton,
 }: Props) => (
   <CardTemplate
     editable={editable}
     isChecked={isChecked}
     onClick={onClick}
     onClickEditButton={onClickEditButton}
+    onClickDeleteButton={onClickDeleteButton}
   >
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 카드</CardCount>
