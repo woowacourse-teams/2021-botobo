@@ -35,10 +35,6 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
     }
 
-    private String createToken(Long id) {
-        return jwtTokenProvider.createToken(id);
-    }
-
     @Test
     @DisplayName("카드 생성 - 성공")
     void createCard() {

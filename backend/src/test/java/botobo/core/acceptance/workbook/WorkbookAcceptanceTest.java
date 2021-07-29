@@ -5,6 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
+import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -42,7 +43,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @MockBean
     private GithubOauthManager githubOauthManager;
 
-    private GithubUserInfoResponse userInfo;
+    private GithubUserInfoResponse userInfo, anotherUserInfo;
 
     @BeforeEach
     void setFixture() {
@@ -51,6 +52,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         userInfo = GithubUserInfoResponse.builder()
                 .userName("githubUser")
                 .githubId(2L)
+                .profileUrl("github.io")
+                .build();
+        anotherUserInfo = GithubUserInfoResponse.builder()
+                .userName("anotherUser")
+                .githubId(3L)
                 .profileUrl("github.io")
                 .build();
     }
@@ -334,25 +340,134 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
-    // TODO 문제집으로 카드 가져오기
     @Test
     @DisplayName("문제집으로 카드 가져오기 - 성공")
     void scrapSelectedCardsToWorkbook() {
         // given
-        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        final Long workbookId = 유저_문제집_등록되어_있음("Spring 문제집", true, userInfo).getId();
+
+        유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(1L, 2L))
+                .build();
 
         // when
-        final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, userInfo);
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 public하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.")
+    void scrapSelectedCardsToWorkbookFailedWhenWorkbookNotExist() {
+        // given
+        final Long workbookId = 100L;
+        유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(1L, 2L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 문제집을 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.")
+    void scrapSelectedCardsToWorkbookFailedWhenUserNotFound() {
+        // given
+        유저_문제집_등록되어_있음("유저가 존재하지 않는 문제집", true, anotherUserInfo);
+        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo).getId();
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(1L, 2L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth()
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id")
+    void scrapSelectedCardsToWorkbookFailedWhenCardNotFound() {
+        // given
+        유저_문제집_등록되어_있음("Spring 문제집", true, anotherUserInfo);
+        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo).getId();
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(100L, 101L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 카드를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저")
+    void scrapSelectedCardsToWorkbookFailedWhenNotAuthor() {
+        // given
+        유저_문제집_등록되어_있음("Spring 문제집", true, userInfo);
+        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo).getId();
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+        카드_등록되어_있음("question", "answer", 1L, 1L);
+
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(100L, 101L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(로그인되어_있음(anotherUserInfo).getAccessToken())
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
 
     private WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, GithubUserInfoResponse userInfo) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()

@@ -1,14 +1,21 @@
 package botobo.core.application;
 
+import botobo.core.domain.card.Card;
+import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
+import botobo.core.exception.NotAuthorException;
+import botobo.core.exception.card.CardNotFoundException;
+import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +45,10 @@ class WorkbookServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CardRepository cardRepository;
+
 
     @InjectMocks
     private WorkbookService workbookService;
@@ -194,10 +206,156 @@ class WorkbookServiceTest {
                 .findById(anyLong());
     }
 
-    // TODO 문제집으로 카드 가져오기 - 성공
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 public하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.
-    // TODO 문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id
-    // TODO 문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 성공")
+    void scrapSelectedCardsToWorkbook() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("조앤의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(adminUser)
+                .build();
+
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("응답")
+                .build();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(cardRepository.findById(anyLong())).willReturn(Optional.of(card));
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .doesNotThrowAnyException();
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+        then(cardRepository).should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.")
+    void scrapSelectedCardsToWorkbookFailedWhenWorkbookNotFound() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
+        given(workbookRepository.findById(anyLong())).willThrow(WorkbookNotFoundException.class);
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .isInstanceOf(WorkbookNotFoundException.class);
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.")
+    void scrapSelectedCardsToWorkbookFailedWhenUserNotFound() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1000L);
+
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id")
+    void scrapSelectedCardsToWorkbookFailedWhenNotExistCardId() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(100L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("조앤의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(adminUser)
+                .build();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(cardRepository.findById(anyLong())).willThrow(CardNotFoundException.class);
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .isInstanceOf(CardNotFoundException.class);
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+        then(cardRepository).should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저")
+    void scrapSelectedCardsToWorkbookFailedWhenNotAuthor() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("조앤의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(adminUser)
+                .build();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(normalUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .isInstanceOf(NotAuthorException.class);
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+    }
 }

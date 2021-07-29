@@ -111,6 +111,16 @@ public class WorkbookService {
         scrappedCards.forEach(workbook::addCard);
     }
 
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    private Workbook findWorkbook(Long workbookId) {
+        return workbookRepository.findById(workbookId)
+                .orElseThrow(WorkbookNotFoundException::new);
+    }
+
     private List<Card> scrapCards(List<Long> cardIds) {
         List<Card> scrappedCards = new ArrayList<>();
         for (Long id: cardIds) {
@@ -120,15 +130,5 @@ public class WorkbookService {
             scrappedCards.add(Card.createCopyOf(sourceCard));
         }
         return scrappedCards;
-    }
-
-    private Workbook findWorkbook(Long workbookId) {
-        return workbookRepository.findById(workbookId)
-                .orElseThrow(WorkbookNotFoundException::new);
-    }
-
-    private User findUser(AppUser appUser) {
-        return userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
     }
 }
