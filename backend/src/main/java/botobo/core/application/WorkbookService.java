@@ -1,5 +1,7 @@
 package botobo.core.application;
 
+import botobo.core.domain.card.Card;
+import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -8,11 +10,14 @@ import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.domain.workbook.criteria.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
+import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
+import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,16 +31,17 @@ public class WorkbookService {
 
     private final WorkbookRepository workbookRepository;
     private final UserRepository userRepository;
+    private final CardRepository cardRepository;
 
-    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository) {
+    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository, CardRepository cardRepository) {
         this.workbookRepository = workbookRepository;
         this.userRepository = userRepository;
+        this.cardRepository = cardRepository;
     }
 
     @Transactional
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
-        User user = userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
+        User user = findUser(appUser);
         Workbook workbook = workbookRequest.toWorkbook()
                 .createBy(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
@@ -44,8 +50,7 @@ public class WorkbookService {
 
     @Transactional
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
-        Workbook workbook = workbookRepository.findById(id)
-                .orElseThrow(WorkbookNotFoundException::new);
+        Workbook workbook = findWorkbook(id);
         workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
                 workbookUpdateRequest.isOpened(),
                 appUser.getId());
@@ -86,8 +91,34 @@ public class WorkbookService {
 
     @Transactional
     public void deleteWorkbook(Long id, AppUser appUser) {
-        Workbook workbook = workbookRepository.findById(id)
-                .orElseThrow(WorkbookNotFoundException::new);
+        Workbook workbook = findWorkbook(id);
         workbook.deleteIfUserIsAuthor(appUser.getId());
+    }
+
+    @Transactional
+    public void scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
+        final User user = findUser(appUser);
+        final Workbook workbook = findWorkbook(workbookId);
+        if (!workbook.isAuthorOf(user)) {
+            throw new NotAuthorException();
+        }
+        saveScrappedCardsToWorkbook(scrapCardRequest.getCardIds(), workbook);
+    }
+
+    private void saveScrappedCardsToWorkbook(List<Long> cardIds, Workbook targetWorkbook) {
+        for (Long id: cardIds) {
+            final Card sourceCard = cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
+            Card.createCopyAndLinkToWorkbook(sourceCard, targetWorkbook);
+        }
+    }
+
+    private Workbook findWorkbook(Long workbookId) {
+        return workbookRepository.findById(workbookId)
+                .orElseThrow(WorkbookNotFoundException::new);
+    }
+
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
     }
 }

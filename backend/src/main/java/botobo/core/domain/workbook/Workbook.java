@@ -1,6 +1,7 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.BaseEntity;
+import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.User;
 import botobo.core.exception.NotAuthorException;
@@ -83,6 +84,10 @@ public class Workbook extends BaseEntity {
             return "존재하지 않는 유저";
         }
         return user.getUserName();
+    }
+
+    public boolean isAuthorOf(User user) {
+        return this.user == user;
     }
 
     public boolean containsWord(String word) {
