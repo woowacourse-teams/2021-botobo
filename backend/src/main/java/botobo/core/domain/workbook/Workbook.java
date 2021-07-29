@@ -94,11 +94,11 @@ public class Workbook extends BaseEntity {
         return !isOpened();
     }
 
-    public boolean ownedByAdmin() {
+    public boolean authorIsAdmin() {
         return user.isAdmin();
     }
 
-    public boolean ownedByUser() {
+    public boolean authorIsUser() {
         return user.isUser();
     }
 
@@ -106,20 +106,20 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfUserIsOwner(String name, boolean opened, Long userId) {
-        validateOwner(userId);
+    public void updateIfUserIsAuthor(String name, boolean opened, Long userId) {
+        validateAuthor(userId);
         this.name = name;
         this.opened = opened;
     }
 
-    private void validateOwner(Long userId) {
+    private void validateAuthor(Long userId) {
         if (!user.isSameId(userId)) {
             throw new NotAuthorException();
         }
     }
 
-    public void deleteIfUserIsOwner(Long userId) {
-        validateOwner(userId);
+    public void deleteIfUserIsAuthor(Long userId) {
+        validateAuthor(userId);
         user.getWorkbooks().remove(this);
         this.deleted = true;
     }

@@ -39,24 +39,24 @@ public class WorkbookService {
         Workbook workbook = workbookRequest.toWorkbook()
                 .createBy(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
-        return WorkbookResponse.ownedOf(savedWorkbook);
+        return WorkbookResponse.authorOf(savedWorkbook);
     }
 
     @Transactional
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        workbook.updateIfUserIsOwner(workbookUpdateRequest.getName(),
+        workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
                 workbookUpdateRequest.isOpened(),
                 appUser.getId());
-        return WorkbookResponse.ownedOf(workbook);
+        return WorkbookResponse.authorOf(workbook);
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
         if (appUser.isAnonymous()) {
-            return WorkbookResponse.ownedListOf(Collections.emptyList());
+            return WorkbookResponse.authorListOf(Collections.emptyList());
         }
-        return WorkbookResponse.ownedListOf(
+        return WorkbookResponse.authorListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );
     }
@@ -88,6 +88,6 @@ public class WorkbookService {
     public void deleteWorkbook(Long id, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        workbook.deleteIfUserIsOwner(appUser.getId());
+        workbook.deleteIfUserIsAuthor(appUser.getId());
     }
 }

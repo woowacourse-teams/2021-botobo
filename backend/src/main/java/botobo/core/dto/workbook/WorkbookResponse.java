@@ -40,13 +40,13 @@ public class WorkbookResponse {
                 .collect(Collectors.toList());
     }
 
-    public static List<WorkbookResponse> ownedListOf(List<Workbook> workbooks) {
+    public static List<WorkbookResponse> authorListOf(List<Workbook> workbooks) {
         return workbooks.stream()
-                .map(WorkbookResponse::ownedOf)
+                .map(WorkbookResponse::authorOf)
                 .collect(Collectors.toList());
     }
 
-    public static WorkbookResponse ownedOf(Workbook workbook) {
+    public static WorkbookResponse authorOf(Workbook workbook) {
         return WorkbookResponse.builder()
                 .id(workbook.getId())
                 .name(workbook.getName())

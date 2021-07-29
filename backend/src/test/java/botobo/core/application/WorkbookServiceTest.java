@@ -98,7 +98,7 @@ class WorkbookServiceTest {
     void findWorkbooksByUser() {
         // given
         given(workbookRepository.findAllByUserId(normalUser.getId())).willReturn(
-                workbooks.stream().filter(Workbook::ownedByUser).collect(Collectors.toList())
+                workbooks.stream().filter(Workbook::authorIsUser).collect(Collectors.toList())
         );
 
         // when
