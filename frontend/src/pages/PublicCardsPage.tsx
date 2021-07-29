@@ -145,7 +145,7 @@ const CardCount = styled.div`
   `};
 `;
 
-const TagList = styled.li`
+const TagList = styled.ul`
   ${Flex({ items: 'center' })};
 `;
 

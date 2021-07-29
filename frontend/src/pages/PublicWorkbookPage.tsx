@@ -1,21 +1,45 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
+import { getPublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
 import { useRouter } from '../hooks';
+import { searchKeywordState } from '../recoil/publicWorkbookState';
 import { Flex } from '../styles';
+import { PublicWorkbookResponse } from '../types';
+import { debounce } from '../utils';
 
 interface SearchStyleProps {
   isFocus: boolean;
 }
 
 const PublicWorkbookPage = () => {
-  const [searchValue, setSearchValue] = useState('');
+  const [keyword, setKeyword] = useRecoilState(searchKeywordState);
+  const [publicWorkbooks, setPublicWorkbooks] = useState<
+    PublicWorkbookResponse[]
+  >([]);
+  const [inputValue, setInputValue] = useState(keyword);
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
+
+  const search = async (value: string) => {
+    try {
+      const data = await getPublicWorkbookAsync(value);
+      setPublicWorkbooks(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!inputValue) return;
+
+    search(inputValue);
+  }, []);
 
   return (
     <Container>
@@ -23,20 +47,28 @@ const PublicWorkbookPage = () => {
         <SearchIcon width="1.3rem" height="1.3rem" />
         <SearchInput
           autoFocus={true}
-          value={searchValue}
-          onChange={({ target }) => setSearchValue(target.value)}
+          value={inputValue}
+          onChange={({ target }) => {
+            setInputValue(target.value);
+
+            debounce(() => search(target.value), 200);
+          }}
           placeholder="검색어를 입력해주세요"
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {searchValue && (
-          <button onClick={() => setSearchValue('')}>
+        {inputValue && (
+          <button onClick={() => setInputValue('')}>
             <SearchCloseIcon width="0.5rem" height="0.5rem" />
           </button>
         )}
       </SearchBar>
       <PublicWorkbookList
-        onClickPublicWorkbook={(workbookId) => routePublicCards(workbookId)}
+        publicWorkbooks={publicWorkbooks}
+        onClickPublicWorkbook={async (workbookId) => {
+          await setKeyword(inputValue);
+          routePublicCards(workbookId);
+        }}
       />
     </Container>
   );

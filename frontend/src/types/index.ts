@@ -15,7 +15,8 @@ export interface WorkbookResponse {
   tags: TagResponse[];
 }
 
-export interface PublicWorkbookResponse extends WorkbookResponse {
+export interface PublicWorkbookResponse
+  extends Omit<WorkbookResponse, 'opened'> {
   author: string;
 }
 
