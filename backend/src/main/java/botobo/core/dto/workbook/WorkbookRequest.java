@@ -1,5 +1,6 @@
 package botobo.core.dto.workbook;
 
+import botobo.core.domain.workbook.Workbook;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,12 @@ public class WorkbookRequest {
     @Length(max = 30, message = "이름은 최대 30자까지 입력 가능합니다.")
     private String name;
     private boolean opened;
+
+    public Workbook toWorkbook() {
+        return Workbook.builder()
+                .name(name)
+                .opened(opened)
+                .deleted(false)
+                .build();
+    }
 }

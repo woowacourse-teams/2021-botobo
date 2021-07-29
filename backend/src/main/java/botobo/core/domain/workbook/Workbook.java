@@ -72,12 +72,13 @@ public class Workbook extends BaseEntity {
         }
     }
 
-    public void createBy(User user) {
+    public Workbook createBy(User user) {
         if (Objects.nonNull(this.user)) {
             this.user.getWorkbooks().remove(this);
         }
         this.user = user;
         user.getWorkbooks().add(this);
+        return this;
     }
 
     public String author() {
@@ -108,18 +109,20 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfCan(String name, boolean opened, Long userId) {
-        if (!user.isSameId(userId)) {
-            throw new NotAuthorException();
-        }
+    public void updateIfUserIsOwner(String name, boolean opened, Long userId) {
+        validateOwner(userId);
         this.name = name;
         this.opened = opened;
     }
 
-    public void deleteIfCan(Long userId) {
-        if (!this.user.isSameId(userId)) {
+    private void validateOwner(Long userId) {
+        if (!user.isSameId(userId)) {
             throw new NotAuthorException();
         }
+    }
+
+    public void deleteIfUserIsOwner(Long userId) {
+        validateOwner(userId);
         user.getWorkbooks().remove(this);
         this.deleted = true;
     }

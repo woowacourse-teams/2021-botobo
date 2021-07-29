@@ -119,7 +119,7 @@ class WorkbookTest {
         workbook.createBy(user);
 
         // when
-        workbook.deleteIfCan(user.getId());
+        workbook.deleteIfUserIsOwner(user.getId());
 
         // then
         assertThat(workbook.isDeleted()).isTrue();
@@ -155,7 +155,7 @@ class WorkbookTest {
         workbook.createBy(user1);
 
         // when, then
-        assertThatThrownBy(() -> workbook.deleteIfCan(user2.getId()))
+        assertThatThrownBy(() -> workbook.deleteIfUserIsOwner(user2.getId()))
                 .isInstanceOf(NotAuthorException.class);
     }
 }

@@ -34,16 +34,6 @@ public class WorkbookResponse {
                 .build();
     }
 
-    //TODO: 메서드명 생각해봐야함
-    public static WorkbookResponse convert(Workbook workbook) {
-        return WorkbookResponse.builder()
-                .id(workbook.getId())
-                .name(workbook.getName())
-                .cardCount(workbook.cardCount())
-                .opened(workbook.isOpened())
-                .build();
-    }
-
     public static List<WorkbookResponse> listOf(List<Workbook> workbooks) {
         return workbooks.stream()
                 .map(WorkbookResponse::of)
@@ -56,7 +46,7 @@ public class WorkbookResponse {
                 .collect(Collectors.toList());
     }
 
-    private static WorkbookResponse ownedOf(Workbook workbook) {
+    public static WorkbookResponse ownedOf(Workbook workbook) {
         return WorkbookResponse.builder()
                 .id(workbook.getId())
                 .name(workbook.getName())

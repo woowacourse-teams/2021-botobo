@@ -84,7 +84,7 @@ class WorkbookServiceTest {
         //then
         assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
         assertThat(workbookResponse.getName()).isEqualTo(workbook.getName());
-        assertThat(workbookResponse.isOpened()).isEqualTo(workbook.isOpened());
+        assertThat(workbookResponse.getOpened()).isEqualTo(workbook.isOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbook.cardCount());
 
         then(userRepository).should(times(1))
@@ -165,7 +165,7 @@ class WorkbookServiceTest {
         //then
         assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
         assertThat(workbookResponse.getName()).isEqualTo(workbookUpdateRequest.getName());
-        assertThat(workbookResponse.isOpened()).isEqualTo(workbookUpdateRequest.isOpened());
+        assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.isOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbookUpdateRequest.getCardCount());
 
         then(workbookRepository).should(times(1))

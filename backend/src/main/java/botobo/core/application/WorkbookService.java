@@ -3,7 +3,6 @@ package botobo.core.application;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
-import botobo.core.domain.workbook.SearchKeyword;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
@@ -37,24 +36,20 @@ public class WorkbookService {
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
         User user = userRepository.findById(appUser.getId())
                 .orElseThrow(UserNotFoundException::new);
-        Workbook workbook = Workbook.builder()
-                .name(workbookRequest.getName())
-                .opened(workbookRequest.isOpened())
-                .deleted(false)
-                .build();
-        workbook.createBy(user);
+        Workbook workbook = workbookRequest.toWorkbook()
+                .createBy(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
-        return WorkbookResponse.convert(savedWorkbook);
+        return WorkbookResponse.ownedOf(savedWorkbook);
     }
 
     @Transactional
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        workbook.updateIfCan(workbookUpdateRequest.getName(),
+        workbook.updateIfUserIsOwner(workbookUpdateRequest.getName(),
                 workbookUpdateRequest.isOpened(),
                 appUser.getId());
-        return WorkbookResponse.convert(workbook);
+        return WorkbookResponse.ownedOf(workbook);
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
@@ -93,7 +88,7 @@ public class WorkbookService {
     public void deleteWorkbook(Long id, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        workbook.deleteIfCan(appUser.getId());
+        workbook.deleteIfUserIsOwner(appUser.getId());
         workbookRepository.delete(workbook);
     }
 }

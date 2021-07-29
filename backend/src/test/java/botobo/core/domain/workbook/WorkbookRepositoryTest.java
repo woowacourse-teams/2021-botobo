@@ -174,7 +174,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.updateIfCan("오즈의 Java를 다 잡아", false, user.getId());
+        workbook.updateIfUserIsOwner("오즈의 Java를 다 잡아", false, user.getId());
         testEntityManager.flush();
 
         // then
@@ -214,7 +214,7 @@ public class WorkbookRepositoryTest {
 
         // when, then
         assertThatThrownBy(() ->
-                workbook.updateIfCan("오즈의 Java를 다 잡아", false, 2L))
+                workbook.updateIfUserIsOwner("오즈의 Java를 다 잡아", false, 2L))
                 .isInstanceOf(NotAuthorException.class);
     }
 
@@ -234,8 +234,8 @@ public class WorkbookRepositoryTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
-                .build();
-        workbook.createBy(user);
+                .build()
+                .createBy(user);
 
         workbookRepository.save(workbook);
 
