@@ -105,7 +105,7 @@ public class WorkbookService {
         }
         List<Card> scrappedCards = scrapCards(scrapCardRequest.getCardIds());
         for (Card card: scrappedCards) {
-            workbook.addCard(card);
+            card.addWorkbook(workbook);
         }
     }
 

@@ -128,8 +128,4 @@ public class Workbook extends BaseEntity {
         user.getWorkbooks().remove(this);
         this.deleted = true;
     }
-
-    public void addCard(Card card) {
-        card.addWorkbook(this);
-    }
 }
