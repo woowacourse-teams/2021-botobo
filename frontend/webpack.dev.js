@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
@@ -16,4 +17,5 @@ module.exports = merge(common, {
     historyApiFallback: true,
     hot: true,
   },
+  plugins: [new ForkTsCheckerWebpackPlugin()],
 });

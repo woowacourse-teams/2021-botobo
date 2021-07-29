@@ -19,7 +19,7 @@ interface Props {
   workbooks: WorkbookProp[];
   onClickWorkbook: (id: number) => void;
   editable?: boolean;
-  deleteWorkbook: (id: number) => Promise<void>;
+  deleteWorkbook?: (id: number) => Promise<void>;
 }
 
 const WorkbookList = ({
@@ -54,7 +54,7 @@ const WorkbookList = ({
 
               openModal({
                 content: (
-                  <Confirm onConfirm={() => deleteWorkbook(id)}>
+                  <Confirm onConfirm={() => deleteWorkbook?.(id)}>
                     해당 문제집을 정말 삭제하시겠어요?
                   </Confirm>
                 ),

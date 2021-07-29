@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const path = require('path');
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: './src/index.tsx',
@@ -23,7 +26,8 @@ module.exports = {
         },
       ],
     }),
-  ],
+    isDevelopment && new ReactRefreshWebpackPlugin(),
+  ].filter(Boolean),
   module: {
     rules: [
       {
@@ -47,7 +51,8 @@ module.exports = {
               '@babel/proposal-class-properties',
               '@babel/proposal-object-rest-spread',
               '@emotion',
-            ],
+              isDevelopment && require.resolve('react-refresh/babel'),
+            ].filter(Boolean),
           },
         },
       },
