@@ -23,6 +23,7 @@ import {
   QuizResultPage,
   QuizSettingPage,
   WorkbookAddPage,
+  WorkbookEditPage,
 } from './pages';
 import { userState } from './recoil';
 
@@ -55,6 +56,9 @@ const Router = () => (
       </Route>
       <PrivateRoute exact path={ROUTE.WORKBOOK_ADD.PATH}>
         <WorkbookAddPage />
+      </PrivateRoute>
+      <PrivateRoute exact path={ROUTE.WORKBOOK_EDIT.PATH}>
+        <WorkbookEditPage />
       </PrivateRoute>
       <PrivateRoute exact path={ROUTE.QUIZ_SETTING.PATH}>
         {/* TODO: 스켈레톤으로 변경 */}

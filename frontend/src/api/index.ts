@@ -6,6 +6,7 @@ import {
   CardResponse,
   CardsResponse,
   QuizResponse,
+  TagResponse,
   UserInfoResponse,
   WorkbookResponse,
 } from '../types';
@@ -15,6 +16,12 @@ interface PostCardAsync {
   question: string;
   answer: string;
   workbookId: number;
+}
+
+interface PostWorkbookAsync {
+  name: string;
+  opened: boolean;
+  tags: TagResponse[];
 }
 
 const request = axios.create({
@@ -81,4 +88,18 @@ export const putCardAsync = async (cardInfo: CardResponse) => {
 
 export const deleteCardAsync = async (id: number) => {
   await request.delete(`/cards/${id}`);
+};
+
+export const postWorkbookAsync = async (params: PostWorkbookAsync) => {
+  await request.post('/workbook', params);
+};
+
+export const putWorkbookAsync = async (workbookInfo: WorkbookResponse) => {
+  const { id, ...params } = workbookInfo;
+
+  await request.put(`/workbook/${id}`, params);
+};
+
+export const deleteWorkbookAsync = async (id: number) => {
+  await request.delete(`/workbook/${id}`);
 };

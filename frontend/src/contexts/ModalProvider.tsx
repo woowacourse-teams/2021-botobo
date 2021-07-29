@@ -150,6 +150,7 @@ const Dimmed = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 
   ${({ theme }) => css`
     background-color: ${`${theme.color.black}80`};
@@ -172,7 +173,7 @@ const Header = styled.div`
 
 const Container = styled.div<Pick<BottomSheetProps, 'type' | 'isOpened'>>`
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   padding: 1rem;
 
   transition: visibility 0.2s;
