@@ -34,8 +34,7 @@ public class WorkbookService {
 
     @Transactional
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
-        User user = userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
+        User user = findUser(appUser);
         Workbook workbook = workbookRequest.toWorkbook()
                 .createBy(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
@@ -44,12 +43,19 @@ public class WorkbookService {
 
     @Transactional
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
-        Workbook workbook = workbookRepository.findById(id)
-                .orElseThrow(WorkbookNotFoundException::new);
+        User user = findUser(appUser);
+        Workbook workbook = findWorkbook(id);
         workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
                 workbookUpdateRequest.isOpened(),
-                appUser.getId());
+                user);
         return WorkbookResponse.authorOf(workbook);
+    }
+
+    @Transactional
+    public void deleteWorkbook(Long id, AppUser appUser) {
+        User user = findUser(appUser);
+        Workbook workbook = findWorkbook(id);
+        workbook.deleteIfUserIsAuthor(user);
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
@@ -84,10 +90,13 @@ public class WorkbookService {
         return WorkbookCardResponse.of(workbook);
     }
 
-    @Transactional
-    public void deleteWorkbook(Long id, AppUser appUser) {
-        Workbook workbook = workbookRepository.findById(id)
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    private Workbook findWorkbook(Long id) {
+        return workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        workbook.deleteIfUserIsAuthor(appUser.getId());
     }
 }

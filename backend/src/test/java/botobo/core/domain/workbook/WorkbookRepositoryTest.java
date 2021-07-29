@@ -174,7 +174,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user.getId());
+        workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user);
         testEntityManager.flush();
 
         // then
@@ -214,7 +214,7 @@ public class WorkbookRepositoryTest {
 
         // when, then
         assertThatThrownBy(() ->
-                workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, 2L))
+                workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user2))
                 .isInstanceOf(NotAuthorException.class);
     }
 
@@ -240,7 +240,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.deleteIfUserIsAuthor(user.getId());
+        workbook.deleteIfUserIsAuthor(user);
 
         //then
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);

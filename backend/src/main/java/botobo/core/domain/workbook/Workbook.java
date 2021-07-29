@@ -106,21 +106,21 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfUserIsAuthor(String name, boolean opened, Long userId) {
-        validateAuthor(userId);
+    public void updateIfUserIsAuthor(String name, boolean opened, User user) {
+        validateAuthor(user);
         this.name = name;
         this.opened = opened;
     }
 
-    private void validateAuthor(Long userId) {
-        if (!user.isSameId(userId)) {
-            throw new NotAuthorException();
-        }
-    }
-
-    public void deleteIfUserIsAuthor(Long userId) {
-        validateAuthor(userId);
+    public void deleteIfUserIsAuthor(User user) {
+        validateAuthor(user);
         user.getWorkbooks().remove(this);
         this.deleted = true;
+    }
+
+    private void validateAuthor(User user) {
+        if (!this.user.equals(user)) {
+            throw new NotAuthorException();
+        }
     }
 }
