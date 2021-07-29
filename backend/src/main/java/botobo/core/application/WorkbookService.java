@@ -104,15 +104,19 @@ public class WorkbookService {
             throw new NotAuthorException();
         }
         List<Card> scrappedCards = scrapCards(scrapCardRequest.getCardIds());
-        for (Card card: scrappedCards) {
-            card.addWorkbook(workbook);
-        }
+        addScrappedCardsToWorkbook(workbook, scrappedCards);
+    }
+
+    private void addScrappedCardsToWorkbook(Workbook workbook, List<Card> scrappedCards) {
+        scrappedCards.forEach(workbook::addCard);
     }
 
     private List<Card> scrapCards(List<Long> cardIds) {
         List<Card> scrappedCards = new ArrayList<>();
         for (Long id: cardIds) {
-            final Card sourceCard = cardRepository.findById(id).orElseThrow(CardNotFoundException::new);
+            final Card sourceCard = cardRepository.findById(id)
+                    .orElseThrow(CardNotFoundException::new);
+
             scrappedCards.add(Card.createCopyOf(sourceCard));
         }
         return scrappedCards;

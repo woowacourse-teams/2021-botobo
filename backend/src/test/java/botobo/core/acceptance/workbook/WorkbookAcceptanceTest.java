@@ -334,6 +334,25 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
+    // TODO 문제집으로 카드 가져오기
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 성공")
+    void scrapSelectedCardsToWorkbook() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+
+        // when
+        final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, userInfo);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 public하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저
 
     private WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, GithubUserInfoResponse userInfo) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()

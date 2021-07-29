@@ -78,9 +78,7 @@ public class Card extends BaseEntity {
     }
 
     public void addWorkbook(Workbook workbook) {
-        if (Objects.nonNull(workbook)) {
-            changeWorkbook(workbook);
-        }
+        this.workbook = workbook;
     }
 
     public void update(Card other) {

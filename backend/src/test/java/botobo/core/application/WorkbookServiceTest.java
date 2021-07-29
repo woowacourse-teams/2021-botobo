@@ -193,4 +193,11 @@ class WorkbookServiceTest {
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }
+
+    // TODO 문제집으로 카드 가져오기 - 성공
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 public하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.
+    // TODO 문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id
+    // TODO 문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저
 }
