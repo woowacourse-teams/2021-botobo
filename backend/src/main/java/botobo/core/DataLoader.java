@@ -52,6 +52,7 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.adminUser = saveAdminUser();
+        saveUser();
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
@@ -96,10 +97,20 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveAdminUser() {
         User user = User.builder()
-                .userName("보또보")
+                .userName("1번 어드민")
                 .githubId(88036280L)
                 .profileUrl("botobo.profile.url")
                 .role(Role.ADMIN)
+                .build();
+        return userRepository.save(user);
+    }
+
+    private User saveUser() {
+        User user = User.builder()
+                .userName("일반 유저")
+                .githubId(88143445L)
+                .profileUrl("botobo.profile.url")
+                .role(Role.USER)
                 .build();
         return userRepository.save(user);
     }
