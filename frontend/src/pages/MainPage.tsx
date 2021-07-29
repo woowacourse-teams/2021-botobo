@@ -1,48 +1,53 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
-import { Button, QuizStarter, WorkbookList } from '../components';
+import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
 import { STORAGE_KEY } from '../constants';
-import { useMain, useRouter, useWorkbook } from '../hooks';
+import { useRouter, useWorkbook } from '../hooks';
+import { userState } from '../recoil';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
-  const { userInfo } = useMain();
+  const userInfo = useRecoilValue(userState);
   const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
 
   return (
-    <Container>
-      {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
-      <Banner onClick={routePublicWorkbook}>
-        <BannerText>다양한 문제집 보러 가기</BannerText>
-        <StyledButton backgroundColor="white" color="gray_8" shape="circle">
-          <ForwardIcon width="1rem" height="1rem" />
-        </StyledButton>
-      </Banner>
-      <QuizStarter />
-      <section>
-        <WorkbookHeader>
-          <WorkbookTitle>학습 중</WorkbookTitle>
-          <Button shape="square" onClick={routeWorkbookAdd}>
-            문제집 추가
-          </Button>
-        </WorkbookHeader>
-        <WorkbookList
-          workbooks={workbooks}
-          onClickWorkbook={async (id) => {
-            await setWorkbookId(id);
-            setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-            routeCards();
-          }}
-          editable={true}
-          deleteWorkbook={deleteWorkbook}
-        />
-      </section>
-    </Container>
+    <>
+      <MainHeader />
+      <Container>
+        {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
+        <Banner onClick={routePublicWorkbook}>
+          <BannerText>다양한 문제집 보러 가기</BannerText>
+          <StyledButton backgroundColor="white" color="gray_8" shape="circle">
+            <ForwardIcon width="1rem" height="1rem" />
+          </StyledButton>
+        </Banner>
+        <QuizStarter />
+        <section>
+          <WorkbookHeader>
+            <WorkbookTitle>학습 중</WorkbookTitle>
+            <Button shape="square" onClick={routeWorkbookAdd}>
+              문제집 추가
+            </Button>
+          </WorkbookHeader>
+          <WorkbookList
+            workbooks={workbooks}
+            onClickWorkbook={async (id) => {
+              await setWorkbookId(id);
+              setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
+              routeCards();
+            }}
+            editable={true}
+            deleteWorkbook={deleteWorkbook}
+          />
+        </section>
+      </Container>
+    </>
   );
 };
 

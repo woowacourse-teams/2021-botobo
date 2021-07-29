@@ -1,72 +1,23 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
 import { ROUTE } from '../constants';
+import { usePublicCard } from '../hooks';
 import { Flex } from '../styles';
 
-const data = {
-  workbookName: 'Java',
-  cardCount: 4,
-  tags: ['java', '자바', '피케이'],
-  cards: [
-    {
-      id: 1,
-      question: '자바란 무엇인가요?',
-      answer: '자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 2,
-      question: '자바란 무엇인가요?',
-      answer: '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 3,
-      question: '자바란 무엇인가요?',
-      answer:
-        '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-    {
-      id: 4,
-      question: '자바란 무엇인가요? 자바란 무엇인가요? 자바란 무엇인가요?',
-      answer:
-        '자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.자바란 어쩌고 저쩌고입니다.',
-    },
-  ],
-};
-
 const PublicCardsPage = () => {
-  const [cards, setCards] = useState(
-    data.cards.map((card) => ({ ...card, isChecked: false }))
-  );
-  const [isAllCardChecked, setIsAllCardChecked] = useState(false);
-
-  const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
-
-  const checkCard = (id: number) => {
-    const newCards = cards.map((card) => {
-      if (card.id !== id) return card;
-
-      return {
-        ...card,
-        isChecked: !card.isChecked,
-      };
-    });
-
-    setCards(newCards);
-  };
-
-  const checkAllCard: React.ChangeEventHandler<HTMLInputElement> = ({
-    target,
-  }) => {
-    setIsAllCardChecked(target.checked);
-    setCards(cards.map((card) => ({ ...card, isChecked: target.checked })));
-  };
-
-  useEffect(() => {
-    setIsAllCardChecked(checkedCardCount === data.cardCount);
-  }, [checkedCardCount]);
+  const {
+    workbookName,
+    cardCount,
+    tags,
+    publicCards,
+    isAllCardChecked,
+    checkAllCard,
+    checkedCardCount,
+    checkCard,
+  } = usePublicCard();
 
   return (
     <>
@@ -80,17 +31,17 @@ const PublicCardsPage = () => {
         }
       />
       <Container>
-        <WorkbookName>{data.workbookName}</WorkbookName>
-        <CardCount>{data.cardCount}개의 카드</CardCount>
+        <WorkbookName>{workbookName}</WorkbookName>
+        <CardCount>{cardCount}개의 카드</CardCount>
         <TagList>
-          {data.tags.map((tag, index) => (
-            <li key={index}>
-              <Tag>#{tag}</Tag>
+          {tags.map((tag) => (
+            <li key={tag.id}>
+              <Tag>#{tag.name}</Tag>
             </li>
           ))}
         </TagList>
         <ul>
-          {cards.map(({ id, question, answer, isChecked }) => (
+          {publicCards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
               <PublicQnACard
                 question={question}
@@ -145,7 +96,7 @@ const CardCount = styled.div`
   `};
 `;
 
-const TagList = styled.li`
+const TagList = styled.ul`
   ${Flex({ items: 'center' })};
 `;
 

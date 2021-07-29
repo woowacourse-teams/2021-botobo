@@ -5,15 +5,25 @@ import React, { useState } from 'react';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
-import { useRouter } from '../hooks';
+import { STORAGE_KEY } from '../constants';
+import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import { debounce, setSessionStorage } from '../utils';
 
 interface SearchStyleProps {
   isFocus: boolean;
 }
 
 const PublicWorkbookPage = () => {
-  const [searchValue, setSearchValue] = useState('');
+  const {
+    inputValue,
+    setInputValue,
+    publicWorkbooks,
+    setPublicWorkbooks,
+    setPublicWorkbookId,
+    setKeyword,
+    search,
+  } = usePublicWorkbook();
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
 
@@ -23,20 +33,34 @@ const PublicWorkbookPage = () => {
         <SearchIcon width="1.3rem" height="1.3rem" />
         <SearchInput
           autoFocus={true}
-          value={searchValue}
-          onChange={({ target }) => setSearchValue(target.value)}
+          value={inputValue}
+          onChange={({ target }) => {
+            setInputValue(target.value);
+            debounce(() => search(target.value), 200);
+          }}
           placeholder="검색어를 입력해주세요"
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {searchValue && (
-          <button onClick={() => setSearchValue('')}>
+        {inputValue && (
+          <button
+            onClick={() => {
+              setInputValue('');
+              setPublicWorkbooks([]);
+            }}
+          >
             <SearchCloseIcon width="0.5rem" height="0.5rem" />
           </button>
         )}
       </SearchBar>
       <PublicWorkbookList
-        onClickPublicWorkbook={(workbookId) => routePublicCards(workbookId)}
+        publicWorkbooks={publicWorkbooks}
+        onClickPublicWorkbook={async (id) => {
+          await setPublicWorkbookId(id);
+          setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+          setKeyword(inputValue);
+          routePublicCards();
+        }}
       />
     </Container>
   );

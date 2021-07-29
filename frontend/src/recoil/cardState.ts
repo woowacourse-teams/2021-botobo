@@ -1,29 +1,27 @@
 import { DefaultValue, atom, selector } from 'recoil';
 
-import { CardResponse, CardsResponse } from './../types/index';
-import { getCardsAsync } from '../api';
-import { workbookIdState } from './workbookState';
+import {
+  CardResponse,
+  CardsResponse,
+  PublicCardsResponse,
+} from './../types/index';
+import { getCardsAsync, getPublicCardsAsync } from '../api';
+import {
+  cardInitialState,
+  cardsInitialState,
+  publicCardsInitialState,
+} from './initialState';
+import { publicWorkbookIdState, workbookIdState } from './workbookState';
 
 interface CardState {
   data: CardsResponse;
   errorMessage: string | null;
 }
 
-const cardInitialState = {
-  id: -1,
-  workbookId: -1,
-  question: '',
-  answer: '',
-  bookmark: false,
-  encounterCount: -1,
-  nextQuiz: false,
-};
-
-const cardsInitialState = {
-  workbookId: -1,
-  workbookName: '',
-  cards: [cardInitialState],
-};
+interface PublicCardState {
+  data: PublicCardsResponse;
+  errorMessage: string | null;
+}
 
 const cardUpdateTrigger = atom({
   key: 'cardUpdateTrigger',
@@ -59,6 +57,28 @@ export const cardState = selector<CardState>({
   set: ({ set }, value) => {
     if (value instanceof DefaultValue) {
       set(cardUpdateTrigger, (prevState) => prevState + 1);
+    }
+  },
+});
+
+export const publicCardState = selector<PublicCardState>({
+  key: 'publicCardState',
+  get: async ({ get }) => {
+    try {
+      const workbookId = get(publicWorkbookIdState);
+
+      return {
+        data:
+          workbookId === -1
+            ? publicCardsInitialState
+            : await getPublicCardsAsync(workbookId),
+        errorMessage: null,
+      };
+    } catch (error) {
+      return {
+        data: publicCardsInitialState,
+        errorMessage: '카드를 불러오지 못했습니다.',
+      };
     }
   },
 });

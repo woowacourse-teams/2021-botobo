@@ -16,7 +16,8 @@ const useQuizSetting = () => {
         isChecked: false,
       }))
   );
-  const setQuizState = useSetRecoilState(quizState);
+  const setQuizzes = useSetRecoilState(quizState);
+
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
 
@@ -47,7 +48,7 @@ const useQuizSetting = () => {
     try {
       const quizzes = await postQuizzesAsync(workbookIds);
 
-      setQuizState(quizzes);
+      setQuizzes(quizzes);
       routeQuiz();
     } catch (error) {
       showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });

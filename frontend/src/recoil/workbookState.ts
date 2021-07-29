@@ -4,6 +4,7 @@ import { getWorkbooksAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
 import { WorkbookResponse } from '../types';
 import { getSessionStorage } from '../utils';
+import { workbookInitialState } from './initialState';
 import { userState } from './userState';
 
 interface WorkbookState {
@@ -11,27 +12,24 @@ interface WorkbookState {
   errorMessage: string | null;
 }
 
-const tagInitialState = {
-  id: -1,
-  name: '',
-};
-
-const workbookInitialState = {
-  id: -1,
-  name: '',
-  cardCount: -1,
-  opened: true,
-  tags: [tagInitialState],
-};
-
 const workbookUpdateTrigger = atom({
   key: 'workbookUpdateTrigger',
   default: 0,
 });
 
+export const searchKeywordState = atom<string>({
+  key: 'searchKeywordState',
+  default: '',
+});
+
 export const workbookIdState = atom<number>({
   key: 'workbookIdState',
   default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,
+});
+
+export const publicWorkbookIdState = atom<number>({
+  key: 'publicWorkbookIdState',
+  default: getSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID) ?? -1,
 });
 
 export const workbookState = selector<WorkbookState>({
