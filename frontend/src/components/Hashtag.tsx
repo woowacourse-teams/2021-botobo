@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 
 import DeleteIcon from '../assets/cross-mark.svg';
 import { Flex } from '../styles';
+import { TagResponse } from '../types';
 
 interface Props {
-  hashtags: string[];
-  setHashtags: React.Dispatch<React.SetStateAction<string[]>>;
+  hashtags: TagResponse[];
+  setHashtags: React.Dispatch<React.SetStateAction<TagResponse[]>>;
 }
 
 const MAX_HASHTAG_COUNT = 3;
@@ -23,21 +24,21 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
     event.preventDefault();
     setValue('');
 
-    if (hashtags.includes(value)) return;
+    if (hashtags.map(({ name }) => name).includes(value)) return;
 
-    setHashtags((prevState) => [...prevState, value]);
+    setHashtags((prevState) => [...prevState, { name: value, id: 0 }]);
   };
 
   return (
     <Container>
-      {hashtags.map((tag) => (
-        <Tag key={tag}>
+      {hashtags.map(({ name }) => (
+        <Tag key={name}>
           <Hash>#</Hash>
-          {tag}
+          {name}
           <DeleteButton
             onClick={() =>
               setHashtags((prevState) =>
-                prevState.filter((state) => state !== tag)
+                prevState.filter((tag) => tag.name !== name)
               )
             }
           >

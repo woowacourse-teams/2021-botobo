@@ -2,10 +2,17 @@ export interface AccessTokenResponse {
   accessToken: string;
 }
 
+export interface TagResponse {
+  id: number;
+  name: string;
+}
+
 export interface WorkbookResponse {
   id: number;
   name: string;
   cardCount: number;
+  opened: boolean;
+  tags: TagResponse[];
 }
 
 export interface PublicWorkbookResponse extends WorkbookResponse {
