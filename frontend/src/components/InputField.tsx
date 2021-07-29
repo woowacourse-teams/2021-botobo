@@ -9,7 +9,7 @@ type FocusColor = 'gray' | 'green';
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   focusColor?: FocusColor;
-  maxLength: number;
+  maxLength?: number;
 }
 
 interface ContainerStyleProps {
@@ -43,7 +43,7 @@ const InputField = ({
         name={name}
         value={values[name]}
         onChange={onChange}
-        onKeyDown={(event) => {
+        onKeyPress={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
           }

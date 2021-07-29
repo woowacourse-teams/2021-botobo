@@ -10,6 +10,10 @@ const ROUTE = {
     PATH: '/workbookAdd',
     TITLE: '문제집 추가',
   },
+  WORKBOOK_EDIT: {
+    PATH: '/workbookEdit',
+    TITLE: '문제집 수정',
+  },
   QUIZ_SETTING: {
     PATH: '/quizSetting',
     TITLE: '퀴즈 설정',

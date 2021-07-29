@@ -1,23 +1,12 @@
-import { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { userState } from './../recoil/userState';
-import { workbookIdState, workbookState } from '../recoil';
-import useSnackbar from './useSnackbar';
 
+//TODO: 에러 처리
 const useMain = () => {
-  const { data: workbooks, errorMessage } = useRecoilValue(workbookState);
   const userInfo = useRecoilValue(userState);
-  const showSnackbar = useSnackbar();
-  const setWorkbookId = useSetRecoilState(workbookIdState);
 
-  useEffect(() => {
-    if (errorMessage) {
-      showSnackbar({ message: errorMessage, type: 'error' });
-    }
-  }, [errorMessage]);
-
-  return { workbooks, userInfo, setWorkbookId };
+  return { userInfo };
 };
 
 export default useMain;

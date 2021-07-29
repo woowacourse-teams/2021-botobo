@@ -27,9 +27,9 @@ public class WorkbookService {
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
         if (appUser.isAnonymous()) {
-            return WorkbookResponse.listOf(Collections.emptyList());
+            return WorkbookResponse.ownedListOf(Collections.emptyList());
         }
-        return WorkbookResponse.listOf(
+        return WorkbookResponse.ownedListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );
     }
@@ -48,7 +48,7 @@ public class WorkbookService {
                 .build()
                 .apply(workbookCriteria);
 
-        return WorkbookResponse.listOf(workbooks);
+        return WorkbookResponse.openedListOf(workbooks);
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id) {

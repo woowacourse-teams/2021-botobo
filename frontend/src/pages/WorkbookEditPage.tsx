@@ -17,19 +17,29 @@ const validateWorkbookName = (value: string) => {
   }
 };
 
-const WorkbookAddPage = () => {
-  const [hashtags, setHashtags] = useState<TagResponse[]>([]);
-  const [isPublic, setIsPublic] = useState(true);
-  const { createWorkbook } = useWorkbook();
+const WorkbookEditPage = () => {
+  const { editedWorkbook, editWorkbook } = useWorkbook();
+  const [hashtags, setHashtags] = useState<TagResponse[]>([
+    { id: 1, name: 'hash' },
+    { id: 2, name: '해시태그' },
+  ]);
+  const [isPublic, setIsPublic] = useState(editedWorkbook.opened);
 
   return (
     <FormProvider
-      initialValues={{ name: '' }}
+      initialValues={{ name: editedWorkbook.name }}
       validators={{ name: validateWorkbookName }}
-      onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
+      onSubmit={({ name }) =>
+        editWorkbook({
+          ...editedWorkbook,
+          name,
+          tags: hashtags,
+          opened: isPublic,
+        })
+      }
     >
       <PageHeader
-        title={ROUTE.WORKBOOK_ADD.TITLE}
+        title={ROUTE.WORKBOOK_EDIT.TITLE}
         rightContent={<SubmitButton>확인</SubmitButton>}
       />
       <Container>
@@ -88,4 +98,4 @@ const Input = styled(InputField)`
   `}
 `;
 
-export default WorkbookAddPage;
+export default WorkbookEditPage;

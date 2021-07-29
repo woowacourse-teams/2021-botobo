@@ -5,12 +5,13 @@ import React from 'react';
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, QuizStarter, WorkbookList } from '../components';
 import { STORAGE_KEY } from '../constants';
-import { useMain, useRouter } from '../hooks';
+import { useMain, useRouter, useWorkbook } from '../hooks';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
-  const { workbooks, userInfo, setWorkbookId } = useMain();
+  const { userInfo } = useMain();
+  const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
 
   return (
@@ -38,6 +39,7 @@ const MainPage = () => {
             routeCards();
           }}
           editable={true}
+          deleteWorkbook={deleteWorkbook}
         />
       </section>
     </Container>

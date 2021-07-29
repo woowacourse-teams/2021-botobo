@@ -1,7 +1,6 @@
 package botobo.core.documentation;
 
 import botobo.core.application.AdminService;
-import botobo.core.application.AuthService;
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
@@ -10,10 +9,8 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.ui.AdminController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -23,14 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AdminController.class)
 public class AdminDocumentationTest extends DocumentationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     private AdminService adminService;
-
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")

@@ -27,7 +27,7 @@ const useCards = () => {
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
       console.error(error);
-      showSnackbar({ message: '카드를 생성하지 못했어요.', type: 'error' });
+      showSnackbar({ message: '카드를 추가하지 못했어요.', type: 'error' });
     }
   };
 
