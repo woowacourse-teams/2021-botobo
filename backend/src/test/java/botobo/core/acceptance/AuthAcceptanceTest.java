@@ -29,7 +29,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         LoginRequest loginRequest = new LoginRequest("githubCode");
         GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
                 .userName("githubUser")
-                .githubId(1L)
+                .githubId(2L)
                 .profileUrl("github.io")
                 .build();
 

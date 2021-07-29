@@ -25,7 +25,6 @@ public class QuizDocumentationTest extends DocumentationTest {
     @MockBean
     private QuizService quizService;
 
-
     @Test
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
