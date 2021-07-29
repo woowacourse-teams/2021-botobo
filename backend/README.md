@@ -7,7 +7,7 @@ Java 버전 11
 cd backend
 ```
 
-2. 서브모듈이 업데이트 된 경우 또는 브랜치를 checkout하고 처음 실행하는 경우
+2. backend 코드나 서브모듈 관련해서 새로운 커밋이 생겼을 경우
 ```shell
 ./gradlew clean build
 ```
