@@ -1,0 +1,12 @@
+### 관리자 권한으로 문제집 추가하기
+
+POST /api/admin/workbooks HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer botobo.access.token
+Host: botobo.r-e.kr
+
+{
+  "name" : "JAVA",
+  "opened" : true
+}
