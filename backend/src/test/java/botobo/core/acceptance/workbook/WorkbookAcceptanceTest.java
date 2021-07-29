@@ -29,10 +29,10 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
     }
 
-    // TODO: 유저가 추가한 문제집을 조회하는걸로 바꿔야함
+    // TODO: 문제집 추가 API가 생기면 전체적으로 리팩터링 해야함
     @Test
     @DisplayName("문제집 전체 조회 - 성공")
-    void findAllWorkbooks() {
+    void findWorkbooksByUser() {
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks")
@@ -42,7 +42,20 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses.size()).isEqualTo(3);
+        assertThat(workbookResponses).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("비회원 문제집 조회시 비어있는 리스트를 반환 - 성공")
+    void findWorkbooksByAnonymous() {
+        // when
+        final HttpResponse response = request()
+                .get("/api/workbooks")
+                .build();
+
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).isEmpty();
     }
 
     @Test
@@ -75,5 +88,21 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_2.getName());
         assertThat(workbookCardResponse.getCards()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("공유 문제집 검색 - 성공")
+    void findPublicWorkbooksBySearch() {
+        // when
+        final HttpResponse response = request()
+                .get("/api/workbooks/public")
+                .queryParam("search", "1")
+                .auth(jwtTokenProvider.createToken(user.getId()))
+                .build();
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(1);
     }
 }

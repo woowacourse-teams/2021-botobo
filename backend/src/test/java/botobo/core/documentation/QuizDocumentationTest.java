@@ -1,6 +1,5 @@
 package botobo.core.documentation;
 
-import botobo.core.application.AuthService;
 import botobo.core.application.QuizService;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
@@ -9,10 +8,8 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.ui.QuizController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,14 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(QuizController.class)
 public class QuizDocumentationTest extends DocumentationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     private QuizService quizService;
 
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")

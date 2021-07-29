@@ -40,6 +40,6 @@ public class UserAcceptanceTest extends AuthAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(errorResponse.getMessage()).isEqualTo("토큰 추출에 실패했습니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("토큰이 유효하지 않습니다.");
     }
 }

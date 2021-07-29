@@ -1,7 +1,6 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
-import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -149,6 +148,6 @@ public class WorkbookRepositoryTest {
 
         //then
         assertThat(workbooks).hasSize(2)
-            .containsExactly(workbook2, workbook1);
+                .containsExactly(workbook2, workbook1);
     }
 }

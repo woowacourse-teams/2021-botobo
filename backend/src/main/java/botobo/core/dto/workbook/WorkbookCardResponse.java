@@ -21,11 +21,11 @@ public class WorkbookCardResponse {
     private List<CardResponse> cards;
 
     public static WorkbookCardResponse of(Workbook workbook) {
-        List<CardResponse> cardSimpleResponses = CardResponse.listOf(workbook.getCards());
+        List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCards());
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
-                .cards(cardSimpleResponses)
+                .cards(cardResponses)
                 .build();
     }
 }

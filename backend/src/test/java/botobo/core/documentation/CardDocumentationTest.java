@@ -1,6 +1,5 @@
 package botobo.core.documentation;
 
-import botobo.core.application.AuthService;
 import botobo.core.application.CardService;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
@@ -8,13 +7,10 @@ import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.ui.CardController;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
@@ -27,17 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CardController.class)
 public class CardDocumentationTest extends DocumentationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private CardService cardService;
 
-    @MockBean
-    private AuthService authService;
 
     @Test
     @DisplayName("카드 생성 - 성공")
