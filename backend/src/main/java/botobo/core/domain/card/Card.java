@@ -61,7 +61,6 @@ public class Card extends BaseEntity {
         }
     }
 
-    private void validateNull(String question, String answer) {
     public static Card createCopyAndLinkToWorkbook(Card other, Workbook workbook) {
         return Card.builder()
                 .question(other.question)
@@ -70,7 +69,7 @@ public class Card extends BaseEntity {
                 .build();
     }
 
-    private void validateNull(String question, String answer, Workbook workbook) {
+    private void validateNull(String question, String answer) {
         if (Objects.isNull(question)) {
             throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
         }
