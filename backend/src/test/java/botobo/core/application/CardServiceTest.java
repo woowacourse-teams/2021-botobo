@@ -47,8 +47,10 @@ class CardServiceTest {
     @InjectMocks
     private CardService cardService;
 
-    private Workbook workbook;
+    private Workbook workbook, temporaryWorkbook;
+
     private User user, anotherUser;
+
     private AppUser appUser;
 
     @BeforeEach
@@ -56,6 +58,7 @@ class CardServiceTest {
         user = User.builder().id(1L).build();
         anotherUser = User.builder().id(2L).build();
         workbook = workbook(1L, user);
+        temporaryWorkbook = Workbook.builder().name("temporary").build();
         appUser = AppUser.user(1L);
     }
 
@@ -128,7 +131,7 @@ class CardServiceTest {
     void createCardFailedWhenWorkbookNotExist() {
         // given
         CardRequest cardRequest = cardRequest();
-        Card card = card(1L, Workbook.temporaryWorkbook());
+        Card card = card(1L, temporaryWorkbook);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.findById(cardRequest.getWorkbookId())).willThrow(WorkbookNotFoundException.class);

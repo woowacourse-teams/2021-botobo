@@ -66,7 +66,7 @@ public class CardService {
                                          AppUser appUser) {
         final User author = findUser(appUser);
         Card card = findCardOfAuthor(id, author);
-        card.update(cardUpdateRequest.toCard(Workbook.temporaryWorkbook()));
+        card.update(cardUpdateRequest.toCard());
         return CardUpdateResponse.of(card);
     }
 

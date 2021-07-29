@@ -74,21 +74,6 @@ class CardTest {
     }
 
     @Test
-    @DisplayName("Workbook가 null일 때 Card 객체 생성 - 실패")
-    void createWithNullCard() {
-        // when, then
-        assertThatThrownBy(() -> Card.builder()
-                .id(1L)
-                .question("질문")
-                .answer("답변")
-                .workbook(null)
-                .deleted(false)
-                .build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Card의 Workbook에는 null이 들어갈 수 없습니다.");
-    }
-
-    @Test
     @DisplayName("카드 수정 - 성공")
     void update() {
         // given
@@ -96,13 +81,11 @@ class CardTest {
                 .id(1L)
                 .question("질문")
                 .answer("답변")
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         final Card newCard = Card.builder()
                 .question("변경된 질문")
                 .answer("변경된 답변")
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         // when
@@ -121,7 +104,6 @@ class CardTest {
                 .id(1L)
                 .question("질문")
                 .answer("답변")
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         // when
@@ -139,7 +121,6 @@ class CardTest {
                 .id(1L)
                 .question("질문")
                 .answer("답변")
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         // when
@@ -157,7 +138,6 @@ class CardTest {
                 .id(1L)
                 .question("질문")
                 .answer("답변")
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         // when
@@ -176,7 +156,6 @@ class CardTest {
                 .question("질문")
                 .answer("답변")
                 .nextQuiz(true)
-                .workbook(Workbook.temporaryWorkbook())
                 .build();
 
         // when

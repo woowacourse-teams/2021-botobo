@@ -25,7 +25,6 @@ import java.util.Objects;
 public class Workbook extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 30;
-    private static final Workbook TEMPORARY_WORKBOOK = Workbook.builder().name("temporary").build();
 
     @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
@@ -54,10 +53,6 @@ public class Workbook extends BaseEntity {
         if (Objects.nonNull(cards)) {
             this.cards = cards;
         }
-    }
-
-    public static Workbook temporaryWorkbook() {
-        return TEMPORARY_WORKBOOK;
     }
 
     private void validateName(String name) {

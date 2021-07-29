@@ -31,7 +31,7 @@ public class Card extends BaseEntity {
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workbook_id", nullable = false)
+    @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
     @Column(nullable = false)
@@ -48,7 +48,7 @@ public class Card extends BaseEntity {
 
     @Builder
     private Card(Long id, String question, String answer, Workbook workbook, int encounterCount, boolean nextQuiz, boolean bookmark, boolean deleted) {
-        validateNull(question, answer, workbook);
+        validateNull(question, answer);
         this.id = id;
         this.question = question;
         this.answer = answer;
@@ -56,19 +56,25 @@ public class Card extends BaseEntity {
         this.nextQuiz = nextQuiz;
         this.bookmark = bookmark;
         this.deleted = deleted;
-        changeWorkbook(workbook);
+        if (Objects.nonNull(workbook)) {
+            changeWorkbook(workbook);
+        }
     }
 
-    private void validateNull(String question, String answer, Workbook workbook) {
+    private void validateNull(String question, String answer) {
         if (Objects.isNull(question)) {
             throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
         }
         if (Objects.isNull(answer)) {
             throw new IllegalArgumentException("Card의 answer에는 null이 들어갈 수 없습니다.");
         }
-        if (Objects.isNull(workbook)) {
-            throw new IllegalArgumentException("Card의 Workbook에는 null이 들어갈 수 없습니다.");
+    }
+
+    public Card addWorkbook(Workbook workbook) {
+        if (Objects.nonNull(workbook)) {
+            changeWorkbook(workbook);
         }
+        return this;
     }
 
     public void update(Card other) {
