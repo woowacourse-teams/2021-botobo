@@ -1,5 +1,7 @@
 package botobo.core.application;
 
+import botobo.core.domain.tag.TagNames;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -26,18 +28,24 @@ public class WorkbookService {
 
     private final WorkbookRepository workbookRepository;
     private final UserRepository userRepository;
+    private final TagService tagService;
 
-    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository) {
+    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository, TagService tagService) {
         this.workbookRepository = workbookRepository;
         this.userRepository = userRepository;
+        this.tagService = tagService;
     }
 
     @Transactional
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
         User user = userRepository.findById(appUser.getId())
                 .orElseThrow(UserNotFoundException::new);
+        Tags tags = tagService.convertTags(
+                TagNames.from(workbookRequest.toTagNames())
+        );
         Workbook workbook = workbookRequest.toWorkbook()
-                .createBy(user);
+                .createBy(user)
+                .taggedBy(tags);
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return WorkbookResponse.authorOf(savedWorkbook);
     }

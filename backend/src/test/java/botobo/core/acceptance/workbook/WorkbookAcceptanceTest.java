@@ -5,6 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
+import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -22,7 +23,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static botobo.core.utils.Fixture.CARD_REQUEST_1;
@@ -59,9 +62,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 성공")
     void createWorkbookByUser() {
         // given
+        TagRequest tagRequest = TagRequest.builder().id(0L).name("자바").build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .opened(true)
+                .tags(Collections.singletonList(tagRequest))
                 .build();
 
         // when
@@ -74,6 +79,28 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponse).extracting("name").isEqualTo(workbookRequest.getName());
         assertThat(workbookResponse).extracting("cardCount").isEqualTo(0);
         assertThat(workbookResponse).extracting("opened").isEqualTo(workbookRequest.isOpened());
+        assertThat(workbookResponse.getTags()).hasSize(1);
+        assertThat(workbookResponse.getTags().get(0).getId()).isNotEqualTo(0L);
+        assertThat(workbookResponse.getTags().get(0).getName()).isEqualTo("자바");
+    }
+
+    @Test
+    @DisplayName("유저 문제집 추가시 opened와 tags는 필수가 아니다 - 기본값 (opened = false, tags = empty list)")
+    void createWorkbookByUserWithTags() {
+        // given
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("Java 문제집")
+                .tags(new ArrayList<>())
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
+
+        // then
+        WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(workbookResponse.getOpened()).isFalse();
+        assertThat(workbookResponse.getTags()).isEmpty();
     }
 
     @ParameterizedTest
@@ -112,6 +139,86 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("이름은 최대 30자까지 입력 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 실패, Tag 아이디 없음")
+    void createWorkbookByUserWhenTagIdNull() {
+        // given
+        TagRequest tagRequest = TagRequest.builder().name("자바").build();
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("자바 문제집")
+                .opened(true)
+                .tags(Collections.singletonList(tagRequest))
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).contains("태그 아이디는 필수 입력값입니다");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 실패, Tag 아이디 음수")
+    void createWorkbookByUserWhenTagIdNegative() {
+        // given
+        TagRequest tagRequest = TagRequest.builder().id(-1L).name("자바").build();
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("자바 문제집")
+                .opened(true)
+                .tags(Collections.singletonList(tagRequest))
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).contains("태그 아이디는 0이상의 숫자입니다");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 실패, Tag 이름 없음")
+    void createWorkbookByUserWhenTagNameNull() {
+        // given
+        TagRequest tagRequest = TagRequest.builder().id(0L).build();
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("자바 문제집")
+                .opened(true)
+                .tags(Collections.singletonList(tagRequest))
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).contains("이름은 필수 입력값입니다");
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 추가 - 실패, 20자를 초과하는 Tag 이름")
+    void createWorkbookByUserWhenTagNameLong() {
+        // given
+        TagRequest tagRequest = TagRequest.builder().id(0L).name(stringGenerator(21)).build();
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name("자바 문제집")
+                .opened(true)
+                .tags(Collections.singletonList(tagRequest))
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_생성_요청(workbookRequest, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).contains("태그는 최대 20자까지 입력 가능합니다");
     }
 
     // TODO: 문제집 추가 API가 생기면 전체적으로 리팩터링 해야함
@@ -211,7 +318,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(updateResponse).extracting("id").isNotNull();
         assertThat(updateResponse).extracting("name").isEqualTo(workbookUpdateRequest.getName());
         assertThat(updateResponse).extracting("cardCount").isEqualTo(0);
-        assertThat(updateResponse).extracting("opened").isEqualTo(workbookUpdateRequest.isOpened());
+        assertThat(updateResponse).extracting("opened").isEqualTo(workbookUpdateRequest.getOpened());
     }
 
     @ParameterizedTest

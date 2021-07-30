@@ -1,13 +1,19 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.exception.NotAuthorException;
+import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +44,7 @@ class WorkbookTest {
         assertNotNull(workbook.getCards());
         assertThat(workbook.getCards().getCards()).hasSize(0);
         assertNull(workbook.getUser());
+        assertThat(workbook.getWorkbookTags()).isEmpty();
     }
 
     @Test
@@ -53,7 +60,7 @@ class WorkbookTest {
     @Test
     @DisplayName("Builder를 이용한 Workbook 객체 생성 - 실패, 긴 길이의 이름")
     void createWithLongName() {
-        // whenm, then
+        // when, then
         assertThatThrownBy(() -> Workbook.builder()
                 .name(stringGenerator(31))
                 .build())
@@ -70,6 +77,66 @@ class WorkbookTest {
                 .name(name)
                 .build())
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Builder를 이용한 Workbook 객체 생성 - 성공, 태그와 함꼐 생성")
+    void createWithTags() {
+        //given
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        ));
+        String workbookName = "단계별 자바 문제집";
+
+        // when
+        Workbook workbook = Workbook.builder()
+                .name(workbookName)
+                .tags(tags)
+                .build();
+
+        // then
+        assertThat(workbook.getWorkbookTags()).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("Builder를 이용한 Workbook 객체 생성 - 실패, 최대 태그수 초과")
+    void createWithManyTag() {
+        // given
+        Tags manyTags = Tags.from(Arrays.asList(
+                Tag.from("자바"), Tag.from("java"), Tag.from("코딩"), Tag.from("언어")
+        ));
+
+        // when, then
+        assertThatThrownBy(() -> Workbook.builder()
+                .name("자바 문제집")
+                .tags(manyTags)
+                .build())
+                .isInstanceOf(WorkbookTagLimitException.class)
+                .hasMessageContaining("문제집이 가질 수 있는 태그수는 최대")
+                .hasMessageContaining("개 입니다.");
+    }
+
+    @Test
+    @DisplayName("태그 추가 - 성공")
+    void addTags() {
+        //given
+        Tags tags = Tags.from(
+                Collections.singletonList(Tag.from("자바"))
+        );
+        Workbook workbook = Workbook.builder()
+                .name("단계별 자바 문제집")
+                .tags(tags)
+                .build();
+        assertThat(workbook.getWorkbookTags()).hasSize(1);
+
+        // when
+        Tags others = Tags.from(
+                Collections.singletonList(Tag.from("스프링"))
+        );
+        workbook.addTags(others);
+
+        // then
+        assertThat(workbook.getWorkbookTags()).hasSize(2);
     }
 
     @Test

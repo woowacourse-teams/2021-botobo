@@ -2,13 +2,17 @@ package botobo.core.domain.workbook;
 
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.User;
+import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.exception.NotAuthorException;
+import botobo.core.exception.workbook.WorkbookTagLimitException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -16,7 +20,11 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -24,9 +32,10 @@ import java.util.Objects;
 @Where(clause = "deleted=false")
 public class Workbook extends BaseEntity {
 
-    private static final int NAME_MAX_LENGTH = 30;
+    private static final int MAX_NAME_LENGTH = 30;
+    private static final int MAX_TAG_SIZE = 3;
 
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String name;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
@@ -42,8 +51,11 @@ public class Workbook extends BaseEntity {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_workbook_to_user"))
     private User user;
 
+    @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private final List<WorkbookTag> workbookTags = new ArrayList<>();
+
     @Builder
-    public Workbook(Long id, String name, boolean opened, boolean deleted, Cards cards, User user) {
+    public Workbook(Long id, String name, boolean opened, boolean deleted, Cards cards, User user, Tags tags) {
         validateName(name);
         this.id = id;
         this.name = name;
@@ -52,6 +64,9 @@ public class Workbook extends BaseEntity {
         this.user = user;
         if (Objects.nonNull(cards)) {
             this.cards = cards;
+        }
+        if (Objects.nonNull(tags)) {
+            addTags(tags);
         }
     }
 
@@ -62,11 +77,45 @@ public class Workbook extends BaseEntity {
         if (name.isBlank()) {
             throw new IllegalArgumentException("Workbook의 Name에는 비어있거나 공백 문자열이 들어갈 수 없습니다.");
         }
-        if (name.length() > NAME_MAX_LENGTH) {
+        if (name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(
-                    String.format("Workbook의 Name %d자 이하여야 합니다.", NAME_MAX_LENGTH)
+                    String.format("Workbook의 Name %d자 이하여야 합니다.", MAX_NAME_LENGTH)
             );
         }
+    }
+
+    public void addTags(Tags tags) {
+        validateTagSize(tags);
+        this.workbookTags.addAll(
+                castWorkbookTags(tags)
+        );
+    }
+
+    private void validateTagSize(Tags tags) {
+        Tags currentTags = tags();
+        final int alreadyHasTagsSize = currentTags.countSameTagName(tags);
+        final int notHasTagsCount = tags.size() - alreadyHasTagsSize;
+
+        if (currentTags.size() + notHasTagsCount > MAX_TAG_SIZE) {
+            throw new WorkbookTagLimitException(MAX_TAG_SIZE);
+        }
+    }
+
+    private List<WorkbookTag> castWorkbookTags(Tags tags) {
+        return tags.stream()
+                .map(tag -> WorkbookTag.of(this, tag))
+                .collect(Collectors.toList());
+    }
+
+    public Tags tags() {
+        return Tags.from(workbookTags.stream()
+                .map(WorkbookTag::getTag)
+                .collect(Collectors.toList()));
+    }
+
+    public Workbook taggedBy(Tags tags) {
+        addTags(tags);
+        return this;
     }
 
     public Workbook createBy(User user) {

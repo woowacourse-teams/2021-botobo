@@ -2,6 +2,8 @@ package botobo.core.documentation;
 
 import botobo.core.application.WorkbookService;
 import botobo.core.dto.card.CardResponse;
+import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -37,11 +39,19 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(0L).name("자바").build(),
+                        TagRequest.builder().id(0L).name("java").build()
+                ))
                 .build();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagResponse.builder().id(1L).name("자바").build(),
+                        TagResponse.builder().id(2L).name("java").build()
+                ))
                 .cardCount(0)
                 .build();
         given(workbookService.createWorkbookByUser(any(), any())).willReturn(workbookResponse);

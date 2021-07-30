@@ -1,11 +1,15 @@
 package botobo.core.application;
 
+import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.TagNames;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
@@ -38,6 +42,9 @@ class WorkbookServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private TagService tagService;
+
     @InjectMocks
     private WorkbookService workbookService;
 
@@ -65,6 +72,10 @@ class WorkbookServiceTest {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("오즈의 Java")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(0L).name("자바").build(),
+                        TagRequest.builder().id(0L).name("java").build()
+                ))
                 .build();
 
         Workbook workbook = Workbook.builder()
@@ -72,10 +83,16 @@ class WorkbookServiceTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .tags(Tags.from(Arrays.asList(
+                        Tag.from("자바"), Tag.from("java")
+                )))
                 .user(normalUser)
                 .build();
 
         given(userRepository.findById(any())).willReturn(Optional.of(normalUser));
+        given(tagService.convertTags(any())).willReturn(Tags.from(
+                Arrays.asList(Tag.from("자바"), Tag.from("java"))
+        ));
         given(workbookRepository.save(any())).willReturn(workbook);
 
         // when
@@ -86,9 +103,12 @@ class WorkbookServiceTest {
         assertThat(workbookResponse.getName()).isEqualTo(workbook.getName());
         assertThat(workbookResponse.getOpened()).isEqualTo(workbook.isOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbook.cardCount());
+        assertThat(workbookResponse.getTags()).hasSize(workbook.getWorkbookTags().size());
 
         then(userRepository).should(times(1))
                 .findById(anyLong());
+        then(tagService).should(times(1))
+                .convertTags(any());
         then(workbookRepository).should(times(1))
                 .save(any());
     }
@@ -165,7 +185,7 @@ class WorkbookServiceTest {
         //then
         assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
         assertThat(workbookResponse.getName()).isEqualTo(workbookUpdateRequest.getName());
-        assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.isOpened());
+        assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.getOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbookUpdateRequest.getCardCount());
 
         then(workbookRepository).should(times(1))
