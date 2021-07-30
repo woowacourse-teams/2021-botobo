@@ -85,7 +85,9 @@ public class Card extends BaseEntity {
     }
 
     public void delete() {
-        workbook.getCards().removeCard(this);
+        if (Objects.nonNull(workbook)) {
+            workbook.getCards().removeCard(this);
+        }
         this.deleted = true;
     }
 

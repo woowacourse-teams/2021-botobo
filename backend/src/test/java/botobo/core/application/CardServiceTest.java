@@ -27,8 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @DisplayName("카드 서비스 테스트")
@@ -103,6 +105,12 @@ class CardServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findById(appUser.getId());
+        then(workbookRepository)
+                .should(never())
+                .findById(anyLong());
+        then(cardRepository)
+                .should(never())
+                .save(any(Card.class));
     }
 
     @Test
@@ -124,6 +132,12 @@ class CardServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findById(appUser.getId());
+        then(workbookRepository)
+                .should(times(1))
+                .findById(cardRequest.getWorkbookId());
+        then(cardRepository)
+                .should(never())
+                .save(any(Card.class));
     }
 
     @Test
@@ -144,6 +158,12 @@ class CardServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findById(appUser.getId());
+        then(workbookRepository)
+                .should(times(1))
+                .findById(cardRequest.getWorkbookId());
+        then(cardRepository)
+                .should(never())
+                .save(any(Card.class));
     }
 
     @Test
@@ -188,6 +208,9 @@ class CardServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findById(appUser.getId());
+        then(cardRepository)
+                .should(never())
+                .findById(anyLong());
     }
 
     @Test
@@ -252,6 +275,9 @@ class CardServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findById(appUser.getId());
+        then(cardRepository)
+                .should(never())
+                .findById(anyLong());
     }
 
     @Test
