@@ -1,5 +1,6 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.card.Card;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
@@ -151,5 +152,41 @@ class WorkbookTest {
         // then
         assertThat(workbook.isDeleted()).isTrue();
         assertThat(user.getWorkbooks().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("유저가 자신의 문제집과 추가된 카드도 삭제 - 성공")
+    void deleteWorkbookWithCard() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .build()
+                .createBy(user);
+
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("답변")
+                .workbook(workbook)
+                .deleted(false)
+                .build();
+
+        // when
+        workbook.delete();
+
+        // then
+        assertThat(workbook.isDeleted()).isTrue();
+        assertThat(user.getWorkbooks().size()).isEqualTo(0);
+        assertThat(workbook.getCards().counts()).isEqualTo(0);
     }
 }

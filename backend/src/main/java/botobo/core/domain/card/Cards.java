@@ -75,5 +75,6 @@ public class Cards {
 
     public void delete() {
         cards.forEach(Card::delete);
+        this.cards.clear();
     }
 }
