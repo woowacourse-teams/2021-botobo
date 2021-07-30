@@ -21,7 +21,7 @@ class WorkbookTagTest {
         workbook = Workbook.builder()
                 .name("자바 문제 모음")
                 .build();
-        tag = Tag.from(TagName.from("자바"));
+        tag = Tag.from("자바");
     }
 
     @Test

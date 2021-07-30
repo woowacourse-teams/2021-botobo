@@ -40,6 +40,10 @@ public class Tag extends BaseEntity {
         return new Tag(tagName);
     }
 
+    public static Tag from(String tagNameValue) {
+        return new Tag(TagName.from(tagNameValue));
+    }
+
     public String getTagNameValue() {
         return tagName.getValue();
     }
