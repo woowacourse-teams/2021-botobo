@@ -19,7 +19,7 @@ public class TagName {
 
     private static final int MAX_LENGTH = 20;
 
-    @Column(nullable = false, unique = true, length = MAX_LENGTH)
+    @Column(name = "NAME", nullable = false, unique = true, length = MAX_LENGTH)
     private String value;
 
     private TagName(String value) {
