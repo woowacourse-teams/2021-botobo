@@ -85,6 +85,10 @@ public class Workbook extends BaseEntity {
         return user.getUserName();
     }
 
+    public boolean isAuthorOf(User user) {
+        return this.user == user;
+    }
+
     public boolean containsWord(String word) {
         return name.toLowerCase()
                 .contains(word.toLowerCase());

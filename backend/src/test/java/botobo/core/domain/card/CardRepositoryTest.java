@@ -136,6 +136,47 @@ class CardRepositoryTest {
         assertThat(findCards).hasSize(2);
     }
 
+    @Test
+    @DisplayName("전체 조회 시 delete=false인 카드만 조회한다. - 성공")
+    void findAll() {
+        // given
+        Card card = generateCard();
+        Card deletedCard = generateCard();
+
+        cardRepository.save(card);
+        cardRepository.save(deletedCard);
+
+        // when
+        deletedCard.delete();
+
+        // then
+        assertThat(cardRepository.findAll()).doesNotContain(deletedCard);
+    }
+
+    @Test
+    @DisplayName("카드 수정 후 조회 시 변경된 카드가 조회된다. - 성공")
+    void updateCard() {
+        // given
+        Card card = generateCard();
+        final Card savedCard = cardRepository.save(card);
+
+        // when
+        Card newCard = Card.builder()
+                .question("변경된 질문")
+                .answer("변경된 답변")
+                .workbook(workbook)
+                .build();
+
+        savedCard.update(newCard);
+
+        // then
+        assertThat(cardRepository.findById(savedCard.getId())).isPresent();
+
+        final Card updatedCard = cardRepository.findById(savedCard.getId()).get();
+        assertThat(updatedCard.getQuestion()).isEqualTo("변경된 질문");
+        assertThat(updatedCard.getAnswer()).isEqualTo("변경된 답변");
+    }
+
     private Card generateCard() {
         return Card.builder()
                 .question("질문")

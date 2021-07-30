@@ -34,6 +34,16 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         userRepository.save(user);
     }
 
+    protected User anyUser() {
+        User anyUser = User.builder()
+                .githubId(1L)
+                .userName("joanne")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        return userRepository.save(anyUser);
+    }
+
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return request()
                 .post("/api/admin/workbooks", adminWorkbookRequest)
