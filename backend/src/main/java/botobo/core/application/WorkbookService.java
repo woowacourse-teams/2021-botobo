@@ -12,6 +12,7 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
+import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,11 @@ public class WorkbookService {
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(id);
-        workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
-                workbookUpdateRequest.isOpened(),
-                user);
+
+        validateAuthor(user, workbook);
+
+        workbook.update(workbookUpdateRequest.getName(),
+                workbookUpdateRequest.isOpened());
         return WorkbookResponse.authorOf(workbook);
     }
 
@@ -55,7 +58,10 @@ public class WorkbookService {
     public void deleteWorkbook(Long id, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(id);
-        workbook.deleteIfUserIsAuthor(user);
+
+        validateAuthor(user, workbook);
+
+        workbook.delete();
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
@@ -98,5 +104,11 @@ public class WorkbookService {
     private Workbook findWorkbook(Long id) {
         return workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
+    }
+
+    private void validateAuthor(User user, Workbook workbook) {
+        if (!workbook.isCreatedBy(user)) {
+            throw new NotAuthorException();
+        }
     }
 }

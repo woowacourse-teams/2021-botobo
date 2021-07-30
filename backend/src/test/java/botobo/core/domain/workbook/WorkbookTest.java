@@ -2,7 +2,6 @@ package botobo.core.domain.workbook;
 
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
-import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -99,6 +98,35 @@ class WorkbookTest {
     }
 
     @Test
+    @DisplayName("유저가 자신의 문제집 수정 - 성공")
+    void updateWorkbook() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .build()
+                .createBy(user);
+
+        String updateName = "오즈의 Java를 잡아";
+
+        // when
+        workbook.update(updateName, false);
+
+        // then
+        assertThat(workbook.getName()).isEqualTo(updateName);
+        assertThat(workbook.isOpened()).isFalse();
+    }
+
+    @Test
     @DisplayName("유저가 자신의 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
@@ -118,42 +146,10 @@ class WorkbookTest {
                 .createBy(user);
 
         // when
-        workbook.deleteIfUserIsAuthor(user);
+        workbook.delete();
 
         // then
         assertThat(workbook.isDeleted()).isTrue();
         assertThat(user.getWorkbooks().size()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("유저가 자신의 문제집 삭제 - 실패, 다른 유저가 삭제를 시도할 때")
-    void deleteWorkbookWithOtherUser() {
-        // given
-        User user1 = User.builder()
-                .id(1L)
-                .githubId(1L)
-                .userName("oz")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        User user2 = User.builder()
-                .id(2L)
-                .githubId(2L)
-                .userName("pk")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        Workbook workbook = Workbook.builder()
-                .name("오즈의 Java")
-                .opened(true)
-                .deleted(false)
-                .build()
-                .createBy(user1);
-
-        // when, then
-        assertThatThrownBy(() -> workbook.deleteIfUserIsAuthor(user2))
-                .isInstanceOf(NotAuthorException.class);
     }
 }

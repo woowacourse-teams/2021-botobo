@@ -174,48 +174,13 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user);
+        workbook.update("오즈의 Java를 다 잡아", false);
         testEntityManager.flush();
 
         // then
         assertThat(workbook.getName()).isEqualTo("오즈의 Java를 다 잡아");
         assertThat(workbook.isOpened()).isFalse();
         assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
-    }
-
-    @Test
-    @DisplayName("유저가 자신의 문제집을 수정한다. - 실패, 다른 유저가 수정을 시도할 경우")
-    void updateWorkbookWithOtherUser() {
-        // given
-        User user1 = User.builder()
-                .githubId(1L)
-                .userName("oz")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        User user2 = User.builder()
-                .githubId(2L)
-                .userName("pk")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-
-        Workbook workbook = Workbook.builder()
-                .name("오즈의 Java")
-                .opened(true)
-                .deleted(false)
-                .user(user1)
-                .build();
-        workbookRepository.save(workbook);
-
-        // when, then
-        assertThatThrownBy(() ->
-                workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user2))
-                .isInstanceOf(NotAuthorException.class);
     }
 
     @Test
@@ -240,7 +205,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.deleteIfUserIsAuthor(user);
+        workbook.delete();
 
         //then
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);
