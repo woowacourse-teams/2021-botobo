@@ -42,6 +42,8 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
 
     private User adminUser;
+    private User normalUser;
+    private int adminWorkbookCount;
 
     public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
         this.workbookRepository = workbookRepository;
@@ -52,6 +54,8 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.adminUser = saveAdminUser();
+        this.normalUser = saveNormalUser();
+        this.adminWorkbookCount = 3;
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
@@ -96,7 +100,7 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveAdminUser() {
         User user = User.builder()
-                .userName("보또보")
+                .userName("1번 어드민")
                 .githubId(88036280L)
                 .profileUrl("botobo.profile.url")
                 .role(Role.ADMIN)
@@ -104,10 +108,25 @@ public class DataLoader implements CommandLineRunner {
         return userRepository.save(user);
     }
 
+    private User saveNormalUser() {
+        User user = User.builder()
+                .userName("일반 유저")
+                .githubId(88143445L)
+                .profileUrl("botobo.profile.url")
+                .role(Role.USER)
+                .build();
+        return userRepository.save(user);
+    }
+
     private Workbook saveWorkbook(String workbookName) {
+        User author = this.normalUser;
+        if (adminWorkbookCount > 0) {
+            author = this.adminUser;
+            adminWorkbookCount--;
+        }
         Workbook workbook = Workbook.builder()
                 .name(workbookName)
-                .user(this.adminUser)
+                .user(author)
                 .opened(true)
                 .build();
         return workbookRepository.save(workbook);
