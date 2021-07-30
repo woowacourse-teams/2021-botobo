@@ -1,22 +1,20 @@
 import { useEffect } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { deleteCardAsync, putCardAsync } from './../api/index';
-import { cardState } from './../recoil/cardState';
-import { CardResponse } from './../types/index';
-import { postCardAsync } from '../api';
+import { deleteCardAsync, postCardAsync, putCardAsync } from '../api';
+import { cardState } from '../recoil';
+import { CardResponse } from '../types';
 import useModal from './useModal';
-import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
-const useCards = () => {
-  const { routeMain } = useRouter();
-  const showSnackbar = useSnackbar();
+const useCard = () => {
   const {
     data: { workbookId, workbookName, cards },
     errorMessage,
   } = useRecoilValue(cardState);
   const updateCardInfo = useResetRecoilState(cardState);
+
+  const showSnackbar = useSnackbar();
   const { openModal, closeModal } = useModal();
 
   const createCard = async (question: string, answer: string) => {
@@ -63,18 +61,13 @@ const useCards = () => {
   };
 
   useEffect(() => {
-    if (workbookId === -1) {
-      routeMain();
-    }
-  }, []);
-
-  useEffect(() => {
     if (errorMessage) {
       showSnackbar({ message: errorMessage, type: 'error' });
     }
   }, [errorMessage]);
 
   return {
+    workbookId,
     workbookName,
     cards,
     createCard,
@@ -86,4 +79,4 @@ const useCards = () => {
   };
 };
 
-export default useCards;
+export default useCard;

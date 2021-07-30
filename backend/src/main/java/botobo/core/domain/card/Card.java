@@ -61,13 +61,6 @@ public class Card extends BaseEntity {
         }
     }
 
-    public static Card createCopyOf(Card other) {
-        return Card.builder()
-                .question(other.question)
-                .answer(other.answer)
-                .build();
-    }
-
     private void validateNull(String question, String answer) {
         if (Objects.isNull(question)) {
             throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
@@ -75,6 +68,13 @@ public class Card extends BaseEntity {
         if (Objects.isNull(answer)) {
             throw new IllegalArgumentException("Card의 answer에는 null이 들어갈 수 없습니다.");
         }
+    }
+
+    public Card addWorkbook(Workbook workbook) {
+        if (Objects.nonNull(workbook)) {
+            changeWorkbook(workbook);
+        }
+        return this;
     }
 
     public void addWorkbook(Workbook workbook) {
@@ -89,6 +89,9 @@ public class Card extends BaseEntity {
     }
 
     public void delete() {
+        if (Objects.nonNull(workbook)) {
+            workbook.getCards().removeCard(this);
+        }
         this.deleted = true;
     }
 

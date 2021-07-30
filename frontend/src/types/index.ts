@@ -15,7 +15,8 @@ export interface WorkbookResponse {
   tags: TagResponse[];
 }
 
-export interface PublicWorkbookResponse extends WorkbookResponse {
+export interface PublicWorkbookResponse
+  extends Omit<WorkbookResponse, 'opened'> {
   author: string;
 }
 
@@ -42,17 +43,9 @@ export interface CardsResponse {
   cards: CardResponse[];
 }
 
-export interface TagResponse {
-  id: number;
-  name: string;
-}
-
-export interface PublicCardsResponse {
-  id: number;
-  workbookName: string;
+export interface PublicCardsResponse extends CardsResponse {
   cardCount: number;
   tags: TagResponse[];
-  cards: CardResponse[];
 }
 
 export interface UserInfoResponse {

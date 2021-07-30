@@ -6,19 +6,18 @@ import {
   postWorkbookAsync,
   putWorkbookAsync,
 } from '../api';
-import { workbookIdState, workbookState } from '../recoil';
-import { editedWorkbookState } from '../recoil/workbookState';
+import { editedWorkbookState, workbookIdState, workbookState } from '../recoil';
 import { TagResponse, WorkbookResponse } from '../types';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useWorkbook = () => {
   const { data: workbooks, errorMessage } = useRecoilValue(workbookState);
-  const { routeMain } = useRouter();
   const editedWorkbook = useRecoilValue(editedWorkbookState);
   const setWorkbookId = useSetRecoilState(workbookIdState);
   const updateWorkbooks = useResetRecoilState(workbookState);
 
+  const { routeMain } = useRouter();
   const showSnackbar = useSnackbar();
 
   const createWorkbook = async (

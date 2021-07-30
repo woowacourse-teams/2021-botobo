@@ -87,7 +87,7 @@ public class Workbook extends BaseEntity {
     }
 
     public boolean isAuthorOf(User user) {
-        return this.user == user;
+        return this.user.equals(user);
     }
 
     public boolean containsWord(String word) {

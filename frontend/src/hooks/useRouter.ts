@@ -6,11 +6,12 @@ import { setSessionStorage } from '../utils';
 const useRouter = () => {
   const history = useHistory();
 
-  const routeMain = () => history.push(ROUTE.HOME.PATH);
   const routeLogin = () => {
     setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
     history.push(ROUTE.LOGIN.PATH);
   };
+
+  const routeMain = () => history.push(ROUTE.HOME.PATH);
   const routeWorkbookAdd = () => history.push(ROUTE.WORKBOOK_ADD.PATH);
   const routeWorkbookEdit = () => history.push(ROUTE.WORKBOOK_EDIT.PATH);
   const routeQuizSetting = () => history.push(ROUTE.QUIZ_SETTING.PATH);
@@ -19,8 +20,7 @@ const useRouter = () => {
   const routeCards = () => history.push(ROUTE.CARDS.PATH);
   const routeCardEdit = () => history.push(ROUTE.CARD_EDIT.PATH);
   const routePublicWorkbook = () => history.push(ROUTE.PUBLIC_WORKBOOK.PATH);
-  const routePublicCards = (workbookId: number) =>
-    history.push(`${ROUTE.PUBLIC_CARDS.PATH}?id=${workbookId}`);
+  const routePublicCards = () => history.push(ROUTE.PUBLIC_CARDS.PATH);
   const routeGithubCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
   const routePrevPage = () => history.goBack();
 

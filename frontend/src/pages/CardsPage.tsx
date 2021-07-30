@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, CardAddForm, PageHeader, QnACard } from '../components';
 import { ROUTE } from '../constants';
-import { useCards } from '../hooks';
+import { useCard, useRouter } from '../hooks';
 import { CardResponse } from '../types';
 
 interface Filter {
@@ -30,6 +30,7 @@ const filters = [
 
 const CardsPage = () => {
   const {
+    workbookId,
     workbookName,
     cards,
     createCard,
@@ -38,8 +39,15 @@ const CardsPage = () => {
     toggleBookmark,
     updateCardInfo,
     openModal,
-  } = useCards();
+  } = useCard();
+  const { routeMain } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
+
+  useEffect(() => {
+    if (workbookId === -1) {
+      routeMain();
+    }
+  }, []);
 
   return (
     <>

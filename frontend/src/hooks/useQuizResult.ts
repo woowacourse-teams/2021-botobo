@@ -5,12 +5,11 @@ import { quizState } from '../recoil';
 import useRouter from './useRouter';
 
 const useQuizResult = () => {
+  const quizzes = useRecoilValue(quizState);
   const [quizResults, setQuizResults] = useState(
-    useRecoilValue(quizState).map((quizResult) => ({
-      ...quizResult,
-      isChecked: false,
-    }))
+    quizzes.map((quiz) => ({ ...quiz, isChecked: false }))
   );
+
   const { routeMain } = useRouter();
 
   const checkQuizResult = (id: number) => {
