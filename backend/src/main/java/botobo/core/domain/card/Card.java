@@ -99,4 +99,8 @@ public class Card extends BaseEntity {
     public boolean equalsNextQuizWith(boolean isNextQuiz) {
         return this.nextQuiz == isNextQuiz;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

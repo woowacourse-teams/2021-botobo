@@ -72,4 +72,8 @@ public class Cards {
     public Stream<Card> stream() {
         return cards.stream();
     }
+
+    public void delete() {
+        cards.forEach(Card::delete);
+    }
 }
