@@ -1,7 +1,6 @@
 package botobo.core.domain.workbooktag;
 
 import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagName;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.exception.workbooktag.WorkbookTagCreationFailureException;
 import org.junit.jupiter.api.BeforeEach;
