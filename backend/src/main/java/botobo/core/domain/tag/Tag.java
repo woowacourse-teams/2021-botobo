@@ -23,7 +23,7 @@ public class Tag extends BaseEntity {
     private TagName tagName;
 
     @OneToMany(mappedBy = "tag")
-    private List<WorkbookTag> workbookTags = new ArrayList<>();
+    private final List<WorkbookTag> workbookTags = new ArrayList<>();
 
     private Tag(TagName tagName) {
         validateNotNull(tagName);
@@ -32,7 +32,7 @@ public class Tag extends BaseEntity {
 
     private void validateNotNull(TagName tagName) {
         if (Objects.isNull(tagName)) {
-            throw new TagCreationFailureException("태그 생성시 TagName은 null이 될 수 없습니다.");
+            throw new TagCreationFailureException("tagName은 null이 될 수 없습니다.");
         }
     }
 

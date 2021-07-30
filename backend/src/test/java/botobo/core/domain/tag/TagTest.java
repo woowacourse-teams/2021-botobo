@@ -26,7 +26,8 @@ class TagTest {
         // when, then
         assertThatThrownBy(() -> Tag.from((TagName) null))
                 .isInstanceOf(TagCreationFailureException.class)
-                .hasMessageContaining("태그 생성시 TagName은 null이 될 수 없습니다");
+                .hasMessageContaining("Tag객체 생성에 실패했습니다")
+                .hasMessageContaining("tagName은 null이 될 수 없습니다");
     }
 
     @Test
