@@ -121,15 +121,23 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
-                .name("Java 문제집")
+                .name("Java 문제집 수정")
                 .opened(true)
                 .cardCount(0)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(0L).name("자바").build(),
+                        TagRequest.builder().id(0L).name("java").build()
+                ))
                 .build();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집 수정")
-                .opened(false)
+                .opened(true)
                 .cardCount(0)
+                .tags(Arrays.asList(
+                        TagResponse.builder().id(1L).name("자바").build(),
+                        TagResponse.builder().id(2L).name("java").build()
+                ))
                 .build();
         given(workbookService.updateWorkbook(anyLong(), any(), any())).willReturn(workbookResponse);
 

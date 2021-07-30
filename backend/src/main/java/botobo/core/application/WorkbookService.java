@@ -54,9 +54,14 @@ public class WorkbookService {
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
+        Tags tags = tagService.convertTags(
+                TagNames.from(workbookUpdateRequest.toTagNames())
+        );
         workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
-                workbookUpdateRequest.isOpened(),
-                appUser.getId());
+                workbookUpdateRequest.getOpened(),
+                appUser.getId(),
+                tags);
+        workbookRepository.flush();
         return WorkbookResponse.authorOf(workbook);
     }
 

@@ -166,6 +166,76 @@ class WorkbookTest {
     }
 
     @Test
+    @DisplayName("유저가 자신의 문제집 수정 - 성공")
+    void updateWorkbook() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        ));
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .tags(tags)
+                .build()
+                .createBy(user);
+
+        // when
+        Tags updatedTags = Tags.from(Arrays.asList(
+                Tag.from("자바"), Tag.from("중급")
+        ));
+        workbook.updateIfUserIsAuthor("오즈의 Java 중급 (비공개)", false, user.getId(), updatedTags);
+
+        // then
+        assertThat(workbook.getName()).isEqualTo("오즈의 Java 중급 (비공개)");
+        assertThat(workbook.isOpened()).isFalse();
+        assertThat(workbook.getWorkbookTags()).extracting("tag")
+                .contains(Tag.from("자바"), Tag.from("중급"));
+    }
+
+    @Test
+    @DisplayName("유저가 자신의 문제집 수정 - 실패, 다른 유저가 삭제를 시도할 때")
+    void updateWorkbookWithOtherUser() {
+        // given
+        User user1 = User.builder()
+                .id(1L)
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        User user2 = User.builder()
+                .id(2L)
+                .githubId(2L)
+                .userName("pk")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .build()
+                .createBy(user1);
+
+        // when, then
+        assertThatThrownBy(() -> workbook.updateIfUserIsAuthor(
+                "수정", true, user2.getId(), Tags.from(Collections.emptyList()))
+        ).isInstanceOf(NotAuthorException.class);
+    }
+
+    @Test
     @DisplayName("유저가 자신의 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
@@ -177,10 +247,15 @@ class WorkbookTest {
                 .role(Role.USER)
                 .build();
 
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        ));
+
         Workbook workbook = Workbook.builder()
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .tags(tags)
                 .build()
                 .createBy(user);
 
@@ -189,6 +264,7 @@ class WorkbookTest {
 
         // then
         assertThat(workbook.isDeleted()).isTrue();
+        assertThat(workbook.getWorkbookTags()).isEmpty();
         assertThat(user.getWorkbooks().size()).isEqualTo(0);
     }
 

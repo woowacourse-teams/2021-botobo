@@ -155,10 +155,12 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfUserIsAuthor(String name, boolean opened, Long userId) {
+    public void updateIfUserIsAuthor(String name, boolean opened, Long userId, Tags tags) {
         validateAuthor(userId);
         this.name = name;
         this.opened = opened;
+        clearWorkbookTags();
+        addTags(tags);
     }
 
     private void validateAuthor(Long userId) {
@@ -167,9 +169,14 @@ public class Workbook extends BaseEntity {
         }
     }
 
+    public void clearWorkbookTags() {
+        this.workbookTags.clear();
+    }
+
     public void deleteIfUserIsAuthor(Long userId) {
         validateAuthor(userId);
         user.getWorkbooks().remove(this);
         this.deleted = true;
+        clearWorkbookTags();
     }
 }

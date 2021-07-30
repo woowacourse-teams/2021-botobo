@@ -1,6 +1,8 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
+import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,22 +169,34 @@ public class WorkbookRepositoryTest {
                 .build();
         userRepository.save(user);
 
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("잡아"), Tag.from("javi"))
+        );
         Workbook workbook = Workbook.builder()
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
                 .user(user)
+                .tags(tags)
                 .build();
         workbookRepository.save(workbook);
 
         // when
-        workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, user.getId());
+        workbook.updateIfUserIsAuthor(
+                "오즈의 Java를 다 잡아", false, user.getId(),
+                Tags.from(Arrays.asList(Tag.from("자바"), Tag.from("java"), Tag.from("오즈")))
+        );
         testEntityManager.flush();
 
         // then
         assertThat(workbook.getName()).isEqualTo("오즈의 Java를 다 잡아");
         assertThat(workbook.isOpened()).isFalse();
         assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
+        assertThat(workbook.getWorkbookTags())
+                .extracting("tag")
+                .extracting("tagName")
+                .extracting("value")
+                .containsExactly("자바", "java", "오즈");
     }
 
     @Test
@@ -213,9 +229,9 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when, then
-        assertThatThrownBy(() ->
-                workbook.updateIfUserIsAuthor("오즈의 Java를 다 잡아", false, 2L))
-                .isInstanceOf(NotAuthorException.class);
+        assertThatThrownBy(() -> workbook.updateIfUserIsAuthor(
+                "오즈의 Java를 다 잡아", false, 2L, Tags.from(Collections.emptyList())
+        )).isInstanceOf(NotAuthorException.class);
     }
 
     @Test
