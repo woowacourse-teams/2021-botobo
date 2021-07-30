@@ -1,6 +1,7 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.BaseEntity;
+import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.User;
@@ -134,6 +135,10 @@ public class Workbook extends BaseEntity {
         return user.getUserName();
     }
 
+    public boolean isAuthorOf(User user) {
+        return this.user.equals(user);
+    }
+
     public boolean containsWord(String word) {
         return name.toLowerCase()
                 .contains(word.toLowerCase());
@@ -179,4 +184,14 @@ public class Workbook extends BaseEntity {
         this.deleted = true;
         clearWorkbookTags();
     }
+
+    public void addCards(Cards cards) {
+        cards.getCards().forEach(this::addCard);
+    }
+
+    public void addCard(Card card) {
+        card.addWorkbook(this);
+        cards.addCard(card);
+    }
 }
+

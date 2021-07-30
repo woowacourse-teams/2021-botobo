@@ -1,10 +1,11 @@
 -- 데이터 베이스에 아무것도 없는 경우 초기 데이터 셋팅용으로만 사용해야함 !!!
 
 -- 필요하면 AUTO_INCREMENT 초기화
--- ALTER TABLE user AUTO_INCREMENT = 1;
+ALTER TABLE user AUTO_INCREMENT = 1;
 
 -- 어드민 생성
-INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (-1, "보또보", 'botobo.profile.url', 'ADMIN', now(), now());
+INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (88036280, "1번 어드민", 'botobo.profile.url', 'ADMIN', now(), now());
+INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (88143445, "일반 유저", 'botobo.profile.url', 'USER', now(), now());
 
 -- 문제집 생성
 INSERT INTO workbook (name, user_id, opened, deleted, created_at, updated_at) VALUES ('데이터베이스', 1, true, false, now(), now());
