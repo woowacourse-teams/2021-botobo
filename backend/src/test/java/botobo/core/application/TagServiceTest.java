@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagNames;
 import botobo.core.domain.tag.TagRepository;
+import botobo.core.domain.tag.Tags;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,13 @@ class TagServiceTest {
         TagNames tagNames = TagNames.from(
                 Arrays.asList("javascript", "java", "spring", "react", "python")
         );
-        List<Tag> tags = tagService.convertTags(tagNames);
+        Tags tags = tagService.convertTags(tagNames);
 
         // then
-        assertThat(tags).extracting("tagName")
+        assertThat(tags.toList()).extracting("tagName")
                 .extracting("value")
                 .containsExactly("javascript", "java", "spring", "react", "python");
-        assertThat(tags)
+        assertThat(tags.toList())
                 .extracting("id")
                 .containsExactly(null, java.getId(), spring.getId(), react.getId(), null);
     }

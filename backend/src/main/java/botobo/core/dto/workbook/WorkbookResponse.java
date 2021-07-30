@@ -33,7 +33,7 @@ public class WorkbookResponse {
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
                 .opened(workbook.isOpened())
-                .tags(TagResponse.listOf(workbook.getTags()))
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 
@@ -55,7 +55,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .opened(workbook.isOpened())
-                .tags(TagResponse.listOf(workbook.getTags()))
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 
@@ -71,7 +71,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
-                .tags(TagResponse.listOf(workbook.getTags()))
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 }

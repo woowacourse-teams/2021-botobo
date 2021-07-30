@@ -1,6 +1,7 @@
 package botobo.core.dto.tag;
 
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.Tags;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class TagResponse {
                 .build();
     }
 
-    public static List<TagResponse> listOf(List<Tag> tags) {
+    public static List<TagResponse> listOf(Tags tags) {
         return tags.stream()
                 .map(TagResponse::of)
                 .collect(Collectors.toList());
