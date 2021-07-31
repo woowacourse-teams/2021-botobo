@@ -85,10 +85,17 @@ public class CardService {
         card.delete();
     }
 
-    // TODO nextQuizCard도 Interceptor 타도록 변경
     @Transactional
-    public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
+    public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest, AppUser appUser) {
+        User user = findUser(appUser);
         List<Card> cards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());
+        if (!isAuthorOfCards(user, cards)) {
+            throw new NotAuthorException();
+        }
         cards.forEach(Card::makeNextQuiz);
+    }
+
+    private boolean isAuthorOfCards(User user, List<Card> cards) {
+        return cards.stream().allMatch(card -> card.isAuthorOf(user));
     }
 }
