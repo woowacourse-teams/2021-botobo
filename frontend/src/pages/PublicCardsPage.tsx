@@ -1,12 +1,19 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
-import { Button, Checkbox, PageHeader, PublicQnACard } from '../components';
+import {
+  Button,
+  Checkbox,
+  PageHeader,
+  PublicQnACard,
+  SelectBox,
+} from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
-import { usePublicCard, useRouter } from '../hooks';
+import { usePublicCard, useRouter, useWorkbook } from '../hooks';
+import useModal from '../hooks/useModal';
 import { quizState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
 import { Flex } from '../styles';
@@ -14,6 +21,7 @@ import { Flex } from '../styles';
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
+  const { openModal } = useModal();
   const {
     workbookId,
     workbookName,
@@ -26,6 +34,10 @@ const PublicCardsPage = () => {
     checkCard,
   } = usePublicCard();
   const { routeQuiz } = useRouter();
+
+  const { workbooks } = useWorkbook();
+
+  const [selectedId, setSelectedId] = useState(0);
 
   return (
     <>
@@ -80,7 +92,25 @@ const PublicCardsPage = () => {
               onChange={checkAllCard}
             />
           </CheckboxWrapper>
-          <Button size="full" shape="rectangle">
+          <Button
+            size="full"
+            shape="rectangle"
+            onClick={() =>
+              openModal({
+                content: (
+                  <SelectBox
+                    optionValues={[
+                      { id: 0, name: 'java' },
+                      { id: 1, name: 'Cream' },
+                      { id: 2, name: '카일' },
+                      { id: 3, name: '천재' },
+                    ]}
+                    setSelectedId={setSelectedId}
+                  />
+                ),
+              })
+            }
+          >
             <span>문제집으로 가져가기 ({checkedCardCount})</span>
           </Button>
         </BottomContent>

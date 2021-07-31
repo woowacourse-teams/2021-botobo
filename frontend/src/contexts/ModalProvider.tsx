@@ -88,10 +88,13 @@ const ModalProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    window.addEventListener('popstate', () => {
+    const reset = () => {
       setModalContent(null);
       closeModal();
-    });
+    };
+    window.addEventListener('popstate', reset);
+
+    return () => window.removeEventListener('popstate', reset);
   }, []);
 
   return (

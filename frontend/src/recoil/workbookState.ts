@@ -37,14 +37,12 @@ export const workbookState = selector<WorkbookState>({
   get: async ({ get }) => {
     try {
       return {
-        data: get(userState)
-          ? await getWorkbooksAsync()
-          : [workbookInitialState],
+        data: get(userState) ? await getWorkbooksAsync() : [],
         errorMessage: null,
       };
     } catch (error) {
       return {
-        data: [workbookInitialState],
+        data: [],
         errorMessage: '문제집을 불러오지 못했습니다.',
       };
     }
