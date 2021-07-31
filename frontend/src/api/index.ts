@@ -127,3 +127,15 @@ export const getPublicCardsAsync = async (publicWorkbookId: number) => {
 
   return data;
 };
+
+export const postPublicCardsAsync = async (
+  workbookId: number,
+  cardIds: number[]
+) => {
+  const { data } = await request.post<PublicCardsResponse>(
+    `/workbooks/${workbookId}/cards`,
+    { cardIds }
+  );
+
+  return data;
+};

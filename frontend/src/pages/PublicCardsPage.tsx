@@ -26,7 +26,7 @@ const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
   const showSnackbar = useSnackbar();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const {
     workbookId,
     workbookName,
@@ -37,6 +37,7 @@ const PublicCardsPage = () => {
     checkAllCard,
     checkedCardCount,
     checkCard,
+    takeCardsToMyWorkbook,
   } = usePublicCard();
   const { routeQuiz } = useRouter();
 
@@ -100,6 +101,7 @@ const PublicCardsPage = () => {
           <Button
             size="full"
             shape="rectangle"
+            backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_5'}
             onClick={() => {
               if (workbooks.length === 0) {
                 showSnackbar({ message: '우선 문제집을 추가해주세요.' });
@@ -115,7 +117,15 @@ const PublicCardsPage = () => {
                       setSelectedId={setSelectedId}
                       title="문제집 선택"
                     />
-                    <Button size="full">확인</Button>
+                    <Button
+                      size="full"
+                      onClick={() => {
+                        takeCardsToMyWorkbook(selectedId);
+                        closeModal();
+                      }}
+                    >
+                      확인
+                    </Button>
                   </ModalContainer>
                 ),
               });
