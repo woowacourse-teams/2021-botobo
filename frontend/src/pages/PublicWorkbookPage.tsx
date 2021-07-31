@@ -46,7 +46,7 @@ const PublicWorkbookPage = () => {
             setInputValue(target.value);
             setIsLoading(true);
             setPublicWorkbooks([]);
-            debounce(() => search(target.value), 200);
+            debounce(() => search(target.value), 400);
           }}
           placeholder="검색어를 입력해주세요"
           onFocus={() => setIsFocus(true)}
@@ -154,7 +154,7 @@ const LoadImage = styled.div`
   background-image: url(${loadSrc});
   background-repeat: no-repeat;
   background-size: contain;
-  animation: ${jumpAnimation} 1s infinite linear;
+  animation: ${jumpAnimation} 1s infinite ease-in-out;
 `;
 
 export default PublicWorkbookPage;

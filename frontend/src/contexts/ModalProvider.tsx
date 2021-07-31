@@ -10,7 +10,7 @@ import { Flex } from '../styles';
 
 type ModalType = 'center' | 'bottom' | 'full';
 
-type CloseIconType = 'back' | 'crossMark' | 'down';
+type CloseIconType = '' | 'back' | 'crossMark' | 'down';
 
 interface Props {
   children: React.ReactElement | React.ReactElement[];
@@ -67,14 +67,14 @@ const ModalProvider = ({ children }: Props) => {
     null
   );
   const [title, setTitle] = useState('');
-  const [closeIcon, setCloseIcon] = useState<CloseIconType>('down');
+  const [closeIcon, setCloseIcon] = useState<CloseIconType>('');
   const [type, setType] = useState<ModalType>('bottom');
   const [isOpened, setIsOpened] = useState(false);
 
   const openModal = ({ content, title, closeIcon, type }: ModalInfo) => {
     setModalContent(content);
     setTitle(title ?? '');
-    setCloseIcon(closeIcon ?? 'down');
+    setCloseIcon(closeIcon ?? '');
     setType(type ?? 'bottom');
     setIsOpened(true);
   };

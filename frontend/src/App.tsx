@@ -10,14 +10,14 @@ import Router from './Router';
 const App = () => (
   <ThemeProvider theme={theme}>
     <RecoilRoot>
-      <Suspense fallback={<div>loading</div>}>
-        <SnackbarProvider>
-          <ModalProvider>
+      <SnackbarProvider>
+        <ModalProvider>
+          <Suspense fallback={<div>loading</div>}>
             <GlobalStyle />
             <Router />
-          </ModalProvider>
-        </SnackbarProvider>
-      </Suspense>
+          </Suspense>
+        </ModalProvider>
+      </SnackbarProvider>
     </RecoilRoot>
   </ThemeProvider>
 );

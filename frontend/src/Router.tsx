@@ -17,6 +17,7 @@ import {
   LoginPage,
   MainLoadable,
   MainPage,
+  PublicCardsLoadable,
   PublicCardsPage,
   PublicWorkbookPage,
   QuizPage,
@@ -83,7 +84,9 @@ const Router = () => (
         <PublicWorkbookPage />
       </PrivateRoute>
       <PrivateRoute exact path={ROUTE.PUBLIC_CARDS.PATH}>
-        <PublicCardsPage />
+        <Suspense fallback={<PublicCardsLoadable />}>
+          <PublicCardsPage />
+        </Suspense>
       </PrivateRoute>
       <Route exact path={ROUTE.GITHUB_CALLBACK.PATH}>
         <GithubCallbackPage />
