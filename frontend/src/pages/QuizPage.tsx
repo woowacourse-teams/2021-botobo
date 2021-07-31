@@ -4,7 +4,8 @@ import React from 'react';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { Quiz } from '../components';
+import { PageHeader, Quiz } from '../components';
+import { ROUTE } from '../constants';
 import { useQuiz } from '../hooks';
 import { Flex } from '../styles';
 
@@ -25,38 +26,44 @@ const QuizPage = () => {
     useQuiz();
 
   return (
-    <Container>
-      <QuizWrapper>
-        <Tooltip isTooltipVisible={currentQuizIndex === 0}>
-          카드를 클릭해 질문과 정답을 확인할 수 있어요.
-        </Tooltip>
-        {quizzes && (
-          <QuizList quizCount={quizzes.length} currentIndex={currentQuizIndex}>
-            {quizzes.map(({ id, question, answer, workbookName }, index) => (
-              <QuizItem key={id} quizIndex={index}>
-                <Quiz
-                  question={question}
-                  answer={answer}
-                  workbookName={workbookName}
-                  isChanged={id === prevQuizId}
-                />
-              </QuizItem>
-            ))}
-          </QuizList>
-        )}
-      </QuizWrapper>
-      <PageNation>
-        <ArrowButton onClick={showPrevQuiz}>
-          <LeftArrowIcon width="1rem" height="1rem" />
-        </ArrowButton>
-        <Page>
-          {currentQuizIndex + 1} / {quizzes.length}
-        </Page>
-        <ArrowButton onClick={showNextQuiz}>
-          <RightArrowIcon width="1rem" height="1rem" />
-        </ArrowButton>
-      </PageNation>
-    </Container>
+    <>
+      <PageHeader title={ROUTE.QUIZ.TITLE} />
+      <Container>
+        <QuizWrapper>
+          <Tooltip isTooltipVisible={currentQuizIndex === 0}>
+            카드를 클릭해 질문과 정답을 확인할 수 있어요.
+          </Tooltip>
+          {quizzes && (
+            <QuizList
+              quizCount={quizzes.length}
+              currentIndex={currentQuizIndex}
+            >
+              {quizzes.map(({ id, question, answer, workbookName }, index) => (
+                <QuizItem key={id} quizIndex={index}>
+                  <Quiz
+                    question={question}
+                    answer={answer}
+                    workbookName={workbookName}
+                    isChanged={id === prevQuizId}
+                  />
+                </QuizItem>
+              ))}
+            </QuizList>
+          )}
+        </QuizWrapper>
+        <PageNation>
+          <ArrowButton onClick={showPrevQuiz}>
+            <LeftArrowIcon width="1rem" height="1rem" />
+          </ArrowButton>
+          <Page>
+            {currentQuizIndex + 1} / {quizzes.length}
+          </Page>
+          <ArrowButton onClick={showNextQuiz}>
+            <RightArrowIcon width="1rem" height="1rem" />
+          </ArrowButton>
+        </PageNation>
+      </Container>
+    </>
   );
 };
 

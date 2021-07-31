@@ -58,6 +58,12 @@ export const getCardsAsync = async (workbookId: number) => {
   return data;
 };
 
+export const getQuizzesAsync = async (workbookId: number) => {
+  const { data } = await request.get<QuizResponse[]>(`/quizzes/${workbookId}`);
+
+  return data;
+};
+
 export const postQuizzesAsync = async (workbookIds: number[]) => {
   const { data } = await request.post<QuizResponse[]>('/quizzes', {
     workbookIds,
@@ -120,4 +126,8 @@ export const getPublicCardsAsync = async (publicWorkbookId: number) => {
   );
 
   return data;
+};
+
+export const putNextQuizAsync = async (cardIds: number[]) => {
+  await request.put(`/cards/next-quiz`, { cardIds });
 };
