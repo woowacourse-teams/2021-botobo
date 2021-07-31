@@ -2,10 +2,13 @@ package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbooktag.WorkbookTag;
+import botobo.core.domain.workbooktag.WorkbookTagRepository;
 import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,12 @@ public class WorkbookRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private WorkbookTagRepository workbookTagRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -260,5 +269,63 @@ public class WorkbookRepositoryTest {
 
         //then
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);
+    }
+
+    @DisplayName("Tags와 함께 Workbook 저장시 WorkbookTag와 Tag도 함께 저장된다.")
+    @Test
+    void saveWorkbookWithTags() {
+        // given
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("java"), Tag.from("자바")
+        ));
+
+        Workbook workbook = Workbook.builder()
+                .name("Java 문제집")
+                .tags(tags)
+                .build();
+
+        // when
+        Workbook savedWorkbook = workbookRepository.save(workbook);
+        flushAndClear();
+
+        // then
+        List<Tag> workbookTags = savedWorkbook.tags().toList();
+        List<WorkbookTag> dbWorkbookTags = workbookTagRepository.findAll();
+        List<Tag> dbTags = tagRepository.findAll();
+
+        assertThat(workbookTags).hasSize(2);
+        assertThat(dbWorkbookTags).hasSize(2);
+        assertThat(dbTags).hasSize(2);
+    }
+
+    @DisplayName("Workbook 삭제시 WorkbookTag는 함께 삭제되고, Tag는 삭제되지 않는다. ")
+    @Test
+    void deleteWorkbookWithOrphanWorkbookTags() {
+        // given
+        Tags tags = Tags.from(Arrays.asList(
+                Tag.from("java"), Tag.from("자바")
+        ));
+
+        Workbook workbook = Workbook.builder()
+                .name("Java 문제집")
+                .tags(tags)
+                .build();
+
+        Workbook savedWorkbook = workbookRepository.save(workbook);
+        flushAndClear();
+
+        // when
+        workbookRepository.delete(workbook);
+        flushAndClear();
+
+        // then
+        assertThat(workbookRepository.findAll()).isEmpty();
+        assertThat(workbookTagRepository.findAll()).isEmpty();
+        assertThat(tagRepository.findAll()).hasSize(2);
+    }
+
+    private void flushAndClear() {
+        testEntityManager.flush();
+        testEntityManager.clear();
     }
 }
