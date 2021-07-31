@@ -188,7 +188,6 @@ const CardItem = styled.li`
 
 const BottomContent = styled.div`
   ${Flex()};
-  opacity: 0.9;
   position: fixed;
   bottom: 0;
   left: 0;

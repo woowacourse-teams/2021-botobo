@@ -10,8 +10,6 @@
             <level>TRACE</level>
         </filter>
 
-        <file>${QUERY_LOG_PATH}/${QUERY_LOG_FILE_NAME}.log</file>
-
         <encoder>
             <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
         </encoder>

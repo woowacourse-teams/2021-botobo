@@ -7,7 +7,8 @@ import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const QuizResultPage = () => {
-  const { quizResults, checkQuizResult } = useQuizResult();
+  const { quizResults, checkedCount, checkQuizResult, setNextQuiz } =
+    useQuizResult();
   const { routeMain } = useRouter();
 
   return (
@@ -37,7 +38,13 @@ const QuizResultPage = () => {
         >
           저장 안하고 나가기
         </Button>
-        <Button size="full" shape="rectangle" onClick={routeMain}>
+        <Button
+          size="full"
+          shape="rectangle"
+          onClick={setNextQuiz}
+          backgroundColor={checkedCount > 0 ? 'green' : 'gray_4'}
+          disabled={checkedCount === 0}
+        >
           다음에 또 보기
         </Button>
       </ButtonWrapper>
@@ -64,7 +71,6 @@ const QuizResultList = styled.ul`
 
 const ButtonWrapper = styled.div`
   ${Flex()};
-  opacity: 0.9;
   position: fixed;
   bottom: 0;
   left: 0;
