@@ -21,21 +21,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         this.authService = authService;
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorizationInterceptor())
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login", "/api/quizzes/guest", "/api/docs/**", "/api/workbooks");
-
-        registry.addInterceptor(adminInterceptor())
-                .addPathPatterns("/api/admin/**");
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authenticationPrincipalArgumentResolver());
-    }
-
     @Bean
     public AuthorizationInterceptor authorizationInterceptor() {
         return new AuthorizationInterceptor(authService);
@@ -49,5 +34,20 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(authenticationPrincipalArgumentResolver());
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authorizationInterceptor())
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/login", "/api/quizzes/guest", "/api/docs/**", "/api/workbooks");
+
+        registry.addInterceptor(adminInterceptor())
+                .addPathPatterns("/api/admin/**");
     }
 }

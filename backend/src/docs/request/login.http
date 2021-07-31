@@ -5,5 +5,5 @@ Accept: application/json
 Host: localhost:8080
 
 {
-  "code" : "githubCode"
+  "code": "githubCode"
 }
