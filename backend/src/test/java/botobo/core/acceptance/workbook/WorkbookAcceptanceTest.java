@@ -362,7 +362,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test

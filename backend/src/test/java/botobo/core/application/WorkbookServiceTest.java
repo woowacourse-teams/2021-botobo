@@ -21,8 +21,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @DisplayName("문제집 서비스 테스트")
@@ -232,7 +235,7 @@ class WorkbookServiceTest {
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
-        given(cardRepository.findById(anyLong())).willReturn(Optional.of(card));
+        given(cardRepository.findByIdIn(Mockito.anyList())).willReturn(List.of(card));
 
         // when
         assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
@@ -244,7 +247,7 @@ class WorkbookServiceTest {
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
         then(cardRepository).should(times(1))
-                .findById(anyLong());
+                .findByIdIn(Mockito.anyList());
     }
 
     @Test
@@ -268,6 +271,10 @@ class WorkbookServiceTest {
         // then
         then(userRepository).should(times(1))
                 .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+        then(cardRepository).should(never())
+                .findByIdIn(Mockito.anyList());
     }
 
     @Test
@@ -290,6 +297,10 @@ class WorkbookServiceTest {
         // then
         then(userRepository).should(times(1))
                 .findById(appUser.getId());
+        then(workbookRepository).should(never())
+                .findById(anyLong());
+        then(cardRepository).should(never())
+                .findByIdIn(Mockito.anyList());
     }
 
     @Test
@@ -312,7 +323,7 @@ class WorkbookServiceTest {
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
-        given(cardRepository.findById(anyLong())).willThrow(CardNotFoundException.class);
+        given(cardRepository.findByIdIn(Mockito.anyList())).willThrow(CardNotFoundException.class);
 
         // when
         assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
@@ -324,7 +335,7 @@ class WorkbookServiceTest {
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
         then(cardRepository).should(times(1))
-                .findById(anyLong());
+                .findByIdIn(Mockito.anyList());
     }
 
     @Test
@@ -357,5 +368,7 @@ class WorkbookServiceTest {
                 .findById(appUser.getId());
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
+        then(cardRepository).should(never())
+                .findByIdIn(Mockito.anyList());
     }
 }

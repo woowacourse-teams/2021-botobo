@@ -190,7 +190,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(token)
                 .build()
-                .status(status().isOk())
+                .status(status().isCreated())
                 .identifier("workbooks-scrap-cards-success");
     }
 

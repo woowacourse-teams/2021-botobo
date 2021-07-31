@@ -11,6 +11,7 @@ import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.domain.workbook.criteria.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
+import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -26,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -98,7 +101,7 @@ public class WorkbookService {
     }
 
     @Transactional
-    public void scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
+    public List<CardResponse> scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(workbookId);
         if (!workbook.isAuthorOf(user)) {
@@ -106,6 +109,7 @@ public class WorkbookService {
         }
         Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
+        return null; // 임시로 null
     }
 
     private User findUser(AppUser appUser) {
@@ -119,14 +123,13 @@ public class WorkbookService {
     }
 
     private List<Card> scrapCards(List<Long> cardIds) {
-        List<Card> scrappedCards = new ArrayList<>();
-        for (Long id : cardIds) {
-            final Card sourceCard = cardRepository.findById(id)
-                    .orElseThrow(CardNotFoundException::new);
-
-            scrappedCards.add(Card.createCopyOf(sourceCard));
+        List<Card> foundCards = cardRepository.findByIdIn(cardIds);
+        if (!Objects.equals(cardIds.size(), foundCards.size())) {
+            throw new CardNotFoundException();
         }
-        return scrappedCards;
+        return foundCards.stream()
+                .map(Card::createCopyOf)
+                .collect(Collectors.toList());
     }
 
     private void addScrappedCardsToWorkbook(Workbook workbook, Cards scrappedCards) {

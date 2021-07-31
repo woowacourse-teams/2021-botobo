@@ -2,6 +2,7 @@ package botobo.core.ui;
 
 import botobo.core.application.WorkbookService;
 import botobo.core.domain.user.AppUser;
+import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -78,10 +79,12 @@ public class WorkbookController {
     }
 
     @PostMapping("/{workbookId}/cards")
-    public ResponseEntity<Void> scrapSelectedCardsToWorkbook(@PathVariable Long workbookId,
+    public ResponseEntity<List<CardResponse>> scrapSelectedCardsToWorkbook(@PathVariable Long workbookId,
                                                              @Valid @RequestBody ScrapCardRequest scrapCardRequest,
                                                              @AuthenticationPrincipal AppUser appUser) {
-        workbookService.scrapSelectedCardsToWorkbook(workbookId, scrapCardRequest, appUser);
-        return ResponseEntity.ok().build();
+        List<CardResponse> cardResponses =
+                workbookService.scrapSelectedCardsToWorkbook(workbookId, scrapCardRequest, appUser);
+        return ResponseEntity.created(URI.create(String.format("/api/workbooks/%d/cards/", workbookId)))
+                .body(cardResponses);
     }
 }
