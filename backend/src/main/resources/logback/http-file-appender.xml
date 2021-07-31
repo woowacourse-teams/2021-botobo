@@ -6,7 +6,7 @@
         <file>${HTTP_LOG_PATH}/${HTTP_LOG_FILE_NAME}.log</file>
 
         <encoder>
-            <pattern>${HTTP_FILE_LOG_PATTERN}</pattern>
+            <pattern>${BOTOBO_HTTP_FILE_LOG_PATTERN}</pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
