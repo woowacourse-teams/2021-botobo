@@ -376,6 +376,26 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("유저가 문제집 수정 - 실패, opened가 없을 때")
+    void updateWorkbookWhenOpenedNotExist() {
+        // given
+        WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, userInfo);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name(stringGenerator(31))
+                .cardCount(0)
+                .tags(Collections.emptyList())
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, userInfo);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).contains("문제집 공개여부는 필수 입력값입니다");
+    }
+
+    @Test
     @DisplayName("유저가 문제집 수정 - 실패, cardCount가 음수")
     void updateWorkbookWhenCardCountNegative() {
         // given
