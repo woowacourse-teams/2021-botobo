@@ -71,9 +71,12 @@ const PublicCardsPage = () => {
         <WorkbookName>{workbookName}</WorkbookName>
         <CardCount>{cardCount}개의 카드</CardCount>
         <TagList>
-          {tags.map((tag) => (
-            <li key={tag.id}>
-              <Tag>#{tag.name}</Tag>
+          {tags.map(({ id, name }) => (
+            <li key={id}>
+              <Tag>
+                <span>#</span>
+                {name}
+              </Tag>
             </li>
           ))}
         </TagList>
@@ -102,7 +105,10 @@ const PublicCardsPage = () => {
             size="full"
             shape="rectangle"
             backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_4'}
+            disabled={checkedCardCount === 0}
             onClick={() => {
+              if (checkedCardCount === 0) return;
+
               if (workbooks.length === 0) {
                 showSnackbar({ message: '우선 문제집을 추가해주세요.' });
 
@@ -128,6 +134,7 @@ const PublicCardsPage = () => {
                     </Button>
                   </ModalContainer>
                 ),
+                closeIcon: 'down',
               });
             }}
           >
@@ -176,6 +183,10 @@ const Tag = styled.button`
     color: ${theme.color.blue};
     font-size: ${theme.fontSize.default};
   `};
+
+  & > span {
+    margin-right: 0.1rem;
+  }
 `;
 
 const CardItem = styled.li`
