@@ -9,6 +9,7 @@ import { PublicWorkbookResponse } from '../types';
 const usePublicWorkbook = () => {
   const [keyword, setKeyword] = useRecoilState(searchKeywordState);
   const [inputValue, setInputValue] = useState(keyword);
+  const [isLoading, setIsLoading] = useState(false);
   const [publicWorkbooks, setPublicWorkbooks] = useState<
     PublicWorkbookResponse[]
   >([]);
@@ -18,7 +19,9 @@ const usePublicWorkbook = () => {
     try {
       const data = await getPublicWorkbookAsync(value);
       setPublicWorkbooks(data);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -40,6 +43,8 @@ const usePublicWorkbook = () => {
     publicWorkbooks,
     setPublicWorkbooks,
     setPublicWorkbookId,
+    isLoading,
+    setIsLoading,
     search,
   };
 };

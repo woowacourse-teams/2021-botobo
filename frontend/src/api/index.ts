@@ -138,7 +138,7 @@ export const postPublicCardsAsync = async (
   );
 
   return data;
-}
+};
 
 export const putNextQuizAsync = async (cardIds: number[]) => {
   await request.put(`/cards/next-quiz`, { cardIds });

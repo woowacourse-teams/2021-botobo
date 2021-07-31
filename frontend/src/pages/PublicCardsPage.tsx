@@ -102,7 +102,10 @@ const PublicCardsPage = () => {
             size="full"
             shape="rectangle"
             backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_4'}
+            disabled={checkedCardCount === 0}
             onClick={() => {
+              if (checkedCardCount === 0) return;
+
               if (workbooks.length === 0) {
                 showSnackbar({ message: '우선 문제집을 추가해주세요.' });
 
