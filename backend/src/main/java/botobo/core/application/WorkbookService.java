@@ -104,7 +104,7 @@ public class WorkbookService {
         if (!workbook.isAuthorOf(user)) {
             throw new NotAuthorException();
         }
-        Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getDistinctCardIds()));
+        Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.distinctCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
     }
 

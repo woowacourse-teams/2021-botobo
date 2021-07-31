@@ -287,7 +287,7 @@ class WorkbookServiceTest {
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
         then(cardRepository).should(times(1))
-                .findByIdIn(Mockito.anyList());
+                .findByIdIn(List.of(1L));
     }
 
     @Test

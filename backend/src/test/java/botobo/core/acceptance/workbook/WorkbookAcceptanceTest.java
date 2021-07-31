@@ -508,6 +508,27 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 카드 아이디가 null")
+    void scrapSelectedCardsToWorkbookFailedWhenNullCardIds() {
+        // given
+        final long workbookId = 1L;
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(null)
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth()
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("카드를 내 문제집으로 옮기려면 카드 아이디가 필요합니다.");
+    }
+
+    @Test
     @DisplayName("문제집으로 카드 가져오기 - 실패, Card Id는 요청으로 들어왔으나 해당 ID의 카드가 모두 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenCardNotFound() {
         // given
