@@ -91,7 +91,7 @@ const StyledButton = styled.button<StyledProps>`
 
     ${buttonSize[size][shape]};
 
-    &:hover {
+    &:not(:disabled):hover {
       filter: brightness(95%);
     }
   `}

@@ -127,3 +127,7 @@ export const getPublicCardsAsync = async (publicWorkbookId: number) => {
 
   return data;
 };
+
+export const putNextQuizAsync = async (cardIds: number[]) => {
+  await request.put(`/cards/next-quiz`, { cardIds });
+};

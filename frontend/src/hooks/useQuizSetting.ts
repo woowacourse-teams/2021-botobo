@@ -55,7 +55,8 @@ const useQuizSetting = () => {
       setQuizMode(QUIZ_MODE.DEFAULT);
       routeQuiz();
     } catch (error) {
-      showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
+      console.error(error);
+      showSnackbar({ message: '퀴즈 생성에 실패했어요.', type: 'error' });
     }
   };
 
