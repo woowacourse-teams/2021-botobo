@@ -2,9 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
+import { scrollBarStyle } from '../styles';
 import { QuizResponse } from '../types';
 
-interface Props extends Omit<QuizResponse, 'id'> {
+interface Props extends Omit<QuizResponse, 'id' | 'encounterCount'> {
   isChanged: boolean;
 }
 
@@ -109,14 +110,7 @@ const Text = styled.div`
   height: 9rem;
   line-height: 9rem;
 
-  ${({ theme }) => css`
-    ::-webkit-scrollbar {
-      width: 2px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: ${theme.color.gray_4};
-    }
-  `}
+  ${scrollBarStyle};
 
   & > span {
     display: inline-block;

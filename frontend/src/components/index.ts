@@ -23,3 +23,4 @@ export { default as CardEditForm } from './CardEditForm';
 export { default as Confirm } from './Confirm';
 export { default as Hashtag } from './Hashtag';
 export { default as Toggle } from './Toggle';
+export { default as SelectBox } from './SelectBox';

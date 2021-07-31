@@ -67,7 +67,6 @@ const Router = () => (
         </Suspense>
       </PrivateRoute>
       <Route exact path={ROUTE.QUIZ.PATH}>
-        <PageHeader title={ROUTE.QUIZ.TITLE} />
         <QuizPage />
       </Route>
       <Route exact path={ROUTE.QUIZ_RESULT.PATH}>

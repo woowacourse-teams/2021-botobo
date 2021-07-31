@@ -31,24 +31,6 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  useBuiltIns: 'usage',
-                  corejs: 3,
-                },
-              ],
-              '@babel/preset-react',
-              '@babel/preset-typescript',
-            ],
-            plugins: [
-              '@babel/proposal-class-properties',
-              '@babel/proposal-object-rest-spread',
-              '@emotion',
-            ],
-          },
         },
       },
       {

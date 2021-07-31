@@ -6,7 +6,7 @@ import useSnackbar from './useSnackbar';
 
 const usePublicCard = () => {
   const {
-    data: { workbookName, cards, cardCount, tags },
+    data: { workbookId, workbookName, cards, cardCount, tags },
     errorMessage,
   } = useRecoilValue(publicCardState);
 
@@ -54,6 +54,7 @@ const usePublicCard = () => {
   }, [errorMessage]);
 
   return {
+    workbookId,
     workbookName,
     cards,
     cardCount,
