@@ -363,6 +363,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.header("Location")).isEqualTo(String.format("/api/workbooks/%d/cards", workbookId));
     }
 
     @Test

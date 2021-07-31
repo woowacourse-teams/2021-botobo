@@ -67,9 +67,9 @@ public class DocumentRequestBuilder {
             return this;
         }
 
-        public Options locationHeader(String location) {
+        public Options locationHeader(String uri) {
             this.headerFlag = true;
-            this.location = location;
+            this.location = uri;
             return this;
         }
 

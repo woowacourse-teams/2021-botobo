@@ -128,6 +128,10 @@ public class RequestBuilder {
         public ExtractableResponse<Response> extract() {
             return response;
         }
+
+        public String header(String name) {
+            return response.header(name);
+        }
     }
 
     interface RestAssuredRequest {

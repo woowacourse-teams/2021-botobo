@@ -6,8 +6,8 @@ Authorization: Bearer botobo.access.token
 Host: localhost:8080
 
 {
-  "name" : "JAVA",
-  "opened" : true
+  "name": "JAVA",
+  "opened": true
 }
 
 ### 관리자 권한으로 카드 추가하기
@@ -18,7 +18,7 @@ Authorization: Bearer botobo.access.token
 Host: localhost:8080
 
 {
-  "question" : "질문1",
-  "answer" : "답변1",
-  "workbookId" : 1
+  "question": "질문1",
+  "answer": "답변1",
+  "workbookId": 1
 }

@@ -11,7 +11,6 @@ import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.domain.workbook.criteria.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
-import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -24,7 +23,6 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -101,7 +99,7 @@ public class WorkbookService {
     }
 
     @Transactional
-    public List<CardResponse> scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
+    public void scrapSelectedCardsToWorkbook(Long workbookId, ScrapCardRequest scrapCardRequest, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(workbookId);
         if (!workbook.isAuthorOf(user)) {
@@ -109,7 +107,6 @@ public class WorkbookService {
         }
         Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
-        return null; // 임시로 null
     }
 
     private User findUser(AppUser appUser) {

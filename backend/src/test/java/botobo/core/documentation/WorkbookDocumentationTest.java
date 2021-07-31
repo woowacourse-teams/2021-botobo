@@ -189,6 +189,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .mockMvc(mockMvc)
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(token)
+                .locationHeader("/api/workbooks/1/cards")
                 .build()
                 .status(status().isCreated())
                 .identifier("workbooks-scrap-cards-success");
