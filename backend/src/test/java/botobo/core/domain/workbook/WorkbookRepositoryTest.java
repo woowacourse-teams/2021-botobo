@@ -4,7 +4,6 @@ import botobo.core.domain.card.Card;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
-import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class WorkbookRepositoryTest {
@@ -173,12 +171,17 @@ public class WorkbookRepositoryTest {
                 .build();
         workbookRepository.save(workbook);
 
+        Workbook updateWorkbook = Workbook.builder()
+                .name("오즈의 Java를 다 잡아")
+                .opened(false)
+                .build();
+
         // when
-        workbook.update("오즈의 Java를 다 잡아", false);
+        workbook.update(updateWorkbook);
         testEntityManager.flush();
 
         // then
-        assertThat(workbook.getName()).isEqualTo("오즈의 Java를 다 잡아");
+        assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
         assertThat(workbook.isOpened()).isFalse();
         assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
     }

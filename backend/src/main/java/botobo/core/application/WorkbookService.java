@@ -49,8 +49,7 @@ public class WorkbookService {
 
         validateAuthor(user, workbook);
 
-        workbook.update(workbookUpdateRequest.getName(),
-                workbookUpdateRequest.isOpened());
+        workbook.update(workbookUpdateRequest.toWorkbook());
         return WorkbookResponse.authorOf(workbook);
     }
 

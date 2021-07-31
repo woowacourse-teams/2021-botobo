@@ -117,13 +117,16 @@ class WorkbookTest {
                 .build()
                 .createBy(user);
 
-        String updateName = "오즈의 Java를 잡아";
+        Workbook updateWorkbook = Workbook.builder()
+                .name("오즈의 Java를 다 잡아")
+                .opened(false)
+                .build();
 
         // when
-        workbook.update(updateName, false);
+        workbook.update(updateWorkbook);
 
         // then
-        assertThat(workbook.getName()).isEqualTo(updateName);
+        assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
         assertThat(workbook.isOpened()).isFalse();
     }
 

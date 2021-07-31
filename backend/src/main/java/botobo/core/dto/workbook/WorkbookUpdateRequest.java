@@ -1,5 +1,6 @@
 package botobo.core.dto.workbook;
 
+import botobo.core.domain.workbook.Workbook;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,11 @@ public class WorkbookUpdateRequest {
     private boolean opened;
     @PositiveOrZero(message = "카드 개수는 0이상 입니다.")
     private int cardCount;
+
+    public Workbook toWorkbook() {
+        return Workbook.builder()
+                .name(name)
+                .opened(opened)
+                .build();
+    }
 }

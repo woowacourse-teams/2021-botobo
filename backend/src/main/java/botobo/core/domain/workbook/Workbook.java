@@ -110,9 +110,9 @@ public class Workbook extends BaseEntity {
         return this.user.equals(user);
     }
 
-    public void update(String name, boolean opened) {
-        this.name = name;
-        this.opened = opened;
+    public void update(Workbook other) {
+        this.name = other.name;
+        this.opened = other.opened;
     }
 
     public void delete() {
