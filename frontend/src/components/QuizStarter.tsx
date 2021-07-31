@@ -32,7 +32,7 @@ const QuizStarter = ({ workbooks }: Props) => {
     }
 
     showSnackbar({
-      message: '먼저 문제집과 카드를 추가해주세요.',
+      message: '우선 문제집과 카드를 추가해주세요.',
     });
   };
 

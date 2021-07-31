@@ -11,6 +11,7 @@ interface OptionValues {
 }
 
 interface Props {
+  title?: string;
   optionValues: OptionValues[];
   setSelectedId: (id: number) => void;
 }
@@ -19,36 +20,33 @@ interface CurrentStyleProps {
   isFocus: boolean;
 }
 
-const SelectBox = ({ optionValues, setSelectedId }: Props) => {
+const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
   const [isFocus, setIsFocus] = useState(false);
   const [currentId, setCurrentId] = useState(optionValues[0].id);
 
   return (
     <Container>
+      {title && <Title>{title}</Title>}
       <Current
-        tabIndex={1}
-        isFocus={isFocus}
         onClick={() => setIsFocus((prevState) => !prevState)}
-        onBlur={() => setIsFocus(false)}
+        isFocus={isFocus}
       >
         <ul>
-          {optionValues.map(({ id, name }) => {
-            return (
-              <HiddenWrapper key={id}>
-                <HiddenInput
-                  type="radio"
-                  id={`radio-${id}`}
-                  checked={id === currentId}
-                  onChange={() => {
-                    setSelectedId(id);
-                    setCurrentId(id);
-                  }}
-                  name="select"
-                />
-                <HiddenName>{name}</HiddenName>
-              </HiddenWrapper>
-            );
-          })}
+          {optionValues.map(({ id, name }) => (
+            <HiddenWrapper key={id}>
+              <HiddenInput
+                type="radio"
+                id={`radio-${id}`}
+                checked={id === currentId}
+                onChange={() => {
+                  setSelectedId(id);
+                  setCurrentId(id);
+                }}
+                name="select"
+              />
+              <HiddenName>{name}</HiddenName>
+            </HiddenWrapper>
+          ))}
         </ul>
         <StyledOpenIcon width="1.25rem" height="1.25rem" />
       </Current>
@@ -67,6 +65,11 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   margin: 0 auto;
+`;
+
+const Title = styled.div`
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
 `;
 
 const HiddenWrapper = styled.li`

@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 import React, { createContext, useEffect, useState } from 'react';
 
 import BackIcon from '../assets/chevron-left-solid.svg';
-import CloseButton from '../assets/cross-mark.svg';
+import CloseButtonIcon from '../assets/cross-mark.svg';
+import DownIcon from '../assets/down-arrow.svg';
 import { theme } from '../constants';
 import { Flex } from '../styles';
 
 type ModalType = 'center' | 'bottom' | 'full';
 
-type CloseIconType = '' | 'back' | 'crossMark';
+type CloseIconType = 'back' | 'crossMark' | 'down';
 
 interface Props {
   children: React.ReactElement | React.ReactElement[];
@@ -19,6 +20,10 @@ interface BottomSheetProps {
   children: React.ReactNode;
   type: ModalType;
   isOpened: boolean;
+}
+
+interface HeaderStyleProps {
+  closeIcon: CloseIconType;
 }
 interface ModalInfo {
   content: React.ReactElement;
@@ -62,19 +67,20 @@ const ModalProvider = ({ children }: Props) => {
     null
   );
   const [title, setTitle] = useState('');
-  const [closeIcon, setCloseIcon] = useState<CloseIconType>('');
+  const [closeIcon, setCloseIcon] = useState<CloseIconType>('down');
   const [type, setType] = useState<ModalType>('bottom');
   const [isOpened, setIsOpened] = useState(false);
 
   const openModal = ({ content, title, closeIcon, type }: ModalInfo) => {
     setModalContent(content);
     setTitle(title ?? '');
-    setCloseIcon(closeIcon ?? '');
+    setCloseIcon(closeIcon ?? 'down');
     setType(type ?? 'bottom');
     setIsOpened(true);
   };
 
   const closeModal = () => {
+    setModalContent(null);
     setIsOpened(false);
   };
 
@@ -88,13 +94,9 @@ const ModalProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    const reset = () => {
-      setModalContent(null);
-      closeModal();
-    };
-    window.addEventListener('popstate', reset);
+    window.addEventListener('popstate', closeModal);
 
-    return () => window.removeEventListener('popstate', reset);
+    return () => window.removeEventListener('popstate', closeModal);
   }, []);
 
   return (
@@ -103,13 +105,16 @@ const ModalProvider = ({ children }: Props) => {
       {modalContent && (
         <Modal isOpened={isOpened} type={type}>
           {(closeIcon || title) && (
-            <Header>
+            <Header closeIcon={closeIcon}>
               <button type="button" onClick={closeModal}>
                 {closeIcon === 'back' && (
                   <BackIcon width="1.2rem" height="1.2rem" />
                 )}
                 {closeIcon === 'crossMark' && (
-                  <CloseButton width="0.8rem" height="0.8rem" />
+                  <CloseButtonIcon width="0.8rem" height="0.8rem" />
+                )}
+                {closeIcon === 'down' && (
+                  <DownIcon width="1.2rem" height="1.2rem" />
                 )}
               </button>
               <h2>{title}</h2>
@@ -160,7 +165,7 @@ const Dimmed = styled.div`
   `};
 `;
 
-const Header = styled.div`
+const Header = styled.div<HeaderStyleProps>`
   ${Flex({ items: 'center', justify: 'center' })};
   position: relative;
   margin-top: 0.5rem;
@@ -171,6 +176,14 @@ const Header = styled.div`
     top: 50%;
     transform: translateY(-50%);
     left: 0;
+
+    ${({ theme, closeIcon }) => css`
+      width: ${closeIcon === 'down' ? '100%' : ''};
+
+      & > svg {
+        fill: ${theme.color.gray_8};
+      }
+    `}
   }
 `;
 

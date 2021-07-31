@@ -12,7 +12,7 @@ import {
   SelectBox,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
-import { usePublicCard, useRouter, useWorkbook } from '../hooks';
+import { usePublicCard, useRouter, useSnackbar, useWorkbook } from '../hooks';
 import useModal from '../hooks/useModal';
 import { quizState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
@@ -21,6 +21,7 @@ import { Flex } from '../styles';
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
+  const showSnackbar = useSnackbar();
   const { openModal } = useModal();
   const {
     workbookId,
@@ -37,7 +38,7 @@ const PublicCardsPage = () => {
 
   const { workbooks } = useWorkbook();
 
-  const [selectedId, setSelectedId] = useState(0);
+  const [selectedId, setSelectedId] = useState(workbooks[0]?.id || -1);
 
   return (
     <>
@@ -95,21 +96,26 @@ const PublicCardsPage = () => {
           <Button
             size="full"
             shape="rectangle"
-            onClick={() =>
+            onClick={() => {
+              if (workbooks.length === 0) {
+                showSnackbar({ message: '우선 문제집을 추가해주세요.' });
+
+                return;
+              }
+
               openModal({
                 content: (
-                  <SelectBox
-                    optionValues={[
-                      { id: 0, name: 'java' },
-                      { id: 1, name: 'Cream' },
-                      { id: 2, name: '카일' },
-                      { id: 3, name: '천재' },
-                    ]}
-                    setSelectedId={setSelectedId}
-                  />
+                  <ModalContainer>
+                    <SelectBox
+                      optionValues={workbooks}
+                      setSelectedId={setSelectedId}
+                      title="문제집 선택"
+                    />
+                    <Button size="full">확인</Button>
+                  </ModalContainer>
                 ),
-              })
-            }
+              });
+            }}
           >
             <span>문제집으로 가져가기 ({checkedCardCount})</span>
           </Button>
@@ -183,6 +189,11 @@ const CheckboxWrapper = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `};
+`;
+
+const ModalContainer = styled.div`
+  ${Flex({ direction: 'column', justify: 'space-between' })};
+  height: 300px;
 `;
 
 export default PublicCardsPage;
