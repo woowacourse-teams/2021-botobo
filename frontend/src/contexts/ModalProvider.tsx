@@ -80,7 +80,6 @@ const ModalProvider = ({ children }: Props) => {
   };
 
   const closeModal = () => {
-    setModalContent(null);
     setIsOpened(false);
   };
 
@@ -94,9 +93,14 @@ const ModalProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    window.addEventListener('popstate', closeModal);
+    const reset = () => {
+      setModalContent(null);
+      closeModal();
+    };
 
-    return () => window.removeEventListener('popstate', closeModal);
+    window.addEventListener('popstate', reset);
+
+    return () => window.removeEventListener('popstate', reset);
   }, []);
 
   return (

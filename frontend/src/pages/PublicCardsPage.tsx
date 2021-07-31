@@ -101,7 +101,7 @@ const PublicCardsPage = () => {
           <Button
             size="full"
             shape="rectangle"
-            backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_5'}
+            backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_4'}
             onClick={() => {
               if (workbooks.length === 0) {
                 showSnackbar({ message: '우선 문제집을 추가해주세요.' });
@@ -207,7 +207,7 @@ const CheckboxWrapper = styled.div`
 
 const ModalContainer = styled.div`
   ${Flex({ direction: 'column', justify: 'space-between' })};
-  height: 300px;
+  height: 18.75rem;
 `;
 
 export default PublicCardsPage;

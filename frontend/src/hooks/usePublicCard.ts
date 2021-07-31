@@ -6,8 +6,6 @@ import { workbookState } from './../recoil/workbookState';
 import { publicCardState } from '../recoil';
 import useSnackbar from './useSnackbar';
 
-const mockCards = [{ id: 1, question: '추가', answer: '돼라' }];
-
 const usePublicCard = () => {
   const {
     data: { workbookId, workbookName, cards, cardCount, tags },
@@ -16,7 +14,7 @@ const usePublicCard = () => {
   const updateWorkbooks = useResetRecoilState(workbookState);
 
   const [publicCards, setPublicCards] = useState(
-    mockCards.map((card) => ({ ...card, isChecked: false }))
+    cards.map((card) => ({ ...card, isChecked: false }))
   );
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
 
