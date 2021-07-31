@@ -12,17 +12,21 @@ import {
   SelectBox,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
-import { usePublicCard, useRouter, useSnackbar, useWorkbook } from '../hooks';
-import useModal from '../hooks/useModal';
-import { quizState } from '../recoil';
-import { quizModeState } from '../recoil/quizState';
+import {
+  useModal,
+  usePublicCard,
+  useRouter,
+  useSnackbar,
+  useWorkbook,
+} from '../hooks';
+import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
 
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
   const showSnackbar = useSnackbar();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const {
     workbookId,
     workbookName,
@@ -33,6 +37,7 @@ const PublicCardsPage = () => {
     checkAllCard,
     checkedCardCount,
     checkCard,
+    takeCardsToMyWorkbook,
   } = usePublicCard();
   const { routeQuiz } = useRouter();
 
@@ -96,6 +101,7 @@ const PublicCardsPage = () => {
           <Button
             size="full"
             shape="rectangle"
+            backgroundColor={checkedCardCount > 0 ? 'green' : 'gray_4'}
             onClick={() => {
               if (workbooks.length === 0) {
                 showSnackbar({ message: '우선 문제집을 추가해주세요.' });
@@ -111,7 +117,15 @@ const PublicCardsPage = () => {
                       setSelectedId={setSelectedId}
                       title="문제집 선택"
                     />
-                    <Button size="full">확인</Button>
+                    <Button
+                      size="full"
+                      onClick={() => {
+                        takeCardsToMyWorkbook(selectedId);
+                        closeModal();
+                      }}
+                    >
+                      확인
+                    </Button>
                   </ModalContainer>
                 ),
               });
@@ -192,7 +206,7 @@ const CheckboxWrapper = styled.div`
 
 const ModalContainer = styled.div`
   ${Flex({ direction: 'column', justify: 'space-between' })};
-  height: 300px;
+  height: 18.75rem;
 `;
 
 export default PublicCardsPage;

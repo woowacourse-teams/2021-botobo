@@ -25,7 +25,7 @@ const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
   const [currentId, setCurrentId] = useState(optionValues[0].id);
 
   return (
-    <Container>
+    <Container tabIndex={1} onBlur={() => setIsFocus(false)}>
       {title && <Title>{title}</Title>}
       <Current
         onClick={() => setIsFocus((prevState) => !prevState)}

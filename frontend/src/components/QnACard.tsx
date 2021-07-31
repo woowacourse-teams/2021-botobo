@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
 import FillStarIcon from '../assets/star-fill.svg';
-import useModal from '../hooks/useModal';
+import { useModal } from '../hooks';
 import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
 import { debounce } from '../utils';
