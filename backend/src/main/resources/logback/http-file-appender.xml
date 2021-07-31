@@ -3,8 +3,6 @@
     <property name="HTTP_LOG_FILE_NAME" value="http"/>
 
     <appender name="HTTP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HTTP_LOG_PATH}/${HTTP_LOG_FILE_NAME}.log</file>
-
         <encoder>
             <pattern>${BOTOBO_HTTP_FILE_LOG_PATTERN}</pattern>
         </encoder>
