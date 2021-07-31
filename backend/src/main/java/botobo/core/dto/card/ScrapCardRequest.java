@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -17,5 +18,9 @@ public class ScrapCardRequest {
     @Builder
     public ScrapCardRequest(List<Long> cardIds) {
         this.cardIds = cardIds;
+    }
+
+    public List<Long> getDistinctCardIds() {
+        return cardIds.stream().distinct().collect(Collectors.toList());
     }
 }

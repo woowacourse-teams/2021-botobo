@@ -250,6 +250,47 @@ class WorkbookServiceTest {
     }
 
     @Test
+    @DisplayName("문제집으로 카드 가져오기 - 성공, 중복 Card Id가 존재할 땐 중복을 제거한다.")
+    void scrapSelectedCardsToWorkbookWhenDuplicateCardIds() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L, 1L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("조앤의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(adminUser)
+                .build();
+
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("응답")
+                .build();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(cardRepository.findByIdIn(Mockito.anyList())).willReturn(List.of(card));
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .doesNotThrowAnyException();
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+        then(cardRepository).should(times(1))
+                .findByIdIn(Mockito.anyList());
+    }
+
+    @Test
     @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenWorkbookNotFound() {
         // given
@@ -303,12 +344,59 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("문제집으로 카드 가져오기 - 실패, 존재하지 않는 Card Id")
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 요청으로 들어온 Card Id 일부가 존재하지 않음")
+    void scrapSelectedCardsToWorkbookFailedWhenPartOfCardIDsNotExist() {
+        // given
+        ScrapCardRequest scrapCardRequest =
+                ScrapCardRequest.builder()
+                        .cardIds(List.of(1L, 2L, 3L))
+                        .build();
+
+        AppUser appUser = AppUser.admin(1L);
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("조앤의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(adminUser)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("응답")
+                .build();
+
+        Card card2 = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("응답")
+                .build();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(cardRepository.findByIdIn(Mockito.anyList())).willReturn(List.of(card1, card2));
+
+        // when
+        assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))
+                .isInstanceOf(CardNotFoundException.class);
+
+        // then
+        then(userRepository).should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+        then(cardRepository).should(times(1))
+                .findByIdIn(Mockito.anyList());
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 요청으로 들어온 Card Id 모두가 존재하지 않음")
     void scrapSelectedCardsToWorkbookFailedWhenNotExistCardId() {
         // given
         ScrapCardRequest scrapCardRequest =
                 ScrapCardRequest.builder()
-                        .cardIds(List.of(100L))
+                        .cardIds(List.of(100L, 101L, 102L))
                         .build();
 
         AppUser appUser = AppUser.admin(1L);
@@ -322,7 +410,7 @@ class WorkbookServiceTest {
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
-        given(cardRepository.findByIdIn(Mockito.anyList())).willThrow(CardNotFoundException.class);
+        given(cardRepository.findByIdIn(Mockito.anyList())).willReturn(List.of());
 
         // when
         assertThatCode(() -> workbookService.scrapSelectedCardsToWorkbook(1L, scrapCardRequest, appUser))

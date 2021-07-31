@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,7 +104,7 @@ public class WorkbookService {
         if (!workbook.isAuthorOf(user)) {
             throw new NotAuthorException();
         }
-        Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getCardIds()));
+        Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.getDistinctCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
     }
 
@@ -120,11 +119,11 @@ public class WorkbookService {
     }
 
     private List<Card> scrapCards(List<Long> cardIds) {
-        List<Card> foundCards = cardRepository.findByIdIn(cardIds);
-        if (!Objects.equals(cardIds.size(), foundCards.size())) {
+        List<Card> cards = cardRepository.findByIdIn(cardIds);
+        if (cardIds.size() != cards.size()) {
             throw new CardNotFoundException();
         }
-        return foundCards.stream()
+        return cards.stream()
                 .map(Card::createCopyOf)
                 .collect(Collectors.toList());
     }
