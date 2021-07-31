@@ -415,6 +415,28 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("문제집으로 카드 가져오기 - 실패, 요청이 비어있음.")
+    void scrapSelectedCardsToWorkbookFailedWhenRequestIsEmpty() {
+        // given
+        final Long workbookId = 100L;
+
+        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(List.of())
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("카드를 내 문제집으로 옮기려면 카드 아이디가 필요합니다.");
+    }
+
+    @Test
     @DisplayName("문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenUserNotFound() {
         // given
