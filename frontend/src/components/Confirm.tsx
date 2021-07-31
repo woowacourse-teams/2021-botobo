@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import useModal from '../hooks/useModal';
+import { useModal } from '../hooks';
 
 interface Props {
   children: React.ReactElement | React.ReactElement[] | string;

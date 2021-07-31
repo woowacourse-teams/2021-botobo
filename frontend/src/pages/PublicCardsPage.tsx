@@ -12,10 +12,14 @@ import {
   SelectBox,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
-import { usePublicCard, useRouter, useSnackbar, useWorkbook } from '../hooks';
-import useModal from '../hooks/useModal';
-import { quizState } from '../recoil';
-import { quizModeState } from '../recoil/quizState';
+import {
+  useModal,
+  usePublicCard,
+  useRouter,
+  useSnackbar,
+  useWorkbook,
+} from '../hooks';
+import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
 
 const PublicCardsPage = () => {

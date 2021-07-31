@@ -3,8 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Button, QuizResult } from '../components';
-import { useRouter } from '../hooks';
-import useQuizResult from '../hooks/useQuizResult';
+import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 const QuizResultPage = () => {

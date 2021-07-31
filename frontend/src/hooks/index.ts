@@ -1,4 +1,5 @@
 export { default as useQuizSetting } from './useQuizSetting';
+export { default as useQuizResult } from './useQuizResult';
 export { default as useQuiz } from './useQuiz';
 export { default as useCard } from './useCard';
 export { default as useSnackbar } from './useSnackbar';
@@ -8,3 +9,4 @@ export { default as useForm } from './useForm';
 export { default as useWorkbook } from './useWorkbook';
 export { default as usePublicWorkbook } from './usePublicWorkbook';
 export { default as usePublicCard } from './usePublicCard';
+export { default as useModal } from './useModal';

@@ -3,8 +3,7 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { STORAGE_KEY } from '../constants';
-import { useRouter } from '../hooks';
-import useModal from '../hooks/useModal';
+import { useModal, useRouter } from '../hooks';
 import { workbookIdState } from '../recoil';
 import { WorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
