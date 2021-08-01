@@ -5,10 +5,14 @@
 :toc: left
 :toclevels: 2
 
-include::categories.adoc[]
+include::workbooks.adoc[]
+
+include::cards.adoc[]
 
 include::quizzes.adoc[]
 
 include::admin.adoc[]
 
 include::login.adoc[]
+
+include::user.adoc[]

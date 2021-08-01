@@ -1,41 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?> <!-- 60초마다 설정 파일의 변경을 확인 하여 변경시 갱신 -->
-<configuration scan="true" scanPeriod="60 seconds">
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <property name="LOG_PATH" value="logs"/>
-    <property name="LOG_FILE_NAME" value="log"/>
+<configuration>
+    <property name="BOTOBO_CONSOLE_LOG_PATTERN"
+              value="%cyan(%d{yy-MM-dd}) %magenta(%d{HH:mm:ss}) %highlight(%-5level) [%yellow(%-41logger{36}):%white(%-4line)] - %msg%n "/>
 
-    <property name="LOG_PATTERN_HIGHLIGHTED"
-              value="%highlight(%-5level) %d{yy-MM-dd HH:mm:ss} [%logger{0}:%line] - %msg%n"/>
-    <property name="LOG_PATTERN"
-              value="%-5level %d{yy-MM-dd HH:mm:ss} [%logger{0}:%line] - %msg%n"/>
+    <property name="BOTOBO_FILE_LOG_PATTERN"
+              value="%d{yy-MM-dd} %d{HH:mm:ss} %-5level [%-41logger{36}:%-4line] - %msg%n "/>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${LOG_PATTERN_HIGHLIGHTED}</pattern>
-        </encoder>
-    </appender>
+    <springProfile name="local, test">
+        <include resource="logback/console-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter>
-        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>3MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>3</maxHistory>
-        </rollingPolicy>
-    </appender>
+    <springProfile name="dev, prod">
+        <include resource="logback/info-file-appender.xml"/>
+        <include resource="logback/warn-file-appender.xml"/>
+        <include resource="logback/error-file-appender.xml"/>
+        <include resource="logback/query-file-appender.xml"/>
 
-    <root level="${LOG_LEVEL}">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ERROR_FILE"/>
-    </root>
+        <root level="INFO">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="QUERY_FILE"/>
+        </root>
+    </springProfile>
 </configuration>

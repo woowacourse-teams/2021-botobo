@@ -46,10 +46,23 @@ dependencies {
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    implementation 'javax.xml.bind:jaxb-api:2.1'
 }
 
 ext {
     snippetsDir = file('build/generated-snippets')
+}
+
+task copyDev(type: Copy) {
+    from '../dev/application-prod.yml'
+    into './src/main/resources'
+
+    from '../dev/application-dev.yml'
+    into './src/main/resources'
+
+    from '../dev/application-local.yml'
+    into './src/main/resources'
 }
 
 test {
@@ -57,7 +70,7 @@ test {
 }
 
 asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
+    delete file('src/main/resources/static/api/docs')
 }
 
 asciidoctor {
@@ -69,21 +82,7 @@ task createDocument(type: Copy) {
     dependsOn asciidoctor
 
     from file("build/asciidoc/html5/index.html")
-    into file("src/main/resources/static/docs")
-}
-
-task copyDev(type: Copy) {
-    from '../dev/application-prod.yml'
-    into './src/main/resources'
-    
-    from '../dev/application-dev.yml'
-    into './src/main/resources'
-    
-    from '../dev/application-local.yml'
-    into './src/main/resources'
-    
-    from '../dev/application-test.yml'
-    into './src/main/resources'
+    into file("src/main/resources/static/api/docs")
 }
 
 build {

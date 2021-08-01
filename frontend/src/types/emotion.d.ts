@@ -26,6 +26,7 @@ declare module '@emotion/react' {
     pink: string;
     green: string;
     blue: string;
+    red: string;
   }
 
   interface BoxShadow {
@@ -42,6 +43,13 @@ declare module '@emotion/react' {
     square: string;
     square_1: string;
     square_2: string;
+    square_3: string;
+    square_4: string;
+    square_5: string;
+    square_6: string;
+    square_7: string;
+    square_8: string;
+    square_9: string;
   }
 
   interface FontSize {

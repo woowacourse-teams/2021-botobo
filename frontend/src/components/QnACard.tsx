@@ -1,39 +1,75 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
-// import FillStarIcon from '../assets/star-fill.svg';
+import FillStarIcon from '../assets/star-fill.svg';
+import { useModal } from '../hooks';
+import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
+import { debounce } from '../utils';
+import CardEditForm from './CardEditForm';
+import CardTemplate from './CardTemplate';
+import Confirm from './Confirm';
 
-const QnACard = ({ question, answer }: Omit<CardResponse, 'id'>) => (
-  <Container>
-    <Header>
-      <BookmarkButton>
-        <EmptyStarIcon />
-      </BookmarkButton>
-    </Header>
-    <Question>Q. {question}</Question>
-    <Answer>A. {answer}</Answer>
-    <Footer>
-      <button>수정</button>
-      <button>삭제</button>
-    </Footer>
-  </Container>
-);
+interface Props {
+  cardInfo: CardResponse;
+  workbookName: string;
+  editCard: (cardInfo: CardResponse) => Promise<void>;
+  deleteCard: (id: number) => Promise<void>;
+  toggleBookmark: (cardInfo: CardResponse) => Promise<void>;
+}
 
-const Container = styled.div`
-  min-height: 3rem;
-  padding: 1rem;
-  margin-top: 2rem;
+const QnACard = ({
+  cardInfo,
+  workbookName,
+  editCard,
+  deleteCard,
+  toggleBookmark,
+}: Props) => {
+  const { openModal } = useModal();
+  const setCardId = useSetRecoilState(cardIdState);
+  const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
 
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-    box-shadow: ${theme.boxShadow.card};
-    border-radius: ${theme.borderRadius.square};
-    box-shadow: ${theme.boxShadow.card};
-  `};
-`;
+  const onClickBookmark = () => {
+    setIsBookmark((prevState) => !prevState);
+    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 200);
+  };
+
+  return (
+    <CardTemplate
+      editable={true}
+      onClickEditButton={async () => {
+        await setCardId(cardInfo.id);
+        openModal({
+          content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
+          title: workbookName,
+          closeIcon: 'back',
+          type: 'full',
+        });
+      }}
+      onClickDeleteButton={() => {
+        openModal({
+          content: (
+            <Confirm onConfirm={() => deleteCard(cardInfo.id)}>
+              해당 카드를 정말 삭제하시겠어요?
+            </Confirm>
+          ),
+          type: 'center',
+        });
+      }}
+    >
+      <Header>
+        <BookmarkButton onClick={onClickBookmark}>
+          {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
+        </BookmarkButton>
+      </Header>
+      <Question>Q. {cardInfo.question}</Question>
+      <Answer>A. {cardInfo.answer}</Answer>
+    </CardTemplate>
+  );
+};
 
 const Header = styled.div`
   text-align: right;
@@ -58,15 +94,6 @@ const Question = styled.div`
 
 const Answer = styled.div`
   padding-top: 1.5rem;
-`;
-
-const Footer = styled.div`
-  margin-top: 1rem;
-  text-align: right;
-
-  & > button {
-    margin-left: 1rem;
-  }
 `;
 
 export default QnACard;

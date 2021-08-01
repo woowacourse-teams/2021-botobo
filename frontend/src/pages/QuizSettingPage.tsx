@@ -2,22 +2,26 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CategoryList } from '../components';
+import { Button, PageHeader, WorkbookList } from '../components';
+import { ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
 
 const QuizSettingPage = () => {
-  const { categories, checkCategory, startQuiz } = useQuizSetting();
+  const { workbooks, checkWorkbook, startQuiz } = useQuizSetting();
 
   return (
-    <Container>
-      <span>어떤 문제를 풀어볼까요?</span>
-      <CategoryWrapper>
-        <CategoryList categories={categories} onClickCategory={checkCategory} />
-      </CategoryWrapper>
-      <Button onClick={startQuiz} size="full">
-        시작!
-      </Button>
-    </Container>
+    <>
+      <PageHeader title={ROUTE.QUIZ_SETTING.TITLE} />
+      <Container>
+        <span>어떤 문제를 풀어볼까요?</span>
+        <WorkbookWrapper>
+          <WorkbookList workbooks={workbooks} onClickWorkbook={checkWorkbook} />
+        </WorkbookWrapper>
+        <Button onClick={startQuiz} size="full">
+          시작!
+        </Button>
+      </Container>
+    </>
   );
 };
 
@@ -28,7 +32,7 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryWrapper = styled.div`
+const WorkbookWrapper = styled.div`
   margin-top: 1rem;
   margin-bottom: 2.5rem;
 `;

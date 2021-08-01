@@ -1,0 +1,25 @@
+== 카드 API
+
+=== 카드 생성하기
+==== 요청
+include::{snippets}/cards-post-success/http-request.adoc[]
+==== 응답
+include::{snippets}/cards-post-success/http-response.adoc[]
+
+=== 카드 수정하기
+==== 요청
+include::{snippets}/cards-put-success/http-request.adoc[]
+==== 응답
+include::{snippets}/cards-put-success/http-response.adoc[]
+
+=== 카드 삭제하기
+==== 요청
+include::{snippets}/cards-delete-success/http-request.adoc[]
+==== 응답
+include::{snippets}/cards-delete-success/http-response.adoc[]
+
+=== 또 보기 카드 선택하기
+==== 요청
+include::{snippets}/cards-next-quiz-put-success/http-request.adoc[]
+==== 응답
+include::{snippets}/cards-next-quiz-put-success/http-response.adoc[]

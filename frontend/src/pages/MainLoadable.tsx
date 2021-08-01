@@ -2,37 +2,32 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import {
-  Button,
-  CardSkeleton,
-  CardSkeletonList,
-  HeaderSkeleton,
-} from '../components';
+import { CardSkeleton, CardSkeletonList, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 
 const MainLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
-      <CardSkeleton />
+      <Greeting />
+      <QuizStarterSkeleton />
       <section>
-        <CategoryHeader>
-          <CategoryTitle />
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-            disabled={true}
-          >
-            {''}
-          </Button>
-        </CategoryHeader>
+        <WorkbookHeader>
+          <WorkbookTitle />
+        </WorkbookHeader>
         <CardSkeletonList count={6} />
       </section>
     </Container>
   </>
 );
+
+const Greeting = styled.div`
+  height: 1.5rem;
+  width: 60%;
+  margin-bottom: 1rem;
+
+  ${loadContent}
+`;
 
 const Container = styled.div`
   ${({ theme }) =>
@@ -41,12 +36,16 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryHeader = styled.div`
+const QuizStarterSkeleton = styled(CardSkeleton)`
+  height: 9.5rem;
+`;
+
+const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
-const CategoryTitle = styled.div`
+const WorkbookTitle = styled.div`
   height: 1.5rem;
   width: 50%;
 

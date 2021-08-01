@@ -1,11 +1,14 @@
 package botobo.core;
 
-import botobo.core.quiz.domain.answer.Answer;
-import botobo.core.quiz.domain.answer.AnswerRepository;
-import botobo.core.quiz.domain.card.Card;
-import botobo.core.quiz.domain.card.CardRepository;
-import botobo.core.quiz.domain.category.Category;
-import botobo.core.quiz.domain.category.CategoryRepository;
+import botobo.core.domain.card.Card;
+import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.Tags;
+import botobo.core.domain.user.Role;
+import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -14,47 +17,66 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
-@Profile("!test")
+@Profile("local")
 public class DataLoader implements CommandLineRunner {
 
     @Value("${dummy.file-path}")
     private String filePath;
-    @Value("${dummy.categories}")
-    private List<String> categories;
-    private CategoryRepository categoryRepository;
-    private CardRepository cardRepository;
-    private AnswerRepository answerRepository;
 
-    public DataLoader(CategoryRepository categoryRepository, CardRepository cardRepository, AnswerRepository answerRepository) {
-        this.categoryRepository = categoryRepository;
+    @Value("${dummy.bootrun-file-path}")
+    private String bootrunFilePath;
+
+    @Value("${dummy.workbooks}")
+    private List<String> workbooks;
+
+    private final WorkbookRepository workbookRepository;
+    private final CardRepository cardRepository;
+    private final UserRepository userRepository;
+
+    private User adminUser;
+    private User normalUser;
+    private int adminWorkbookCount;
+
+    public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
+        this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
-        this.answerRepository = answerRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) {
-        if (!categoryRepository.findAll().isEmpty()) {
-            return;
+        this.adminUser = saveAdminUser();
+        this.normalUser = saveNormalUser();
+        this.adminWorkbookCount = 3;
+        String targetPath = filePath;
+        if (isBootrun(bootrunFilePath)) {
+            targetPath = bootrunFilePath;
         }
-        for (String category : categories) {
-            readFile(filePath + category);
+        for (String workbook : workbooks) {
+            readFile(targetPath + workbook);
         }
+    }
+
+    private boolean isBootrun(String filePath) {
+        return new File(filePath).exists();
     }
 
     public void readFile(String filePath) {
         try {
             File file = new File(filePath);
-            FileReader fileReader = new FileReader(file);
-
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            setData(bufferedReader);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            saveData(bufferedReader);
             bufferedReader.close();
         } catch (FileNotFoundException e) {
             log.info("Dummy Data 파일 경로를 찾지 못했습니다.");
@@ -63,54 +85,63 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    private void setData(BufferedReader bufferedReader) throws IOException {
-        String line = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            Category category = makeCategory(line);
-            Card card = Card.builder()
-                    .category(category)
-                    .question("")
-                    .isDeleted(false)
-                    .build();
-            setQuestionAndAnswer(bufferedReader, category, card);
+    private void saveData(BufferedReader bufferedReader) throws IOException {
+        String workbookName = bufferedReader.readLine();
+        if (Objects.isNull(workbookName)) {
+            return;
+        }
+        Workbook workbook = saveWorkbook(workbookName);
+        String question = bufferedReader.readLine();
+        String answer = bufferedReader.readLine();
+
+        while (Objects.nonNull(question) && Objects.nonNull(answer)) {
+            saveCard(workbook, question, answer);
+            question = bufferedReader.readLine();
+            answer = bufferedReader.readLine();
         }
     }
 
-    private void setQuestionAndAnswer(BufferedReader bufferedReader, Category category, Card card) throws IOException {
-        String line = "";
-        int count = 0;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (count % 2 == 0) {
-                card = setQuestion(category, line);
-            } else {
-                setAnswer(card, line);
-            }
-            count++;
-        }
-    }
-
-    private Category makeCategory(String categoryName) {
-        Category category = Category.builder()
-                .name(categoryName)
-                .isDeleted(false).build();
-        return categoryRepository.save(category);
-    }
-
-    private Card setQuestion(Category category, String question) {
-        Card card = Card.builder()
-                .question(question)
-                .category(category)
-                .isDeleted(false)
+    private User saveAdminUser() {
+        User user = User.builder()
+                .userName("1번 어드민")
+                .githubId(88036280L)
+                .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
+                .role(Role.ADMIN)
                 .build();
-        return cardRepository.save(card);
+        return userRepository.save(user);
     }
 
-    private void setAnswer(Card card, String answer) {
-        answerRepository.save(Answer.builder()
-                .content(answer)
-                .card(card)
-                .isDeleted(false)
-                .build());
+    private User saveNormalUser() {
+        User user = User.builder()
+                .userName("일반 유저")
+                .githubId(88143445L)
+                .profileUrl("botobo.profile.url")
+                .role(Role.USER)
+                .build();
+        return userRepository.save(user);
     }
 
+    private Workbook saveWorkbook(String workbookName) {
+        User author = this.normalUser;
+        if (adminWorkbookCount > 0) {
+            author = this.adminUser;
+            adminWorkbookCount--;
+        }
+        Workbook workbook = Workbook.builder()
+                .name(workbookName)
+                .user(author)
+                .opened(true)
+                .tags(Tags.of(Collections.singletonList(Tag.of(workbookName))))
+                .build();
+        return workbookRepository.save(workbook);
+    }
+
+    private void saveCard(Workbook workbook, String question, String answer) {
+        Card card = Card.builder()
+                .workbook(workbook)
+                .question(question)
+                .answer(answer)
+                .build();
+        cardRepository.save(card);
+    }
 }

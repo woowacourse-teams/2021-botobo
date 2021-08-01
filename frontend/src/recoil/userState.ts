@@ -1,6 +1,17 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
-export const loginState = atom({
-  key: 'loginState',
-  default: false,
+import { getUserInfoAsync } from './../api/index';
+
+export const userState = atom({
+  key: 'userState',
+  default: selector({
+    key: 'userRequest',
+    get: async () => {
+      try {
+        return await getUserInfoAsync();
+      } catch (error) {
+        return null;
+      }
+    },
+  }),
 });

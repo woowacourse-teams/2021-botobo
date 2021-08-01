@@ -9,7 +9,7 @@ const CardsLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
-      <CategoryName />
+      <WorkbookName />
       <Description />
       <Filter>
         {[...Array(2)].map((_, index) => (
@@ -39,7 +39,7 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryName = styled.div`
+const WorkbookName = styled.div`
   width: 40%;
   height: 2rem;
   margin-bottom: 1rem;
