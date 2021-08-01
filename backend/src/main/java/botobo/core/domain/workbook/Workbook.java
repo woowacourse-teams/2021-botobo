@@ -4,7 +4,6 @@ import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.User;
-import botobo.core.exception.NotAuthorException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -111,22 +110,15 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfUserIsAuthor(String name, boolean opened, Long userId) {
-        validateAuthor(userId);
-        this.name = name;
-        this.opened = opened;
+    public void update(Workbook other) {
+        this.name = other.name;
+        this.opened = other.opened;
     }
 
-    private void validateAuthor(Long userId) {
-        if (!user.isSameId(userId)) {
-            throw new NotAuthorException();
-        }
-    }
-
-    public void deleteIfUserIsAuthor(Long userId) {
-        validateAuthor(userId);
-        user.getWorkbooks().remove(this);
+    public void delete() {
+        this.user.getWorkbooks().remove(this);
         this.deleted = true;
+        cards.delete();
     }
 
     public void addCards(Cards cards) {

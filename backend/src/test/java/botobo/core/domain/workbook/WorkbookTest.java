@@ -1,8 +1,8 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.card.Card;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
-import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -99,6 +99,38 @@ class WorkbookTest {
     }
 
     @Test
+    @DisplayName("유저가 자신의 문제집 수정 - 성공")
+    void updateWorkbook() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .githubId(1L)
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = Workbook.builder()
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .build()
+                .createBy(user);
+
+        Workbook updateWorkbook = Workbook.builder()
+                .name("오즈의 Java를 다 잡아")
+                .opened(false)
+                .build();
+
+        // when
+        workbook.update(updateWorkbook);
+
+        // then
+        assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
+        assertThat(workbook.isOpened()).isFalse();
+    }
+
+    @Test
     @DisplayName("유저가 자신의 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
@@ -118,7 +150,7 @@ class WorkbookTest {
                 .createBy(user);
 
         // when
-        workbook.deleteIfUserIsAuthor(user.getId());
+        workbook.delete();
 
         // then
         assertThat(workbook.isDeleted()).isTrue();
@@ -126,21 +158,13 @@ class WorkbookTest {
     }
 
     @Test
-    @DisplayName("유저가 자신의 문제집 삭제 - 실패, 다른 유저가 삭제를 시도할 때")
-    void deleteWorkbookWithOtherUser() {
+    @DisplayName("유저가 자신의 문제집과 추가된 카드도 삭제 - 성공")
+    void deleteWorkbookWithCard() {
         // given
-        User user1 = User.builder()
+        User user = User.builder()
                 .id(1L)
                 .githubId(1L)
                 .userName("oz")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        User user2 = User.builder()
-                .id(2L)
-                .githubId(2L)
-                .userName("pk")
                 .profileUrl("github.io")
                 .role(Role.USER)
                 .build();
@@ -150,10 +174,22 @@ class WorkbookTest {
                 .opened(true)
                 .deleted(false)
                 .build()
-                .createBy(user1);
+                .createBy(user);
 
-        // when, then
-        assertThatThrownBy(() -> workbook.deleteIfUserIsAuthor(user2.getId()))
-                .isInstanceOf(NotAuthorException.class);
+        Card card = Card.builder()
+                .id(1L)
+                .question("질문")
+                .answer("답변")
+                .workbook(workbook)
+                .deleted(false)
+                .build();
+
+        // when
+        workbook.delete();
+
+        // then
+        assertThat(workbook.isDeleted()).isTrue();
+        assertThat(user.getWorkbooks().size()).isEqualTo(0);
+        assertThat(card.isDeleted()).isTrue();
     }
 }

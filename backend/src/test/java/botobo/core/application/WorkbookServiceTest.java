@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -170,6 +171,7 @@ class WorkbookServiceTest {
                 .cardCount(0)
                 .build();
 
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
 
         // when
@@ -182,6 +184,49 @@ class WorkbookServiceTest {
         assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.isOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbookUpdateRequest.getCardCount());
 
+        then(userRepository).should(times(1))
+                .findById(anyLong());
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 수정 - 실패, 다른 유저가 수정을 시도할 때")
+    void updateWorkbookWithOtherUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        User otherUser = User.builder()
+                .id(3L)
+                .githubId(7L)
+                .userName("pk")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("오즈의 Java를 잡아라")
+                .opened(false)
+                .cardCount(0)
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(otherUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+
+        // when, then
+        assertThatThrownBy(
+                () -> workbookService.updateWorkbook(workbook.getId(),
+                        workbookUpdateRequest, otherUser.toAppUser()))
+                .isInstanceOf(NotAuthorException.class);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }
@@ -198,12 +243,46 @@ class WorkbookServiceTest {
                 .user(normalUser)
                 .build();
 
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
 
         // when
         workbookService.deleteWorkbook(normalUser.getId(), normalUser.toAppUser());
 
         //then
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 삭제 - 실패, 다른 유저가 수정을 시도할 때")
+    void deleteWorkbookWithOtherUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        User otherUser = User.builder()
+                .id(3L)
+                .githubId(7L)
+                .userName("pk")
+                .profileUrl("github.io")
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(otherUser));
+        given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+
+        // when, then
+        assertThatThrownBy(
+                () -> workbookService.deleteWorkbook(normalUser.getId(), normalUser.toAppUser()))
+                .isInstanceOf(NotAuthorException.class);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }

@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @Embeddable
 public class Cards {
 
-    @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST)
     private List<Card> cards = new ArrayList<>();
 
     public Cards(List<Card> cards) {
@@ -71,5 +71,9 @@ public class Cards {
 
     public Stream<Card> stream() {
         return cards.stream();
+    }
+
+    public void delete() {
+        cards.forEach(Card::delete);
     }
 }

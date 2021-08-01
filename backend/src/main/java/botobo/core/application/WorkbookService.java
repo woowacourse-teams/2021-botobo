@@ -52,11 +52,23 @@ public class WorkbookService {
 
     @Transactional
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
+        User user = findUser(appUser);
         Workbook workbook = findWorkbook(id);
-        workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
-                workbookUpdateRequest.isOpened(),
-                appUser.getId());
+
+        validateAuthor(user, workbook);
+
+        workbook.update(workbookUpdateRequest.toWorkbook());
         return WorkbookResponse.authorOf(workbook);
+    }
+
+    @Transactional
+    public void deleteWorkbook(Long id, AppUser appUser) {
+        User user = findUser(appUser);
+        Workbook workbook = findWorkbook(id);
+
+        validateAuthor(user, workbook);
+
+        workbook.delete();
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
@@ -91,10 +103,10 @@ public class WorkbookService {
         return WorkbookCardResponse.of(workbook);
     }
 
-    @Transactional
-    public void deleteWorkbook(Long id, AppUser appUser) {
-        Workbook workbook = findWorkbook(id);
-        workbook.deleteIfUserIsAuthor(appUser.getId());
+    private void validateAuthor(User user, Workbook workbook) {
+        if (!workbook.isAuthorOf(user)) {
+            throw new NotAuthorException();
+        }
     }
 
     @Transactional

@@ -37,7 +37,7 @@ public class WorkbookController {
     public ResponseEntity<WorkbookResponse> createWorkbook(@RequestBody @Valid WorkbookRequest workbookRequest,
                                                            @AuthenticationPrincipal AppUser appUser) {
         WorkbookResponse workbookResponse = workbookService.createWorkbookByUser(workbookRequest, appUser);
-        return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId())).body(workbookResponse);
+        return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId() + "/cards")).body(workbookResponse);
     }
 
     @GetMapping
