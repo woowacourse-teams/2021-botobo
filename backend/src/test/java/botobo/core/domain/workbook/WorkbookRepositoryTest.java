@@ -177,8 +177,8 @@ public class WorkbookRepositoryTest {
                 .build();
         userRepository.save(user);
 
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("잡아"), Tag.from("javi"))
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("잡아"), Tag.of("javi"))
         );
 
         Workbook workbook = Workbook.builder()
@@ -193,8 +193,8 @@ public class WorkbookRepositoryTest {
         Workbook updateWorkbook = Workbook.builder()
                 .name("오즈의 Java를 다 잡아")
                 .opened(false)
-                .tags(Tags.from(
-                        Arrays.asList(Tag.from("자바"), Tag.from("java"), Tag.from("오즈"))
+                .tags(Tags.of(
+                        Arrays.asList(Tag.of("자바"), Tag.of("java"), Tag.of("오즈"))
                 ))
                 .build();
 
@@ -245,8 +245,8 @@ public class WorkbookRepositoryTest {
     @Test
     void saveWorkbookWithTags() {
         // given
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("java"), Tag.from("자바")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("java"), Tag.of("자바")
         ));
 
         Workbook workbook = Workbook.builder()
@@ -272,8 +272,8 @@ public class WorkbookRepositoryTest {
     @Test
     void deleteWorkbookWithOrphanWorkbookTags() {
         // given
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("java"), Tag.from("자바")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("java"), Tag.of("자바")
         ));
 
         Workbook workbook = Workbook.builder()

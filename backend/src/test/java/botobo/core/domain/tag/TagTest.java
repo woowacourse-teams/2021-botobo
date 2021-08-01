@@ -14,17 +14,17 @@ class TagTest {
     @DisplayName("Tag 객체 생성 - 성공")
     void create() {
         // given
-        Tag tag = Tag.from("자바");
+        Tag tag = Tag.of("자바");
 
         // when, then
-        assertThat(tag).isEqualTo(Tag.from("자바"));
+        assertThat(tag).isEqualTo(Tag.of("자바"));
     }
 
     @Test
     @DisplayName("Tag 객체 생성 - 실패, TagName null 입력")
     void createWithNullTagName() {
         // when, then
-        assertThatThrownBy(() -> Tag.from((TagName) null))
+        assertThatThrownBy(() -> Tag.of((TagName) null))
                 .isInstanceOf(TagCreationFailureException.class)
                 .hasMessageContaining("Tag객체 생성에 실패했습니다")
                 .hasMessageContaining("tagName은 null이 될 수 없습니다");
@@ -34,7 +34,7 @@ class TagTest {
     @DisplayName("Tag 객체 생성 - 실패, TagNameValue null 입력")
     void createWithNullTagNameValue() {
         // when, then
-        assertThatThrownBy(() -> Tag.from((String) null))
+        assertThatThrownBy(() -> Tag.of((String) null))
                 .isInstanceOf(InvalidTagNameException.class)
                 .hasMessageContaining("null이 될 수 없습니다");
     }

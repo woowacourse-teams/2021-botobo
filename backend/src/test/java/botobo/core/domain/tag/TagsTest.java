@@ -15,8 +15,8 @@ class TagsTest {
     @DisplayName("Tags 객체 생성 - 성공")
     void create() {
         // when
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("스프링")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("스프링")
         ));
 
         // then
@@ -29,7 +29,7 @@ class TagsTest {
     @DisplayName("Tags 객체 생성 - 실패, null 입력")
     void createWithNull() {
         // when, then
-        assertThatThrownBy(() -> Tags.from(null))
+        assertThatThrownBy(() -> Tags.of(null))
                 .isInstanceOf(TagsCreationFailureException.class)
                 .hasMessageContaining("Tags객체 생성에 실패했습니다")
                 .hasMessageContaining("tags는 null이 될 수 없습니다");
@@ -39,12 +39,12 @@ class TagsTest {
     @DisplayName("두 Tags에서 같은 이름을 가지는 태그의 수를 구한다.")
     void countSameTagName() {
         // given
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("스프링"), Tag.from("리액트")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("스프링"), Tag.of("리액트")
         ));
 
-        Tags others = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("스프링"), Tag.from("자바스크립트")
+        Tags others = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("스프링"), Tag.of("자바스크립트")
         ));
 
         // when, then

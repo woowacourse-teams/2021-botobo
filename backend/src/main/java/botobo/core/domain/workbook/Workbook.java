@@ -108,7 +108,7 @@ public class Workbook extends BaseEntity {
     }
 
     public Tags tags() {
-        return Tags.from(workbookTags.stream()
+        return Tags.of(workbookTags.stream()
                 .map(WorkbookTag::getTag)
                 .collect(Collectors.toList()));
     }

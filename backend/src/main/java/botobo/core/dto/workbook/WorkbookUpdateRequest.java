@@ -37,7 +37,7 @@ public class WorkbookUpdateRequest {
 
     @NotNull(message = "문제집를 수정하려면 태그가 필요합니다.")
     @Valid
-    private List<TagRequest> tags = new ArrayList<>();
+    private List<TagRequest> tags;
 
     public Workbook toWorkbookWithTags(Tags tags) {
         return Workbook.builder()

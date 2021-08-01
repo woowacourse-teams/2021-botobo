@@ -29,7 +29,7 @@ public class TagName {
         this.value = value.trim().toLowerCase();
     }
 
-    public static TagName from(String value) {
+    public static TagName of(String value) {
         return new TagName(value);
     }
 

@@ -25,7 +25,7 @@ public class Tags {
         }
     }
 
-    public static Tags from(List<Tag> tags) {
+    public static Tags of(List<Tag> tags) {
         return new Tags(tags);
     }
 

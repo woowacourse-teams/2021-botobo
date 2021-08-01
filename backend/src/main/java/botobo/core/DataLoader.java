@@ -131,7 +131,7 @@ public class DataLoader implements CommandLineRunner {
                 .name(workbookName)
                 .user(author)
                 .opened(true)
-                .tags(Tags.from(Collections.singletonList(Tag.from(workbookName))))
+                .tags(Tags.of(Collections.singletonList(Tag.of(workbookName))))
                 .build();
         return workbookRepository.save(workbook);
     }

@@ -83,8 +83,8 @@ class WorkbookTest {
     @DisplayName("Builder를 이용한 Workbook 객체 생성 - 성공, 태그와 함꼐 생성")
     void createWithTags() {
         //given
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩")
         ));
         String workbookName = "단계별 자바 문제집";
 
@@ -102,8 +102,8 @@ class WorkbookTest {
     @DisplayName("Builder를 이용한 Workbook 객체 생성 - 실패, 최대 태그수 초과")
     void createWithManyTag() {
         // given
-        Tags manyTags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("java"), Tag.from("코딩"), Tag.from("언어")
+        Tags manyTags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩"), Tag.of("언어")
         ));
 
         // when, then
@@ -120,8 +120,8 @@ class WorkbookTest {
     @DisplayName("태그 추가 - 성공")
     void addTags() {
         //given
-        Tags tags = Tags.from(
-                Collections.singletonList(Tag.from("자바"))
+        Tags tags = Tags.of(
+                Collections.singletonList(Tag.of("자바"))
         );
         Workbook workbook = Workbook.builder()
                 .name("단계별 자바 문제집")
@@ -130,8 +130,8 @@ class WorkbookTest {
         assertThat(workbook.getWorkbookTags()).hasSize(1);
 
         // when
-        Tags others = Tags.from(
-                Collections.singletonList(Tag.from("스프링"))
+        Tags others = Tags.of(
+                Collections.singletonList(Tag.of("스프링"))
         );
         workbook.addTags(others);
 
@@ -169,8 +169,8 @@ class WorkbookTest {
     @DisplayName("문제집 수정 - 성공")
     void updateWorkbook() {
         // given
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩")
         ));
 
         Workbook workbook = Workbook.builder()
@@ -180,8 +180,8 @@ class WorkbookTest {
                 .tags(tags)
                 .build();
 
-        Tags updatedTags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("중급")
+        Tags updatedTags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("중급")
         ));
 
         Workbook updateWorkbook = Workbook.builder()
@@ -197,7 +197,7 @@ class WorkbookTest {
         assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
         assertThat(workbook.isOpened()).isFalse();
         assertThat(workbook.getWorkbookTags()).extracting("tag")
-                .contains(Tag.from("자바"), Tag.from("중급"));
+                .contains(Tag.of("자바"), Tag.of("중급"));
     }
 
     @Test
@@ -212,8 +212,8 @@ class WorkbookTest {
                 .role(Role.USER)
                 .build();
 
-        Tags tags = Tags.from(Arrays.asList(
-                Tag.from("자바"), Tag.from("java"), Tag.from("코딩")
+        Tags tags = Tags.of(Arrays.asList(
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩")
         ));
 
         Workbook workbook = Workbook.builder()

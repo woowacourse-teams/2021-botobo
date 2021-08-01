@@ -24,10 +24,10 @@ public class TagService {
     public Tags convertTags(List<TagRequest> tagRequests) {
         List<Tag> tags = tagRequests.stream()
                 .map(TagRequest::getName)
-                .map(TagName::from)
+                .map(TagName::of)
                 .distinct()
-                .map(tagName -> tagRepository.findByTagName(tagName).orElse(Tag.from(tagName)))
+                .map(tagName -> tagRepository.findByTagName(tagName).orElse(Tag.of(tagName)))
                 .collect(Collectors.toList());
-        return Tags.from(tags);
+        return Tags.of(tags);
     }
 }

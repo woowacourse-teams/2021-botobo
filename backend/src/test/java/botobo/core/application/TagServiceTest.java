@@ -35,9 +35,9 @@ class TagServiceTest {
     @DisplayName("DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")
     void convertTags() {
         // given
-        Tag java = tagRepository.save(Tag.from("java"));
-        Tag spring = tagRepository.save(Tag.from("spring"));
-        Tag react = tagRepository.save(Tag.from("react"));
+        Tag java = tagRepository.save(Tag.of("java"));
+        Tag spring = tagRepository.save(Tag.of("spring"));
+        Tag react = tagRepository.save(Tag.of("react"));
         tagRepository.flush();
 
         List<TagRequest> tagRequests = Arrays.asList(
@@ -64,9 +64,9 @@ class TagServiceTest {
     @DisplayName("입력에 같은 이름의 태그가 존재하면 중복을 제거하며 태그를 생성한다.")
     void convertTagsWithDistinction() {
         // given
-        Tag java = tagRepository.save(Tag.from("java"));
-        Tag spring = tagRepository.save(Tag.from("spring"));
-        Tag react = tagRepository.save(Tag.from("react"));
+        Tag java = tagRepository.save(Tag.of("java"));
+        Tag spring = tagRepository.save(Tag.of("spring"));
+        Tag react = tagRepository.save(Tag.of("react"));
         tagRepository.flush();
 
         List<TagRequest> tagRequests = Arrays.asList(

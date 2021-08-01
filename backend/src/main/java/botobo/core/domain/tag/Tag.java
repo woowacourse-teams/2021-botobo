@@ -36,12 +36,12 @@ public class Tag extends BaseEntity {
         }
     }
 
-    public static Tag from(TagName tagName) {
+    public static Tag of(TagName tagName) {
         return new Tag(tagName);
     }
 
-    public static Tag from(String tagNameValue) {
-        return new Tag(TagName.from(tagNameValue));
+    public static Tag of(String tagNameValue) {
+        return new Tag(TagName.of(tagNameValue));
     }
 
     public String getTagNameValue() {

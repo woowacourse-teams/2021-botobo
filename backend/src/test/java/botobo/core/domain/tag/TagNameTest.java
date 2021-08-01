@@ -18,10 +18,10 @@ class TagNameTest {
     void create() {
         // given
         String tagNameValue = stringGenerator(20);
-        TagName tagName = TagName.from(tagNameValue);
+        TagName tagName = TagName.of(tagNameValue);
 
         // when, then
-        assertThat(tagName).isEqualTo(TagName.from(tagNameValue));
+        assertThat(tagName).isEqualTo(TagName.of(tagNameValue));
     }
 
     @ValueSource(strings = {"   java", "jAvA  ", "  JAVA   "})
@@ -29,17 +29,17 @@ class TagNameTest {
     @DisplayName("TagName은 양 공백이 제거 후 소문자로 변경되어 생성된다.")
     void createWithTrimming(String value) {
         // given
-        TagName expected = TagName.from("java");
+        TagName expected = TagName.of("java");
 
         // when, then
-        assertThat(TagName.from(value)).isEqualTo(expected);
+        assertThat(TagName.of(value)).isEqualTo(expected);
     }
 
     @Test
     @DisplayName("TagName 객체 생성 - 실패, null 입력")
     void createWithNull() {
         // when, then
-        assertThatThrownBy(() -> TagName.from(null))
+        assertThatThrownBy(() -> TagName.of(null))
                 .isInstanceOf(InvalidTagNameException.class)
                 .hasMessageContaining("null이 될 수 없습니다");
     }
@@ -50,7 +50,7 @@ class TagNameTest {
     @DisplayName("TagName 객체 생성 - 실패, 공백 문자열 입력")
     void createWithBlank(String value) {
         // when, then
-        assertThatThrownBy(() -> TagName.from(value))
+        assertThatThrownBy(() -> TagName.of(value))
                 .isInstanceOf(InvalidTagNameException.class)
                 .hasMessageContaining("비어있거나 공백 문자열이 될 수 없습니다");
     }
@@ -59,7 +59,7 @@ class TagNameTest {
     @DisplayName("TagName 객체 생성 - 실패, 긴 문자열")
     void createWithLongString() {
         // when, then
-        assertThatThrownBy(() -> TagName.from(stringGenerator(21)))
+        assertThatThrownBy(() -> TagName.of(stringGenerator(21)))
                 .isInstanceOf(InvalidTagNameException.class)
                 .hasMessageContaining("20자 이하여야 합니다");
     }

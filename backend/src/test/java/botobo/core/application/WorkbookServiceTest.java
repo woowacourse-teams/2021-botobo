@@ -96,15 +96,15 @@ class WorkbookServiceTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
-                .tags(Tags.from(Arrays.asList(
-                        Tag.from("자바"), Tag.from("java")
+                .tags(Tags.of(Arrays.asList(
+                        Tag.of("자바"), Tag.of("java")
                 )))
                 .user(normalUser)
                 .build();
 
         given(userRepository.findById(any())).willReturn(Optional.of(normalUser));
-        given(tagService.convertTags(any())).willReturn(Tags.from(
-                Arrays.asList(Tag.from("자바"), Tag.from("java"))
+        given(tagService.convertTags(any())).willReturn(Tags.of(
+                Arrays.asList(Tag.of("자바"), Tag.of("java"))
         ));
         given(workbookRepository.save(any())).willReturn(workbook);
 
@@ -175,8 +175,8 @@ class WorkbookServiceTest {
     @DisplayName("유저가 문제집 수정 - 성공")
     void updateWorkbook() {
         // given
-        Tags tas = Tags.from(
-                Arrays.asList(Tag.from("javi"), Tag.from("잡아"))
+        Tags tas = Tags.of(
+                Arrays.asList(Tag.of("javi"), Tag.of("잡아"))
         );
         Workbook workbook = Workbook.builder()
                 .id(1L)
@@ -199,8 +199,8 @@ class WorkbookServiceTest {
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
-        given(tagService.convertTags(any())).willReturn(Tags.from(
-                Arrays.asList(Tag.from("java"), Tag.from("자바"), Tag.from("중급"))
+        given(tagService.convertTags(any())).willReturn(Tags.of(
+                Arrays.asList(Tag.of("java"), Tag.of("자바"), Tag.of("중급"))
         ));
 
         // when
@@ -270,8 +270,8 @@ class WorkbookServiceTest {
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
-        Tags tas = Tags.from(
-                Arrays.asList(Tag.from("java"), Tag.from("자바"))
+        Tags tas = Tags.of(
+                Arrays.asList(Tag.of("java"), Tag.of("자바"))
         );
         Workbook workbook = Workbook.builder()
                 .id(1L)
