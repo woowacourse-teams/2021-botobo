@@ -30,8 +30,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -207,6 +207,7 @@ class WorkbookServiceTest {
                 .githubId(7L)
                 .userName("pk")
                 .profileUrl("github.io")
+                .role(Role.USER)
                 .build();
 
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
@@ -221,7 +222,7 @@ class WorkbookServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> workbookService.updateWorkbook(workbook.getId(),
-                workbookUpdateRequest, otherUser.toAppUser()))
+                        workbookUpdateRequest, otherUser.toAppUser()))
                 .isInstanceOf(NotAuthorException.class);
 
         then(userRepository).should(times(1))

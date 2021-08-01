@@ -134,6 +134,9 @@ public class WorkbookRepositoryTest {
 
         workbookRepository.save(workbook1);
 
+        testEntityManager.flush();
+        testEntityManager.clear();
+
         Workbook workbook2 = Workbook.builder()
                 .name("오즈의 Spring")
                 .opened(true)
@@ -183,7 +186,6 @@ public class WorkbookRepositoryTest {
         // then
         assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
         assertThat(workbook.isOpened()).isFalse();
-        assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
     }
 
     @Test

@@ -104,7 +104,7 @@ public class WorkbookService {
     }
 
     private void validateAuthor(User user, Workbook workbook) {
-        if (!workbook.isCreatedBy(user)) {
+        if (!workbook.isAuthorOf(user)) {
             throw new NotAuthorException();
         }
     }

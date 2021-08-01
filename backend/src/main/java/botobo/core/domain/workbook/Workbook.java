@@ -4,7 +4,6 @@ import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.User;
-import botobo.core.exception.NotAuthorException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -109,10 +108,6 @@ public class Workbook extends BaseEntity {
 
     public int cardCount() {
         return cards.counts();
-    }
-
-    public boolean isCreatedBy(User user) {
-        return this.user.equals(user);
     }
 
     public void update(Workbook other) {
