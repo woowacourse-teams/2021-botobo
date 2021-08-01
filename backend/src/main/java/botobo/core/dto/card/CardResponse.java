@@ -2,6 +2,7 @@ package botobo.core.dto.card;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +21,20 @@ public class CardResponse {
     private Long id;
     private String question;
     private String answer;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long workbookId;
-    private int encounterCount;
-    private boolean bookmark;
-    private boolean nextQuiz;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer encounterCount;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean bookmark;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean nextQuiz;
+
+    public static List<CardResponse> listOf(Cards cards) {
+        return cards.stream()
+                .map(CardResponse::of)
+                .collect(Collectors.toList());
+    }
 
     public static CardResponse of(Card card) {
         return CardResponse.builder()
@@ -37,9 +48,17 @@ public class CardResponse {
                 .build();
     }
 
-    public static List<CardResponse> listOf(Cards cards) {
+    public static List<CardResponse> listOfSimple(Cards cards) {
         return cards.stream()
-                .map(CardResponse::of)
+                .map(CardResponse::ofSimple)
                 .collect(Collectors.toList());
+    }
+
+    public static CardResponse ofSimple(Card card) {
+        return CardResponse.builder()
+                .id(card.getId())
+                .question(card.getQuestion())
+                .answer(card.getAnswer())
+                .build();
     }
 }
