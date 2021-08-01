@@ -87,7 +87,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponse).extracting("cardCount").isEqualTo(0);
         assertThat(workbookResponse).extracting("opened").isEqualTo(workbookRequest.isOpened());
         assertThat(workbookResponse.getTags()).hasSize(1);
-        assertThat(workbookResponse.getTags().get(0).getId()).isNotEqualTo(0L);
+        assertThat(workbookResponse.getTags().get(0).getId()).isNotZero();
         assertThat(workbookResponse.getTags().get(0).getName()).isEqualTo("자바");
     }
 
@@ -302,6 +302,21 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookResponses).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("공유 문제집 조회 - 성공")
+    void findPublicWorkbookById() {
+        // when
+        final HttpResponse response = request()
+                .get("/api/workbooks/public/{id}", 1L)
+                .auth()
+                .build();
+        // then
+        final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(WORKBOOK_REQUEST_1.getName());
+        assertThat(workbookCardResponse.getCards()).hasSize(3);
     }
 
     @Test
