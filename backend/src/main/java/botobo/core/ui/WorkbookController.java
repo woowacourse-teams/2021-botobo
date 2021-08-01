@@ -63,6 +63,13 @@ public class WorkbookController {
         );
     }
 
+    @GetMapping("/public/{id}")
+    public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                workbookService.findPublicWorkbookById(id)
+        );
+    }
+
     @GetMapping("/{id}/cards")
     public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id) {
         return ResponseEntity.ok(

@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.card.Cards;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
@@ -169,6 +170,79 @@ class WorkbookServiceTest {
 
         then(workbookRepository).should(times(1))
                 .findAll();
+    }
+
+    @Test
+    @DisplayName("공유 문제집 상세보기 - 성공")
+    void findPublicWorkbookById() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("피케이의 공유 문제집")
+                .cards(new Cards(List.of(
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
+                        )
+                )
+                .opened(true)
+                .build();
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+
+        // when
+        assertThatCode(() -> workbookService.findPublicWorkbookById(1L))
+                .doesNotThrowAnyException();
+
+        // then
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("공유 문제집 상세보기 - 실패, 문제집이 공유 문제집이 아닌 경우")
+    void findPublicWorkbookWithFalseOpenedById() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("피케이의 공유 문제집")
+                .cards(new Cards(List.of(
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
+                        )
+                )
+                .opened(false)
+                .build();
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+
+        // when
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
+                .isInstanceOf(NotAuthorException.class)
+                .hasMessage("작성자가 아니므로 권한이 없습니다.");
+
+        // then
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("공유 문제집 상세보기 - 실패, 문제집이 존재하지 않는 경우")
+    void findPublicWorkbookByIdFailedWhenWorkbookNotFound() {
+        // given
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
+                .isInstanceOf(WorkbookNotFoundException.class)
+                .hasMessage("해당 문제집을 찾을 수 없습니다.");
+
+        // then
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
     }
 
     @Test
