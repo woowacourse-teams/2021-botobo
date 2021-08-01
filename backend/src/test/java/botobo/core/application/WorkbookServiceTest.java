@@ -2,6 +2,8 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
@@ -9,6 +11,7 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
@@ -52,6 +55,8 @@ class WorkbookServiceTest {
     @Mock
     private CardRepository cardRepository;
 
+    @Mock
+    private TagService tagService;
 
     @InjectMocks
     private WorkbookService workbookService;
@@ -80,6 +85,10 @@ class WorkbookServiceTest {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("오즈의 Java")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(0L).name("자바").build(),
+                        TagRequest.builder().id(0L).name("java").build()
+                ))
                 .build();
 
         Workbook workbook = Workbook.builder()
@@ -87,10 +96,16 @@ class WorkbookServiceTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .tags(Tags.of(Arrays.asList(
+                        Tag.of("자바"), Tag.of("java")
+                )))
                 .user(normalUser)
                 .build();
 
         given(userRepository.findById(any())).willReturn(Optional.of(normalUser));
+        given(tagService.convertTags(any())).willReturn(Tags.of(
+                Arrays.asList(Tag.of("자바"), Tag.of("java"))
+        ));
         given(workbookRepository.save(any())).willReturn(workbook);
 
         // when
@@ -101,9 +116,12 @@ class WorkbookServiceTest {
         assertThat(workbookResponse.getName()).isEqualTo(workbook.getName());
         assertThat(workbookResponse.getOpened()).isEqualTo(workbook.isOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbook.cardCount());
+        assertThat(workbookResponse.getTags()).hasSize(workbook.getWorkbookTags().size());
 
         then(userRepository).should(times(1))
                 .findById(anyLong());
+        then(tagService).should(times(1))
+                .convertTags(any());
         then(workbookRepository).should(times(1))
                 .save(any());
     }
@@ -157,11 +175,15 @@ class WorkbookServiceTest {
     @DisplayName("유저가 문제집 수정 - 성공")
     void updateWorkbook() {
         // given
+        Tags tas = Tags.of(
+                Arrays.asList(Tag.of("javi"), Tag.of("잡아"))
+        );
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .tags(tas)
                 .user(normalUser)
                 .build();
 
@@ -169,10 +191,17 @@ class WorkbookServiceTest {
                 .name("오즈의 Java를 잡아라")
                 .opened(false)
                 .cardCount(0)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(1L).name("java").build(),
+                        TagRequest.builder().id(2L).name("자바").build()
+                ))
                 .build();
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
         given(workbookRepository.findById(anyLong())).willReturn(Optional.of(workbook));
+        given(tagService.convertTags(any())).willReturn(Tags.of(
+                Arrays.asList(Tag.of("java"), Tag.of("자바"), Tag.of("중급"))
+        ));
 
         // when
         WorkbookResponse workbookResponse = workbookService.updateWorkbook(normalUser.getId(),
@@ -181,13 +210,17 @@ class WorkbookServiceTest {
         //then
         assertThat(workbookResponse.getId()).isEqualTo(workbook.getId());
         assertThat(workbookResponse.getName()).isEqualTo(workbookUpdateRequest.getName());
-        assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.isOpened());
+        assertThat(workbookResponse.getOpened()).isEqualTo(workbookUpdateRequest.getOpened());
         assertThat(workbookResponse.getCardCount()).isEqualTo(workbookUpdateRequest.getCardCount());
+        assertThat(workbookResponse.getTags()).extracting("name")
+                .containsExactly("java", "자바", "중급");
 
         then(userRepository).should(times(1))
                 .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
+        then(tagService).should(times(1))
+                .convertTags(any());
     }
 
     @Test
@@ -229,17 +262,23 @@ class WorkbookServiceTest {
                 .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
+        then(tagService).should(never())
+                .convertTags(any());
     }
 
     @Test
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
+        Tags tas = Tags.of(
+                Arrays.asList(Tag.of("java"), Tag.of("자바"))
+        );
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .tags(tas)
                 .user(normalUser)
                 .build();
 
@@ -250,6 +289,9 @@ class WorkbookServiceTest {
         workbookService.deleteWorkbook(normalUser.getId(), normalUser.toAppUser());
 
         //then
+        assertThat(workbook.isDeleted()).isTrue();
+        assertThat(workbook.getWorkbookTags()).extracting("deleted")
+                .doesNotContain(false);
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }

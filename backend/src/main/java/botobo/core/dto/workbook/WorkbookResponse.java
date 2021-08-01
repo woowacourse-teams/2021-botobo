@@ -1,6 +1,7 @@
 package botobo.core.dto.workbook;
 
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.dto.tag.TagResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class WorkbookResponse {
     private String author;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean opened;
+    private List<TagResponse> tags;
 
     public static WorkbookResponse of(Workbook workbook) {
         return WorkbookResponse.builder()
@@ -31,6 +33,7 @@ public class WorkbookResponse {
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
                 .opened(workbook.isOpened())
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 
@@ -52,6 +55,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .opened(workbook.isOpened())
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 
@@ -67,6 +71,7 @@ public class WorkbookResponse {
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
                 .author(workbook.author())
+                .tags(TagResponse.listOf(workbook.tags()))
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -34,18 +35,24 @@ public class WorkbookService {
     private final WorkbookRepository workbookRepository;
     private final UserRepository userRepository;
     private final CardRepository cardRepository;
+    private final TagService tagService;
 
-    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository, CardRepository cardRepository) {
+
+    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
+                           CardRepository cardRepository, TagService tagService) {
         this.workbookRepository = workbookRepository;
         this.userRepository = userRepository;
         this.cardRepository = cardRepository;
+        this.tagService = tagService;
     }
 
     @Transactional
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
         User user = findUser(appUser);
+        Tags tags = tagService.convertTags(workbookRequest.getTags());
         Workbook workbook = workbookRequest.toWorkbook()
-                .createBy(user);
+                .createBy(user)
+                .taggedBy(tags);
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return WorkbookResponse.authorOf(savedWorkbook);
     }
@@ -57,7 +64,9 @@ public class WorkbookService {
 
         validateAuthor(user, workbook);
 
-        workbook.update(workbookUpdateRequest.toWorkbook());
+        Tags tags = tagService.convertTags(workbookUpdateRequest.getTags());
+        workbook.update(workbookUpdateRequest.toWorkbookWithTags(tags));
+        workbookRepository.flush();
         return WorkbookResponse.authorOf(workbook);
     }
 

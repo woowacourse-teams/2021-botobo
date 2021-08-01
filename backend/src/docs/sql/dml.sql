@@ -445,3 +445,27 @@ VALUES (
     'Spring Security는 Java 애플리케이션에서 인증 및 권한 부여 방법을 제공하는 데 초점을 맞춘 Spring 프레임 워크의 별도 모듈입니다. 또한 CSRF 공격과 같은 대부분의 일반적인 Security 취약점을 처리합니다.',
     0, false, false, 6, false, now(), now()
 );
+
+-- 태그 생성
+INSERT INTO tag (name, created_at, updated_at) VALUES ('데이터베이스', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('db', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('자바', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('java', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('자바스크립트', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('자스', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('네트워크', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('network', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('react', now(), now());
+INSERT INTO tag (name, created_at, updated_at) VALUES ('spring', now(), now());
+
+-- 문제집-태그 생성
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (1, 1, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (1, 2, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (2, 3, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (2, 4, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (3, 5, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (3, 6, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (4, 7, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (4, 8, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (5, 9, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (6, 10, false, now(), now());

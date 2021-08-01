@@ -3,6 +3,8 @@ package botobo.core.documentation;
 import botobo.core.application.WorkbookService;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -38,11 +40,19 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(0L).name("자바").build(),
+                        TagRequest.builder().id(0L).name("java").build()
+                ))
                 .build();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집")
                 .opened(true)
+                .tags(Arrays.asList(
+                        TagResponse.builder().id(1L).name("자바").build(),
+                        TagResponse.builder().id(2L).name("java").build()
+                ))
                 .cardCount(0)
                 .build();
         given(workbookService.createWorkbookByUser(any(), any())).willReturn(workbookResponse);
@@ -112,15 +122,25 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // given
         String token = "botobo.access.token";
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
-                .name("Java 문제집")
+                .name("Java 문제집 수정")
                 .opened(true)
                 .cardCount(0)
+                .tags(Arrays.asList(
+                        TagRequest.builder().id(1L).name("자바").build(),
+                        TagRequest.builder().id(2L).name("java").build(),
+                        TagRequest.builder().id(0L).name("stream").build()
+                ))
                 .build();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집 수정")
-                .opened(false)
+                .opened(true)
                 .cardCount(0)
+                .tags(Arrays.asList(
+                        TagResponse.builder().id(1L).name("자바").build(),
+                        TagResponse.builder().id(2L).name("java").build(),
+                        TagResponse.builder().id(3L).name("stream").build()
+                ))
                 .build();
         given(workbookService.updateWorkbook(anyLong(), any(), any())).willReturn(workbookResponse);
 
@@ -149,7 +169,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-public-search-get-success");
-
     }
 
     @Test
@@ -202,18 +221,29 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .name("피케이의 자바 문제 20선")
                         .cardCount(20)
                         .opened(false)
+                        .tags(Arrays.asList(
+                                TagResponse.builder().id(1L).name("자바").build(),
+                                TagResponse.builder().id(2L).name("java").build()
+                        ))
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
                         .name("피케이의 비올 때 푸는 Database 문제")
                         .cardCount(15)
                         .opened(true)
+                        .tags(Arrays.asList(
+                                TagResponse.builder().id(3L).name("데이터베이스").build(),
+                                TagResponse.builder().id(4L).name("DB").build()
+                        ))
                         .build(),
                 WorkbookResponse.builder()
                         .id(3L)
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
                         .opened(true)
+                        .tags(Arrays.asList(
+                                TagResponse.builder().id(5L).name("network").build()
+                        ))
                         .build()
         );
     }
@@ -257,16 +287,24 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     private List<WorkbookResponse> generatePublicWorkbookResponse() {
         return Arrays.asList(
                 WorkbookResponse.builder()
-                        .id(3L)
+                        .id(1L)
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
                         .author("피케이")
+                        .tags(Arrays.asList(
+                                TagResponse.builder().id(1L).name("네트워크").build(),
+                                TagResponse.builder().id(2L).name("network").build()
+                        ))
                         .build(),
                 WorkbookResponse.builder()
-                        .id(4L)
+                        .id(2L)
                         .name("오즈의 Network 정복 최종판")
                         .cardCount(20)
                         .author("오즈")
+                        .tags(Arrays.asList(
+                                TagResponse.builder().id(3L).name("네트워크").build(),
+                                TagResponse.builder().id(4L).name("천재").build()
+                        ))
                         .build()
         );
     }
