@@ -37,7 +37,6 @@ public class WorkbookService {
     private final CardRepository cardRepository;
     private final TagService tagService;
 
-
     public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
                            CardRepository cardRepository, TagService tagService) {
         this.workbookRepository = workbookRepository;
@@ -107,9 +106,21 @@ public class WorkbookService {
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id) {
-        Workbook workbook = workbookRepository.findByIdAndOrderCardByNew(id)
+        Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
+        return WorkbookCardResponse.ofUserWorkbook(workbook);
+    }
+
+    private Workbook findWorkbookByIdAndOrderCardByNew(Long id) {
+        return workbookRepository.findByIdAndOrderCardByNew(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        return WorkbookCardResponse.of(workbook);
+    }
+
+    public WorkbookCardResponse findPublicWorkbookById(Long id) {
+        Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
+        if (!workbook.isOpened()) {
+            throw new NotAuthorException();
+        }
+        return WorkbookCardResponse.ofOpenedWorkbook(workbook);
     }
 
     private void validateAuthor(User user, Workbook workbook) {
