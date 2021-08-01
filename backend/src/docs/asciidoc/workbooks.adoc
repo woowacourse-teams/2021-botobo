@@ -41,3 +41,9 @@ include::{snippets}/workbooks-delete-success/http-response.adoc[]
 include::{snippets}/workbooks-public-search-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-public-search-get-success/http-response.adoc[]
+
+=== 공유 문제집 상세보기
+==== 요청
+include::{snippets}/workbooks-public-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-public-get-success/http-response.adoc[]

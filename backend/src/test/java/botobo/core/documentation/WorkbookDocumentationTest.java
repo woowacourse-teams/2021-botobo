@@ -104,7 +104,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findWorkbookCardsById() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generateWorkbookCardsResponse());
+        given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generatePersonalWorkbookCardsResponse());
 
         // when, then
         document()
@@ -169,6 +169,23 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-public-search-get-success");
+    }
+
+    @Test
+    @DisplayName("공유 문제집 상세보기 - 성공")
+    void findPublicWorkbookById() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        given(workbookService.findPublicWorkbookById(anyLong())).willReturn(generatePublicWorkbookCardsResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks/public/{id}", 1)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-public-get-success");
     }
 
     @Test
@@ -248,8 +265,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         );
     }
 
-    private WorkbookCardResponse generateWorkbookCardsResponse() {
-        List<CardResponse> cardResponses = Arrays.asList(
+    private List<CardResponse> generateCardResponses() {
+        return Arrays.asList(
                 CardResponse.builder()
                         .id(1L)
                         .question("Java에는 a가 몇 개 들어갈까요?")
@@ -277,10 +294,36 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .nextQuiz(true)
                         .workbookId(1L)
                         .build());
+    }
+
+    private List<TagResponse> generateTagResponses() {
+        return Arrays.asList(
+                TagResponse.builder()
+                        .id(1L)
+                        .name("java")
+                        .build(),
+                TagResponse.builder()
+                        .id(2L)
+                        .name("spring")
+                        .build()
+        );
+    }
+
+    private WorkbookCardResponse generatePersonalWorkbookCardsResponse() {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
-                .cards(cardResponses)
+                .cards(generateCardResponses())
+                .build();
+    }
+
+    private WorkbookCardResponse generatePublicWorkbookCardsResponse() {
+        return WorkbookCardResponse.builder()
+                .workbookId(1L)
+                .workbookName("자바의 정석")
+                .cardCount(3)
+                .tagResponses(generateTagResponses())
+                .cards(generateCardResponses())
                 .build();
     }
 

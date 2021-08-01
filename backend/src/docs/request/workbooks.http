@@ -46,3 +46,8 @@ Host: localhost:8080
 GET /api/workbooks/public?search=Network HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: localhost:8080
+
+### 공유문제집 상세 보기
+GET /api/workbooks/public/1 HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: localhost:8080
