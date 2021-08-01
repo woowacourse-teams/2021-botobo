@@ -3,8 +3,7 @@ import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getGuestQuizzesAsync } from '../api';
-import QuizStarterIcon from '../assets/design-thinking.svg';
-import { QUIZ_MODE } from '../constants';
+import { CLOUD_FRONT_DOMAIN, QUIZ_MODE } from '../constants';
 import { useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
@@ -12,6 +11,8 @@ import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
 import Button from './Button';
 import CardTemplate from './CardTemplate';
+
+const puzzleSrc = `${CLOUD_FRONT_DOMAIN}/puzzle-piece.png`;
 
 interface Props {
   workbooks: WorkbookResponse[];
@@ -59,15 +60,13 @@ const QuizStarter = ({ workbooks }: Props) => {
           퀴즈 풀러 가기
         </Button>
       </Content>
-      <ImageWrapper>
-        <QuizStarterIcon width="5.5rem" height="5.5rem" />
-      </ImageWrapper>
+      <ImageWrapper />
     </Container>
   );
 };
 
 const Container = styled(CardTemplate)`
-  ${Flex()};
+  ${Flex({ items: 'center' })};
   height: 10rem;
 `;
 
@@ -81,8 +80,11 @@ const Content = styled.div`
 `;
 
 const ImageWrapper = styled.div`
-  ${Flex({ justify: 'center', items: 'center' })};
-  width: 30%;
+  width: 5.5rem;
+  height: 5.5rem;
+  background-image: url(${puzzleSrc});
+  background-repeat: no-repeat;
+  background-size: contain;
 `;
 
 export default QuizStarter;

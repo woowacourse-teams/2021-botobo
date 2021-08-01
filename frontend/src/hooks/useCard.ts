@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import { deleteCardAsync, postCardAsync, putCardAsync } from '../api';
-import { cardState } from '../recoil';
+import { cardState, workbookState } from '../recoil';
 import { CardResponse } from '../types';
 import useModal from './useModal';
 import useSnackbar from './useSnackbar';
@@ -13,6 +13,7 @@ const useCard = () => {
     errorMessage,
   } = useRecoilValue(cardState);
   const updateCardInfo = useResetRecoilState(cardState);
+  const updateWorkbooks = useResetRecoilState(workbookState);
 
   const showSnackbar = useSnackbar();
   const { openModal, closeModal } = useModal();
@@ -22,6 +23,7 @@ const useCard = () => {
       await postCardAsync({ workbookId, question, answer });
       updateCardInfo();
       closeModal();
+      updateWorkbooks();
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
       console.error(error);
@@ -45,6 +47,7 @@ const useCard = () => {
     try {
       await deleteCardAsync(id);
       updateCardInfo();
+      updateWorkbooks();
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
       console.error(error);

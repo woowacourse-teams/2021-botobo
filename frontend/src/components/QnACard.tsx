@@ -34,7 +34,7 @@ const QnACard = ({
 
   const onClickBookmark = () => {
     setIsBookmark((prevState) => !prevState);
-    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 500);
+    debounce(() => toggleBookmark({ ...cardInfo, bookmark: !isBookmark }), 200);
   };
 
   return (

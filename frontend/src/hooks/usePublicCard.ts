@@ -54,6 +54,9 @@ const usePublicCard = () => {
     try {
       await postPublicCardsAsync(workbookId, cardIds);
       updateWorkbooks();
+      setPublicCards(
+        publicCards.map((card) => ({ ...card, isChecked: false }))
+      );
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
       console.error(error);
