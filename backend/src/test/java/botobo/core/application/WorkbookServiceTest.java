@@ -290,7 +290,8 @@ class WorkbookServiceTest {
 
         //then
         assertThat(workbook.isDeleted()).isTrue();
-        assertThat(workbook.getWorkbookTags()).isEmpty();
+        assertThat(workbook.getWorkbookTags()).extracting("deleted")
+                .doesNotContain(false);
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }

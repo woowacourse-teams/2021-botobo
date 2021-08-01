@@ -229,8 +229,9 @@ class WorkbookTest {
 
         // then
         assertThat(workbook.isDeleted()).isTrue();
-        assertThat(workbook.getWorkbookTags()).isEmpty();
-        assertThat(user.getWorkbooks().size()).isEqualTo(0);
+        assertThat(user.getWorkbooks()).isEmpty();
+        assertThat(workbook.getWorkbookTags()).extracting("deleted")
+                .doesNotContain(false);
     }
 
     @Test

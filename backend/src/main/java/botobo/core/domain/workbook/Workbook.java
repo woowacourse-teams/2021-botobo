@@ -174,7 +174,7 @@ public class Workbook extends BaseEntity {
         this.user.getWorkbooks().remove(this);
         this.deleted = true;
         cards.delete();
-        clearWorkbookTags();
+        workbookTags.forEach(WorkbookTag::delete);
     }
 
     public void addCards(Cards cards) {

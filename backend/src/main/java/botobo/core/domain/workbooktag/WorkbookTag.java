@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -29,6 +30,9 @@ public class WorkbookTag extends BaseEntity {
     @JoinColumn(name = "tag_id", nullable = false, foreignKey = @ForeignKey(name = "FK_workbooktag_to_tag"))
     private Tag tag;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
+
     private WorkbookTag(Workbook workbook, Tag tag) {
         validateNotNull(workbook, tag);
         this.workbook = workbook;
@@ -46,5 +50,9 @@ public class WorkbookTag extends BaseEntity {
 
     public static WorkbookTag of(Workbook workbook, Tag tag) {
         return new WorkbookTag(workbook, tag);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

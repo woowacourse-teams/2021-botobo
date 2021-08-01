@@ -459,13 +459,13 @@ INSERT INTO tag (name, created_at, updated_at) VALUES ('react', now(), now());
 INSERT INTO tag (name, created_at, updated_at) VALUES ('spring', now(), now());
 
 -- 문제집-태그 생성
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (1, 1, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (1, 2, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (2, 3, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (2, 4, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (3, 5, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (3, 6, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (4, 7, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (4, 8, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (5, 9, now(), now());
-INSERT INTO workbooktag (workbook_id, tag_id, created_at, updated_at) VALUES (6, 10, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (1, 1, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (1, 2, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (2, 3, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (2, 4, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (3, 5, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (3, 6, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (4, 7, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (4, 8, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (5, 9, false, now(), now());
+INSERT INTO workbooktag (workbook_id, tag_id, deleted, created_at, updated_at) VALUES (6, 10, false, now(), now());
