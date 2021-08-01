@@ -42,7 +42,7 @@ export const workbookState = selector<WorkbookState>({
       };
     } catch (error) {
       return {
-        data: [workbookInitialState],
+        data: [],
         errorMessage: '문제집을 불러오지 못했습니다.',
       };
     }

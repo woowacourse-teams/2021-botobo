@@ -31,6 +31,7 @@ public class QuizService {
         return QuizResponse.cardsOf(guestCards);
     }
 
+    @Transactional
     public List<QuizResponse> createQuiz(List<Long> workbookIds) {
         validateWorkbookIds(workbookIds);
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), DEFAULT_QUIZ_COUNT)

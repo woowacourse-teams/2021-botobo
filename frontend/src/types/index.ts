@@ -24,6 +24,7 @@ export interface QuizResponse {
   id: number;
   question: string;
   answer: string;
+  encounterCount: number;
   workbookName: string;
 }
 

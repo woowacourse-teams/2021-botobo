@@ -5,7 +5,7 @@ import React from 'react';
 import { QuizResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
-interface Props extends Omit<QuizResponse, 'id' | 'answer'> {
+interface Props extends Omit<QuizResponse, 'id' | 'answer' | 'encounterCount'> {
   isChecked: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }

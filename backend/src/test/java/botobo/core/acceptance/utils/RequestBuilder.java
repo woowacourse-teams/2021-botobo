@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestBuilder {
+    private static String defaultToken;
     private static String accessToken;
 
-    public RequestBuilder(String accessToken) {
-        RequestBuilder.accessToken = accessToken;
+    public RequestBuilder(String defaultToken) {
+        RequestBuilder.defaultToken = defaultToken;
     }
 
     public HttpFunction build() {
@@ -30,8 +31,8 @@ public class RequestBuilder {
             return new Options(new GetRequest(path, params));
         }
 
-        public <T> Options post(String path, T body) {
-            return new Options(new PostRequest<>(path, body));
+        public <T> Options post(String path, T body, Object... params) {
+            return new Options(new PostRequest<>(path, body, params));
         }
 
         public <T> Options put(String path, T body, Object... params) {
@@ -82,7 +83,12 @@ public class RequestBuilder {
 
         public HttpResponse build() {
             if (loginFlag) {
-                requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
+                if (accessToken != null && !defaultToken.equals(accessToken)) {
+                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
+                    accessToken = null;
+                } else {
+                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + defaultToken);
+                }
             }
             queryParams.forEach(entry -> {
                 requestSpecification.queryParam(entry.getKey(), entry.getValue());
@@ -122,6 +128,10 @@ public class RequestBuilder {
         public ExtractableResponse<Response> extract() {
             return response;
         }
+
+        public String header(String name) {
+            return response.header(name);
+        }
     }
 
     interface RestAssuredRequest {
@@ -147,17 +157,19 @@ public class RequestBuilder {
     private static class PostRequest<T> implements RestAssuredRequest {
         private final String path;
         private final T body;
+        private final Object[] params;
 
-        public PostRequest(String path, T body) {
+        public PostRequest(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
+            this.params = params;
         }
 
         @Override
         public ValidatableResponse action(RequestSpecification specification) {
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .post(path)
+                    .post(path, params)
                     .then();
         }
     }

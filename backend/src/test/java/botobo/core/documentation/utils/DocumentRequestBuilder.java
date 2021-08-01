@@ -26,8 +26,8 @@ public class DocumentRequestBuilder {
     }
 
     public static class MockMvcFunction {
-        public <T> Options post(String path, T body) {
-            return new Options(new PostPerform<>(path, body));
+        public <T> Options post(String path, T body, Object... params) {
+            return new Options(new PostPerform<>(path, body, params));
         }
 
         public <T> Options put(String path, T body, Object... params) {
@@ -67,9 +67,9 @@ public class DocumentRequestBuilder {
             return this;
         }
 
-        public Options locationHeader(String location) {
+        public Options locationHeader(String uri) {
             this.headerFlag = true;
-            this.location = location;
+            this.location = uri;
             return this;
         }
 
@@ -104,14 +104,16 @@ public class DocumentRequestBuilder {
     private static class PostPerform<T> implements HttpMethodRequest {
         private final String path;
         private final T body;
+        private final Object[] params;
 
-        public PostPerform(String path, T body) {
+        public PostPerform(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
+            this.params = params;
         }
 
         public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
-            return post(path)
+            return post(path, params)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(body));

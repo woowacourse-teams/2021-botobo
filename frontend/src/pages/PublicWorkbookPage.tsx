@@ -1,17 +1,23 @@
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbookList } from '../components';
-import { STORAGE_KEY } from '../constants';
+import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
 
+const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
+
 interface SearchStyleProps {
   isFocus: boolean;
+}
+
+interface LoadImageWrapperStyleProps {
+  isLoading: boolean;
 }
 
 const PublicWorkbookPage = () => {
@@ -23,6 +29,8 @@ const PublicWorkbookPage = () => {
     setPublicWorkbookId,
     setKeyword,
     search,
+    isLoading,
+    setIsLoading,
   } = usePublicWorkbook();
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
@@ -36,7 +44,9 @@ const PublicWorkbookPage = () => {
           value={inputValue}
           onChange={({ target }) => {
             setInputValue(target.value);
-            debounce(() => search(target.value), 200);
+            setIsLoading(true);
+            setPublicWorkbooks([]);
+            debounce(() => search(target.value), 400);
           }}
           placeholder="검색어를 입력해주세요"
           onFocus={() => setIsFocus(true)}
@@ -62,9 +72,24 @@ const PublicWorkbookPage = () => {
           routePublicCards();
         }}
       />
+      <LoadImageWrapper isLoading={isLoading}>
+        <LoadImage />
+      </LoadImageWrapper>
     </Container>
   );
 };
+
+const jumpAnimation = keyframes`
+  0%{
+    transform: translateY(100%);
+  }
+  50%{
+    transform:translateY(0);
+  }
+  100%{
+    transform:translateY(100%);
+  }
+`;
 
 const Container = styled.div`
   ${({ theme }) =>
@@ -107,6 +132,29 @@ const SearchInput = styled.input`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
   `}
+`;
+
+const LoadImageWrapper = styled.div<LoadImageWrapperStyleProps>`
+  ${Flex({ justify: 'center', items: 'center' })};
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+
+  ${({ isLoading }) => css`
+    display: ${isLoading ? 'flex' : 'none'};
+  `}
+`;
+
+const LoadImage = styled.div`
+  width: 3.75rem;
+  height: 3.25rem;
+  background-image: url(${loadSrc});
+  background-repeat: no-repeat;
+  background-size: contain;
+  animation: ${jumpAnimation} 1s infinite ease-in-out;
 `;
 
 export default PublicWorkbookPage;

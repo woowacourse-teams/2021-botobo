@@ -11,6 +11,13 @@ pipeline {
                 slackSend (channel: 'github-botobo', color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
             }
         }
+        stage("Test") {
+             steps {
+                  dir('frontend') {
+                    sh "yarn test"
+                  }
+             }
+        }
         stage("Build") {
             steps {
               dir('frontend'){
@@ -19,13 +26,6 @@ pipeline {
                 sh "yarn build:dev"
                }
             }
-        }
-        stage("Test") {
-             steps {
-                  dir('frontend') {
-                    sh "yarn test"
-                  }
-             }
         }
         stage('SSH transfer') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
