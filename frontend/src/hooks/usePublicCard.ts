@@ -3,7 +3,7 @@ import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import { postPublicCardsAsync } from './../api/index';
 import { workbookState } from './../recoil/workbookState';
-import { publicCardState } from '../recoil';
+import { cardState, publicCardState } from '../recoil';
 import useSnackbar from './useSnackbar';
 
 const usePublicCard = () => {
@@ -12,6 +12,7 @@ const usePublicCard = () => {
     errorMessage,
   } = useRecoilValue(publicCardState);
   const updateWorkbooks = useResetRecoilState(workbookState);
+  const updateCards = useResetRecoilState(cardState);
 
   const [publicCards, setPublicCards] = useState(
     cards.map((card) => ({ ...card, isChecked: false }))
@@ -54,6 +55,7 @@ const usePublicCard = () => {
     try {
       await postPublicCardsAsync(workbookId, cardIds);
       updateWorkbooks();
+      updateCards();
       setPublicCards(
         publicCards.map((card) => ({ ...card, isChecked: false }))
       );

@@ -28,6 +28,11 @@ const cardUpdateTrigger = atom({
   default: 0,
 });
 
+const publicCardUpdateTrigger = atom({
+  key: 'publicCardUpdateTrigger',
+  default: 0,
+});
+
 export const cardIdState = atom({
   key: 'cardIdState',
   default: -1,
@@ -64,6 +69,8 @@ export const cardState = selector<CardState>({
 export const publicCardState = selector<PublicCardState>({
   key: 'publicCardState',
   get: async ({ get }) => {
+    get(publicCardUpdateTrigger);
+
     try {
       const workbookId = get(publicWorkbookIdState);
 
@@ -79,6 +86,11 @@ export const publicCardState = selector<PublicCardState>({
         data: publicCardsInitialState,
         errorMessage: '카드를 불러오지 못했습니다.',
       };
+    }
+  },
+  set: ({ set }, value) => {
+    if (value instanceof DefaultValue) {
+      set(publicCardUpdateTrigger, (prevState) => prevState + 1);
     }
   },
 });

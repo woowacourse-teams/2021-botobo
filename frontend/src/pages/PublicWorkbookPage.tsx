@@ -1,12 +1,14 @@
 import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useResetRecoilState } from 'recoil';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PageHeader, PublicWorkbookList } from '../components';
 import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
+import { publicCardState } from '../recoil';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
 
@@ -34,6 +36,8 @@ const PublicWorkbookPage = () => {
   } = usePublicWorkbook();
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
+
+  const updatePublicCards = useResetRecoilState(publicCardState);
 
   return (
     <>
@@ -69,6 +73,7 @@ const PublicWorkbookPage = () => {
           publicWorkbooks={publicWorkbooks}
           onClickPublicWorkbook={async (id) => {
             await setPublicWorkbookId(id);
+            updatePublicCards();
             setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
             setKeyword(inputValue);
             routePublicCards();
