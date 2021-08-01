@@ -35,6 +35,8 @@ export const publicWorkbookIdState = atom<number>({
 export const workbookState = selector<WorkbookState>({
   key: 'workbookState',
   get: async ({ get }) => {
+    get(workbookUpdateTrigger);
+
     try {
       return {
         data: get(userState) ? await getWorkbooksAsync() : [],

@@ -19,10 +19,7 @@ const validateWorkbookName = (value: string) => {
 
 const WorkbookEditPage = () => {
   const { editedWorkbook, editWorkbook } = useWorkbook();
-  const [hashtags, setHashtags] = useState<TagResponse[]>([
-    { id: 1, name: 'hash' },
-    { id: 2, name: '해시태그' },
-  ]);
+  const [hashtags, setHashtags] = useState<TagResponse[]>(editedWorkbook.tags);
   const [isPublic, setIsPublic] = useState(editedWorkbook.opened);
 
   return (
