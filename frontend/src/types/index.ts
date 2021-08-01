@@ -1,25 +1,56 @@
-export interface CategoryResponse {
+export interface AccessTokenResponse {
+  accessToken: string;
+}
+
+export interface TagResponse {
   id: number;
   name: string;
-  description: string;
+}
+
+export interface WorkbookResponse {
+  id: number;
+  name: string;
   cardCount: number;
-  logoUrl: string;
+  opened: boolean;
+  tags: TagResponse[];
+}
+
+export interface PublicWorkbookResponse
+  extends Omit<WorkbookResponse, 'opened'> {
+  author: string;
 }
 
 export interface QuizResponse {
   id: number;
   question: string;
   answer: string;
-  categoryName: string;
+  encounterCount: number;
+  workbookName: string;
 }
 
 export interface CardResponse {
   id: number;
+  workbookId: number;
   question: string;
   answer: string;
+  bookmark: boolean;
+  encounterCount: number;
+  nextQuiz: boolean;
 }
 
 export interface CardsResponse {
-  categoryName: string;
+  workbookId: number;
+  workbookName: string;
   cards: CardResponse[];
+}
+
+export interface PublicCardsResponse extends CardsResponse {
+  cardCount: number;
+  tags: TagResponse[];
+}
+
+export interface UserInfoResponse {
+  id: number;
+  userName: string;
+  profileUrl: string;
 }

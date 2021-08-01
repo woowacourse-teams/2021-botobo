@@ -6,6 +6,14 @@ const ROUTE = {
     PATH: '/login',
     TITLE: '로그인',
   },
+  WORKBOOK_ADD: {
+    PATH: '/workbookAdd',
+    TITLE: '문제집 추가',
+  },
+  WORKBOOK_EDIT: {
+    PATH: '/workbookEdit',
+    TITLE: '문제집 수정',
+  },
   QUIZ_SETTING: {
     PATH: '/quizSetting',
     TITLE: '퀴즈 설정',
@@ -22,9 +30,17 @@ const ROUTE = {
     PATH: '/cards',
     TITLE: '모아보기',
   },
-  SEARCH: {
-    PATH: '/search',
-    TITLE: '검색',
+  CARD_EDIT: {
+    PATH: '/cardEdit',
+    TITLE: '카드 수정',
+  },
+  PUBLIC_WORKBOOK: {
+    PATH: '/publicWorkbook',
+    TITLE: '공유 문제집',
+  },
+  PUBLIC_CARDS: {
+    PATH: '/publicCards',
+    TITLE: '문제집 상세',
   },
   GITHUB_CALLBACK: {
     PATH: '/github/callback',

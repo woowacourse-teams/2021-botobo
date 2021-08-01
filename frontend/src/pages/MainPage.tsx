@@ -1,42 +1,57 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import PlusIcon from '../assets/plus.svg';
-import { Button, CategoryList, QuizStarter } from '../components';
-import { ROUTE } from '../constants';
-import { categoryState } from '../recoil';
+import ForwardIcon from '../assets/chevron-right-solid.svg';
+import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
+import { STORAGE_KEY } from '../constants';
+import { useRouter, useWorkbook } from '../hooks';
+import { userState } from '../recoil';
 import { Flex } from '../styles';
+import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
-  const categories = useRecoilValue(categoryState);
-  const history = useHistory();
+  const userInfo = useRecoilValue(userState);
+  const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
+  const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
 
   return (
-    <Container>
-      <QuizStarter />
-      <section>
-        <CategoryHeader>
-          <CategoryTitle>학습 중</CategoryTitle>
-          <Button
-            shape="circle"
-            backgroundColor="white"
-            color="green"
-            hasShadow={true}
-          >
-            <StyledPlusIcon />
-          </Button>
-        </CategoryHeader>
-        <CategoryList
-          categories={categories}
-          onClickCategory={(categoryId) =>
-            history.push(`${ROUTE.CARDS.PATH}?categoryId=${categoryId}`)
-          }
-        />
-      </section>
-    </Container>
+    <>
+      <MainHeader />
+      <Container>
+        {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
+        <Banner onClick={routePublicWorkbook}>
+          <BannerText>다양한 문제집 보러 가기</BannerText>
+          <StyledButton backgroundColor="white" color="gray_8" shape="circle">
+            <ForwardIcon width="1rem" height="1rem" />
+          </StyledButton>
+        </Banner>
+        <QuizStarter workbooks={workbooks} />
+        <section>
+          <WorkbookHeader>
+            <WorkbookTitle>학습 중</WorkbookTitle>
+            <Button shape="square" onClick={routeWorkbookAdd}>
+              문제집 추가
+            </Button>
+          </WorkbookHeader>
+          {workbooks.length === 0 ? (
+            <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
+          ) : (
+            <WorkbookList
+              workbooks={workbooks}
+              onClickWorkbook={async (id) => {
+                await setWorkbookId(id);
+                setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
+                routeCards();
+              }}
+              editable={true}
+              deleteWorkbook={deleteWorkbook}
+            />
+          )}
+        </section>
+      </Container>
+    </>
   );
 };
 
@@ -47,28 +62,55 @@ const Container = styled.div`
     `}
 `;
 
-const CategoryHeader = styled.div`
+const Greeting = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const Banner = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
+  cursor: pointer;
+  height: 3rem;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+
+  ${({ theme }) => css`
+    color: ${theme.color.white};
+    background-color: ${theme.color.blue};
+    border-radius: ${theme.borderRadius.square};
+    font-weight: ${theme.fontWeight.semiBold};
+  `}
+`;
+
+const BannerText = styled.span`
+  word-spacing: -2px;
+`;
+
+const StyledButton = styled(Button)`
+  ${Flex({ justify: 'center', items: 'center' })}
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+
+  & > svg {
+    margin-left: 0.1rem;
+  }
+`;
+
+const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
 `;
 
-const CategoryTitle = styled.h2`
+const WorkbookTitle = styled.h2`
   ${({ theme }) =>
     css`
       font-size: ${theme.fontSize.semiLarge};
     `};
 `;
 
-// TODO: 타입 체크하기
-const StyledPlusIcon = styled(PlusIcon)`
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
-
-  ${({ theme }) =>
-    css`
-      fill: ${theme.color.green};
-    `}
+const NoWorkbook = styled.div`
+  text-align: center;
+  margin-top: 20vh;
 `;
 
 export default MainPage;

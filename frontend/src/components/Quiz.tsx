@@ -2,10 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
-import { Flex } from '../styles';
+import { scrollBarStyle } from '../styles';
 import { QuizResponse } from '../types';
 
-interface Props extends Omit<QuizResponse, 'id'> {
+interface Props extends Omit<QuizResponse, 'id' | 'encounterCount'> {
   isChanged: boolean;
 }
 
@@ -13,7 +13,7 @@ interface CardStyleProps {
   isFlipped: boolean;
 }
 
-const Quiz = ({ question, answer, categoryName, isChanged }: Props) => {
+const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
@@ -24,12 +24,16 @@ const Quiz = ({ question, answer, categoryName, isChanged }: Props) => {
     <Container onClick={() => setIsFlipped((prevValue) => !prevValue)}>
       <Card isFlipped={isFlipped}>
         <Question>
-          <CategoryName>{categoryName}</CategoryName>
-          <span>Q. {question}</span>
+          <WorkbookName>{workbookName}</WorkbookName>
+          <Text>
+            <span>Q. {question}</span>
+          </Text>
         </Question>
         <Answer>
-          <CategoryName>{categoryName}</CategoryName>
-          <span>A. {answer}</span>
+          <WorkbookName>{workbookName}</WorkbookName>
+          <Text>
+            <span>A. {answer}</span>
+          </Text>
         </Answer>
       </Card>
     </Container>
@@ -57,10 +61,9 @@ const Card = styled.div<CardStyleProps>`
     `}
 
   & > div {
-    ${Flex({ justify: 'center', items: 'center' })};
     position: absolute;
     padding: 1rem;
-    padding-top: 2rem;
+    padding-top: 2.5rem;
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
@@ -74,7 +77,7 @@ const Card = styled.div<CardStyleProps>`
   }
 `;
 
-const CategoryName = styled.span`
+const WorkbookName = styled.span`
   position: absolute;
   top: 1rem;
   left: 1rem;
@@ -100,6 +103,20 @@ const Answer = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `}
+`;
+
+const Text = styled.div`
+  overflow-y: auto;
+  height: 9rem;
+  line-height: 9rem;
+
+  ${scrollBarStyle};
+
+  & > span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.4rem;
+  }
 `;
 
 export default Quiz;

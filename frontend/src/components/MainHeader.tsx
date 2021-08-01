@@ -1,24 +1,25 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
-import { loginState } from '../recoil';
+import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
+import { useRouter } from '../hooks';
+import { userState } from '../recoil';
 import { Flex } from '../styles';
-import { setSessionStorage } from '../utils';
+import { removeLocalStorage } from '../utils';
 
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
 const MainHeader = () => {
-  const history = useHistory();
-  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const { routeMain, routeLogin } = useRouter();
+  const [userInfo, setUserInfo] = useRecoilState(userState);
 
-  const routeLogin = () => {
-    setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
-    history.push(ROUTE.LOGIN.PATH);
+  const logout = () => {
+    removeLocalStorage(STORAGE_KEY.TOKEN);
+    setUserInfo(null);
+    routeMain();
   };
 
   return (
@@ -28,17 +29,18 @@ const MainHeader = () => {
           href="/"
           onClick={(event) => {
             event.preventDefault();
-            history.push(ROUTE.HOME.PATH);
+            routeMain();
           }}
         >
           <span>보고 또 보고</span>
         </Logo>
       </h1>
       <RightContent>
-        {isLogin ? (
+        {userInfo ? (
           <>
-            <Avatar src={userSrc} />
-            <AuthButton onClick={() => setIsLogin(false)}>로그아웃</AuthButton>
+            <Avatar src={userInfo.profileUrl ?? userSrc} />
+            {/* TODO: 로그아웃 감추기 */}
+            <AuthButton onClick={logout}>로그아웃</AuthButton>
           </>
         ) : (
           <AuthButton onClick={routeLogin}>로그인</AuthButton>
