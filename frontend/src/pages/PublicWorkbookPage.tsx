@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { PublicWorkbookList } from '../components';
-import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
+import { PageHeader, PublicWorkbookList } from '../components';
+import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
@@ -36,46 +36,49 @@ const PublicWorkbookPage = () => {
   const { routePublicCards } = useRouter();
 
   return (
-    <Container>
-      <SearchBar isFocus={isFocus}>
-        <SearchIcon width="1.3rem" height="1.3rem" />
-        <SearchInput
-          autoFocus={true}
-          value={inputValue}
-          onChange={({ target }) => {
-            setInputValue(target.value);
-            setIsLoading(true);
-            setPublicWorkbooks([]);
-            debounce(() => search(target.value), 400);
-          }}
-          placeholder="검색어를 입력해주세요"
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-        />
-        {inputValue && (
-          <button
-            onClick={() => {
-              setInputValue('');
+    <>
+      <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+      <Container>
+        <SearchBar isFocus={isFocus}>
+          <SearchIcon width="1.3rem" height="1.3rem" />
+          <SearchInput
+            autoFocus={true}
+            value={inputValue}
+            onChange={({ target }) => {
+              setInputValue(target.value);
+              setIsLoading(true);
               setPublicWorkbooks([]);
+              debounce(() => search(target.value), 400);
             }}
-          >
-            <SearchCloseIcon width="0.5rem" height="0.5rem" />
-          </button>
-        )}
-      </SearchBar>
-      <PublicWorkbookList
-        publicWorkbooks={publicWorkbooks}
-        onClickPublicWorkbook={async (id) => {
-          await setPublicWorkbookId(id);
-          setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-          setKeyword(inputValue);
-          routePublicCards();
-        }}
-      />
-      <LoadImageWrapper isLoading={isLoading}>
-        <LoadImage />
-      </LoadImageWrapper>
-    </Container>
+            placeholder="검색어를 입력해주세요"
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+          />
+          {inputValue && (
+            <button
+              onClick={() => {
+                setInputValue('');
+                setPublicWorkbooks([]);
+              }}
+            >
+              <SearchCloseIcon width="0.5rem" height="0.5rem" />
+            </button>
+          )}
+        </SearchBar>
+        <PublicWorkbookList
+          publicWorkbooks={publicWorkbooks}
+          onClickPublicWorkbook={async (id) => {
+            await setPublicWorkbookId(id);
+            setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+            setKeyword(inputValue);
+            routePublicCards();
+          }}
+        />
+        <LoadImageWrapper isLoading={isLoading}>
+          <LoadImage />
+        </LoadImageWrapper>
+      </Container>
+    </>
   );
 };
 
