@@ -9,8 +9,6 @@
             <onMismatch>DENY</onMismatch>
         </filter>
 
-        <file>${INFO_LOG_PATH}/${INFO_LOG_FILE_NAME}.log</file>
-
         <encoder>
             <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
         </encoder>

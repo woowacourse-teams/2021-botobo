@@ -31,7 +31,7 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 추가되었어요.' });
       routeMain();
     } catch (error) {
-      console.error();
+      console.error(error);
       showSnackbar({ message: '문제집을 추가하지 못했어요.', type: 'error' });
     }
   };

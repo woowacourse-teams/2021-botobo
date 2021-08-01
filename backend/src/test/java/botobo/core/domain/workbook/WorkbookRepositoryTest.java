@@ -9,7 +9,6 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.domain.workbooktag.WorkbookTagRepository;
-import botobo.core.exception.NotAuthorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest(showSql = false)
 public class WorkbookRepositoryTest {
@@ -149,6 +146,8 @@ public class WorkbookRepositoryTest {
 
         workbookRepository.save(workbook1);
 
+        flushAndClear();
+
         Workbook workbook2 = Workbook.builder()
                 .name("오즈의 Spring")
                 .opened(true)
@@ -181,6 +180,7 @@ public class WorkbookRepositoryTest {
         Tags tags = Tags.from(Arrays.asList(
                 Tag.from("잡아"), Tag.from("javi"))
         );
+
         Workbook workbook = Workbook.builder()
                 .name("오즈의 Java")
                 .opened(true)
@@ -190,15 +190,20 @@ public class WorkbookRepositoryTest {
                 .build();
         workbookRepository.save(workbook);
 
+        Workbook updateWorkbook = Workbook.builder()
+                .name("오즈의 Java를 다 잡아")
+                .opened(false)
+                .tags(Tags.from(
+                        Arrays.asList(Tag.from("자바"), Tag.from("java"), Tag.from("오즈"))
+                ))
+                .build();
+
         // when
-        workbook.updateIfUserIsAuthor(
-                "오즈의 Java를 다 잡아", false, user.getId(),
-                Tags.from(Arrays.asList(Tag.from("자바"), Tag.from("java"), Tag.from("오즈")))
-        );
+        workbook.update(updateWorkbook);
         testEntityManager.flush();
 
         // then
-        assertThat(workbook.getName()).isEqualTo("오즈의 Java를 다 잡아");
+        assertThat(workbook.getName()).isEqualTo(updateWorkbook.getName());
         assertThat(workbook.isOpened()).isFalse();
         assertThat(workbook.getUpdatedAt()).isAfter(workbook.getCreatedAt());
         assertThat(workbook.getWorkbookTags())
@@ -206,41 +211,6 @@ public class WorkbookRepositoryTest {
                 .extracting("tagName")
                 .extracting("value")
                 .containsExactly("자바", "java", "오즈");
-    }
-
-    @Test
-    @DisplayName("유저가 자신의 문제집을 수정한다. - 실패, 다른 유저가 수정을 시도할 경우")
-    void updateWorkbookWithOtherUser() {
-        // given
-        User user1 = User.builder()
-                .githubId(1L)
-                .userName("oz")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        User user2 = User.builder()
-                .githubId(2L)
-                .userName("pk")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-
-        Workbook workbook = Workbook.builder()
-                .name("오즈의 Java")
-                .opened(true)
-                .deleted(false)
-                .user(user1)
-                .build();
-        workbookRepository.save(workbook);
-
-        // when, then
-        assertThatThrownBy(() -> workbook.updateIfUserIsAuthor(
-                "오즈의 Java를 다 잡아", false, 2L, Tags.from(Collections.emptyList())
-        )).isInstanceOf(NotAuthorException.class);
     }
 
     @Test
@@ -265,7 +235,7 @@ public class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         // when
-        workbook.deleteIfUserIsAuthor(user.getId());
+        workbook.delete();
 
         //then
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);

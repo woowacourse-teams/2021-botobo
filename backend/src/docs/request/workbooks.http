@@ -6,8 +6,8 @@ Authorization: Bearer botobo.access.token
 Host: localhost:8080
 
 {
-  "name" : "Java 문제집",
-  "opened" : true
+  "name": "Java 문제집",
+  "opened": true
 }
 
 ### 로그인 유저 문제집 보기
@@ -32,9 +32,9 @@ Authorization: Bearer botobo.access.token
 Host: localhost:8080
 
 {
-  "name" : "Java 문제집",
-  "opened" : true,
-  "cardCount" : 0
+  "name": "Java 문제집",
+  "opened": true,
+  "cardCount": 0
 }
 
 ### 문제집 삭제하기

@@ -2,12 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import {
-  Button,
-  CardSkeleton,
-  CardSkeletonList,
-  HeaderSkeleton,
-} from '../components';
+import { CardSkeleton, CardSkeletonList, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 
 const MainLoadable = () => (

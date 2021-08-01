@@ -1,4 +1,4 @@
-export { quizState } from './quizState';
+export { quizState, quizModeState } from './quizState';
 export { userState } from './userState';
 export {
   searchKeywordState,

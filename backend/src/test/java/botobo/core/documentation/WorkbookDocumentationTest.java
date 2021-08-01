@@ -2,6 +2,7 @@ package botobo.core.documentation;
 
 import botobo.core.application.WorkbookService;
 import botobo.core.dto.card.CardResponse;
+import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
@@ -190,6 +191,27 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isNoContent())
                 .identifier("workbooks-delete-success");
+    }
+
+    @Test
+    @DisplayName("문제집으로 카드 가져오기 - 성공")
+    void scrapSelectedCardsToWorkbook() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        long workbookId = 1L;
+        ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
+                .cardIds(Arrays.asList(10L, 11L, 12L))
+                .build();
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .auth(token)
+                .locationHeader("/api/workbooks/1/cards")
+                .build()
+                .status(status().isCreated())
+                .identifier("workbooks-scrap-cards-success");
     }
 
     private List<WorkbookResponse> generateUserWorkbookResponse() {

@@ -27,7 +27,7 @@ const MainPage = () => {
             <ForwardIcon width="1rem" height="1rem" />
           </StyledButton>
         </Banner>
-        <QuizStarter />
+        <QuizStarter workbooks={workbooks} />
         <section>
           <WorkbookHeader>
             <WorkbookTitle>학습 중</WorkbookTitle>

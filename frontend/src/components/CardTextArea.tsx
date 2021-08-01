@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { useForm } from '../hooks';
@@ -18,6 +18,7 @@ interface ContainerStyleProps {
 
 const CardTextArea = ({ title, inputName, ...props }: Props) => {
   const { values, errorMessages, onChange, onBlur } = useForm();
+  const [isFocus, setIsFocus] = useState(false);
 
   return (
     <Container errorMessage={errorMessages[inputName]}>
@@ -27,12 +28,16 @@ const CardTextArea = ({ title, inputName, ...props }: Props) => {
           {values[inputName].length}/{CARD_TEXT_MAX_LENGTH}
         </Limiter>
       </Header>
-      <CardTemplate>
+      <CardTemplate isChecked={isFocus}>
         <Text
           name={inputName}
           value={values[inputName]}
           onChange={onChange}
-          onBlur={onBlur}
+          onFocus={() => setIsFocus(true)}
+          onBlur={(event) => {
+            onBlur(event);
+            setIsFocus(false);
+          }}
           {...props}
         />
       </CardTemplate>

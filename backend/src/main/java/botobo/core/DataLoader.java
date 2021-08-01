@@ -105,7 +105,7 @@ public class DataLoader implements CommandLineRunner {
         User user = User.builder()
                 .userName("1번 어드민")
                 .githubId(88036280L)
-                .profileUrl("botobo.profile.url")
+                .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
                 .role(Role.ADMIN)
                 .build();
         return userRepository.save(user);

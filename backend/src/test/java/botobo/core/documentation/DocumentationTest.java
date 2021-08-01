@@ -32,6 +32,7 @@ public class DocumentationTest {
      * .mockMvc(mockMvc)
      * .get(path)        HttpMethod
      * .auth(token)      default false
+     * .locationHeader(Location URL) default false
      * .build()          necessary!!!!!!!
      * .addStatusAndIdentifier(status().isOk(), "workbooks-get-success"); necessary!!!
      */

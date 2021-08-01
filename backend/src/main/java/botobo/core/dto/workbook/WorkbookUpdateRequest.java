@@ -1,5 +1,7 @@
 package botobo.core.dto.workbook;
 
+import botobo.core.domain.tag.Tags;
+import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.TagRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,4 +38,12 @@ public class WorkbookUpdateRequest {
     @NotNull(message = "문제집를 수정하려면 태그가 필요합니다.")
     @Valid
     private List<TagRequest> tags = new ArrayList<>();
+
+    public Workbook toWorkbookWithTags(Tags tags) {
+        return Workbook.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tags)
+                .build();
+    }
 }

@@ -70,11 +70,15 @@ public class Card extends BaseEntity {
         }
     }
 
-    public Card addWorkbook(Workbook workbook) {
-        if (Objects.nonNull(workbook)) {
-            changeWorkbook(workbook);
-        }
-        return this;
+    public static Card createCopyOf(Card other) {
+        return Card.builder()
+                .question(other.question)
+                .answer(other.answer)
+                .build();
+    }
+
+    public void addWorkbook(Workbook workbook) {
+        this.workbook = workbook;
     }
 
     public void update(Card other) {
@@ -85,9 +89,6 @@ public class Card extends BaseEntity {
     }
 
     public void delete() {
-        if (Objects.nonNull(workbook)) {
-            workbook.getCards().removeCard(this);
-        }
         this.deleted = true;
     }
 

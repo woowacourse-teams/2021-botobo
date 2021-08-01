@@ -2,6 +2,7 @@ package botobo.core.ui;
 
 import botobo.core.application.WorkbookService;
 import botobo.core.domain.user.AppUser;
+import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -36,7 +37,7 @@ public class WorkbookController {
     public ResponseEntity<WorkbookResponse> createWorkbook(@RequestBody @Valid WorkbookRequest workbookRequest,
                                                            @AuthenticationPrincipal AppUser appUser) {
         WorkbookResponse workbookResponse = workbookService.createWorkbookByUser(workbookRequest, appUser);
-        return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId())).body(workbookResponse);
+        return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId() + "/cards")).body(workbookResponse);
     }
 
     @GetMapping
@@ -74,5 +75,13 @@ public class WorkbookController {
                                                @AuthenticationPrincipal AppUser appUser) {
         workbookService.deleteWorkbook(id, appUser);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{workbookId}/cards")
+    public ResponseEntity<Void> scrapSelectedCardsToWorkbook(@PathVariable Long workbookId,
+                                                             @Valid @RequestBody ScrapCardRequest scrapCardRequest,
+                                                             @AuthenticationPrincipal AppUser appUser) {
+        workbookService.scrapSelectedCardsToWorkbook(workbookId, scrapCardRequest, appUser);
+        return ResponseEntity.created(URI.create(String.format("/api/workbooks/%d/cards", workbookId))).build();
     }
 }

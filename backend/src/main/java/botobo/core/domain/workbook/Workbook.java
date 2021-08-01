@@ -6,7 +6,6 @@ import botobo.core.domain.card.Cards;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbooktag.WorkbookTag;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import lombok.Builder;
 import lombok.Getter;
@@ -160,28 +159,21 @@ public class Workbook extends BaseEntity {
         return cards.counts();
     }
 
-    public void updateIfUserIsAuthor(String name, boolean opened, Long userId, Tags tags) {
-        validateAuthor(userId);
-        this.name = name;
-        this.opened = opened;
+    public void update(Workbook other) {
+        this.name = other.name;
+        this.opened = other.opened;
         clearWorkbookTags();
-        addTags(tags);
-    }
-
-    private void validateAuthor(Long userId) {
-        if (!user.isSameId(userId)) {
-            throw new NotAuthorException();
-        }
+        addTags(other.tags());
     }
 
     public void clearWorkbookTags() {
         this.workbookTags.clear();
     }
 
-    public void deleteIfUserIsAuthor(Long userId) {
-        validateAuthor(userId);
-        user.getWorkbooks().remove(this);
+    public void delete() {
+        this.user.getWorkbooks().remove(this);
         this.deleted = true;
+        cards.delete();
         clearWorkbookTags();
     }
 
@@ -194,4 +186,3 @@ public class Workbook extends BaseEntity {
         cards.addCard(card);
     }
 }
-

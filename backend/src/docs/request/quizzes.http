@@ -6,7 +6,11 @@ Authorization: Bearer botobo.access.token
 Host: localhost:8080
 
 {
-  "workbookIds" : [ 1, 2, 3 ]
+  "workbookIds": [
+    1,
+    2,
+    3
+  ]
 }
 
 ### 비회원용 퀴즈 생성하기
