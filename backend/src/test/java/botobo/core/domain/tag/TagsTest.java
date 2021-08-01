@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,21 +33,6 @@ class TagsTest {
                 .isInstanceOf(TagsCreationFailureException.class)
                 .hasMessageContaining("Tags객체 생성에 실패했습니다")
                 .hasMessageContaining("tags는 null이 될 수 없습니다");
-    }
-
-    @Test
-    @DisplayName("Tags 객체 생성 - 실패, 중복된 태그이름 입력")
-    void createWithNullTagNameValue() {
-        // given
-        List<Tag> tags = Arrays.asList(
-                Tag.from("자바"), Tag.from("스프링"), Tag.from("자바")
-        );
-
-        // when, then
-        assertThatThrownBy(() -> Tags.from(tags))
-                .isInstanceOf(TagsCreationFailureException.class)
-                .hasMessageContaining("Tags객체 생성에 실패했습니다")
-                .hasMessageContaining("중복된 태그 이름이 있습니다");
     }
 
     @Test

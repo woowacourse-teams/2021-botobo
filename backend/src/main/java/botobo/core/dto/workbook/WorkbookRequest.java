@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,11 +35,5 @@ public class WorkbookRequest {
                 .opened(opened)
                 .deleted(false)
                 .build();
-    }
-
-    public List<String> toTagNames() {
-        return tags.stream()
-                .map(TagRequest::getName)
-                .collect(Collectors.toList());
     }
 }

@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 ;
 
@@ -37,10 +36,4 @@ public class WorkbookUpdateRequest {
     @NotNull(message = "문제집를 수정하려면 태그가 필요합니다.")
     @Valid
     private List<TagRequest> tags = new ArrayList<>();
-
-    public List<String> toTagNames() {
-        return tags.stream()
-                .map(TagRequest::getName)
-                .collect(Collectors.toList());
-    }
 }

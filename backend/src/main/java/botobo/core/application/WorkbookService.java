@@ -1,6 +1,5 @@
 package botobo.core.application;
 
-import botobo.core.domain.tag.TagNames;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
@@ -40,9 +39,7 @@ public class WorkbookService {
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
         User user = userRepository.findById(appUser.getId())
                 .orElseThrow(UserNotFoundException::new);
-        Tags tags = tagService.convertTags(
-                TagNames.from(workbookRequest.toTagNames())
-        );
+        Tags tags = tagService.convertTags(workbookRequest.getTags());
         Workbook workbook = workbookRequest.toWorkbook()
                 .createBy(user)
                 .taggedBy(tags);
@@ -54,9 +51,7 @@ public class WorkbookService {
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(WorkbookNotFoundException::new);
-        Tags tags = tagService.convertTags(
-                TagNames.from(workbookUpdateRequest.toTagNames())
-        );
+        Tags tags = tagService.convertTags(workbookUpdateRequest.getTags());
         workbook.updateIfUserIsAuthor(workbookUpdateRequest.getName(),
                 workbookUpdateRequest.getOpened(),
                 appUser.getId(),

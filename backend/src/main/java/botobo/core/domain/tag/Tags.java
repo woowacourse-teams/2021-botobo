@@ -16,7 +16,6 @@ public class Tags {
 
     private Tags(List<Tag> tags) {
         validateNotNull(tags);
-        validateNotDuplicateTagNames(tags);
         this.tags = tags;
     }
 
@@ -26,24 +25,13 @@ public class Tags {
         }
     }
 
-    private void validateNotDuplicateTagNames(List<Tag> tags) {
-        int distinctNameCount = (int) tags.stream()
-                .map(Tag::getTagNameValue)
-                .distinct()
-                .count();
-
-        if (distinctNameCount != tags.size()) {
-            throw new TagsCreationFailureException("중복된 태그 이름이 있습니다.");
-        }
-    }
-
     public static Tags from(List<Tag> tags) {
         return new Tags(tags);
     }
 
-    public int countSameTagName(Tags others) {
+    public int countSameTagName(Tags other) {
         List<String> tagNames = extractTagNames(this.tags);
-        List<String> otherNames = extractTagNames(others.toList());
+        List<String> otherNames = extractTagNames(other.tags);
         tagNames.addAll(otherNames);
 
         Map<String, Long> frequencyTable = tagNames.stream()
