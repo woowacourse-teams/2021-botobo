@@ -2,7 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, QuizResult } from '../components';
+import { Button, PageHeader, QuizResult } from '../components';
+import { ROUTE } from '../constants';
 import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
 
@@ -12,43 +13,46 @@ const QuizResultPage = () => {
   const { routeMain } = useRouter();
 
   return (
-    <Container>
-      <span>총 {quizResults.length}문제를 푸셨네요!</span>
-      <br />
-      <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
-      <QuizResultList>
-        {quizResults.map(({ id, question, workbookName, isChecked }) => (
-          <li key={id}>
-            <QuizResult
-              question={question}
-              workbookName={workbookName}
-              isChecked={isChecked}
-              onClick={() => checkQuizResult(id)}
-            />
-          </li>
-        ))}
-      </QuizResultList>
-      <ButtonWrapper>
-        <Button
-          size="full"
-          backgroundColor="white"
-          color="green"
-          shape="rectangle"
-          onClick={routeMain}
-        >
-          저장 안하고 나가기
-        </Button>
-        <Button
-          size="full"
-          shape="rectangle"
-          onClick={setNextQuiz}
-          backgroundColor={checkedCount > 0 ? 'green' : 'gray_4'}
-          disabled={checkedCount === 0}
-        >
-          다음에 또 보기
-        </Button>
-      </ButtonWrapper>
-    </Container>
+    <>
+      <PageHeader title={ROUTE.QUIZ_RESULT.TITLE} />
+      <Container>
+        <span>총 {quizResults.length}문제를 푸셨네요!</span>
+        <br />
+        <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
+        <QuizResultList>
+          {quizResults.map(({ id, question, workbookName, isChecked }) => (
+            <li key={id}>
+              <QuizResult
+                question={question}
+                workbookName={workbookName}
+                isChecked={isChecked}
+                onClick={() => checkQuizResult(id)}
+              />
+            </li>
+          ))}
+        </QuizResultList>
+        <ButtonWrapper>
+          <Button
+            size="full"
+            backgroundColor="white"
+            color="green"
+            shape="rectangle"
+            onClick={routeMain}
+          >
+            저장 안하고 나가기
+          </Button>
+          <Button
+            size="full"
+            shape="rectangle"
+            onClick={setNextQuiz}
+            backgroundColor={checkedCount > 0 ? 'green' : 'gray_4'}
+            disabled={checkedCount === 0}
+          >
+            다음에 또 보기
+          </Button>
+        </ButtonWrapper>
+      </Container>
+    </>
   );
 };
 
