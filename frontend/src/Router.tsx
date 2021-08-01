@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
+import ReactGA from 'react-ga';
 import {
   BrowserRouter,
   Redirect,
@@ -7,6 +8,7 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { ROUTE } from './constants';
@@ -124,6 +126,15 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
   );
 };
 
+const RouteChangeTracker = withRouter(({ history }) => {
+  history.listen((location) => {
+    ReactGA.set({ page: location.pathname });
+    ReactGA.pageview(location.pathname);
+  });
+
+  return <div></div>;
+});
+
 const Router = () => (
   <BrowserRouter>
     <Switch>
@@ -131,11 +142,13 @@ const Router = () => (
         isPublic ? (
           <Route key={index} exact path={path}>
             <ScrollToTop />
+            <RouteChangeTracker />
             {component}
           </Route>
         ) : (
           <PrivateRoute key={index} exact path={path}>
             <ScrollToTop />
+            <RouteChangeTracker />
             {component}
           </PrivateRoute>
         )
