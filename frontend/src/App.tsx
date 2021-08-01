@@ -8,8 +8,7 @@ import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
 import Router from './Router';
 
-ReactGA.initialize('UA-203684869-1');
-ReactGA.pageview(window.location.pathname + window.location.search);
+ReactGA.initialize(`${process.env.REACT_APP_GA_CODE}`);
 
 const App = () => (
   <ThemeProvider theme={theme}>
