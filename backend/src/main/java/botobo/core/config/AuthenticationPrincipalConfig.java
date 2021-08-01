@@ -45,7 +45,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizationInterceptor())
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login", "/api/quizzes/guest", "/api/docs/**", "/api/workbooks");
+                .excludePathPatterns("/api/login", "/api/quizzes/guest", "/api/docs/**", "/api/workbooks", "/api/workbooks/public/**");
 
         registry.addInterceptor(adminInterceptor())
                 .addPathPatterns("/api/admin/**");
