@@ -7,10 +7,15 @@ const GlobalStyle = () => {
   return (
     <Global
       styles={css`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @font-face {
+          font-family: 'Pretendard-Regular';
+          src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+            format('woff');
+        }
+
         * {
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-          font-family: 'Roboto', sans-serif;
+          font-family: 'Pretendard-Regular';
           box-sizing: border-box;
           margin: 0;
           padding: 0;

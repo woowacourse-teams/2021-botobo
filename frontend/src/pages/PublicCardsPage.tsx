@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
@@ -43,7 +43,7 @@ const PublicCardsPage = () => {
 
   const { workbooks } = useWorkbook();
 
-  const [selectedId, setSelectedId] = useState(workbooks[0]?.id || -1);
+  const selectedId = useRef(workbooks[0]?.id || -1);
 
   return (
     <>
@@ -120,13 +120,13 @@ const PublicCardsPage = () => {
                   <ModalContainer>
                     <SelectBox
                       optionValues={workbooks}
-                      setSelectedId={setSelectedId}
+                      setSelectedId={(id) => (selectedId.current = id)}
                       title="문제집 선택"
                     />
                     <Button
                       size="full"
                       onClick={() => {
-                        takeCardsToMyWorkbook(selectedId);
+                        takeCardsToMyWorkbook(selectedId.current);
                         closeModal();
                       }}
                     >

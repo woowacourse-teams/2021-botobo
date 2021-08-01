@@ -35,16 +35,20 @@ const MainPage = () => {
               문제집 추가
             </Button>
           </WorkbookHeader>
-          <WorkbookList
-            workbooks={workbooks}
-            onClickWorkbook={async (id) => {
-              await setWorkbookId(id);
-              setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-              routeCards();
-            }}
-            editable={true}
-            deleteWorkbook={deleteWorkbook}
-          />
+          {workbooks.length === 0 ? (
+            <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
+          ) : (
+            <WorkbookList
+              workbooks={workbooks}
+              onClickWorkbook={async (id) => {
+                await setWorkbookId(id);
+                setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
+                routeCards();
+              }}
+              editable={true}
+              deleteWorkbook={deleteWorkbook}
+            />
+          )}
         </section>
       </Container>
     </>
@@ -102,6 +106,11 @@ const WorkbookTitle = styled.h2`
     css`
       font-size: ${theme.fontSize.semiLarge};
     `};
+`;
+
+const NoWorkbook = styled.div`
+  text-align: center;
+  margin-top: 20vh;
 `;
 
 export default MainPage;

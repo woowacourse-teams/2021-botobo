@@ -122,7 +122,7 @@ export const getPublicWorkbookAsync = async (keyword: string) => {
 
 export const getPublicCardsAsync = async (publicWorkbookId: number) => {
   const { data } = await request.get<PublicCardsResponse>(
-    `/workbooks/public/${publicWorkbookId}/cards`
+    `/workbooks/public/${publicWorkbookId}`
   );
 
   return data;
