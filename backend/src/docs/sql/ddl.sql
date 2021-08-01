@@ -1,3 +1,5 @@
+-- CREATE DATABASE botobo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
 CREATE TABLE user(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     github_id BIGINT NOT NULL,
@@ -40,7 +42,7 @@ CREATE TABLE tag(
      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE workbooktag(
+CREATE TABLE workbook_tag(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     workbook_id BIGINT not null,
     tag_id BIGINT not null,
