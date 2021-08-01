@@ -27,7 +27,7 @@ public class WorkbookRequest {
     private boolean opened;
 
     @Valid
-    private List<TagRequest> tags;
+    private List<TagRequest> tags = new ArrayList<>();
 
     public Workbook toWorkbook() {
         return Workbook.builder()
