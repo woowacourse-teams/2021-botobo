@@ -99,17 +99,17 @@ export const deleteCardAsync = async (id: number) => {
 };
 
 export const postWorkbookAsync = async (params: PostWorkbookAsync) => {
-  await request.post('/workbook', params);
+  await request.post('/workbooks', params);
 };
 
 export const putWorkbookAsync = async (workbookInfo: WorkbookResponse) => {
   const { id, ...params } = workbookInfo;
 
-  await request.put(`/workbook/${id}`, params);
+  await request.put(`/workbooks/${id}`, params);
 };
 
 export const deleteWorkbookAsync = async (id: number) => {
-  await request.delete(`/workbook/${id}`);
+  await request.delete(`/workbooks/${id}`);
 };
 
 export const getPublicWorkbookAsync = async (keyword: string) => {

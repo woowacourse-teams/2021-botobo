@@ -3,6 +3,7 @@ import React, { Suspense } from 'react';
 import ReactGA from 'react-ga';
 import { RecoilRoot } from 'recoil';
 
+import { HeaderSkeleton } from './components';
 import { theme } from './constants';
 import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
@@ -15,7 +16,7 @@ const App = () => (
     <RecoilRoot>
       <SnackbarProvider>
         <ModalProvider>
-          <Suspense fallback={<div>loading</div>}>
+          <Suspense fallback={<HeaderSkeleton />}>
             <GlobalStyle />
             <Router />
           </Suspense>
