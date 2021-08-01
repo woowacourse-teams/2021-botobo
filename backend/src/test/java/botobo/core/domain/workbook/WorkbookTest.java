@@ -190,6 +190,6 @@ class WorkbookTest {
         // then
         assertThat(workbook.isDeleted()).isTrue();
         assertThat(user.getWorkbooks().size()).isEqualTo(0);
-        assertThat(workbook.getCards().counts()).isEqualTo(0);
+        assertThat(card.isDeleted()).isTrue();
     }
 }
