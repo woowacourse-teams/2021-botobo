@@ -105,8 +105,11 @@ public class WorkbookService {
         return WorkbookResponse.openedListOf(workbooks);
     }
 
-    public WorkbookCardResponse findWorkbookCardsById(Long id) {
-        Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
+    public WorkbookCardResponse findWorkbookCardsById(Long id, AppUser appUser) {
+        User user = findUser(appUser);
+        Workbook workbook = workbookRepository.findByIdAndOrderCardByNew(id)
+                .orElseThrow(WorkbookNotFoundException::new);
+        validateAuthor(user, workbook);
         return WorkbookCardResponse.ofUserWorkbook(workbook);
     }
 

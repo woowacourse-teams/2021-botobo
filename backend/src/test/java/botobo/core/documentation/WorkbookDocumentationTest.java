@@ -104,7 +104,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findWorkbookCardsById() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findWorkbookCardsById(anyLong())).willReturn(generatePersonalWorkbookCardsResponse());
+        given(workbookService.findWorkbookCardsById(anyLong(), any())).willReturn(generatePersonalWorkbookCardsResponse());
 
         // when, then
         document()

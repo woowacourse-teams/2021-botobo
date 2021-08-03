@@ -71,9 +71,10 @@ public class WorkbookController {
     }
 
     @GetMapping("/{id}/cards")
-    public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id) {
+    public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id,
+                                                                      @AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
-                workbookService.findWorkbookCardsById(id)
+                workbookService.findWorkbookCardsById(id, appUser)
         );
     }
 
