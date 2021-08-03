@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
@@ -8,8 +8,8 @@ import {
   Button,
   Checkbox,
   PageHeader,
+  PublicCardsSelectBox,
   PublicQnACard,
-  SelectBox,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
 import {
@@ -25,8 +25,7 @@ import { Flex } from '../styles';
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
-  const showSnackbar = useSnackbar();
-  const { openModal, closeModal } = useModal();
+  const { workbooks } = useWorkbook();
   const {
     workbookId,
     workbookName,
@@ -39,11 +38,10 @@ const PublicCardsPage = () => {
     checkCard,
     takeCardsToMyWorkbook,
   } = usePublicCard();
+
+  const showSnackbar = useSnackbar();
+  const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
-
-  const { workbooks } = useWorkbook();
-
-  const selectedId = useRef(workbooks[0]?.id || -1);
 
   return (
     <>
@@ -117,22 +115,11 @@ const PublicCardsPage = () => {
 
               openModal({
                 content: (
-                  <ModalContainer>
-                    <SelectBox
-                      optionValues={workbooks}
-                      setSelectedId={(id) => (selectedId.current = id)}
-                      title="문제집 선택"
-                    />
-                    <Button
-                      size="full"
-                      onClick={() => {
-                        takeCardsToMyWorkbook(selectedId.current);
-                        closeModal();
-                      }}
-                    >
-                      확인
-                    </Button>
-                  </ModalContainer>
+                  <PublicCardsSelectBox
+                    workbooks={workbooks}
+                    takeCardsToMyWorkbook={takeCardsToMyWorkbook}
+                    closeModal={closeModal}
+                  />
                 ),
                 closeIcon: 'down',
               });
@@ -213,11 +200,6 @@ const CheckboxWrapper = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `};
-`;
-
-const ModalContainer = styled.div`
-  ${Flex({ direction: 'column', justify: 'space-between' })};
-  height: 18.75rem;
 `;
 
 export default PublicCardsPage;
