@@ -484,8 +484,6 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given
-
-        // given
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(1L, 2L, 3L))
                 .build();
