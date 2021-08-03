@@ -9,18 +9,22 @@ import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
+import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.workbook.WorkbookRequest;
+import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 
 public class DomainAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
 
     @Autowired
     private CardRepository cardRepository;
@@ -94,6 +98,59 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .post("/api/cards", cardRequest)
                 .auth(createToken(userId))
                 .build();
+    }
+
+    public CardResponse 카드_등록되어_있음(String question, String answer, Long workbookId, String accessToken) {
+        CardRequest cardRequest = CardRequest.builder()
+                .question(question)
+                .answer(answer)
+                .workbookId(workbookId)
+                .build();
+        return 카드_등록되어있음(cardRequest, accessToken);
+    }
+
+    private CardResponse 카드_등록되어있음(CardRequest cardRequest, String accessToken) {
+        return 카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
+    }
+
+
+    private RequestBuilder.HttpResponse 카드_생성_요청(CardRequest cardRequest, String accessToken) {
+        return request()
+                .post("/api/cards", cardRequest)
+                .auth(accessToken)
+                .build();
+    }
+
+    protected WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tags)
+                .build();
+        return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+    }
+
+    protected WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, String accessToken) {
+        return 유저_문제집_생성_요청(workbookRequest, accessToken).convertBody(WorkbookResponse.class);
+    }
+
+    protected RequestBuilder.HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, String accessToken) {
+        return request()
+                .post("/api/workbooks", workbookRequest)
+                .auth(accessToken)
+                .build();
+    }
+
+    protected WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+        List<TagRequest> tagRequests = Collections.singletonList(
+                TagRequest.builder().id(1L).name("자바").build()
+        );
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tagRequests)
+                .build();
+        return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
     }
 
     protected String createToken(Long id) {
