@@ -100,7 +100,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집 id가 비어있음")
-    void createQuizWithEmptyCategoryIdList() {
+    void createQuizWithEmptyWorkbookIdList() {
         // given
         List<Long> ids = Collections.emptyList();
         QuizRequest quizRequest =

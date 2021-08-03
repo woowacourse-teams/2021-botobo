@@ -25,7 +25,7 @@ public class AdminDocumentationTest extends DocumentationTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
-    void createCategory() throws Exception {
+    void createWorkbook() throws Exception {
         // given
         String token = "botobo.access.token";
         AdminWorkbookRequest adminWorkbookRequest = new AdminWorkbookRequest("JAVA");
@@ -73,7 +73,7 @@ public class AdminDocumentationTest extends DocumentationTest {
 
     @Test
     @DisplayName("관리자 카드 생성 - 실패, 문제집 존재하지 않음")
-    void createCardWithInvalidCategory() throws Exception {
+    void createCardWithInvalidWorkbook() throws Exception {
         // given
         String token = "botobo.access.token";
         AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1000L);
