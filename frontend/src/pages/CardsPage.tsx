@@ -1,11 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Button, CardAddForm, PageHeader, QnACard } from '../components';
 import { ROUTE } from '../constants';
-import { useCard, useRouter } from '../hooks';
+import { useCard } from '../hooks';
 import { CardResponse } from '../types';
+import CardsLoadable from './CardsLoadable';
 
 interface Filter {
   [key: number]: (cards: CardResponse[]) => CardResponse[];
@@ -30,77 +31,76 @@ const filters = [
 
 const CardsPage = () => {
   const {
-    workbookId,
     workbookName,
     cards,
+    getCards,
     createCard,
     editCard,
     deleteCard,
     toggleBookmark,
-    updateCardInfo,
     openModal,
+    isLoading,
   } = useCard();
-  const { routeMain } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
-  useEffect(() => {
-    if (workbookId === -1) {
-      routeMain();
-    }
-  }, []);
+  if (isLoading) {
+    return <CardsLoadable />;
+  }
 
   return (
     <>
       <PageHeader title={ROUTE.CARDS.TITLE} />
-      <Container>
-        <WorkbookName>{workbookName}</WorkbookName>
-        <span>{cards.length}개의 카드를 학습 중이에요.</span>
-        <Filter>
-          {filters.map(({ id, name }) => (
-            <Button
-              key={id}
-              shape="round"
-              backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
-              inversion={true}
-              onClick={() => {
-                if (id === currentFilterId) return;
+      {cards.length > 0 && (
+        <Container>
+          <WorkbookName>{workbookName}</WorkbookName>
+          <span>{cards.length}개의 카드를 학습 중이에요.</span>
+          <Filter>
+            {filters.map(({ id, name }) => (
+              <Button
+                key={id}
+                shape="round"
+                backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+                inversion={true}
+                onClick={async () => {
+                  if (id === currentFilterId) return;
 
-                setCurrentFilterId(id);
-                updateCardInfo();
-              }}
-            >
-              {name}
-            </Button>
-          ))}
-        </Filter>
-        <Button
-          size="full"
-          backgroundColor="blue"
-          onClick={() =>
-            openModal({
-              content: <CardAddForm onSubmit={createCard} />,
-              title: workbookName,
-              closeIcon: 'back',
-              type: 'full',
-            })
-          }
-        >
-          새로운 카드 추가하기
-        </Button>
-        <CardList>
-          {filter[currentFilterId](cards).map((cardInfo) => (
-            <li key={cardInfo.id}>
-              <QnACard
-                cardInfo={cardInfo}
-                workbookName={workbookName}
-                editCard={editCard}
-                deleteCard={deleteCard}
-                toggleBookmark={toggleBookmark}
-              />
-            </li>
-          ))}
-        </CardList>
-      </Container>
+                  await getCards();
+                  setCurrentFilterId(id);
+                }}
+              >
+                {name}
+              </Button>
+            ))}
+          </Filter>
+          <Button
+            size="full"
+            backgroundColor="blue"
+            onClick={() =>
+              openModal({
+                content: <CardAddForm onSubmit={createCard} />,
+                title: workbookName,
+                closeIcon: 'back',
+                type: 'full',
+              })
+            }
+          >
+            새로운 카드 추가하기
+          </Button>
+          <CardList>
+            {filter[currentFilterId](cards).map((cardInfo) => (
+              <li key={cardInfo.id}>
+                <QnACard
+                  cardInfo={cardInfo}
+                  workbookName={workbookName}
+                  editCard={editCard}
+                  deleteCard={deleteCard}
+                  toggleBookmark={toggleBookmark}
+                />
+              </li>
+            ))}
+          </CardList>
+        </Container>
+      )}
     </>
   );
 };

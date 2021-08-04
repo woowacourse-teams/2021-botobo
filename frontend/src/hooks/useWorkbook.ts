@@ -72,6 +72,7 @@ const useWorkbook = () => {
     createWorkbook,
     editWorkbook,
     deleteWorkbook,
+    updateWorkbooks,
   };
 };
 

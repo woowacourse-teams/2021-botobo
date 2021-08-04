@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { QUIZ_MODE } from './../constants/index';
+import { QUIZ_MODE } from './../constants';
 import { quizModeState } from './../recoil/quizState';
 import { quizState } from '../recoil';
 import useRouter from './useRouter';
