@@ -49,57 +49,55 @@ const CardsPage = () => {
   return (
     <>
       <MainHeader />
-      {cards.length > 0 && (
-        <Container>
-          <WorkbookName>{workbookName}</WorkbookName>
-          <span>{cards.length}개의 카드를 학습 중이에요.</span>
-          <Filter>
-            {filters.map(({ id, name }) => (
-              <Button
-                key={id}
-                shape="round"
-                backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
-                inversion={true}
-                onClick={async () => {
-                  if (id === currentFilterId) return;
+      <Container>
+        <WorkbookName>{workbookName}</WorkbookName>
+        <span>{cards.length}개의 카드를 학습 중이에요.</span>
+        <Filter>
+          {filters.map(({ id, name }) => (
+            <Button
+              key={id}
+              shape="round"
+              backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+              inversion={true}
+              onClick={async () => {
+                if (id === currentFilterId) return;
 
-                  await getCards();
-                  setCurrentFilterId(id);
-                }}
-              >
-                {name}
-              </Button>
-            ))}
-          </Filter>
-          <Button
-            size="full"
-            backgroundColor="blue"
-            onClick={() =>
-              openModal({
-                content: <CardAddForm onSubmit={createCard} />,
-                title: workbookName,
-                closeIcon: 'back',
-                type: 'full',
-              })
-            }
-          >
-            새로운 카드 추가하기
-          </Button>
-          <CardList>
-            {filter[currentFilterId](cards).map((cardInfo) => (
-              <li key={cardInfo.id}>
-                <QnACard
-                  cardInfo={cardInfo}
-                  workbookName={workbookName}
-                  editCard={editCard}
-                  deleteCard={deleteCard}
-                  toggleBookmark={toggleBookmark}
-                />
-              </li>
-            ))}
-          </CardList>
-        </Container>
-      )}
+                await getCards();
+                setCurrentFilterId(id);
+              }}
+            >
+              {name}
+            </Button>
+          ))}
+        </Filter>
+        <Button
+          size="full"
+          backgroundColor="blue"
+          onClick={() =>
+            openModal({
+              content: <CardAddForm onSubmit={createCard} />,
+              title: workbookName,
+              closeIcon: 'back',
+              type: 'full',
+            })
+          }
+        >
+          새로운 카드 추가하기
+        </Button>
+        <CardList>
+          {filter[currentFilterId](cards).map((cardInfo) => (
+            <li key={cardInfo.id}>
+              <QnACard
+                cardInfo={cardInfo}
+                workbookName={workbookName}
+                editCard={editCard}
+                deleteCard={deleteCard}
+                toggleBookmark={toggleBookmark}
+              />
+            </li>
+          ))}
+        </CardList>
+      </Container>
     </>
   );
 };

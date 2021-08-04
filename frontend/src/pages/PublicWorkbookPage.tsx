@@ -16,7 +16,7 @@ interface SearchStyleProps {
   isFocus: boolean;
 }
 
-interface LoadImageWrapperStyleProps {
+interface LoadImageStyleProps {
   isLoading: boolean;
 }
 
@@ -72,9 +72,7 @@ const PublicWorkbookPage = () => {
             routePublicCards();
           }}
         />
-        <LoadImageWrapper isLoading={isLoading}>
-          <LoadImage />
-        </LoadImageWrapper>
+        <LoadImage isLoading={isLoading} />
       </Container>
     </>
   );
@@ -135,27 +133,19 @@ const SearchInput = styled.input`
   `}
 `;
 
-const LoadImageWrapper = styled.div<LoadImageWrapperStyleProps>`
-  ${Flex({ justify: 'center', items: 'center' })};
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-
-  ${({ isLoading }) => css`
-    display: ${isLoading ? 'flex' : 'none'};
-  `}
-`;
-
-const LoadImage = styled.div`
+const LoadImage = styled.div<LoadImageStyleProps>`
   width: 3.75rem;
   height: 3.25rem;
   background-image: url(${loadSrc});
   background-repeat: no-repeat;
   background-size: contain;
   animation: ${jumpAnimation} 1s infinite ease-in-out;
+  margin: 0 auto;
+  margin-top: 1rem;
+
+  ${({ isLoading }) => css`
+    display: ${isLoading ? 'block' : 'none'};
+  `}
 `;
 
 export default PublicWorkbookPage;

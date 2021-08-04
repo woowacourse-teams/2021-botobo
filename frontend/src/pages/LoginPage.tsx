@@ -2,15 +2,15 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { OAuth, PageHeader } from '../components';
-import { CLOUD_FRONT_DOMAIN, ROUTE } from '../constants';
+import { MainHeader, OAuth } from '../components';
+import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { Flex } from '../styles';
 
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo-full.png`;
 
 const LoginPage = () => (
   <>
-    <PageHeader title={ROUTE.LOGIN.TITLE} />
+    <MainHeader />
     <Container>
       <LogoWrapper>
         <img src={logoSrc} alt="로고 이미지" />

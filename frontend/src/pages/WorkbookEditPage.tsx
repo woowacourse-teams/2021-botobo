@@ -2,7 +2,13 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import { Hashtag, InputField, PageHeader, Toggle } from '../components';
+import {
+  Hashtag,
+  InputField,
+  MainHeader,
+  PageHeader,
+  Toggle,
+} from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
 import { useWorkbook } from '../hooks';
@@ -23,46 +29,45 @@ const WorkbookEditPage = () => {
   const [isPublic, setIsPublic] = useState(editedWorkbook.opened);
 
   return (
-    <FormProvider
-      initialValues={{ name: editedWorkbook.name }}
-      validators={{ name: validateWorkbookName }}
-      onSubmit={({ name }) =>
-        editWorkbook({
-          ...editedWorkbook,
-          name,
-          tags: hashtags,
-          opened: isPublic,
-        })
-      }
-    >
-      <PageHeader
-        title={ROUTE.WORKBOOK_EDIT.TITLE}
-        rightContent={<SubmitButton>확인</SubmitButton>}
-      />
-      <Container>
-        <ToggleWrapper>
-          <Toggle
-            labelText={'전체 공개'}
-            isChecked={isPublic}
-            onChange={({ target }) => setIsPublic(target.checked)}
-          />
-        </ToggleWrapper>
-        <Input
-          name="name"
-          placeholder="문제집 이름"
-          focusColor="gray"
-          autoFocus={true}
-          maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+    <>
+      <MainHeader />
+      <FormProvider
+        initialValues={{ name: editedWorkbook.name }}
+        validators={{ name: validateWorkbookName }}
+        onSubmit={({ name }) =>
+          editWorkbook({
+            ...editedWorkbook,
+            name,
+            tags: hashtags,
+            opened: isPublic,
+          })
+        }
+      >
+        <PageHeader
+          title={ROUTE.WORKBOOK_EDIT.TITLE}
+          rightContent={<button>확인</button>}
         />
-        <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
-      </Container>
-    </FormProvider>
+        <Container>
+          <ToggleWrapper>
+            <Toggle
+              labelText={'전체 공개'}
+              isChecked={isPublic}
+              onChange={({ target }) => setIsPublic(target.checked)}
+            />
+          </ToggleWrapper>
+          <Input
+            name="name"
+            placeholder="문제집 이름"
+            focusColor="gray"
+            autoFocus={true}
+            maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+          />
+          <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
+        </Container>
+      </FormProvider>
+    </>
   );
 };
-
-const SubmitButton = styled.button`
-  margin-right: 1rem;
-`;
 
 const Container = styled.div`
   ${({ theme }) =>
