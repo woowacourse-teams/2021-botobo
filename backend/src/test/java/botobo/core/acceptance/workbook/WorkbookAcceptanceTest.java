@@ -12,7 +12,7 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -30,12 +30,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static botobo.core.utils.Fixture.CARD_REQUEST_1;
-import static botobo.core.utils.Fixture.CARD_REQUEST_2;
-import static botobo.core.utils.Fixture.CARD_REQUEST_3;
+import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK;
+import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,8 +49,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3));
-        여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
+        여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS);
+        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK);
         userInfo = GithubUserInfoResponse.builder()
                 .userName("githubUser")
                 .githubId(2L)
@@ -240,7 +238,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses).hasSize(5);
     }
 
     @Test

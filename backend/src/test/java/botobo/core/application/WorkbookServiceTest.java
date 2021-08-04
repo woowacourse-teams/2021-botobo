@@ -16,8 +16,8 @@ import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.card.CardNotFoundException;
+import botobo.core.exception.common.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -180,11 +180,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(true)
@@ -208,11 +208,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(false)

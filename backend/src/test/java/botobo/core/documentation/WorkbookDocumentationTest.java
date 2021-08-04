@@ -1,6 +1,7 @@
 package botobo.core.documentation;
 
 import botobo.core.application.WorkbookService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.tag.TagRequest;
@@ -72,7 +73,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findWorkbooksByUser() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findWorkbooksByUser(any())).willReturn(generateUserWorkbookResponse());
+        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
 
         // when, then
         document()

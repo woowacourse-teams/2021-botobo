@@ -3,7 +3,7 @@ package botobo.core.acceptance.user;
 import botobo.core.acceptance.AuthAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.user.UserResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

@@ -9,6 +9,7 @@ import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
+import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -94,6 +95,14 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .post("/api/cards", cardRequest)
                 .auth(createToken(userId))
                 .build();
+    }
+
+    protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
+        RequestBuilder.HttpResponse response = request()
+                .get("/api/workbooks/{id}/cards", workbookId)
+                .auth()
+                .build();
+        return response.convertBody(WorkbookCardResponse.class);
     }
 
     protected String createToken(Long id) {
