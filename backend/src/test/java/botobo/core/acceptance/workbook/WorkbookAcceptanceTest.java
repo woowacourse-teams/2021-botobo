@@ -38,11 +38,6 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("Workbook 인수 테스트")
 public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
-    @MockBean
-    private GithubOauthManager githubOauthManager;
-
-    private GithubUserInfoResponse userInfo, anotherUserInfo;
-
     @BeforeEach
     void setFixture() {
         userInfo = GithubUserInfoResponse.builder()
@@ -62,7 +57,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 성공")
     void createWorkbookByUser() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         TagRequest tagRequest = TagRequest.builder().id(0L).name("자바").build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
@@ -89,7 +84,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저 문제집 추가시 opened와 tags는 필수가 아니다 - 기본값 (opened = false, tags = empty list)")
     void createWorkbookByUserWithTags() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .tags(new ArrayList<>())
@@ -111,7 +106,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, name이 없을 때")
     void createWorkbookByUserWhenNameNotExist(String name) {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(name)
                 .opened(true)
@@ -130,7 +125,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, name이 30자 초과")
     void createWorkbookByUserWhenNameLengthOver30() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(stringGenerator(31))
                 .opened(true)
@@ -149,7 +144,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, Tag 아이디 없음")
     void createWorkbookByUserWhenTagIdNull() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         TagRequest tagRequest = TagRequest.builder().name("자바").build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("자바 문제집")
@@ -170,7 +165,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, Tag 아이디 음수")
     void createWorkbookByUserWhenTagIdNegative() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         TagRequest tagRequest = TagRequest.builder().id(-1L).name("자바").build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("자바 문제집")
@@ -191,7 +186,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, Tag 이름 없음")
     void createWorkbookByUserWhenTagNameNull() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         TagRequest tagRequest = TagRequest.builder().id(0L).build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("자바 문제집")
@@ -212,7 +207,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 추가 - 실패, 20자를 초과하는 Tag 이름")
     void createWorkbookByUserWhenTagNameLong() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         TagRequest tagRequest = TagRequest.builder().id(0L).name(stringGenerator(21)).build();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("자바 문제집")
@@ -233,10 +228,10 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집 전체 조회 - 성공")
     void findWorkbooksByUser() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
-        유저_문제집_등록되어_있음("Spring 문제집", true, accessToken);
-        유저_문제집_등록되어_있음("Database 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, accessToken);
+        유저_태그_포함_문제집_등록되어_있음("Database 문제집", true, accessToken);
 
         // when
         final HttpResponse response = request()
@@ -267,8 +262,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공")
     void findCategoryCardsById() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
@@ -290,8 +285,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 (카드 0개) - 성공")
     void findWorkbookCardsByIdWithNotExistsCard() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
         // when
         final HttpResponse response = request()
@@ -311,13 +306,15 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 - 실패, 자신의 문제집이 아닌 경우")
     void findWorkbookCardsByIdWithOtherUser() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
+
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
 
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", workbookResponse.getId())
-                .auth(로그인되어_있음(anotherUserInfo).getAccessToken())
+                .auth(otherAccessToken)
                 .build();
 
         // then
@@ -330,8 +327,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("공유 문제집 검색 - 성공")
     void findPublicWorkbooksBySearch() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
         // when
         final HttpResponse response = request()
@@ -349,8 +346,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("공유 문제집 조회 - 성공")
     void findPublicWorkbookById() {
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
         카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
@@ -371,7 +368,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 성공")
     void updateWorkbook() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
+        final String accessToken = 로그인되어_있음(userInfo);
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(0L).name("잡아").build()
         );
@@ -406,8 +403,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, name이 없을 때")
     void updateWorkbookWhenNameNotExist(String name) {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(name)
                 .opened(true)
@@ -428,8 +425,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, name이 30자 초과")
     void updateWorkbookWhenNameLengthOver30() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(stringGenerator(31))
                 .opened(true)
@@ -450,8 +447,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, opened가 없을 때")
     void updateWorkbookWhenOpenedNotExist() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(stringGenerator(31))
                 .cardCount(0)
@@ -471,8 +468,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, cardCount가 음수")
     void updateWorkbookWhenCardCountNegative() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
                 .opened(true)
@@ -493,8 +490,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 없음")
     void updateWorkbookByUserWhenTagNull() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
@@ -515,8 +512,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 아이디 없음")
     void updateWorkbookByUserWhenTagIdNull() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().name("자바").build()
         );
@@ -540,8 +537,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 아이디 음수")
     void updateWorkbookByUserWhenTagIdNegative() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(-1L).name("자바").build()
         );
@@ -565,8 +562,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 이름 없음")
     void updateWorkbookByUserWhenTagNameNull() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).build()
         );
@@ -590,8 +587,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, 20자를 초과하는 Tag 이름")
     void updateWorkbookByUserWhenTagNameLong() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name(stringGenerator(21)).build()
         );
@@ -615,10 +612,10 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, 다른 유저가 수정을 시도할 때")
     void updateWorkbookWithOtherUser() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
-        String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
+        String otherAccessToken = 로그인되어_있음(anotherUserInfo);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
                 .opened(false)
@@ -639,8 +636,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
         // when
         final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, accessToken);
@@ -653,10 +650,10 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 삭제 - 실패, 다른 유저가 삭제를 시도할 때")
     void deleteWorkbookWithOtherUser() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
 
         // when
         final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, otherAccessToken);
@@ -671,11 +668,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 성공")
     void scrapSelectedCardsToWorkbook() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Spring 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, accessToken).getId();
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("Java 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
         CardResponse response2 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
@@ -698,11 +695,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 성공, 중복되는 카드가 존재할 때 중복을 제거하고 추가한다.")
     void scrapSelectedCardsToWorkbookFailedWhenDuplicate() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
@@ -726,8 +723,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // given
         final Long workbookId = 100L;
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("Java 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
         CardResponse response2 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
@@ -738,7 +735,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .auth(로그인되어_있음(userInfo))
                 .build();
 
         // then
@@ -760,7 +757,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(로그인되어_있음(userInfo).getAccessToken())
+                .auth(로그인되어_있음(userInfo))
                 .build();
 
         // then
@@ -773,11 +770,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenUserNotFound() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("유저가 존재하지 않는 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("유저가 존재하지 않는 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
         CardResponse response2 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
@@ -801,11 +798,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저")
     void scrapSelectedCardsToWorkbookFailedWhenNotAuthor() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
         CardResponse response2 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
@@ -837,7 +834,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(로그인되어_있음(anotherUserInfo).getAccessToken())
+                .auth(로그인되어_있음(anotherUserInfo))
                 .build();
 
         // then
@@ -871,8 +868,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, Card Id는 요청으로 들어왔으나 해당 ID의 카드가 모두 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenCardNotFound() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(100L, 101L))
@@ -894,11 +891,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, Card Id는 요청으로 들어왔으나 해당 ID의 카드가 일부 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenPartOfCardNotFound() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo).getAccessToken();
-        final Long workbookId = 유저_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
+        final String accessToken = 로그인되어_있음(userInfo);
+        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
 
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo).getAccessToken();
-        final Long otherWorkbookId = 유저_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
+        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
+        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
         CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
         CardResponse response2 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
 
@@ -932,21 +929,5 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .delete("/api/workbooks/{id}", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
-    }
-
-    private TokenResponse 로그인되어_있음(GithubUserInfoResponse userInfo) {
-        ExtractableResponse<Response> response = 로그인_요청(userInfo);
-        return response.as(TokenResponse.class);
-    }
-
-    private ExtractableResponse<Response> 로그인_요청(GithubUserInfoResponse userInfo) {
-        LoginRequest loginRequest = new LoginRequest("githubCode");
-
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(userInfo);
-
-        return request()
-                .post("/api/login", loginRequest)
-                .build()
-                .extract();
     }
 }

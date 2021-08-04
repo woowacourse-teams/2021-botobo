@@ -7,21 +7,34 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminWorkbookRequest;
+import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.LoginRequest;
+import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
 public class DomainAcceptanceTest extends AcceptanceTest {
+
+    @MockBean
+    protected GithubOauthManager githubOauthManager;
+
+    protected GithubUserInfoResponse userInfo, anotherUserInfo;
 
     @Autowired
     protected UserRepository userRepository;
@@ -86,10 +99,10 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .answer(answer)
                 .workbookId(workbookId)
                 .build();
-        return 카드_등록되어있음(cardRequest, userId);
+        return 카드_등록되어_있음(cardRequest, userId);
     }
 
-    private CardResponse 카드_등록되어있음(CardRequest cardRequest, Long userId) {
+    private CardResponse 카드_등록되어_있음(CardRequest cardRequest, Long userId) {
         return 카드_생성_요청(cardRequest, userId).convertBody(CardResponse.class);
     }
 
@@ -106,10 +119,10 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .answer(answer)
                 .workbookId(workbookId)
                 .build();
-        return 카드_등록되어있음(cardRequest, accessToken);
+        return 카드_등록되어_있음(cardRequest, accessToken);
     }
 
-    private CardResponse 카드_등록되어있음(CardRequest cardRequest, String accessToken) {
+    private CardResponse 카드_등록되어_있음(CardRequest cardRequest, String accessToken) {
         return 카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
     }
 
@@ -141,19 +154,30 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .build();
     }
 
-    protected WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+    protected WorkbookResponse 유저_태그_포함_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );
-        WorkbookRequest workbookRequest = WorkbookRequest.builder()
-                .name(name)
-                .opened(opened)
-                .tags(tagRequests)
-                .build();
-        return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+        return 유저_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
     }
 
     protected String createToken(Long id) {
         return jwtTokenProvider.createToken(id);
+    }
+
+    protected String 로그인되어_있음(GithubUserInfoResponse userInfo) {
+        ExtractableResponse<Response> response = 로그인_요청(userInfo);
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    protected ExtractableResponse<Response> 로그인_요청(GithubUserInfoResponse userInfo) {
+        LoginRequest loginRequest = new LoginRequest("githubCode");
+
+        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(userInfo);
+
+        return request()
+                .post("/api/login", loginRequest)
+                .build()
+                .extract();
     }
 }
