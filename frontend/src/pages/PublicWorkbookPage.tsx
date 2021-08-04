@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { PageHeader, PublicWorkbookList } from '../components';
-import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
+import { MainHeader, PublicWorkbookList } from '../components';
+import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
@@ -36,7 +36,7 @@ const PublicWorkbookPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+      <MainHeader />
       <Container>
         <SearchBar isFocus={isFocus}>
           <SearchIcon width="1.3rem" height="1.3rem" />
@@ -49,7 +49,7 @@ const PublicWorkbookPage = () => {
               setPublicWorkbooks([]);
               debounce(() => search(target.value), 400);
             }}
-            placeholder="검색어를 입력해주세요"
+            placeholder="문제집을 검색해보세요"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
           />

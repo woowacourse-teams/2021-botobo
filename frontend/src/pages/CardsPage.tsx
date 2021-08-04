@@ -2,8 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import { Button, CardAddForm, PageHeader, QnACard } from '../components';
-import { ROUTE } from '../constants';
+import { Button, CardAddForm, MainHeader, QnACard } from '../components';
 import { useCard } from '../hooks';
 import { CardResponse } from '../types';
 import CardsLoadable from './CardsLoadable';
@@ -49,7 +48,7 @@ const CardsPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.CARDS.TITLE} />
+      <MainHeader />
       {cards.length > 0 && (
         <Container>
           <WorkbookName>{workbookName}</WorkbookName>

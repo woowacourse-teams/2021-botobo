@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, PageHeader, QuizResult } from '../components';
+import { Button, MainHeader, QuizResult } from '../components';
 import { ROUTE } from '../constants';
 import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
@@ -14,8 +14,9 @@ const QuizResultPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.QUIZ_RESULT.TITLE} />
+      <MainHeader />
       <Container>
+        <Title>{ROUTE.QUIZ_RESULT.TITLE}</Title>
         <span>총 {quizResults.length}문제를 푸셨네요!</span>
         <br />
         <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
@@ -63,6 +64,10 @@ const Container = styled.div`
     css`
       padding: ${theme.pageSize.padding};
     `}
+`;
+
+const Title = styled.h2`
+  margin-bottom: 1rem;
 `;
 
 const QuizResultList = styled.ul`
