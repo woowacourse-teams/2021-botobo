@@ -262,7 +262,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", 1L)
-                .auth()
+                .failAuth()
                 .build();
         // then
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
@@ -277,7 +277,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", 2L)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -310,7 +310,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks/public/{id}", 1L)
-                .auth()
+                .failAuth()
                 .build();
         // then
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
@@ -724,7 +724,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -791,7 +791,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth()
+                .failAuth()
                 .build();
 
         // then

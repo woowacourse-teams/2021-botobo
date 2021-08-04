@@ -63,7 +63,7 @@ public class RequestBuilder {
             return this;
         }
 
-        public Options auth() {
+        public Options failAuth() {
             this.loginFlag = true;
             return this;
         }
