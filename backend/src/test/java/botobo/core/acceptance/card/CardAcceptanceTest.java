@@ -491,7 +491,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/next-quiz", request)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // then
@@ -516,5 +516,64 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse).extracting("message").isEqualTo("유효하지 않은 또 보기 카드 등록 요청입니다.");
+    }
+
+    @Test
+    @DisplayName("또 보기 원하는 카드 선택 - 실패, 로그인하지 않은 경우")
+    void selectNextQuizCardsWhenUserNotLogin() {
+        // given
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
+                .cardIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .put("/api/cards/next-quiz", request)
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(errorResponse).extracting("message").isEqualTo("토큰이 유효하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("또 보기 원하는 카드 선택 - 실패, 유저가 존재하지 않는 경우")
+    void selectNextQuizCardsWhenUserNotFound() {
+        // given
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
+                .cardIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .put("/api/cards/next-quiz", request)
+                .auth() // 100L
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse).extracting("message").isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("또 보기 원하는 카드 선택 - 실패, author가 아닌 경우")
+    void selectNextQuizCardsWhenUserIsNotAuthor() {
+        // given
+        NextQuizCardsRequest request = NextQuizCardsRequest.builder()
+                .cardIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when
+        final HttpResponse response = request()
+                .put("/api/cards/next-quiz", request)
+                .auth(createToken(anyUser().getId()))
+                .build();
+
+        // then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 }
