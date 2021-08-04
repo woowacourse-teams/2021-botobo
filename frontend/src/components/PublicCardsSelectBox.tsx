@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import { postWorkbookAsync } from '../api';
 import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
 import Button from './Button';
@@ -28,9 +29,14 @@ const PublicCardsSelectBox = ({
       <div>
         {workbooks.length !== 0 && (
           <SelectBox
-            optionValues={workbooks}
+            optionValues={
+              isDefaultSelected
+                ? [{ id: 0, name: publicWorkbookName }]
+                : workbooks
+            }
             setSelectedId={(id) => setSelectedId(id)}
             title="문제집 선택"
+            disabled={isDefaultSelected}
           />
         )}
         <CheckBoxWrapper>
@@ -45,8 +51,19 @@ const PublicCardsSelectBox = ({
       <Button
         type="button"
         size="full"
-        onClick={() => {
-          takeCardsToMyWorkbook(selectedId);
+        onClick={async () => {
+          if (isDefaultSelected) {
+            const { id } = await postWorkbookAsync({
+              name: publicWorkbookName,
+              opened: true,
+              tags: [],
+            });
+
+            takeCardsToMyWorkbook(id);
+          } else {
+            takeCardsToMyWorkbook(selectedId);
+          }
+
           closeModal();
         }}
       >
