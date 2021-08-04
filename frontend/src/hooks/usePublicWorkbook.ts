@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { getPublicWorkbookAsync } from '../api';
-import { publicWorkbookIdState, searchKeywordState } from '../recoil';
+import { searchKeywordState } from '../recoil';
 import { PublicWorkbookResponse } from '../types';
 
 // TODO: 추상화 잘 해보자!(useSearch 느낌)
@@ -13,7 +13,6 @@ const usePublicWorkbook = () => {
   const [publicWorkbooks, setPublicWorkbooks] = useState<
     PublicWorkbookResponse[]
   >([]);
-  const setPublicWorkbookId = useSetRecoilState(publicWorkbookIdState);
 
   const search = async (value: string) => {
     try {
@@ -42,7 +41,6 @@ const usePublicWorkbook = () => {
     setInputValue,
     publicWorkbooks,
     setPublicWorkbooks,
-    setPublicWorkbookId,
     isLoading,
     setIsLoading,
     search,

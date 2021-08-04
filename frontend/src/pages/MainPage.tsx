@@ -1,20 +1,28 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
 import { STORAGE_KEY } from '../constants';
 import { useRouter, useWorkbook } from '../hooks';
-import { userState } from '../recoil';
+import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
+  const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
+    useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
+  const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
+
+  useEffect(() => {
+    if (!shouldWorkbookUpdate) return;
+
+    updateWorkbooks();
+  }, []);
 
   return (
     <>

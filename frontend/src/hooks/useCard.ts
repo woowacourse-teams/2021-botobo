@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import { shouldWorkbookUpdateState } from './../recoil/workbookState';
 import {
   deleteCardAsync,
   getCardsAsync,
   postCardAsync,
   putCardAsync,
 } from '../api';
-import { workbookIdState, workbookState } from '../recoil';
+import { workbookIdState } from '../recoil';
 import { CardResponse, CardsResponse } from '../types';
 import useModal from './useModal';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const cardsInitialState = {
@@ -20,20 +22,23 @@ const cardsInitialState = {
 
 const useCard = () => {
   const workbookId = useRecoilValue(workbookIdState);
-  const updateWorkbooks = useResetRecoilState(workbookState);
+  const setShouldWorkbookUpdateState = useSetRecoilState(
+    shouldWorkbookUpdateState
+  );
 
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
-  const [isLoading, setIsLoading] = useState(false);
   const { workbookName, cards } = cardInfo;
 
+  const [isLoading, setIsLoading] = useState(false);
   const showSnackbar = useSnackbar();
+  const { routeMain } = useRouter();
   const { openModal, closeModal } = useModal();
 
-  const getCard = async () => {
+  const getCards = async () => {
     try {
       setIsLoading(true);
-      const data = await getCardsAsync(workbookId);
-      setCardInfo(data);
+      const newCardInfo = await getCardsAsync(workbookId);
+      setCardInfo(newCardInfo);
       setIsLoading(false);
     } catch (error) {
       showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
@@ -44,9 +49,10 @@ const useCard = () => {
   const createCard = async (question: string, answer: string) => {
     try {
       const newCard = await postCardAsync({ workbookId, question, answer });
+
       setCardInfo({ ...cardInfo, cards: [newCard, ...cardInfo.cards] });
       closeModal();
-      updateWorkbooks();
+      setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
       console.error(error);
@@ -57,6 +63,7 @@ const useCard = () => {
   const editCard = async (info: CardResponse) => {
     try {
       const editedCard = await putCardAsync(info);
+
       setCardInfo({
         ...cardInfo,
         cards: cards.map((card) => {
@@ -65,6 +72,7 @@ const useCard = () => {
           return editedCard;
         }),
       });
+
       closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
     } catch (error) {
@@ -76,11 +84,13 @@ const useCard = () => {
   const deleteCard = async (id: number) => {
     try {
       await deleteCardAsync(id);
+
       setCardInfo({
         ...cardInfo,
         cards: cards.filter((card) => card.id !== id),
       });
-      updateWorkbooks();
+
+      setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
       console.error(error);
@@ -97,14 +107,20 @@ const useCard = () => {
   };
 
   useEffect(() => {
-    getCard();
+    if (workbookId === -1) {
+      routeMain();
+
+      return;
+    }
+
+    getCards();
   }, []);
 
   return {
     workbookId,
     workbookName,
     cards,
-    getCard,
+    getCards,
     createCard,
     editCard,
     deleteCard,

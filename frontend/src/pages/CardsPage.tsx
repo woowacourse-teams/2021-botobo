@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Button, CardAddForm, PageHeader, QnACard } from '../components';
 import { ROUTE } from '../constants';
-import { useCard, useRouter } from '../hooks';
+import { useCard } from '../hooks';
 import { CardResponse } from '../types';
 import CardsLoadable from './CardsLoadable';
 
@@ -31,10 +31,9 @@ const filters = [
 
 const CardsPage = () => {
   const {
-    workbookId,
     workbookName,
     cards,
-    getCard,
+    getCards,
     createCard,
     editCard,
     deleteCard,
@@ -42,14 +41,7 @@ const CardsPage = () => {
     openModal,
     isLoading,
   } = useCard();
-  const { routeMain } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
-
-  useEffect(() => {
-    if (workbookId === -1) {
-      routeMain();
-    }
-  }, []);
 
   if (isLoading) {
     return <CardsLoadable />;
@@ -72,7 +64,7 @@ const CardsPage = () => {
                 onClick={async () => {
                   if (id === currentFilterId) return;
 
-                  await getCard();
+                  await getCards();
                   setCurrentFilterId(id);
                 }}
               >

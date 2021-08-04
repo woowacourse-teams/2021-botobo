@@ -18,7 +18,6 @@ import {
   LoginPage,
   MainLoadable,
   MainPage,
-  PublicCardsLoadable,
   PublicCardsPage,
   PublicWorkbookPage,
   QuizPage,
@@ -85,11 +84,7 @@ const routes = [
   },
   {
     path: ROUTE.PUBLIC_CARDS.PATH,
-    component: (
-      <Suspense fallback={<PublicCardsLoadable />}>
-        <PublicCardsPage />
-      </Suspense>
-    ),
+    component: <PublicCardsPage />,
     isPublic: false,
   },
   {

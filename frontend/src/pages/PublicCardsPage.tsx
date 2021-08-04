@@ -21,6 +21,7 @@ import {
 } from '../hooks';
 import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
+import PublicCardsLoadable from './PublicCardsLoadable';
 
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
@@ -29,19 +30,24 @@ const PublicCardsPage = () => {
   const {
     workbookId,
     workbookName,
+    cards,
     cardCount,
     tags,
-    publicCards,
     isAllCardChecked,
     checkAllCard,
     checkedCardCount,
     checkCard,
     takeCardsToMyWorkbook,
+    isLoading,
   } = usePublicCard();
 
   const showSnackbar = useSnackbar();
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
+
+  if (isLoading) {
+    return <PublicCardsLoadable />;
+  }
 
   return (
     <>
@@ -79,7 +85,7 @@ const PublicCardsPage = () => {
           ))}
         </TagList>
         <ul>
-          {publicCards.map(({ id, question, answer, isChecked }) => (
+          {cards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
               <PublicQnACard
                 question={question}
