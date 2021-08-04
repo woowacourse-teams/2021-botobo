@@ -1,8 +1,10 @@
 package botobo.core.application;
 
+import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,5 +27,9 @@ public class UserService {
                 .userName(user.getUserName())
                 .profileUrl(user.getProfileUrl())
                 .build();
+    }
+
+    public void updateProfile(UserUpdateRequest userUpdateRequest, AppUser appUser) {
+
     }
 }
