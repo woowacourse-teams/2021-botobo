@@ -8,7 +8,6 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -34,16 +35,17 @@ public class UserController {
     }
 
     @PostMapping("/me")
-    public ResponseEntity<ProfileResponse> updateProfileImage(@AuthenticationPrincipal AppUser appUser,
-                                                              @RequestParam("image")MultipartFile multipartFile) {
-        // TODO S3 bucket에 연결하기
-        return ResponseEntity.ok(ProfileResponse.builder().build());
+    public ResponseEntity<ProfileResponse> updateProfileImage(@RequestParam("image") MultipartFile multipartFile,
+                                                              @AuthenticationPrincipal AppUser appUser)
+            throws IOException {
+        ProfileResponse profileResponse = userService.updateProfileImage(multipartFile, appUser);
+        return ResponseEntity.ok(profileResponse);
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserResponse> updateProfile(@AuthenticationPrincipal AppUser appUser,
-                                                      @RequestBody UserUpdateRequest userUpdateRequest) {
-        userService.updateProfile(userUpdateRequest, appUser);
-        return ResponseEntity.ok(UserResponse.builder().build());
+    public ResponseEntity<UserResponse> updateProfile(@RequestBody UserUpdateRequest userUpdateRequest,
+                                                      @AuthenticationPrincipal AppUser appUser) {
+        UserResponse userResponse = userService.updateProfile(userUpdateRequest, appUser);
+        return ResponseEntity.ok(userResponse);
     }
 }
