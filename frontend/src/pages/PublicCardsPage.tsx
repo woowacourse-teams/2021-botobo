@@ -114,15 +114,10 @@ const PublicCardsPage = () => {
             onClick={() => {
               if (checkedCardCount === 0) return;
 
-              if (workbooks.length === 0) {
-                showSnackbar({ message: '우선 문제집을 추가해주세요.' });
-
-                return;
-              }
-
               openModal({
                 content: (
                   <PublicCardsSelectBox
+                    publicWorkbookName={workbookName}
                     workbooks={workbooks}
                     takeCardsToMyWorkbook={takeCardsToMyWorkbook}
                     closeModal={closeModal}

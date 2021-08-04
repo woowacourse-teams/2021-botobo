@@ -4,27 +4,44 @@ import React, { useState } from 'react';
 import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
 import Button from './Button';
+import Checkbox from './Checkbox';
 import SelectBox from './SelectBox';
 
 interface Props {
+  publicWorkbookName: string;
   workbooks: WorkbookResponse[];
   takeCardsToMyWorkbook: (workbookId: number) => Promise<void>;
   closeModal: () => void;
 }
 
 const PublicCardsSelectBox = ({
+  publicWorkbookName,
   workbooks,
   takeCardsToMyWorkbook,
   closeModal,
 }: Props) => {
   const [selectedId, setSelectedId] = useState(workbooks[0]?.id || -1);
+  const [isDefaultSelected, setIsDefaultSelected] = useState(false);
+
   return (
     <Container>
-      <SelectBox
-        optionValues={workbooks}
-        setSelectedId={(id) => setSelectedId(id)}
-        title="문제집 선택"
-      />
+      <div>
+        {workbooks.length !== 0 && (
+          <SelectBox
+            optionValues={workbooks}
+            setSelectedId={(id) => setSelectedId(id)}
+            title="문제집 선택"
+          />
+        )}
+        <CheckBoxWrapper>
+          <Checkbox
+            labelText={`${publicWorkbookName}로 추가하기`}
+            name="defaultAdd"
+            checked={isDefaultSelected}
+            onChange={({ target }) => setIsDefaultSelected(target.checked)}
+          />
+        </CheckBoxWrapper>
+      </div>
       <Button
         type="button"
         size="full"
@@ -42,6 +59,10 @@ const PublicCardsSelectBox = ({
 const Container = styled.div`
   ${Flex({ direction: 'column', justify: 'space-between' })};
   height: 18.75rem;
+`;
+
+const CheckBoxWrapper = styled.div`
+  margin-top: 1rem;
 `;
 
 export default PublicCardsSelectBox;

@@ -17,7 +17,7 @@ const useWorkbook = () => {
   const setWorkbookId = useSetRecoilState(workbookIdState);
   const updateWorkbooks = useResetRecoilState(workbookState);
 
-  const { routeMain } = useRouter();
+  const { routePrevPage } = useRouter();
   const showSnackbar = useSnackbar();
 
   const createWorkbook = async (
@@ -29,7 +29,7 @@ const useWorkbook = () => {
       await postWorkbookAsync({ name, tags, opened });
       updateWorkbooks();
       showSnackbar({ message: '문제집이 추가되었어요.' });
-      routeMain();
+      routePrevPage();
     } catch (error) {
       console.error(error);
       showSnackbar({ message: '문제집을 추가하지 못했어요.', type: 'error' });
@@ -41,7 +41,7 @@ const useWorkbook = () => {
       await putWorkbookAsync(workbookInfo);
       updateWorkbooks();
       showSnackbar({ message: '문제집이 수정되었어요.' });
-      routeMain();
+      routePrevPage();
     } catch (error) {
       console.error(error);
       showSnackbar({ message: '문제집을 수정하지 못했어요.', type: 'error' });
