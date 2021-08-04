@@ -187,7 +187,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/api/cards/next-quiz", request)
-                .auth(jwtTokenProvider.createToken(user.getId()))
+                .auth(createToken(user.getId()))
                 .build()
                 .extract();
     }
