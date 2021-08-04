@@ -85,13 +85,17 @@ export const getUserInfoAsync = async () => {
 };
 
 export const postCardAsync = async (params: PostCardAsync) => {
-  await request.post('/cards', params);
+  const { data } = await request.post<CardResponse>('/cards', params);
+
+  return data;
 };
 
 export const putCardAsync = async (cardInfo: CardResponse) => {
   const { id, ...params } = cardInfo;
 
-  await request.put(`/cards/${id}`, params);
+  const { data } = await request.put<CardResponse>(`/cards/${id}`, params);
+
+  return data;
 };
 
 export const deleteCardAsync = async (id: number) => {
