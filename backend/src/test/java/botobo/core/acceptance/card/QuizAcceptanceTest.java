@@ -100,7 +100,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집 id가 비어있음")
-    void createQuizWithEmptyCategoryIdList() {
+    void createQuizWithEmptyWorkbookIdList() {
         // given
         List<Long> ids = Collections.emptyList();
         QuizRequest quizRequest =
@@ -175,9 +175,9 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
         assertThat(quizResponses.stream()
-                .map(QuizResponse::getQuestion)
+                .map(QuizResponse::getId)
                 .collect(Collectors.toList()))
-                .containsAll(List.of("1", "2", "3"));
+                .containsAll(List.of(1L, 2L, 3L));
     }
 
     public ExtractableResponse<Response> 다음에_또_보기(List<Long> cardIds) {
@@ -187,7 +187,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/api/cards/next-quiz", request)
-                .auth()
+                .auth(createToken(user.getId()))
                 .build()
                 .extract();
     }

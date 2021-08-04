@@ -258,7 +258,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공")
-    void findCategoryCardsById() {
+    void findWorkbookCardsById() {
         // when
         final HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", 1L)
