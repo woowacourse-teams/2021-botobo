@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -59,7 +60,7 @@ public class WorkbookResponse {
                 .build();
     }
 
-    public static List<WorkbookResponse> openedListOf(List<Workbook> workbooks) {
+    public static List<WorkbookResponse> openedListOf(Set<Workbook> workbooks) {
         return workbooks.stream()
                 .map(WorkbookResponse::openedOf)
                 .collect(Collectors.toList());
