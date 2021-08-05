@@ -6,6 +6,7 @@ import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,12 +35,12 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @PostMapping("/me")
+    @PostMapping(value = "/me")
     public ResponseEntity<ProfileResponse> updateProfileImage(@RequestParam("image") MultipartFile multipartFile,
                                                               @AuthenticationPrincipal AppUser appUser)
             throws IOException {
         ProfileResponse profileResponse = userService.updateProfileImage(multipartFile, appUser);
-        return ResponseEntity.ok(profileResponse);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/me")
