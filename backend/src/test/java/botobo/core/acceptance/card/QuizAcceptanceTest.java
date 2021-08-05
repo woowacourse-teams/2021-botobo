@@ -237,7 +237,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .failAuth()
+                .auth(createToken(1L))
                 .build();
 
         // when, then

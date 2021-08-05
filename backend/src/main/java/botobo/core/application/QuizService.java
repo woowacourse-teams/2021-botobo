@@ -38,9 +38,12 @@ public class QuizService extends AbstractUserService {
     @Transactional
     public List<QuizResponse> createQuiz(QuizRequest quizRequest, AppUser appUser) {
         findUser(appUser);
+
         final List<Long> workbookIds = quizRequest.getWorkbookIds();
         final int count = quizRequest.getCount();
+
         validateWorkbookIds(workbookIds);
+
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), count)
                 .postProcess();
         return QuizResponse.cardsOf(quiz);
