@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { QUIZ_MODE } from './../constants/index';
+import { QUIZ_MODE } from './../constants';
 import { quizState, workbookState } from './../recoil';
 import { quizModeState } from './../recoil/quizState';
 import { postQuizzesAsync } from '../api';

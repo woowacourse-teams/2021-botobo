@@ -8,9 +8,9 @@ include::{snippets}/quizzes-post-success/http-response.adoc[]
 
 === 퀴즈 생성 실패 - 해당 id의 문제집이 존재하지 않음.
 ==== 요청
-include::{snippets}/quizzes-post-fail-invalid-category-id/http-request.adoc[]
+include::{snippets}/quizzes-post-fail-invalid-workbook-id/http-request.adoc[]
 ==== 응답
-include::{snippets}/quizzes-post-fail-invalid-category-id/http-response.adoc[]
+include::{snippets}/quizzes-post-fail-invalid-workbook-id/http-response.adoc[]
 
 === 비회원용 퀴즈 생성하기
 ==== 요청

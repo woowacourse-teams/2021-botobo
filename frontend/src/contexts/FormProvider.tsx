@@ -87,7 +87,6 @@ const FormProvider = ({
     }
 
     onSubmit(values);
-    setValues(initialValues);
   };
 
   return (

@@ -19,7 +19,7 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
   const submitHashtag: React.KeyboardEventHandler<HTMLInputElement> = (
     event
   ) => {
-    if (event.key !== 'Enter') return;
+    if (event.key !== 'Enter' || value === '') return;
 
     event.preventDefault();
     setValue('');

@@ -20,6 +20,7 @@ interface BottomSheetProps {
   children: React.ReactNode;
   type: ModalType;
   isOpened: boolean;
+  deleteContent: () => void;
 }
 
 interface HeaderStyleProps {
@@ -83,6 +84,10 @@ const ModalProvider = ({ children }: Props) => {
     setIsOpened(false);
   };
 
+  const deleteContent = () => {
+    setModalContent(null);
+  };
+
   const closeWithDimmed: React.MouseEventHandler<HTMLDivElement> = ({
     target,
     currentTarget,
@@ -94,8 +99,8 @@ const ModalProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const reset = () => {
-      setModalContent(null);
       closeModal();
+      deleteContent();
     };
 
     window.addEventListener('popstate', reset);
@@ -106,34 +111,45 @@ const ModalProvider = ({ children }: Props) => {
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {isOpened && <Dimmed onClick={closeWithDimmed} />}
-      {modalContent && (
-        <Modal isOpened={isOpened} type={type}>
-          {(closeIcon || title) && (
-            <Header closeIcon={closeIcon}>
-              <button type="button" onClick={closeModal}>
-                {closeIcon === 'back' && (
-                  <BackIcon width="1.2rem" height="1.2rem" />
-                )}
-                {closeIcon === 'crossMark' && (
-                  <CloseButtonIcon width="0.8rem" height="0.8rem" />
-                )}
-                {closeIcon === 'down' && (
-                  <DownIcon width="1.2rem" height="1.2rem" />
-                )}
-              </button>
-              <h2>{title}</h2>
-            </Header>
-          )}
-          {modalContent}
-        </Modal>
-      )}
+      <Modal isOpened={isOpened} type={type} deleteContent={deleteContent}>
+        {(closeIcon || title) && (
+          <Header closeIcon={closeIcon}>
+            <button type="button" onClick={closeModal}>
+              {closeIcon === 'back' && (
+                <BackIcon width="1.2rem" height="1.2rem" />
+              )}
+              {closeIcon === 'crossMark' && (
+                <CloseButtonIcon width="0.8rem" height="0.8rem" />
+              )}
+              {closeIcon === 'down' && (
+                <DownIcon width="1.2rem" height="1.2rem" />
+              )}
+            </button>
+            <h2>{title}</h2>
+          </Header>
+        )}
+        {modalContent}
+      </Modal>
       {children}
     </ModalContext.Provider>
   );
 };
 
-const Modal = ({ children, type, isOpened }: BottomSheetProps) => (
-  <Container isOpened={isOpened} type={type}>
+const Modal = ({
+  children,
+  type,
+  isOpened,
+  deleteContent,
+}: BottomSheetProps) => (
+  <Container
+    isOpened={isOpened}
+    type={type}
+    onAnimationEnd={() => {
+      if (isOpened) return;
+
+      deleteContent();
+    }}
+  >
     {children}
   </Container>
 );
@@ -162,7 +178,7 @@ const Dimmed = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1;
+  z-index: 2;
 
   ${({ theme }) => css`
     background-color: ${`${theme.color.black}80`};
@@ -193,7 +209,7 @@ const Header = styled.div<HeaderStyleProps>`
 
 const Container = styled.div<Pick<BottomSheetProps, 'type' | 'isOpened'>>`
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   padding: 1rem;
 
   transition: visibility 0.2s;

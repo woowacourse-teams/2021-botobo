@@ -1,14 +1,12 @@
 import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useResetRecoilState } from 'recoil';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { PageHeader, PublicWorkbookList } from '../components';
-import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
+import { MainHeader, PublicWorkbookList } from '../components';
+import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
-import { publicCardState } from '../recoil';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
 
@@ -18,7 +16,7 @@ interface SearchStyleProps {
   isFocus: boolean;
 }
 
-interface LoadImageWrapperStyleProps {
+interface LoadImageStyleProps {
   isLoading: boolean;
 }
 
@@ -28,7 +26,6 @@ const PublicWorkbookPage = () => {
     setInputValue,
     publicWorkbooks,
     setPublicWorkbooks,
-    setPublicWorkbookId,
     setKeyword,
     search,
     isLoading,
@@ -37,11 +34,9 @@ const PublicWorkbookPage = () => {
   const [isFocus, setIsFocus] = useState(false);
   const { routePublicCards } = useRouter();
 
-  const updatePublicCards = useResetRecoilState(publicCardState);
-
   return (
     <>
-      <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+      <MainHeader />
       <Container>
         <SearchBar isFocus={isFocus}>
           <SearchIcon width="1.3rem" height="1.3rem" />
@@ -54,7 +49,7 @@ const PublicWorkbookPage = () => {
               setPublicWorkbooks([]);
               debounce(() => search(target.value), 400);
             }}
-            placeholder="검색어를 입력해주세요"
+            placeholder="문제집을 검색해보세요"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
           />
@@ -71,17 +66,13 @@ const PublicWorkbookPage = () => {
         </SearchBar>
         <PublicWorkbookList
           publicWorkbooks={publicWorkbooks}
-          onClickPublicWorkbook={async (id) => {
-            await setPublicWorkbookId(id);
-            updatePublicCards();
+          onClickPublicWorkbook={(id) => {
             setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
             setKeyword(inputValue);
             routePublicCards();
           }}
         />
-        <LoadImageWrapper isLoading={isLoading}>
-          <LoadImage />
-        </LoadImageWrapper>
+        <LoadImage isLoading={isLoading} />
       </Container>
     </>
   );
@@ -142,27 +133,19 @@ const SearchInput = styled.input`
   `}
 `;
 
-const LoadImageWrapper = styled.div<LoadImageWrapperStyleProps>`
-  ${Flex({ justify: 'center', items: 'center' })};
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-
-  ${({ isLoading }) => css`
-    display: ${isLoading ? 'flex' : 'none'};
-  `}
-`;
-
-const LoadImage = styled.div`
+const LoadImage = styled.div<LoadImageStyleProps>`
   width: 3.75rem;
   height: 3.25rem;
   background-image: url(${loadSrc});
   background-repeat: no-repeat;
   background-size: contain;
   animation: ${jumpAnimation} 1s infinite ease-in-out;
+  margin: 0 auto;
+  margin-top: 1rem;
+
+  ${({ isLoading }) => css`
+    display: ${isLoading ? 'block' : 'none'};
+  `}
 `;
 
 export default PublicWorkbookPage;

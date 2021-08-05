@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, PageHeader, WorkbookList } from '../components';
+import { Button, MainHeader, WorkbookList } from '../components';
 import { ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
 
@@ -11,8 +11,9 @@ const QuizSettingPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.QUIZ_SETTING.TITLE} />
+      <MainHeader />
       <Container>
+        <Title>{ROUTE.QUIZ_SETTING.TITLE}</Title>
         <span>어떤 문제를 풀어볼까요?</span>
         <WorkbookWrapper>
           <WorkbookList workbooks={workbooks} onClickWorkbook={checkWorkbook} />
@@ -30,6 +31,10 @@ const Container = styled.div`
     css`
       padding: ${theme.pageSize.padding};
     `}
+`;
+
+const Title = styled.h2`
+  margin-bottom: 1rem;
 `;
 
 const WorkbookWrapper = styled.div`

@@ -1,15 +1,16 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
 import {
   Button,
   Checkbox,
+  MainHeader,
   PageHeader,
+  PublicCardsSelectBox,
   PublicQnACard,
-  SelectBox,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
 import {
@@ -21,35 +22,39 @@ import {
 } from '../hooks';
 import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
+import PublicCardsLoadable from './PublicCardsLoadable';
 
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
-  const showSnackbar = useSnackbar();
-  const { openModal, closeModal } = useModal();
+  const { workbooks } = useWorkbook();
   const {
     workbookId,
     workbookName,
+    cards,
     cardCount,
     tags,
-    publicCards,
     isAllCardChecked,
     checkAllCard,
     checkedCardCount,
     checkCard,
     takeCardsToMyWorkbook,
+    isLoading,
   } = usePublicCard();
+
+  const showSnackbar = useSnackbar();
+  const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
 
-  const { workbooks } = useWorkbook();
-
-  const selectedId = useRef(workbooks[0]?.id || -1);
+  if (isLoading) {
+    return <PublicCardsLoadable />;
+  }
 
   return (
     <>
+      <MainHeader sticky={false} />
       <PageHeader
         title={ROUTE.PUBLIC_CARDS.TITLE}
-        sticky={true}
         rightContent={
           <StyledButton
             size="full"
@@ -63,7 +68,7 @@ const PublicCardsPage = () => {
               routeQuiz();
             }}
           >
-            바로 풀어보기
+            학습하기
           </StyledButton>
         }
       />
@@ -81,7 +86,7 @@ const PublicCardsPage = () => {
           ))}
         </TagList>
         <ul>
-          {publicCards.map(({ id, question, answer, isChecked }) => (
+          {cards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
               <PublicQnACard
                 question={question}
@@ -109,30 +114,14 @@ const PublicCardsPage = () => {
             onClick={() => {
               if (checkedCardCount === 0) return;
 
-              if (workbooks.length === 0) {
-                showSnackbar({ message: '우선 문제집을 추가해주세요.' });
-
-                return;
-              }
-
               openModal({
                 content: (
-                  <ModalContainer>
-                    <SelectBox
-                      optionValues={workbooks}
-                      setSelectedId={(id) => (selectedId.current = id)}
-                      title="문제집 선택"
-                    />
-                    <Button
-                      size="full"
-                      onClick={() => {
-                        takeCardsToMyWorkbook(selectedId.current);
-                        closeModal();
-                      }}
-                    >
-                      확인
-                    </Button>
-                  </ModalContainer>
+                  <PublicCardsSelectBox
+                    publicWorkbookName={workbookName}
+                    workbooks={workbooks}
+                    takeCardsToMyWorkbook={takeCardsToMyWorkbook}
+                    closeModal={closeModal}
+                  />
                 ),
                 closeIcon: 'down',
               });
@@ -147,7 +136,13 @@ const PublicCardsPage = () => {
 };
 
 const StyledButton = styled(Button)`
-  width: 8rem;
+  width: max-content;
+  height: 2rem;
+
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.small};
+    `}
 `;
 
 const Container = styled.div`
@@ -213,11 +208,6 @@ const CheckboxWrapper = styled.div`
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `};
-`;
-
-const ModalContainer = styled.div`
-  ${Flex({ direction: 'column', justify: 'space-between' })};
-  height: 18.75rem;
 `;
 
 export default PublicCardsPage;

@@ -13,13 +13,11 @@ import { useRecoilValue } from 'recoil';
 
 import { ROUTE } from './constants';
 import {
-  CardsLoadable,
   CardsPage,
   GithubCallbackPage,
   LoginPage,
   MainLoadable,
   MainPage,
-  PublicCardsLoadable,
   PublicCardsPage,
   PublicWorkbookPage,
   QuizPage,
@@ -76,11 +74,7 @@ const routes = [
   },
   {
     path: ROUTE.CARDS.PATH,
-    component: (
-      <Suspense fallback={<CardsLoadable />}>
-        <CardsPage />
-      </Suspense>
-    ),
+    component: <CardsPage />,
     isPublic: false,
   },
   {
@@ -90,11 +84,7 @@ const routes = [
   },
   {
     path: ROUTE.PUBLIC_CARDS.PATH,
-    component: (
-      <Suspense fallback={<PublicCardsLoadable />}>
-        <PublicCardsPage />
-      </Suspense>
-    ),
+    component: <PublicCardsPage />,
     isPublic: false,
   },
   {
