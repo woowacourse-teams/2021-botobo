@@ -1,35 +1,51 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import OpenIcon from '../assets/chevron-down-solid.svg';
 import { Flex, scrollBarStyle } from '../styles';
 
-interface OptionValues {
+interface OptionValue {
   id: number;
   name: string;
 }
 
 interface Props {
   title?: string;
-  optionValues: OptionValues[];
+  optionValues: OptionValue[];
   setSelectedId: (id: number) => void;
+  disabled?: boolean;
 }
 
 interface CurrentStyleProps {
   isFocus: boolean;
+  disabled: boolean;
 }
 
-const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
+const SelectBox = ({
+  title,
+  optionValues,
+  setSelectedId,
+  disabled = false,
+}: Props) => {
   const [isFocus, setIsFocus] = useState(false);
   const [currentId, setCurrentId] = useState(optionValues[0].id);
+
+  useEffect(() => {
+    setCurrentId(optionValues[0].id);
+  }, [disabled]);
 
   return (
     <Container tabIndex={1} onBlur={() => setIsFocus(false)}>
       {title && <Title>{title}</Title>}
       <Current
-        onClick={() => setIsFocus((prevState) => !prevState)}
+        onClick={() => {
+          if (disabled) return;
+
+          setIsFocus((prevState) => !prevState);
+        }}
         isFocus={isFocus}
+        disabled={disabled}
       >
         <ul>
           {optionValues.map(({ id, name }) => (
@@ -63,6 +79,7 @@ const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
 
 const Container = styled.div`
   position: relative;
+  z-index: 1;
   width: 100%;
   margin: 0 auto;
 `;
@@ -111,6 +128,10 @@ const OptionList = styled.ul`
   ${({ theme }) => css`
     box-shadow: ${theme.boxShadow.button};
     border: 1px solid ${theme.color.gray_4};
+
+    & > li {
+      background-color: ${theme.color.white};
+    }
   `}
 `;
 
@@ -131,9 +152,10 @@ const Current = styled.div<CurrentStyleProps>`
   cursor: pointer;
   outline: none;
 
-  ${({ theme, isFocus }) => css`
+  ${({ theme, isFocus, disabled }) => css`
     border: 1px solid ${theme.color.gray_4};
     box-shadow: ${theme.boxShadow.button};
+    background-color: ${disabled ? theme.color.gray_3 : ''};
 
     ${isFocus &&
     css`

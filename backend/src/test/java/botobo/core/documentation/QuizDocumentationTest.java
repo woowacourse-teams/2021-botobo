@@ -4,6 +4,7 @@ import botobo.core.application.QuizService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.ui.QuizController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     private final AppUser appUser = AppUser.user(1L);
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L), 10);
@@ -41,6 +42,42 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("quizzes-post-success");
+    }
+
+    @Test
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
+    void createQuizWithInvalidWorkbookId() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L), 10);
+        given(quizService.createQuiz(quizRequest, appUser)).willThrow(WorkbookNotFoundException.class);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/quizzes", quizRequest)
+                .auth(token)
+                .build()
+                .status(status().isNotFound())
+                .identifier("quizzes-post-fail-invalid-workbook-id");
+    }
+
+    @Test
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
+    void createQuizWithEmptyCards() throws Exception {
+        // given
+        String token = "botobo.access.token";
+        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L));
+        given(quizService.createQuiz(Collections.singletonList(100L))).willThrow(new QuizEmptyException());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/quizzes", quizRequest)
+                .auth(token)
+                .build()
+                .status(status().isBadRequest())
+                .identifier("quizzes-post-fail-empty-cards");
     }
 
     @Test

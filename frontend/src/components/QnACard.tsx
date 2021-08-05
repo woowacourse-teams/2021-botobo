@@ -1,12 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
 import FillStarIcon from '../assets/star-fill.svg';
 import { useModal } from '../hooks';
-import { cardIdState } from '../recoil';
 import { CardResponse } from '../types';
 import { debounce } from '../utils';
 import CardEditForm from './CardEditForm';
@@ -29,7 +27,6 @@ const QnACard = ({
   toggleBookmark,
 }: Props) => {
   const { openModal } = useModal();
-  const setCardId = useSetRecoilState(cardIdState);
   const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
 
   const onClickBookmark = () => {
@@ -41,7 +38,6 @@ const QnACard = ({
     <CardTemplate
       editable={true}
       onClickEditButton={async () => {
-        await setCardId(cardInfo.id);
         openModal({
           content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
           title: workbookName,

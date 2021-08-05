@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -237,11 +239,13 @@ class QuizServiceTest {
 
     @Test
     @DisplayName("문제집 id(Long) 및 다음에 또보기 카드 10개를 포함한 퀴즈 생성 - 성공")
-    void createQuizWithOneCards() {
+    void createQuizWithNextQuizCards() {
         // given
         List<Long> ids = Collections.singletonList(1L);
-        QuizRequest quizRequest = makeQuizRequest(ids, 10);
+        List<Card> cards = listOfNextQuizCards(5, true);
+        cards.addAll(listOfNextQuizCards(5, false));
 
+        QuizRequest quizRequest = makeQuizRequest(ids, 10);
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.existsById(any())).willReturn(true);
         given(cardRepository.findCardsByWorkbookIds(any())).willReturn(cards);
@@ -250,8 +254,8 @@ class QuizServiceTest {
         List<QuizResponse> quizResponses = quizService.createQuiz(quizRequest, appUser);
 
         // then
+        assertThat(cards).extracting("nextQuiz").doesNotContain(true);
         assertThat(quizResponses.size()).isEqualTo(10);
-
         then(cardRepository)
                 .should(times(1))
                 .findCardsByWorkbookIds(ids);
@@ -261,6 +265,24 @@ class QuizServiceTest {
         then(workbookRepository)
                 .should(times(1))
                 .existsById(1L);
+    }
+
+    private List<Card> listOfNextQuizCards(int quantity, boolean nextQuiz) {
+        return IntStream.range(0, quantity)
+                .mapToObj(num -> card(nextQuiz))
+                .collect(Collectors.toList());
+    }
+
+    private Card card(boolean nextQuiz) {
+        Workbook workbook = Workbook.builder()
+                .name("workbook")
+                .build();
+        return Card.builder()
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .nextQuiz(nextQuiz)
+                .build();
     }
 
     @Test

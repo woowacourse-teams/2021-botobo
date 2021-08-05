@@ -13,6 +13,7 @@ import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
@@ -241,6 +242,98 @@ class WorkbookServiceTest {
                 .hasMessage("해당 문제집을 찾을 수 없습니다.");
 
         // then
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 카드 모아보기 - 성공")
+    void findWorkbookCardsById() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        Card card2 = Card.builder()
+                .id(2L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
+
+        // when
+        WorkbookCardResponse workbookCardResponse = workbookService.findWorkbookCardsById(workbook.getId(),
+                normalUser.toAppUser());
+
+        // then
+        assertThat(workbookCardResponse.getWorkbookId()).isEqualTo(workbook.getId());
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbook.getName());
+        assertThat(workbookCardResponse.getCards()).hasSize(2);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 카드 모아보기 - 실패, 자신의 문제집이 아닌 경우")
+    void findWorkbookCardsByIdWithOtherUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        Card card2 = Card.builder()
+                .id(2L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        User otherUser = User.builder()
+                .id(3L)
+                .githubId(7L)
+                .userName("pk")
+                .profileUrl("github.io")
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(otherUser));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
+
+        // when, then
+        assertThatThrownBy(
+                () -> workbookService.findWorkbookCardsById(workbook.getId(),
+                        normalUser.toAppUser()))
+                .isInstanceOf(NotAuthorException.class);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findByIdAndOrderCardByNew(anyLong());
     }
