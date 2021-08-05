@@ -11,7 +11,7 @@ const useQuiz = () => {
   const quizMode = useRecoilValue(quizModeState);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [prevQuizId, setPrevQuizId] = useState<number | null>(null);
-  const { routeQuizResult, routeMain, routePublicCards } = useRouter();
+  const { routeQuizResult, routeMain, routePrevPage } = useRouter();
 
   const showPrevQuiz = () => {
     if (currentQuizIndex === 0) return;
@@ -24,7 +24,7 @@ const useQuiz = () => {
     const routeByQuizMode = {
       [QUIZ_MODE.DEFAULT]: routeQuizResult,
       [QUIZ_MODE.GUEST]: routeMain,
-      [QUIZ_MODE.OTHERS]: () => routePublicCards(),
+      [QUIZ_MODE.OTHERS]: routePrevPage,
     };
 
     if (currentQuizIndex === quizzes.length - 1) {

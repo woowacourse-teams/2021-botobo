@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
+import { useTimeout } from '../hooks';
 import Button from './Button';
 import CardTextArea from './CardTextArea';
 
@@ -16,19 +17,27 @@ const validateCardText = (value: string) => {
   }
 };
 
-const CardAddForm = ({ onSubmit }: Props) => (
-  <FormProvider
-    initialValues={{ question: '', answer: '' }}
-    validators={{ question: validateCardText, answer: validateCardText }}
-    onSubmit={({ question, answer }) => onSubmit(question, answer)}
-  >
-    <Container>
-      <CardTextArea title="질문" inputName="question" />
-      <CardTextArea title="답변" inputName="answer" />
-      <Button size="full">추가하기</Button>
-    </Container>
-  </FormProvider>
-);
+const CardAddForm = ({ onSubmit }: Props) => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  //TODO: 딜레이를 넣어야 하는 이유를 알아 보기.
+  useTimeout(() => inputRef?.current?.focus(), 100);
+
+  return (
+    <FormProvider
+      initialValues={{ question: '', answer: '' }}
+      validators={{ question: validateCardText, answer: validateCardText }}
+      onSubmit={({ question, answer }) => onSubmit(question, answer)}
+    >
+      <Container>
+        <CardTextArea title="질문" inputName="question" ref={inputRef} />
+        <CardTextArea title="답변" inputName="answer" />
+        <Button size="full">추가하기</Button>
+      </Container>
+    </FormProvider>
+  );
+};
+
 const Container = styled.div`
   padding: 0 1rem;
   padding-bottom: 1rem;

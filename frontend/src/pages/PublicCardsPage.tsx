@@ -7,6 +7,7 @@ import { getQuizzesAsync } from '../api';
 import {
   Button,
   Checkbox,
+  MainHeader,
   PageHeader,
   PublicCardsSelectBox,
   PublicQnACard,
@@ -51,9 +52,9 @@ const PublicCardsPage = () => {
 
   return (
     <>
+      <MainHeader sticky={false} />
       <PageHeader
         title={ROUTE.PUBLIC_CARDS.TITLE}
-        sticky={true}
         rightContent={
           <StyledButton
             size="full"
@@ -67,7 +68,7 @@ const PublicCardsPage = () => {
               routeQuiz();
             }}
           >
-            바로 풀어보기
+            학습하기
           </StyledButton>
         }
       />
@@ -113,15 +114,10 @@ const PublicCardsPage = () => {
             onClick={() => {
               if (checkedCardCount === 0) return;
 
-              if (workbooks.length === 0) {
-                showSnackbar({ message: '우선 문제집을 추가해주세요.' });
-
-                return;
-              }
-
               openModal({
                 content: (
                   <PublicCardsSelectBox
+                    publicWorkbookName={workbookName}
                     workbooks={workbooks}
                     takeCardsToMyWorkbook={takeCardsToMyWorkbook}
                     closeModal={closeModal}
@@ -140,7 +136,13 @@ const PublicCardsPage = () => {
 };
 
 const StyledButton = styled(Button)`
-  width: 8rem;
+  width: max-content;
+  height: 2rem;
+
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.small};
+    `}
 `;
 
 const Container = styled.div`

@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { PageHeader, PublicWorkbookList } from '../components';
-import { CLOUD_FRONT_DOMAIN, ROUTE, STORAGE_KEY } from '../constants';
+import { MainHeader, PublicWorkbookList } from '../components';
+import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { usePublicWorkbook, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { debounce, setSessionStorage } from '../utils';
@@ -16,7 +16,7 @@ interface SearchStyleProps {
   isFocus: boolean;
 }
 
-interface LoadImageWrapperStyleProps {
+interface LoadImageStyleProps {
   isLoading: boolean;
 }
 
@@ -36,7 +36,7 @@ const PublicWorkbookPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.PUBLIC_WORKBOOK.TITLE} />
+      <MainHeader />
       <Container>
         <SearchBar isFocus={isFocus}>
           <SearchIcon width="1.3rem" height="1.3rem" />
@@ -49,7 +49,7 @@ const PublicWorkbookPage = () => {
               setPublicWorkbooks([]);
               debounce(() => search(target.value), 400);
             }}
-            placeholder="검색어를 입력해주세요"
+            placeholder="문제집을 검색해보세요"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
           />
@@ -72,9 +72,7 @@ const PublicWorkbookPage = () => {
             routePublicCards();
           }}
         />
-        <LoadImageWrapper isLoading={isLoading}>
-          <LoadImage />
-        </LoadImageWrapper>
+        <LoadImage isLoading={isLoading} />
       </Container>
     </>
   );
@@ -135,27 +133,19 @@ const SearchInput = styled.input`
   `}
 `;
 
-const LoadImageWrapper = styled.div<LoadImageWrapperStyleProps>`
-  ${Flex({ justify: 'center', items: 'center' })};
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-
-  ${({ isLoading }) => css`
-    display: ${isLoading ? 'flex' : 'none'};
-  `}
-`;
-
-const LoadImage = styled.div`
+const LoadImage = styled.div<LoadImageStyleProps>`
   width: 3.75rem;
   height: 3.25rem;
   background-image: url(${loadSrc});
   background-repeat: no-repeat;
   background-size: contain;
   animation: ${jumpAnimation} 1s infinite ease-in-out;
+  margin: 0 auto;
+  margin-top: 1rem;
+
+  ${({ isLoading }) => css`
+    display: ${isLoading ? 'block' : 'none'};
+  `}
 `;
 
 export default PublicWorkbookPage;

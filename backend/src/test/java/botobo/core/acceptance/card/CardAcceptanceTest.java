@@ -213,7 +213,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/cards", cardRequest)
-                .auth() // 100L
+                .failAuth() // 100L
                 .build();
 
         // then
@@ -394,7 +394,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/1", cardUpdateRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -453,7 +453,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .delete("/api/cards/" + cardId)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -509,7 +509,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/next-quiz", request)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -548,7 +548,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .put("/api/cards/next-quiz", request)
-                .auth() // 100L
+                .failAuth() // 100L
                 .build();
 
         // then

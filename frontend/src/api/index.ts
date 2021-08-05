@@ -103,7 +103,9 @@ export const deleteCardAsync = async (id: number) => {
 };
 
 export const postWorkbookAsync = async (params: PostWorkbookAsync) => {
-  await request.post('/workbooks', params);
+  const { data } = await request.post<WorkbookResponse>('/workbooks', params);
+
+  return data;
 };
 
 export const putWorkbookAsync = async (workbookInfo: WorkbookResponse) => {
