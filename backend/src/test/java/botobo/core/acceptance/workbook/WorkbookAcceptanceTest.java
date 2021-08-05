@@ -692,32 +692,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집으로 카드 가져오기 - 성공, 중복되는 카드가 존재할 때 중복을 제거하고 추가한다.")
-    void scrapSelectedCardsToWorkbookFailedWhenDuplicate() {
-        // given
-        final String accessToken = 로그인되어_있음(userInfo);
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken).getId();
-
-        final String otherAccessToken = 로그인되어_있음(anotherUserInfo);
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음("Spring 문제집", true, otherAccessToken).getId();
-        CardResponse response1 = 카드_등록되어_있음("question", "answer", otherWorkbookId, otherAccessToken);
-
-        final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
-                .cardIds(Arrays.asList(response1.getId(), response1.getId()))
-                .build();
-
-        // when
-        final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(accessToken)
-                .build();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.header("Location")).isEqualTo(String.format("/api/workbooks/%d/cards", workbookId));
-    }
-
-    @Test
     @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집이 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenWorkbookNotExist() {
         // given
