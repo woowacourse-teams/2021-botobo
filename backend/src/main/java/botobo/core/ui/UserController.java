@@ -40,7 +40,7 @@ public class UserController {
                                                               @AuthenticationPrincipal AppUser appUser)
             throws IOException {
         ProfileResponse profileResponse = userService.updateProfileImage(multipartFile, appUser);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(profileResponse);
     }
 
     @PutMapping("/me")

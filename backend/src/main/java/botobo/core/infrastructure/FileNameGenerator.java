@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Component
 public class FileNameGenerator {
+    private static final String BASE_DIR = "users/";
     private static final String SLASH = "/";
 
     public String generateFileName(MultipartFile multipartFile, String userName) {
@@ -21,7 +22,7 @@ public class FileNameGenerator {
     }
 
     private String insertDirectory(String fileName, String userName) {
-        return userName + SLASH + fileName;
+        return BASE_DIR + userName + SLASH + fileName;
     }
 
     private String extension(MultipartFile multipartFile) {
