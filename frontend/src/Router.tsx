@@ -19,6 +19,7 @@ import {
   MainLoadable,
   MainPage,
   PublicCardsPage,
+  PublicSearchPage,
   PublicWorkbookPage,
   QuizPage,
   QuizResultPage,
@@ -75,6 +76,11 @@ const routes = [
   {
     path: ROUTE.CARDS.PATH,
     component: <CardsPage />,
+    isPublic: false,
+  },
+  {
+    path: ROUTE.PUBLIC_SEARCH.PATH,
+    component: <PublicSearchPage />,
     isPublic: false,
   },
   {

@@ -34,6 +34,10 @@ const ROUTE = {
     PATH: '/cardEdit',
     TITLE: '카드 수정',
   },
+  PUBLIC_SEARCH: {
+    PATH: '/publicSearch',
+    TITLE: '문제집 검색',
+  },
   PUBLIC_WORKBOOK: {
     PATH: '/publicWorkbook',
     TITLE: '공유 문제집',
