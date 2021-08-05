@@ -74,6 +74,9 @@ task copyDev(type: Copy) {
 
     from '../dev/application-local.yml'
     into './src/main/resources'
+
+    from '../dev/aws-s3.yml'
+    into './src/main/resources'
 }
 
 test {
