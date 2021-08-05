@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
@@ -20,9 +20,35 @@ interface QuizItemProps {
   quizIndex: number;
 }
 
+const cardSlideInfo = {
+  xPosition: 0,
+  width: 0,
+  pointOfChange: 0,
+};
+
 const QuizPage = () => {
   const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
     useQuiz();
+
+  const quizListRef = useRef<HTMLUListElement>(null);
+  const [xPosition, setXPosition] = useState('0');
+
+  useEffect(() => {
+    setXPosition(
+      `-${cardSlideInfo.width * currentQuizIndex}px - ${
+        1.25 * currentQuizIndex
+      }rem`
+    );
+  }, [currentQuizIndex]);
+
+  useEffect(() => {
+    if (!quizListRef?.current) return;
+
+    const quizListWidth = quizListRef.current.clientWidth;
+
+    cardSlideInfo.width = quizListWidth;
+    cardSlideInfo.pointOfChange = quizListWidth / 5;
+  }, []);
 
   return (
     <>
@@ -34,8 +60,51 @@ const QuizPage = () => {
           </Tooltip>
           {quizzes && (
             <QuizList
+              ref={quizListRef}
               quizCount={quizzes.length}
               currentIndex={currentQuizIndex}
+              style={{ transform: `translateX(calc(${xPosition}))` }}
+              onTouchStart={(event) => {
+                cardSlideInfo.xPosition = event.touches[0].clientX;
+              }}
+              onTouchMove={(event) => {
+                const targetStyle = event.currentTarget.style;
+                const changedXPosition =
+                  event.touches[0].clientX - cardSlideInfo.xPosition;
+
+                if (changedXPosition > cardSlideInfo.width) return;
+                if (changedXPosition < -cardSlideInfo.width) return;
+
+                window.requestAnimationFrame(() => {
+                  targetStyle.transform = `translateX(calc(${xPosition} + ${changedXPosition}px))`;
+                });
+              }}
+              onTouchEnd={(event) => {
+                const targetStyle = event.currentTarget.style;
+                const changedXPosition =
+                  event.changedTouches[0].clientX - cardSlideInfo.xPosition;
+
+                if (changedXPosition === 0) return;
+
+                if (changedXPosition < -cardSlideInfo.pointOfChange) {
+                  window.requestAnimationFrame(showNextQuiz);
+
+                  return;
+                }
+
+                if (
+                  changedXPosition > cardSlideInfo.pointOfChange &&
+                  currentQuizIndex !== 0
+                ) {
+                  window.requestAnimationFrame(showPrevQuiz);
+
+                  return;
+                }
+
+                window.requestAnimationFrame(() => {
+                  targetStyle.transform = `translateX(calc(${xPosition}))`;
+                });
+              }}
             >
               {quizzes.map(({ id, question, answer, workbookName }, index) => (
                 <QuizItem key={id} quizIndex={index}>
@@ -51,6 +120,9 @@ const QuizPage = () => {
           )}
         </QuizWrapper>
         <PageNation>
+          {currentQuizIndex === 0 && (
+            <SlideTooltip>카드를 좌우로 넘겨보세요</SlideTooltip>
+          )}
           <ArrowButton onClick={showPrevQuiz}>
             <LeftArrowIcon width="1rem" height="1rem" />
           </ArrowButton>
@@ -104,29 +176,31 @@ const Tooltip = styled.div<TooltipProps>`
 const QuizList = styled.ul<QuizListProps>`
   ${Flex()};
   transition: transform 0.15s ease;
-
-  ${({ quizCount, currentIndex }) => css`
-    width: calc(100% * ${quizCount});
-    transform: translateX(
-      calc(-${(100 / quizCount) * currentIndex}% - ${1.25 * currentIndex}rem)
-    );
-
-    & > li {
-      width: calc(100% / ${quizCount});
-    }
-  `};
+  column-gap: 1.25rem;
 `;
 
 const QuizItem = styled.li<QuizItemProps>`
-  ${({ quizIndex }) => css`
-    transform: translateX(${1.25 * quizIndex}rem);
-  `};
+  width: 100%;
+  flex-shrink: 0;
 `;
 
 const PageNation = styled.div`
   ${Flex({ items: 'center' })};
+  position: relative;
   margin-top: 5rem;
   height: 1.25rem;
+`;
+
+const SlideTooltip = styled.div`
+  position: absolute;
+  width: max-content;
+  transform: translateX(-50%);
+  left: 50%;
+  top: -4.5rem;
+
+  ${({ theme }) => css`
+    color: ${theme.color.gray_7};
+  `}
 `;
 
 const ArrowButton = styled.button`
