@@ -13,13 +13,13 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class RequestBuilder {
-    private static String defaultToken;
     private static String accessToken;
 
-    public RequestBuilder(String defaultToken) {
-        RequestBuilder.defaultToken = defaultToken;
+    public RequestBuilder(String accessToken) {
+        RequestBuilder.accessToken = accessToken;
     }
 
     public HttpFunction build() {
@@ -45,15 +45,14 @@ public class RequestBuilder {
     }
 
     public static class Options {
+        private final List<Map.Entry<String, String>> queryParams;
         private final RestAssuredRequest request;
-        private RequestSpecification requestSpecification;
+        private String customAccessToken;
         private boolean loginFlag;
         private boolean logFlag;
-        private final List<Map.Entry<String, String>> queryParams;
 
         public Options(RestAssuredRequest request) {
             this.request = request;
-            this.requestSpecification = RestAssured.given();
             this.loginFlag = false;
             this.logFlag = false;
             this.queryParams = new ArrayList<>();
@@ -61,18 +60,17 @@ public class RequestBuilder {
 
         public Options log() {
             this.logFlag = true;
-            this.requestSpecification = requestSpecification.log().all();
             return this;
         }
 
-        public Options auth() {
+        public Options failAuth() {
             this.loginFlag = true;
             return this;
         }
 
         public Options auth(String token) {
-            RequestBuilder.accessToken = token;
             this.loginFlag = true;
+            this.customAccessToken = token;
             return this;
         }
 
@@ -82,17 +80,13 @@ public class RequestBuilder {
         }
 
         public HttpResponse build() {
+            RequestSpecification requestSpecification = RestAssured.given();
             if (loginFlag) {
-                if (accessToken != null && !defaultToken.equals(accessToken)) {
-                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + accessToken);
-                    accessToken = null;
-                } else {
-                    requestSpecification = requestSpecification.header("Authorization", "Bearer " + defaultToken);
-                }
+                requestSpecification = addAuthHeader(requestSpecification, getToken());
             }
-            queryParams.forEach(entry -> {
-                requestSpecification.queryParam(entry.getKey(), entry.getValue());
-            });
+            for (Map.Entry<String, String> param : queryParams) {
+                requestSpecification = addParams(requestSpecification, param);
+            }
             ValidatableResponse response = request.action(requestSpecification);
             if (logFlag) {
                 response = response.log().all();
@@ -100,6 +94,22 @@ public class RequestBuilder {
             return new HttpResponse(response.extract());
         }
 
+        private String getToken() {
+            if (Objects.isNull(customAccessToken)) {
+                return accessToken;
+            }
+            final String token = customAccessToken;
+            customAccessToken = null;
+            return token;
+        }
+
+        private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, String> param) {
+            return requestSpecification.queryParam(param.getKey(), param.getValue());
+        }
+
+        private RequestSpecification addAuthHeader(RequestSpecification requestSpecification, String token) {
+            return requestSpecification.header("Authorization", "Bearer " + token);
+        }
     }
 
     public static class HttpResponse {

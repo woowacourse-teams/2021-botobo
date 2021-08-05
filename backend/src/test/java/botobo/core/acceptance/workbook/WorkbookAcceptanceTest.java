@@ -759,7 +759,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth()
+                .failAuth()
                 .build();
 
         // then
@@ -829,7 +829,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth()
+                .failAuth()
                 .build();
 
         // then

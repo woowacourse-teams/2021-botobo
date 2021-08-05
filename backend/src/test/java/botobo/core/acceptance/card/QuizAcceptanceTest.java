@@ -63,7 +63,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -84,7 +84,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -108,7 +108,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when, then
@@ -127,7 +127,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when, then
@@ -145,7 +145,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when, then
@@ -165,7 +165,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -235,7 +235,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 1L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -253,7 +253,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 100L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -271,7 +271,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 5L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -290,7 +290,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 4번 문제집은 isPublic = true
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 4L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
