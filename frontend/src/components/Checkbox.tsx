@@ -9,15 +9,9 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   labelText: string;
 }
 
-const Checkbox = ({ name, labelText, checked, onChange }: Props) => (
+const Checkbox = ({ name, labelText, ...props }: Props) => (
   <Container>
-    <StyledInput
-      type="checkbox"
-      id={name}
-      name={name}
-      checked={checked}
-      onChange={onChange}
-    />
+    <StyledInput type="checkbox" id={name} name={name} {...props} />
     <Label htmlFor={name}>
       <CheckboxShape>
         <CheckSvg />

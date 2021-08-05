@@ -12,7 +12,11 @@ import { removeLocalStorage } from '../utils';
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-const MainHeader = () => {
+interface Props {
+  sticky?: boolean;
+}
+
+const MainHeader = ({ sticky = true }: Props) => {
   const { routeMain, routeLogin } = useRouter();
   const [userInfo, setUserInfo] = useRecoilState(userState);
 
@@ -23,7 +27,7 @@ const MainHeader = () => {
   };
 
   return (
-    <StyledHeader>
+    <StyledHeader sticky={sticky}>
       <h1>
         <Logo
           href="/"
@@ -50,14 +54,21 @@ const MainHeader = () => {
   );
 };
 
-const StyledHeader = styled.header`
+const StyledHeader = styled.header<Required<Props>>`
   ${Flex({ justify: 'space-between', items: 'center' })};
   height: 3.75rem;
   padding: 0 0.75rem;
 
-  ${({ theme }) => css`
+  ${({ theme, sticky }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
+
+    ${sticky
+      ? css`
+          position: sticky;
+          top: 0;
+        `
+      : ''}
   `};
 `;
 

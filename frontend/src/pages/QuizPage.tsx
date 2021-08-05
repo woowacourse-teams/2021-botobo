@@ -4,8 +4,7 @@ import React from 'react';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { PageHeader, Quiz } from '../components';
-import { ROUTE } from '../constants';
+import { MainHeader, Quiz } from '../components';
 import { useQuiz } from '../hooks';
 import { Flex } from '../styles';
 
@@ -27,7 +26,7 @@ const QuizPage = () => {
 
   return (
     <>
-      <PageHeader title={ROUTE.QUIZ.TITLE} />
+      <MainHeader />
       <Container>
         <QuizWrapper>
           <Tooltip isTooltipVisible={currentQuizIndex === 0}>

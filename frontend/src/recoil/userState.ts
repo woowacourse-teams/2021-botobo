@@ -1,6 +1,6 @@
 import { atom, selector } from 'recoil';
 
-import { getUserInfoAsync } from './../api/index';
+import { getUserInfoAsync } from './../api';
 
 export const userState = atom({
   key: 'userState',

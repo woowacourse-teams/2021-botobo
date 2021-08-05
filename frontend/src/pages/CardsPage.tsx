@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { Button, CardAddForm, PageHeader, QnACard } from '../components';
-import { ROUTE } from '../constants';
-import { useCard, useRouter } from '../hooks';
+import { Button, CardAddForm, MainHeader, QnACard } from '../components';
+import { useCard } from '../hooks';
 import { CardResponse } from '../types';
+import CardsLoadable from './CardsLoadable';
 
 interface Filter {
   [key: number]: (cards: CardResponse[]) => CardResponse[];
@@ -30,28 +30,25 @@ const filters = [
 
 const CardsPage = () => {
   const {
-    workbookId,
     workbookName,
     cards,
+    getCards,
     createCard,
     editCard,
     deleteCard,
     toggleBookmark,
-    updateCardInfo,
     openModal,
+    isLoading,
   } = useCard();
-  const { routeMain } = useRouter();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
-  useEffect(() => {
-    if (workbookId === -1) {
-      routeMain();
-    }
-  }, []);
+  if (isLoading) {
+    return <CardsLoadable />;
+  }
 
   return (
     <>
-      <PageHeader title={ROUTE.CARDS.TITLE} />
+      <MainHeader />
       <Container>
         <WorkbookName>{workbookName}</WorkbookName>
         <span>{cards.length}개의 카드를 학습 중이에요.</span>
@@ -62,11 +59,11 @@ const CardsPage = () => {
               shape="round"
               backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
               inversion={true}
-              onClick={() => {
+              onClick={async () => {
                 if (id === currentFilterId) return;
 
+                await getCards();
                 setCurrentFilterId(id);
-                updateCardInfo();
               }}
             >
               {name}

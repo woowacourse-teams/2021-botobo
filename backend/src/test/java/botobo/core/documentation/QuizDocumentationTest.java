@@ -26,7 +26,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     private QuizService quizService;
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 성공")
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L));
@@ -44,8 +44,8 @@ public class QuizDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
-    void createQuizWithInvalidCategoryId() throws Exception {
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
+    void createQuizWithInvalidWorkbookId() throws Exception {
         // given
         String token = "botobo.access.token";
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L));
@@ -58,11 +58,11 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .auth(token)
                 .build()
                 .status(status().isNotFound())
-                .identifier("quizzes-post-fail-invalid-category-id");
+                .identifier("quizzes-post-fail-invalid-workbook-id");
     }
 
     @Test
-    @DisplayName("카테고리 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
+    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
     void createQuizWithEmptyCards() throws Exception {
         // given
         String token = "botobo.access.token";

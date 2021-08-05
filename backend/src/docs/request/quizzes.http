@@ -15,4 +15,4 @@ Host: localhost:8080
 
 ### 비회원용 퀴즈 생성하기
 GET /api/quizzes/guest HTTP/1.1
-Host: botobo.r-e.kr
+Host: localhost:8080
