@@ -56,6 +56,7 @@ dependencies {
     //test containers
     implementation("com.amazonaws:aws-java-sdk-s3")
     testImplementation "org.testcontainers:localstack:1.15.3"
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 
     // FileNameUtils
     implementation 'org.apache.tika:tika-core:2.0.0'

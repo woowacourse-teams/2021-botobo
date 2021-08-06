@@ -1,4 +1,4 @@
-package botobo.core.domain.user;
+package botobo.core.domain.user.s3;
 
 import java.util.Arrays;
 

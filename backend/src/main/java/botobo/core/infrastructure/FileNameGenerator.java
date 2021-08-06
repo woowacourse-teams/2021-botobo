@@ -1,11 +1,13 @@
 package botobo.core.infrastructure;
 
-import botobo.core.domain.user.ImageExtension;
+import botobo.core.domain.user.s3.ImageExtension;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Component
@@ -14,11 +16,16 @@ public class FileNameGenerator {
     private static final String SLASH = "/";
 
     public String generateFileName(MultipartFile multipartFile, String userName) {
-        return makeNewFileName(multipartFile, userName) + extension(multipartFile);
+        return makeNewFileName(replaceWhiteSpace(userName)) + extension(multipartFile);
     }
 
-    private String makeNewFileName(MultipartFile multipartFile, String userName) {
-        String newlyCreatedFileName = UUID.randomUUID() + "_" + multipartFile.getName();
+    private String replaceWhiteSpace(String userName) {
+        return userName.replaceAll("\\s+", "_");
+    }
+
+    private String makeNewFileName(String userName) {
+        String newlyCreatedFileName = UUID.randomUUID() + "_"
+                + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
         return insertDirectory(newlyCreatedFileName, userName);
     }
 
