@@ -175,7 +175,7 @@ const Tooltip = styled.div<TooltipProps>`
 
 const QuizList = styled.ul<QuizListProps>`
   ${Flex()};
-  transition: transform 0.15s ease;
+  transition: transform 0.1s ease-out;
   column-gap: 1.25rem;
 `;
 
