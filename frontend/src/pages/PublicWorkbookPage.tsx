@@ -27,7 +27,7 @@ const PublicWorkbookPage = () => {
 
   useEffect(() => {
     searchForPublicWorkbook({ keyword: searchKeyword, type: searchType });
-  }, []);
+  }, [searchKeyword]);
 
   return (
     <>
