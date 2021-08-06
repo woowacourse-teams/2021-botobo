@@ -20,7 +20,6 @@ interface Props {
 }
 
 const loadItemCount = 20;
-let scrollObserver: IntersectionObserver;
 
 const PublicWorkbookList = ({
   publicWorkbooks,
@@ -31,26 +30,26 @@ const PublicWorkbookList = ({
 
   const searchKeyword = useRecoilValue(searchKeywordState);
   const searchType = useRecoilValue(searchTypeState);
+  const isLastItem = publicWorkbooks.length % loadItemCount !== 0;
 
   const { routePublicCards } = useRouter();
 
   useEffect(() => {
     if (!scrollTarget.current) return;
 
-    scrollObserver = new IntersectionObserver(
+    const scrollObserver = new IntersectionObserver(
       (entries, observer) => {
         entries.forEach(async (entry) => {
           if (!entry.isIntersecting) return;
           if (!scrollTarget.current) return;
+
+          observer.unobserve(entry.target);
 
           await searchForPublicWorkbook({
             keyword: searchKeyword,
             type: searchType,
             start: startIndex,
           });
-
-          observer.unobserve(entry.target);
-          observer.observe(scrollTarget.current);
         });
       },
       {
@@ -60,14 +59,12 @@ const PublicWorkbookList = ({
 
     scrollObserver.observe(scrollTarget.current);
 
-    return () => scrollObserver?.disconnect();
-  }, [scrollTarget.current]);
+    if (isLastItem) {
+      scrollObserver.disconnect();
+    }
 
-  useEffect(() => {
-    if (startIndex % loadItemCount === 0) return;
-
-    scrollObserver.disconnect();
-  });
+    return () => scrollObserver.disconnect();
+  }, [scrollTarget.current, isLastItem]);
 
   return (
     <StyledUl>
