@@ -1,6 +1,7 @@
 package botobo.core.infrastructure;
 
 import botobo.core.domain.user.ImageExtension;
+import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +28,8 @@ public class FileNameGenerator {
 
     private String extension(MultipartFile multipartFile) {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-        // TODO 예외 클래스 명 변경하기
         if (!ImageExtension.isAllowedExtension(extension)) {
-            throw new IllegalArgumentException("");
+            throw new ImageExtensionNotAllowedException();
         }
         return insertDot(extension);
     }

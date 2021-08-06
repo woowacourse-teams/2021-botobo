@@ -1,5 +1,6 @@
 package botobo.core.infrastructure;
 
+import botobo.core.exception.user.s3.FileConvertFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +41,9 @@ public class S3Uploader {
     private String bucket;
 
     public String upload(MultipartFile multipartFile, String userName) throws IOException {
-        // TODO 적절한 에러로 변환하기
         final String newlyCreatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
         File uploadImageFile = convert(multipartFile)
-                .orElseThrow(IllegalArgumentException::new);
-        System.out.println("newlyCreatedFileName " + newlyCreatedFileName);
+                .orElseThrow(FileConvertFailedException::new);
         uploadImageToS3(uploadImageFile, newlyCreatedFileName);
         return makeCloudFrontUrl(newlyCreatedFileName);
     }
