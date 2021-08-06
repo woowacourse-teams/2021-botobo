@@ -1,8 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import LogoutIcon from '../assets/logout.svg';
+import MenuIcon from '../assets/menu.svg';
 import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
 import { useRouter } from '../hooks';
 import { userState } from '../recoil';
@@ -16,13 +19,19 @@ interface Props {
   sticky?: boolean;
 }
 
+interface MenuStyleProps {
+  isMenuVisible: boolean;
+}
+
 const MainHeader = ({ sticky = true }: Props) => {
   const { routeMain, routeLogin } = useRouter();
   const [userInfo, setUserInfo] = useRecoilState(userState);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const logout = () => {
     removeLocalStorage(STORAGE_KEY.TOKEN);
     setUserInfo(null);
+    setIsMenuVisible(false);
     routeMain();
   };
 
@@ -41,15 +50,25 @@ const MainHeader = ({ sticky = true }: Props) => {
       </h1>
       <RightContent>
         {userInfo ? (
-          <>
-            <Avatar src={userInfo.profileUrl ?? userSrc} />
-            {/* TODO: 로그아웃 감추기 */}
-            <AuthButton onClick={logout}>로그아웃</AuthButton>
-          </>
+          <MenuIcon
+            width={'1.3rem'}
+            height={'1.3rem'}
+            onClick={() => setIsMenuVisible((prevState) => !prevState)}
+          />
         ) : (
-          <AuthButton onClick={routeLogin}>로그인</AuthButton>
+          <button onClick={routeLogin}>로그인</button>
         )}
       </RightContent>
+      <Menu isMenuVisible={isMenuVisible}>
+        <Link to={'/'} role="menu-item">
+          <Avatar src={userInfo?.profileUrl ?? userSrc} />
+          <div>{userInfo?.userName ?? 'Unknown User'}</div>
+        </Link>
+        <button type="button" role="logout-button" onClick={logout}>
+          <StyledLogoutIcon width={'1rem'} height={'1rem'} />
+          <div>로그아웃</div>
+        </button>
+      </Menu>
     </StyledHeader>
   );
 };
@@ -58,6 +77,7 @@ const StyledHeader = styled.header<Required<Props>>`
   ${Flex({ justify: 'space-between', items: 'center' })};
   height: 3.75rem;
   padding: 0 0.75rem;
+  position: relative;
 
   ${({ theme, sticky }) => css`
     background-color: ${theme.color.white};
@@ -105,19 +125,48 @@ const RightContent = styled.div`
   }
 `;
 
+const Menu = styled.nav<MenuStyleProps>`
+  position: absolute;
+  top: 3.75rem;
+  left: 0;
+  width: 100%;
+  height: 0;
+  padding: 0 0.75rem;
+  z-index: 2;
+  overflow: hidden;
+
+  ${({ theme, isMenuVisible }) => css`
+    background-color: ${theme.color.white};
+    box-shadow: ${theme.boxShadow.header};
+    transition: height 0.3s ease;
+
+    ${isMenuVisible &&
+    css`
+      height: 6.25rem;
+    `}
+
+    & > * {
+      ${Flex({ items: 'center' })};
+      width: 100%;
+      height: 3rem;
+      border-top: 1px solid ${theme.color.gray_4};
+      padding: 0.7rem 0;
+    }
+  `}
+`;
+
 const Avatar = styled.img`
   width: 1.5rem;
   height: 1.5rem;
+  margin-right: 0.3rem;
 
   ${({ theme }) => css`
     border-radius: ${theme.borderRadius.circle};
   `}
 `;
 
-const AuthButton = styled.button`
-  ${({ theme }) => css`
-    font-size: ${theme.fontSize.default};
-  `}
+const StyledLogoutIcon = styled(LogoutIcon)`
+  margin-right: 0.3rem;
 `;
 
 export default MainHeader;
