@@ -55,6 +55,8 @@ const PublicSearchPage = () => {
   const {
     setSearchKeyword,
     setSearchType,
+    startIndex,
+    setStartIndex,
     inputValue,
     setInputValue,
     keywordSearchResult,
@@ -94,6 +96,7 @@ const PublicSearchPage = () => {
 
                     setCurrentFocusTab(currentTab);
                     setSearchType(currentTab.type);
+                    setStartIndex(0);
                     setInputValue('');
                     resetSearchResult();
                   }}
@@ -139,6 +142,10 @@ const PublicSearchPage = () => {
         {currentFocusTab.type === 'name' ? (
           <PublicWorkbookList
             publicWorkbooks={workbookSearchResult}
+            startIndex={startIndex}
+            searchKeyword={inputValue}
+            searchType={currentFocusTab.type}
+            searchForPublicWorkbook={searchForPublicWorkbook}
             onClickItem={() => setSearchKeyword(inputValue)}
           />
         ) : (
