@@ -1,10 +1,13 @@
 package botobo.core.ui.search;
 
 import botobo.core.application.SearchService;
+import botobo.core.dto.tag.TagResponse;
+import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,5 +33,12 @@ public class SearchController {
         SearchKeyword searchKeyword = SearchKeyword.of(keyword);
         List<TagResponse> tagResponses = searchService.searchTags(searchKeyword);
         return ResponseEntity.ok(tagResponses);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
+        SearchKeyword searchKeyword = SearchKeyword.of(keyword);
+        List<UserResponse> userResponses = searchService.searchUsers(searchKeyword);
+        return ResponseEntity.ok(userResponses);
     }
 }

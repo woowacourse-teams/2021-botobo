@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.tag.TagResponse;
@@ -24,10 +25,12 @@ public class SearchService {
 
     private final WorkbookRepository workbookRepository;
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
-    public SearchService(WorkbookRepository workbookRepository, TagRepository tagRepository) {
+    public SearchService(WorkbookRepository workbookRepository, TagRepository tagRepository, UserRepository userRepository) {
         this.workbookRepository = workbookRepository;
         this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
     }
 
     public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter) {
@@ -40,7 +43,8 @@ public class SearchService {
         return TagResponse.listOf(tags);
     }
 
-    public List<UserResponse> searchUsers() {
-        return null;
+    public List<UserResponse> searchUsers(SearchKeyword keyword) {
+        List<User> users = userRepository.findByKeyword(keyword.getValue());
+        return UserResponse.listOfSearch(users);
     }
 }
