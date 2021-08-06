@@ -13,7 +13,7 @@ import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.exception.card.CardNotFoundException;
-import botobo.core.exception.common.NotAuthorException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

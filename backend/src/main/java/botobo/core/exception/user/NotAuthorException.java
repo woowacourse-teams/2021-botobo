@@ -1,4 +1,6 @@
-package botobo.core.exception.common;
+package botobo.core.exception.user;
+
+import botobo.core.exception.common.ForbiddenException;
 
 public class NotAuthorException extends ForbiddenException {
     public NotAuthorException() {

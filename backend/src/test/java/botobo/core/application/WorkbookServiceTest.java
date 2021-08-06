@@ -18,7 +18,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.card.CardNotFoundException;
-import botobo.core.exception.common.NotAuthorException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;

@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
@@ -10,6 +11,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
 import botobo.core.exception.card.QuizEmptyException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,14 +64,21 @@ class QuizServiceTest {
 
     @BeforeEach
     void setUp() {
+        user = User.builder()
+                .id(1L)
+                .role(Role.ADMIN)
+                .build();
+
         workbook = Workbook.builder()
                 .name("name")
                 .deleted(false)
+                .user(user)
                 .build();
 
         workbookWithOneCard = Workbook.builder()
                 .name("name")
                 .deleted(false)
+                .user(user)
                 .build();
 
         Card card1 = Card.builder()
@@ -88,10 +97,7 @@ class QuizServiceTest {
 
         cards = Arrays.asList(card1, card1, card1, card1, card1, card1, card1, card1, card1, card1);
         twoCards = Arrays.asList(card1, card2);
-        appUser = AppUser.admin(1L);
-        user = User.builder()
-                .id(1L)
-                .build();
+        appUser = user.toAppUser();
     }
 
     @Test
@@ -102,7 +108,7 @@ class QuizServiceTest {
         QuizRequest quizRequest = makeQuizRequest(ids, 10);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
-        given(workbookRepository.existsById(1L)).willReturn(true);
+        given(workbookRepository.findById(1L)).willReturn(Optional.of(workbook));
         given(cardRepository.findCardsByWorkbookIds(ids)).willReturn(cards);
 
         // when
@@ -119,7 +125,7 @@ class QuizServiceTest {
                 .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
-                .existsById(1L);
+                .findById(1L);
     }
 
     private QuizRequest makeQuizRequest(List<Long> ids, int count) {
@@ -130,7 +136,7 @@ class QuizServiceTest {
     }
 
     @Test
-    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 실패, 게스트는 사용할 수 없음.")
+    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 실패, 회원 정보가 다름.")
     void createQuizWhenGuest() {
         // given
         List<Long> ids = Collections.singletonList(1L);
@@ -151,7 +157,38 @@ class QuizServiceTest {
                 .findCardsByWorkbookIds(ids);
         then(workbookRepository)
                 .should(never())
-                .existsById(1L);
+                .findById(1L);
+    }
+
+    @DisplayName("문제집 id(Long)를 이용해서 10개의 카드가 담긴 퀴즈 생성 - 실패, 내 문제집이 아님")
+    @Test
+    void createQuizWhenNotAuthor() {
+        // given
+        List<Long> ids = Collections.singletonList(1L);
+        QuizRequest quizRequest = makeQuizRequest(ids, 10);
+        User notAuthorUser = User.builder()
+                .id(100L)
+                .userName("내 문제집이 아닌 유저")
+                .build();
+        AppUser notAuthorAppUser = user.toAppUser();
+
+        given(userRepository.findById(notAuthorAppUser.getId())).willReturn(Optional.of(notAuthorUser));
+        given(workbookRepository.findById(1L)).willReturn(Optional.of(workbook));
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuiz(quizRequest, notAuthorAppUser))
+                .isInstanceOf(NotAuthorException.class);
+
+        // then
+        then(userRepository)
+                .should(times(1))
+                .findById(notAuthorAppUser.getId());
+        then(workbookRepository)
+                .should(times(1))
+                .findById(1L);
+        then(cardRepository)
+                .should(never())
+                .findCardsByWorkbookIds(ids);
     }
 
     @Test
@@ -162,7 +199,7 @@ class QuizServiceTest {
         QuizRequest quizRequest = makeQuizRequest(ids, 10);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.findById(1L)).willReturn(Optional.of(workbook));
         given(cardRepository.findCardsByWorkbookIds(any())).willReturn(twoCards);
 
         // when
@@ -182,7 +219,7 @@ class QuizServiceTest {
                 .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
-                .existsById(1L);
+                .findById(1L);
     }
 
     @Test
@@ -193,7 +230,7 @@ class QuizServiceTest {
         QuizRequest quizRequest = makeQuizRequest(ids, 10);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
-        given(workbookRepository.existsById(any())).willReturn(false);
+        given(workbookRepository.findById(100L)).willReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> quizService.createQuiz(quizRequest, appUser))
@@ -207,7 +244,7 @@ class QuizServiceTest {
                 .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
-                .existsById(100L);
+                .findById(100L);
     }
 
     @Test
@@ -219,7 +256,7 @@ class QuizServiceTest {
         List<Card> emptyCards = new ArrayList<>();
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.findById(100L)).willReturn(Optional.of(workbook));
         given(cardRepository.findCardsByWorkbookIds(ids)).willReturn(emptyCards);
 
         // when
@@ -233,8 +270,8 @@ class QuizServiceTest {
                 .should(times(1))
                 .findById(appUser.getId());
         then(workbookRepository)
-                .should(never())
-                .existsById(1L);
+                .should(times(1))
+                .findById(100L);
     }
 
     @Test
@@ -247,7 +284,7 @@ class QuizServiceTest {
 
         QuizRequest quizRequest = makeQuizRequest(ids, 10);
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
-        given(workbookRepository.existsById(any())).willReturn(true);
+        given(workbookRepository.findById(1L)).willReturn(Optional.of(workbook));
         given(cardRepository.findCardsByWorkbookIds(any())).willReturn(cards);
 
         // when
@@ -264,7 +301,7 @@ class QuizServiceTest {
                 .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
-                .existsById(1L);
+                .findById(1L);
     }
 
     private List<Card> listOfNextQuizCards(int quantity, boolean nextQuiz) {

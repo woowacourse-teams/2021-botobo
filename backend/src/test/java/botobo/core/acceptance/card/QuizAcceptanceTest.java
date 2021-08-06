@@ -2,6 +2,7 @@ package botobo.core.acceptance.card;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
+import botobo.core.domain.user.User;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.dto.card.QuizRequest;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_OF_30_CARDS;
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
@@ -104,6 +104,30 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("해당 유저를 찾을 수 없습니다.");
     }
 
+    @Test
+    @DisplayName("퀴즈 생성 - 실패, 내 문제집이 아님.")
+    void createQuizWhenNotAuthor() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
+
+        User anyUser = anyUser();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(anyUser.getId()))
+                .build();
+
+        // when
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {10, 15, 20, 25, 30})
     @DisplayName("퀴즈 생성 - 성공, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
@@ -129,7 +153,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("퀴즈 생성 - 성공, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
+    @DisplayName("퀴즈 생성 - 성공, 요청 개수가 가진 퀴즈 개수보다 많을 때, min 값을 취한다.")
     void createQuizWhenCountIsMoreThanWeHave() {
         // given
         final int requestCount = 11;
@@ -272,8 +296,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizIncludeNextQuizOption() {
         // given
         List<CardResponse> cards = 문제집의_카드_모아보기(1L).getCards();
-        final List<Long> cardIds = IntStream.range(0, 3)
-                .mapToObj(i -> cards.get(i).getId())
+        final List<Long> cardIds = cards.stream()
+                .map(CardResponse::getId)
                 .collect(Collectors.toList());
 
         다음에_또_보기(cardIds);

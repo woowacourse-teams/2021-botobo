@@ -10,7 +10,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.NextQuizCardsRequest;
-import botobo.core.exception.common.NotAuthorException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
