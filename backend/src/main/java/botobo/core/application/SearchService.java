@@ -43,7 +43,7 @@ public class SearchService {
     }
 
     public List<TagResponse> searchTags(SearchKeyword keyword) {
-        Tags tags = Tags.of(tagRepository.findByKeyword(keyword.getValue()));
+        Tags tags = Tags.of(tagRepository.findByKeyword(keyword.toLowercase()));
         return TagResponse.listOf(tags);
     }
 
