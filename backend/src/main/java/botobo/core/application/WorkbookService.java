@@ -96,7 +96,7 @@ public class WorkbookService {
         result.addAll(workbooksByTagName);
         result.addAll(workbooksByAuthorName);
 
-        return WorkbookResponse.openedListOf(result);
+        return WorkbookResponse.openedListOf(workbooksByAuthorName);
     }
 
     private List<Workbook> findWorkbookByWorkbookName(String workbookName) {

@@ -3,7 +3,7 @@ package botobo.core.domain.workbook;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.criteria.AccessType;
-import botobo.core.domain.workbook.criteria.SearchKeyword;
+import botobo.core.ui.search.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class WorkbookFinderTest {
                 .build();
 
         WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from("자바"))
+                .searchKeyword(SearchKeyword.of("자바"))
                 .accessType(AccessType.PUBLIC)
                 .build();
 
@@ -52,7 +52,7 @@ class WorkbookFinderTest {
                 .build();
 
         WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from(""))
+                .searchKeyword(SearchKeyword.of(""))
                 .accessType(AccessType.PUBLIC)
                 .build();
 
@@ -72,7 +72,7 @@ class WorkbookFinderTest {
                 .build();
 
         WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from("데이터"))
+                .searchKeyword(SearchKeyword.of("데이터"))
                 .accessType(AccessType.PRIVATE)
                 .build();
 

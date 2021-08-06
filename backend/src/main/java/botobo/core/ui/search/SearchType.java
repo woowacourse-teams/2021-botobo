@@ -24,6 +24,6 @@ public enum SearchType {
         return Arrays.stream(values())
                 .filter(searchType -> searchType.value.equalsIgnoreCase(value))
                 .findFirst()
-                .orElse(NAME);
+                .orElseThrow(InvalidSearchTypeException::new);
     }
 }

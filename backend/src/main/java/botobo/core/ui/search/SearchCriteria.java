@@ -1,5 +1,6 @@
 package botobo.core.ui.search;
 
+import botobo.core.exception.search.InvalidSearchCriteriaException;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -12,10 +13,10 @@ public enum SearchCriteria {
     COUNT("count"),
     LIKE("like");
 
-    private String name;
+    private String value;
 
-    SearchCriteria(String name) {
-        this.name = name;
+    SearchCriteria(String value) {
+        this.value = value;
     }
 
     public static SearchCriteria of(String value) {
@@ -23,8 +24,9 @@ public enum SearchCriteria {
             return DATE;
         }
         return Arrays.stream(values())
-                .filter(searchCriteria -> searchCriteria.name.equalsIgnoreCase(value))
+                .filter(searchCriteria -> searchCriteria.value.equalsIgnoreCase(value))
                 .findFirst()
-                .orElse(DATE);
+                .orElseThrow(InvalidSearchCriteriaException::new);
+    }
     }
 }

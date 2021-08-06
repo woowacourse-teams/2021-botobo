@@ -1,5 +1,6 @@
 package botobo.core.domain.workbook.criteria;
 
+import botobo.core.ui.search.SearchKeyword;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +13,12 @@ class WorkbookCriteriaTest {
     void create() {
         // when
         WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from("java"))
+                .searchKeyword(SearchKeyword.of("java"))
                 .accessType(AccessType.PRIVATE)
                 .build();
 
         //then
-        assertThat(workbookCriteria.getSearchKeyword()).isEqualTo(SearchKeyword.from("java"));
+        assertThat(workbookCriteria.getSearchKeyword()).isEqualTo(SearchKeyword.of("java"));
         assertThat(workbookCriteria.isPrivateAccess()).isTrue();
     }
 

@@ -8,6 +8,7 @@ import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.Objects;
 
+@Getter
 public enum SearchOrder {
 
     ASC("asc"),
@@ -26,6 +27,7 @@ public enum SearchOrder {
         return Arrays.stream(values())
                 .filter(searchOrder -> searchOrder.value.equalsIgnoreCase(value))
                 .findFirst()
-                .orElse(ASC);
+                .orElseThrow(InvalidSearchOrderException::new);
+    }
     }
 }
