@@ -1,6 +1,6 @@
 package botobo.core.exception;
 
-public class InternalServerErrorException extends RuntimeException{
+public class InternalServerErrorException extends RuntimeException {
     public InternalServerErrorException() {
     }
 

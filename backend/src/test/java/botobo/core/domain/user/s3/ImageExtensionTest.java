@@ -1,6 +1,5 @@
 package botobo.core.domain.user.s3;
 
-import botobo.core.domain.user.s3.ImageExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

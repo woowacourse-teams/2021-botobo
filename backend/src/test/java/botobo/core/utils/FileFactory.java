@@ -1,8 +1,8 @@
 package botobo.core.utils;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -42,7 +42,8 @@ public class FileFactory {
             throw new RuntimeException(e);
         }
     }
-    public static MultipartFile uploadFile (File file, String fileName) throws IOException {
+
+    public static MultipartFile uploadFile(File file, String fileName) throws IOException {
         return createMultipartFile(file, fileName);
     }
 
