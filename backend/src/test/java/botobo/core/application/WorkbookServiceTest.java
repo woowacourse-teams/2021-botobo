@@ -157,23 +157,6 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("검색어를 이용하여 공유 문제집을 조회한다.")
-    void findPublicWorkbooksBySearch() {
-        // given
-        given(workbookRepository.findAll()).willReturn(workbooks);
-
-        // when
-        List<WorkbookResponse> workbooks = workbookService.findPublicWorkbooksBySearch("자바");
-
-        // then
-        assertThat(workbooks).extracting("name")
-                .containsExactlyInAnyOrder("자바", "자바스크립트");
-
-        then(workbookRepository).should(times(1))
-                .findAll();
-    }
-
-    @Test
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() {
         // given

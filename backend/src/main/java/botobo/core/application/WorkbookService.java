@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,30 +83,6 @@ public class WorkbookService {
         return WorkbookResponse.authorListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );
-    }
-
-    public List<WorkbookResponse> findPublicWorkbooksBySearch(String search) {
-        List<Workbook> workbooksByWorkbookName = findWorkbookByWorkbookName(search);
-        List<Workbook> workbooksByTagName = findWorkbookByTagName(search);
-        List<Workbook> workbooksByAuthorName = findWorkbookByAuthorName(search);
-
-        Set<Workbook> result = new HashSet<>(workbooksByWorkbookName);
-        result.addAll(workbooksByTagName);
-        result.addAll(workbooksByAuthorName);
-
-        return WorkbookResponse.openedListOf(workbooksByAuthorName);
-    }
-
-    private List<Workbook> findWorkbookByWorkbookName(String workbookName) {
-        return workbookRepository.findAllOpenedByNameAndOrderByNew(workbookName);
-    }
-
-    private List<Workbook> findWorkbookByTagName(String tagName) {
-        return workbookRepository.findAllOpenedByTagAndOrderByNew(tagName);
-    }
-
-    private List<Workbook> findWorkbookByAuthorName(String authorName) {
-        return workbookRepository.findAllOpenedByAuthorAndOrderByNew(authorName);
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id, AppUser appUser) {

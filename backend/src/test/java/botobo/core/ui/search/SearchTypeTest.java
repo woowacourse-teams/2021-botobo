@@ -33,7 +33,7 @@ class SearchTypeTest {
     }
 
     @Test
-    @DisplayName("SearchType 유효하지 않은 value 일 경우 NAME 으로 생성 - 성공")
+    @DisplayName("SearchType 유효하지 않은 value 일 경우 - 실패")
     void createWithInvalidValue() {
         // given
         String value = "botobo";

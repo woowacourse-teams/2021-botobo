@@ -324,26 +324,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("공유 문제집 검색 - 성공")
-    void findPublicWorkbooksBySearch() {
-        // given
-        final String accessToken = 로그인되어_있음(userInfo);
-        유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
-
-        // when
-        final HttpResponse response = request()
-                .get("/api/workbooks/public")
-                .queryParam("search", "Java")
-                .auth(accessToken)
-                .build();
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(1);
-    }
-
-    @Test
     @DisplayName("공유 문제집 조회 - 성공")
     void findPublicWorkbookById() {
         final String accessToken = 로그인되어_있음(userInfo);

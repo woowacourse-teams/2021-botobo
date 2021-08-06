@@ -1,6 +1,6 @@
 package botobo.core.ui.search;
 
-import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
+import botobo.core.exception.search.SearchKeywordCreationFailureException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

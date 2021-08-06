@@ -33,7 +33,7 @@ class SearchOrderTest {
     }
 
     @Test
-    @DisplayName("SearchOrder 유효하지 않은 value 일 경우 DATE 로 생성 - 성공")
+    @DisplayName("SearchOrder 유효하지 않은 value 일 경우 - 실패")
     void createWithInvalidValue() {
         // given
         String value = "botobo";
