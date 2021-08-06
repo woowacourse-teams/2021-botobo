@@ -75,8 +75,8 @@ const PublicSearchPage = () => {
 
   useEffect(() => {
     const resetKeyword = () => setSearchKeyword('');
+    searchForKeyword({ keyword: inputValue, type: currentFocusTab.type });
 
-    searchForPublicWorkbook({ keyword: inputValue });
     window.addEventListener('popstate', resetKeyword);
 
     return () => window.removeEventListener('popstate', resetKeyword);

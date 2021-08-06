@@ -67,7 +67,7 @@ const PublicWorkbookList = ({
     if (startIndex % loadItemCount === 0) return;
 
     scrollObserver.disconnect();
-  }, [startIndex]);
+  });
 
   return (
     <StyledUl>
