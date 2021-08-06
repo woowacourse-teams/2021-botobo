@@ -9,7 +9,6 @@ import botobo.core.ui.auth.PathMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -46,7 +45,13 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        HandlerInterceptor authorizationInterceptor = new PathMatcherInterceptor(authorizationInterceptor())
+        registry.addInterceptor(authPathMatcherInterceptor());
+        registry.addInterceptor(adminPathMatcherInterceptor());
+    }
+
+    @Bean
+    public PathMatcherInterceptor authPathMatcherInterceptor() {
+        return new PathMatcherInterceptor(authorizationInterceptor())
                 .addPathPatterns("/api/**", PathMethod.ANY)
                 .excludePathPatterns("/api/**", PathMethod.OPTIONS)
                 .excludePathPatterns("/api/workbooks", PathMethod.GET)
@@ -54,12 +59,13 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/login", PathMethod.POST)
                 .excludePathPatterns("/api/docs/**", PathMethod.ANY)
                 .excludePathPatterns("/api/workbooks/public/**", PathMethod.GET);
-        registry.addInterceptor(authorizationInterceptor);
+    }
 
-        HandlerInterceptor adminInterceptor = new PathMatcherInterceptor(adminInterceptor())
+    @Bean
+    public PathMatcherInterceptor adminPathMatcherInterceptor() {
+        return new PathMatcherInterceptor(adminInterceptor())
                 .addPathPatterns("/api/admin/workbooks", PathMethod.POST)
                 .addPathPatterns("/api/admin/cards", PathMethod.POST)
                 .excludePathPatterns("/api/**", PathMethod.OPTIONS);
-        registry.addInterceptor(adminInterceptor);
     }
 }

@@ -9,11 +9,10 @@ public class PathMethods {
         this.pathMethods = pathMethods;
     }
 
-    public boolean match(String httpMethod) {
+    public boolean contains(PathMethod pathMethod) {
         if (pathMethods.contains(PathMethod.ANY)) {
             return true;
         }
-        return pathMethods.stream()
-                .anyMatch(pathMethod -> pathMethod.match(httpMethod));
+        return pathMethods.contains(pathMethod);
     }
 }

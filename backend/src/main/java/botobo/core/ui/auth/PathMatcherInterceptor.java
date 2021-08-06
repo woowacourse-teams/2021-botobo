@@ -29,7 +29,7 @@ public class PathMatcherInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
         String httpMethod = request.getMethod();
-        if (pathPatterns.isExcludedPath(uri, httpMethod)) {
+        if (pathPatterns.isExcludedPath(uri, PathMethod.of(httpMethod))) {
             return true;
         }
         return handlerInterceptor.preHandle(request, response, handler);

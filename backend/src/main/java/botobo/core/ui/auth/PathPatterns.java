@@ -26,13 +26,13 @@ public class PathPatterns {
         excludePatterns.put(pathPattern, new PathMethods(Arrays.asList(pathMethods)));
     }
 
-    public boolean isExcludedPath(String uri, String httpMethod) {
-        return matchPatterns(excludePatterns, uri, httpMethod) || !matchPatterns(includePatterns, uri, httpMethod);
+    public boolean isExcludedPath(String uri, PathMethod pathMethod) {
+        return matchPatterns(excludePatterns, uri, pathMethod) || !matchPatterns(includePatterns, uri, pathMethod);
     }
 
-    private boolean matchPatterns(Map<String, PathMethods> patterns, String uri, String httpMethod) {
+    private boolean matchPatterns(Map<String, PathMethods> patterns, String uri, PathMethod pathMethod) {
         return patterns.keySet().stream()
                 .filter(pattern -> pathMatcher.match(pattern, uri))
-                .anyMatch(pattern -> patterns.get(pattern).match(httpMethod));
+                .anyMatch(pattern -> patterns.get(pattern).contains(pathMethod));
     }
 }
