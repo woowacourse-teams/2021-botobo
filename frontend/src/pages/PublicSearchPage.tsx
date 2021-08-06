@@ -4,7 +4,11 @@ import React, { useEffect, useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { MainHeader, PublicWorkbookList } from '../components';
+import {
+  MainHeader,
+  PublicSearchList,
+  PublicWorkbookList,
+} from '../components';
 import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE, STORAGE_KEY } from '../constants';
 import { usePublicSearch, useRouter } from '../hooks';
 import { Flex } from '../styles';
@@ -51,23 +55,25 @@ const PublicSearchPage = () => {
   const {
     inputValue,
     setInputValue,
+    setSearchType,
     searchResponse,
     resetSearchResponse,
-    setKeyword,
+    setSearchKeyword,
     isLoading,
     setIsLoading,
-    searchPublicWorkbook,
-    searchKeyword,
+    searchForPublicWorkbook,
+    searchForKeyword,
+    isPublicWorkbookResponse,
   } = usePublicSearch();
   const [isFocus, setIsFocus] = useState(false);
-  const { routePublicCards } = useRouter();
+  const { routePublicCards, routePublicWorkbook } = useRouter();
 
   const [currentFocusTab, setCurrentFocusTab] = useState(searchTabList[0]);
 
   useEffect(() => {
-    const resetKeyword = () => setKeyword('');
+    const resetKeyword = () => setSearchKeyword('');
 
-    searchPublicWorkbook({ keyword: inputValue });
+    searchForPublicWorkbook({ keyword: inputValue });
     window.addEventListener('popstate', resetKeyword);
 
     return () => window.removeEventListener('popstate', resetKeyword);
@@ -109,7 +115,7 @@ const PublicSearchPage = () => {
               setIsLoading(true);
               resetSearchResponse();
               debounce(() => {
-                searchKeyword({
+                searchForKeyword({
                   keyword: target.value,
                   type: currentFocusTab.type,
                 });
@@ -130,14 +136,29 @@ const PublicSearchPage = () => {
             </button>
           )}
         </SearchBar>
-        <PublicWorkbookList
-          searchList={searchResponse}
-          onClickPublicWorkbook={(id) => {
-            setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-            setKeyword(inputValue);
-            routePublicCards();
-          }}
-        />
+        {isPublicWorkbookResponse(searchResponse) ? (
+          <PublicWorkbookList
+            publicWorkbooks={searchResponse}
+            onClickPublicWorkbook={(id) => {
+              setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+              setSearchKeyword(inputValue);
+              setSearchType(currentFocusTab.type);
+              routePublicCards();
+            }}
+          />
+        ) : (
+          currentFocusTab.type !== 'name' && (
+            <PublicSearchList
+              searchItems={searchResponse}
+              onClickSearchItem={() => {
+                setSearchKeyword(inputValue);
+                setSearchType(currentFocusTab.type);
+                routePublicWorkbook();
+              }}
+              type={currentFocusTab.type}
+            />
+          )
+        )}
         <LoadImage isLoading={isLoading} />
       </Container>
     </>

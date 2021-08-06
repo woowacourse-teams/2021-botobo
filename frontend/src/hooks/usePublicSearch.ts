@@ -7,18 +7,29 @@ import {
   getTagKeywordAsync,
   getUserKeywordAsync,
 } from '../api';
-import { searchKeywordState } from '../recoil';
+import { searchKeywordState, searchTypeState } from '../recoil';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 
+const isPublicWorkbookResponse = (
+  data: PublicWorkbookResponse[] | SearchKeywordResponse[]
+): data is PublicWorkbookResponse[] => {
+  if (data.length === 0) return false;
+
+  const [response] = data;
+
+  return 'cardCount' in response && 'author' in response;
+};
+
 const usePublicSearch = () => {
-  const [keyword, setKeyword] = useRecoilState(searchKeywordState);
-  const [inputValue, setInputValue] = useState(keyword);
+  const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
+  const [searchType, setSearchType] = useRecoilState(searchTypeState);
+  const [inputValue, setInputValue] = useState(searchKeyword);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResponse, setSearchResponse] = useState<
     PublicWorkbookResponse[] | SearchKeywordResponse[]
   >([]);
 
-  const searchPublicWorkbook = async ({
+  const searchForPublicWorkbook = async ({
     keyword,
     ...options
   }: PublicWorkbookAsync) => {
@@ -32,12 +43,12 @@ const usePublicSearch = () => {
     }
   };
 
-  const searchKeyword = async ({
+  const searchForKeyword = async ({
     keyword,
     type = 'name',
   }: Pick<PublicWorkbookAsync, 'keyword' | 'type'>) => {
     try {
-      if (type === 'name') return searchPublicWorkbook({ keyword, type });
+      if (type === 'name') return searchForPublicWorkbook({ keyword, type });
 
       let data: SearchKeywordResponse[] = [];
 
@@ -60,16 +71,19 @@ const usePublicSearch = () => {
   const resetSearchResponse = () => setSearchResponse([]);
 
   return {
-    keyword,
-    setKeyword,
+    searchKeyword,
+    setSearchKeyword,
+    searchType,
+    setSearchType,
     inputValue,
     setInputValue,
     searchResponse,
     resetSearchResponse,
     isLoading,
     setIsLoading,
-    searchPublicWorkbook,
-    searchKeyword,
+    searchForPublicWorkbook,
+    searchForKeyword,
+    isPublicWorkbookResponse,
   };
 };
 
