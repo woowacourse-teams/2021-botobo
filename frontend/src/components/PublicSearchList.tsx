@@ -5,31 +5,41 @@ import React from 'react';
 import UserIcon from '../assets/business-card.svg';
 import TagIcon from '../assets/tag.svg';
 import { SEARCH_TYPE } from '../constants';
+import { useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
 interface Props {
   searchItems: SearchKeywordResponse[];
-  onClickSearchItem: () => void;
   type: typeof SEARCH_TYPE.TAG | typeof SEARCH_TYPE.USER;
+  onClickItem?: () => void;
 }
 
-const PublicSearchList = ({ searchItems, onClickSearchItem, type }: Props) => (
-  <StyledUl>
-    {searchItems.map(({ id, name }) => (
-      <li key={id}>
-        <SearchItem onClick={onClickSearchItem}>
-          <IconWrapper>
-            {type === 'tag' && <TagIcon width="1rem" height="1rem" />}
-            {type === 'user' && <UserIcon width="1rem" height="1rem" />}
-          </IconWrapper>
-          <Name>{name}</Name>
-        </SearchItem>
-      </li>
-    ))}
-  </StyledUl>
-);
+const PublicSearchList = ({ searchItems, type, onClickItem }: Props) => {
+  const { routePublicWorkbook } = useRouter();
+
+  return (
+    <StyledUl>
+      {searchItems.map(({ id, name }) => (
+        <li key={id}>
+          <SearchItem
+            onClick={() => {
+              onClickItem?.();
+              routePublicWorkbook();
+            }}
+          >
+            <IconWrapper>
+              {type === 'tag' && <TagIcon width="1rem" height="1rem" />}
+              {type === 'user' && <UserIcon width="1rem" height="1rem" />}
+            </IconWrapper>
+            <Name>{name}</Name>
+          </SearchItem>
+        </li>
+      ))}
+    </StyledUl>
+  );
+};
 
 const StyledUl = styled.ul`
   display: grid;

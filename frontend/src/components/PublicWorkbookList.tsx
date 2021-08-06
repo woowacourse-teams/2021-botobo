@@ -1,31 +1,39 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
+import { STORAGE_KEY } from '../constants';
+import { useRouter } from '../hooks';
 import { PublicWorkbookResponse } from '../types';
+import { setSessionStorage } from '../utils';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
-  onClickPublicWorkbook: (id: number) => void;
   publicWorkbooks: PublicWorkbookResponse[];
+  onClickItem?: () => void;
 }
 
-const PublicWorkbookList = ({
-  onClickPublicWorkbook,
-  publicWorkbooks,
-}: Props) => (
-  <StyledUl>
-    {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-      <li key={id}>
-        <PublicWorkbook
-          name={name}
-          cardCount={cardCount}
-          author={author}
-          onClick={() => onClickPublicWorkbook(id)}
-        />
-      </li>
-    ))}
-  </StyledUl>
-);
+const PublicWorkbookList = ({ publicWorkbooks, onClickItem }: Props) => {
+  const { routePublicCards } = useRouter();
+
+  return (
+    <StyledUl>
+      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
+        <li key={id}>
+          <PublicWorkbook
+            name={name}
+            cardCount={cardCount}
+            author={author}
+            onClick={() => {
+              setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+              onClickItem?.();
+              routePublicCards();
+            }}
+          />
+        </li>
+      ))}
+    </StyledUl>
+  );
+};
 const StyledUl = styled.ul`
   display: grid;
   grid-template-columns: repeat(1);
