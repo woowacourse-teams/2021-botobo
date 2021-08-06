@@ -1,32 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
-import { postPublicCardsAsync } from './../api/index';
-import { workbookState } from './../recoil/workbookState';
-import { cardState, publicCardState } from '../recoil';
+import { getPublicCardsAsync, postPublicCardsAsync } from './../api';
+import { shouldWorkbookUpdateState } from './../recoil';
+import { PublicCardsResponse } from './../types';
+import { CardResponse } from './../types/index';
+import { getSessionStorage } from './../utils/storage';
+import { STORAGE_KEY } from '../constants';
+import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
+const cardsInitialState = {
+  workbookId: -1,
+  workbookName: '',
+  cards: [],
+};
+
+const publicCardsInitialState = {
+  ...cardsInitialState,
+  cardCount: -1,
+  tags: [],
+};
+
+interface PublicCard extends CardResponse {
+  isChecked: boolean;
+}
+
+interface PublicCardsInfo extends PublicCardsResponse {
+  cards: PublicCard[];
+}
+
 const usePublicCard = () => {
-  const {
-    data: { workbookId, workbookName, cards, cardCount, tags },
-    errorMessage,
-  } = useRecoilValue(publicCardState);
-  const updateWorkbooks = useResetRecoilState(workbookState);
-  const updateCards = useResetRecoilState(cardState);
-
-  const [publicCards, setPublicCards] = useState(
-    cards.map((card) => ({ ...card, isChecked: false }))
+  const publicWorkbookId =
+    getSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID) ?? -1;
+  const setShouldWorkbookUpdateState = useSetRecoilState(
+    shouldWorkbookUpdateState
   );
+
+  const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
+    publicCardsInitialState
+  );
+  const { workbookId, workbookName, cards, cardCount, tags } = publicCardInfo;
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
+  const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
+  const [isLoading, setIsLoading] = useState(false);
   const showSnackbar = useSnackbar();
+  const { routeMain } = useRouter();
 
-  const checkedCardCount = publicCards.filter(
-    ({ isChecked }) => isChecked
-  ).length;
+  const getPublicCards = async () => {
+    try {
+      setIsLoading(true);
+      const newPublicCardInfo = await getPublicCardsAsync(publicWorkbookId);
+
+      setPublicCardInfo({
+        ...newPublicCardInfo,
+        cards: newPublicCardInfo.cards.map((card) => ({
+          ...card,
+          isChecked: false,
+        })),
+      });
+
+      setIsLoading(false);
+    } catch (error) {
+      showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
+      setIsLoading(false);
+    }
+  };
 
   const checkCard = (id: number) => {
-    const newCards = publicCards.map((card) => {
+    const newCards = cards.map((card) => {
       if (card.id !== id) return card;
 
       return {
@@ -35,30 +78,33 @@ const usePublicCard = () => {
       };
     });
 
-    setPublicCards(newCards);
+    setPublicCardInfo({ ...publicCardInfo, cards: newCards });
   };
 
   const checkAllCard: React.ChangeEventHandler<HTMLInputElement> = ({
     target,
   }) => {
     setIsAllCardChecked(target.checked);
-    setPublicCards(
-      publicCards.map((card) => ({ ...card, isChecked: target.checked }))
-    );
+    setPublicCardInfo({
+      ...publicCardInfo,
+      cards: cards.map((card) => ({ ...card, isChecked: target.checked })),
+    });
   };
 
   const takeCardsToMyWorkbook = async (workbookId: number) => {
-    const cardIds = publicCards
+    const cardIds = cards
       .filter(({ isChecked }) => Boolean(isChecked))
       .map(({ id }) => id);
 
     try {
       await postPublicCardsAsync(workbookId, cardIds);
-      updateWorkbooks();
-      updateCards();
-      setPublicCards(
-        publicCards.map((card) => ({ ...card, isChecked: false }))
-      );
+
+      setPublicCardInfo({
+        ...publicCardInfo,
+        cards: cards.map((card) => ({ ...card, isChecked: false })),
+      });
+
+      setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
       console.error(error);
@@ -71,10 +117,14 @@ const usePublicCard = () => {
   }, [checkedCardCount]);
 
   useEffect(() => {
-    if (errorMessage) {
-      showSnackbar({ message: errorMessage, type: 'error' });
+    if (publicWorkbookId === -1) {
+      routeMain();
+
+      return;
     }
-  }, [errorMessage]);
+
+    getPublicCards();
+  }, []);
 
   return {
     workbookId,
@@ -82,12 +132,12 @@ const usePublicCard = () => {
     cards,
     cardCount,
     tags,
-    publicCards,
     isAllCardChecked,
     checkedCardCount,
     checkCard,
     checkAllCard,
     takeCardsToMyWorkbook,
+    isLoading,
   };
 };
 

@@ -47,3 +47,9 @@ include::{snippets}/workbooks-public-search-get-success/http-response.adoc[]
 include::{snippets}/workbooks-public-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-public-get-success/http-response.adoc[]
+
+=== 문제집으로 카드 가져오기
+==== 요청
+include::{snippets}/workbooks-scrap-cards-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-scrap-cards-success/http-response.adoc[]

@@ -111,8 +111,10 @@ public class WorkbookService {
         return workbookRepository.findAllOpenedByAuthorAndOrderByNew(authorName);
     }
 
-    public WorkbookCardResponse findWorkbookCardsById(Long id) {
+    public WorkbookCardResponse findWorkbookCardsById(Long id, AppUser appUser) {
+        User user = findUser(appUser);
         Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
+        validateAuthor(user, workbook);
         return WorkbookCardResponse.ofUserWorkbook(workbook);
     }
 

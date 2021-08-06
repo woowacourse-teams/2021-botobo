@@ -72,7 +72,7 @@ class CardRepositoryTest {
 
     @Test
     @DisplayName("Card 추가 시, 문제집도 함께 추가 - 성공")
-    void checkCategoryIsSaved() {
+    void checkWorkbookIsSaved() {
         // given
         Card card = generateCard();
 
