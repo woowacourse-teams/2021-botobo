@@ -60,7 +60,7 @@ public class WorkbookResponse {
                 .build();
     }
 
-    public static List<WorkbookResponse> openedListOf(Set<Workbook> workbooks) {
+    public static List<WorkbookResponse> openedListOf(List<Workbook> workbooks) {
         return workbooks.stream()
                 .map(WorkbookResponse::openedOf)
                 .collect(Collectors.toList());

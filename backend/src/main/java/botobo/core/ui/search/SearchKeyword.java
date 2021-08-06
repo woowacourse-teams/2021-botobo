@@ -1,4 +1,4 @@
-package botobo.core.domain.workbook.criteria;
+package botobo.core.ui.search;
 
 import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
 import lombok.EqualsAndHashCode;
@@ -50,7 +50,7 @@ public class SearchKeyword {
         }
     }
 
-    public static SearchKeyword from(String value) {
+    public static SearchKeyword of(String value) {
         return new SearchKeyword(value);
     }
 }
