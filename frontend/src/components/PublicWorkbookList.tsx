@@ -1,30 +1,40 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { PublicWorkbookResponse } from '../types';
+import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
   onClickPublicWorkbook: (id: number) => void;
-  publicWorkbooks: PublicWorkbookResponse[];
+  searchList: PublicWorkbookResponse[] | SearchKeywordResponse[];
 }
 
-const PublicWorkbookList = ({
-  onClickPublicWorkbook,
-  publicWorkbooks,
-}: Props) => {
+const isPublicWorkbook = (
+  data: PublicWorkbookResponse[] | SearchKeywordResponse[]
+): data is PublicWorkbookResponse[] => {
+  const [response] = data;
+
+  return 'cardCount' in response && 'author' in response;
+};
+
+const PublicWorkbookList = ({ onClickPublicWorkbook, searchList }: Props) => {
+  if (searchList.length === 0) {
+    return null;
+  }
+
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-        <li key={id}>
-          <PublicWorkbook
-            name={name}
-            cardCount={cardCount}
-            author={author}
-            onClick={() => onClickPublicWorkbook(id)}
-          />
-        </li>
-      ))}
+      {isPublicWorkbook(searchList) &&
+        searchList.map(({ id, name, cardCount, author }) => (
+          <li key={id}>
+            <PublicWorkbook
+              name={name}
+              cardCount={cardCount}
+              author={author}
+              onClick={() => onClickPublicWorkbook(id)}
+            />
+          </li>
+        ))}
     </StyledUl>
   );
 };

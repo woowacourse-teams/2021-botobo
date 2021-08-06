@@ -11,3 +11,9 @@ export const QUIZ_MODE = {
   GUEST: 'GUEST',
   OTHERS: 'OTHERS',
 } as const;
+
+export const SEARCH_TYPE = {
+  NAME: 'name',
+  TAG: 'tag',
+  USER: 'user',
+} as const;
