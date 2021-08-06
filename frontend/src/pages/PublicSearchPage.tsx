@@ -113,6 +113,7 @@ const PublicSearchPage = () => {
             onChange={({ target }) => {
               setInputValue(target.value);
               setIsLoading(true);
+              resetSearchResult();
               debounce(() => {
                 searchForKeyword({
                   keyword: target.value,
