@@ -1,6 +1,6 @@
 package botobo.core.ui.search;
 
-import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
+import botobo.core.exception.search.SearchKeywordCreationFailureException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -10,6 +10,7 @@ import java.util.Objects;
 @Getter
 public class SearchKeyword {
 
+    private static final int KEYWORD_MIN_LENGTH = 1;
     private static final int KEYWORD_MAX_LENGTH = 30;
 
     private final String value;
@@ -38,6 +39,11 @@ public class SearchKeyword {
         if (value.length() > KEYWORD_MAX_LENGTH) {
             throw new SearchKeywordCreationFailureException(
                     String.format("검색어는 %d자 이하여야 합니다.", KEYWORD_MAX_LENGTH)
+            );
+        }
+        if (value.length() < KEYWORD_MIN_LENGTH) {
+            throw new SearchKeywordCreationFailureException(
+                    String.format("검색어는 %d자 이상이어야 합니다.", KEYWORD_MIN_LENGTH)
             );
         }
     }

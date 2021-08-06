@@ -24,4 +24,11 @@ public class SearchController {
         List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter);
         return ResponseEntity.ok(workbookResponses);
     }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<TagResponse>> searchTags(@RequestParam String keyword) {
+        SearchKeyword searchKeyword = SearchKeyword.of(keyword);
+        List<TagResponse> tagResponses = searchService.searchTags(searchKeyword);
+        return ResponseEntity.ok(tagResponses);
+    }
 }
