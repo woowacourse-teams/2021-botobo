@@ -58,13 +58,15 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
         this.adminUser = saveAdminUser();
         this.normalUser = saveNormalUser();
-        this.adminWorkbookCount = 3;
+        this.adminWorkbookCount = 101;
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
         }
         for (String workbook : workbooks) {
-            readFile(targetPath + workbook);
+            for (int i = 0; i < 10; i++) {
+                readFile(targetPath + workbook, i);
+            }
         }
     }
 
@@ -72,11 +74,11 @@ public class DataLoader implements CommandLineRunner {
         return new File(filePath).exists();
     }
 
-    public void readFile(String filePath) {
+    public void readFile(String filePath, int i) {
         try {
             File file = new File(filePath);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            saveData(bufferedReader);
+            saveData(bufferedReader, i);
             bufferedReader.close();
         } catch (FileNotFoundException e) {
             log.info("Dummy Data 파일 경로를 찾지 못했습니다.");
@@ -85,12 +87,12 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    private void saveData(BufferedReader bufferedReader) throws IOException {
+    private void saveData(BufferedReader bufferedReader, int i) throws IOException {
         String workbookName = bufferedReader.readLine();
         if (Objects.isNull(workbookName)) {
             return;
         }
-        Workbook workbook = saveWorkbook(workbookName);
+        Workbook workbook = saveWorkbook(workbookName + i);
         String question = bufferedReader.readLine();
         String answer = bufferedReader.readLine();
 
@@ -103,7 +105,7 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveAdminUser() {
         User user = User.builder()
-                .userName("1번 어드민")
+                .userName("admin")
                 .githubId(88036280L)
                 .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
                 .role(Role.ADMIN)
@@ -113,7 +115,7 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveNormalUser() {
         User user = User.builder()
-                .userName("일반 유저")
+                .userName("user")
                 .githubId(88143445L)
                 .profileUrl("botobo.profile.url")
                 .role(Role.USER)
