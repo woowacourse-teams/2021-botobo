@@ -9,10 +9,10 @@ import {
   PublicSearchList,
   PublicWorkbookList,
 } from '../components';
-import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE, STORAGE_KEY } from '../constants';
-import { usePublicSearch, useRouter } from '../hooks';
+import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE } from '../constants';
+import { usePublicSearch } from '../hooks';
 import { Flex } from '../styles';
-import { debounce, setSessionStorage } from '../utils';
+import { debounce } from '../utils';
 
 const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
 
@@ -53,20 +53,19 @@ const searchTabList = [
 
 const PublicSearchPage = () => {
   const {
+    setSearchKeyword,
+    setSearchType,
     inputValue,
     setInputValue,
-    setSearchType,
-    searchResponse,
-    resetSearchResponse,
-    setSearchKeyword,
+    keywordSearchResult,
+    workbookSearchResult,
+    resetSearchResult,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
     searchForKeyword,
-    isPublicWorkbookResponse,
   } = usePublicSearch();
   const [isFocus, setIsFocus] = useState(false);
-  const { routePublicCards, routePublicWorkbook } = useRouter();
 
   const [currentFocusTab, setCurrentFocusTab] = useState(searchTabList[0]);
 
@@ -94,8 +93,9 @@ const PublicSearchPage = () => {
                       searchTabList[0];
 
                     setCurrentFocusTab(currentTab);
+                    setSearchType(currentTab.type);
                     setInputValue('');
-                    resetSearchResponse();
+                    resetSearchResult();
                   }}
                 >
                   {name}
@@ -113,7 +113,6 @@ const PublicSearchPage = () => {
             onChange={({ target }) => {
               setInputValue(target.value);
               setIsLoading(true);
-              resetSearchResponse();
               debounce(() => {
                 searchForKeyword({
                   keyword: target.value,
@@ -129,35 +128,24 @@ const PublicSearchPage = () => {
             <button
               onClick={() => {
                 setInputValue('');
-                resetSearchResponse();
+                resetSearchResult();
               }}
             >
               <SearchCloseIcon width="0.5rem" height="0.5rem" />
             </button>
           )}
         </SearchBar>
-        {isPublicWorkbookResponse(searchResponse) ? (
+        {currentFocusTab.type === 'name' ? (
           <PublicWorkbookList
-            publicWorkbooks={searchResponse}
-            onClickPublicWorkbook={(id) => {
-              setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-              setSearchKeyword(inputValue);
-              setSearchType(currentFocusTab.type);
-              routePublicCards();
-            }}
+            publicWorkbooks={workbookSearchResult}
+            onClickItem={() => setSearchKeyword(inputValue)}
           />
         ) : (
-          currentFocusTab.type !== 'name' && (
-            <PublicSearchList
-              searchItems={searchResponse}
-              onClickSearchItem={() => {
-                setSearchKeyword(inputValue);
-                setSearchType(currentFocusTab.type);
-                routePublicWorkbook();
-              }}
-              type={currentFocusTab.type}
-            />
-          )
+          <PublicSearchList
+            searchItems={keywordSearchResult}
+            onClickItem={() => setSearchKeyword(inputValue)}
+            type={currentFocusTab.type}
+          />
         )}
         <LoadImage isLoading={isLoading} />
       </Container>

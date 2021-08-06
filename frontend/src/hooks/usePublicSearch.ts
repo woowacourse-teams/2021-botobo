@@ -10,23 +10,16 @@ import {
 import { searchKeywordState, searchTypeState } from '../recoil';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 
-const isPublicWorkbookResponse = (
-  data: PublicWorkbookResponse[] | SearchKeywordResponse[]
-): data is PublicWorkbookResponse[] => {
-  if (data.length === 0) return false;
-
-  const [response] = data;
-
-  return 'cardCount' in response && 'author' in response;
-};
-
 const usePublicSearch = () => {
-  const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
   const [searchType, setSearchType] = useRecoilState(searchTypeState);
+  const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
   const [inputValue, setInputValue] = useState(searchKeyword);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchResponse, setSearchResponse] = useState<
-    PublicWorkbookResponse[] | SearchKeywordResponse[]
+  const [keywordSearchResult, setKeywordSearchResult] = useState<
+    SearchKeywordResponse[]
+  >([]);
+  const [workbookSearchResult, setWorkbookSearchResult] = useState<
+    PublicWorkbookResponse[]
   >([]);
 
   const searchForPublicWorkbook = async ({
@@ -35,7 +28,7 @@ const usePublicSearch = () => {
   }: PublicWorkbookAsync) => {
     try {
       const data = await getPublicWorkbookAsync({ keyword, ...options });
-      setSearchResponse(data);
+      setWorkbookSearchResult(data);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -60,7 +53,7 @@ const usePublicSearch = () => {
         data = await getUserKeywordAsync(keyword);
       }
 
-      setSearchResponse(data);
+      setKeywordSearchResult(data);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -68,22 +61,25 @@ const usePublicSearch = () => {
     }
   };
 
-  const resetSearchResponse = () => setSearchResponse([]);
+  const resetSearchResult = () => {
+    setKeywordSearchResult([]);
+    setWorkbookSearchResult([]);
+  };
 
   return {
-    searchKeyword,
-    setSearchKeyword,
     searchType,
     setSearchType,
+    searchKeyword,
+    setSearchKeyword,
     inputValue,
     setInputValue,
-    searchResponse,
-    resetSearchResponse,
+    keywordSearchResult,
+    workbookSearchResult,
+    resetSearchResult,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
     searchForKeyword,
-    isPublicWorkbookResponse,
   };
 };
 
