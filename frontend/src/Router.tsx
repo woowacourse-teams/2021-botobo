@@ -20,7 +20,6 @@ import {
   MainPage,
   PublicCardsPage,
   PublicSearchPage,
-  PublicWorkbookPage,
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
@@ -81,11 +80,6 @@ const routes = [
   {
     path: ROUTE.PUBLIC_SEARCH.PATH,
     component: <PublicSearchPage />,
-    isPublic: false,
-  },
-  {
-    path: ROUTE.PUBLIC_WORKBOOK.PATH,
-    component: <PublicWorkbookPage />,
     isPublic: false,
   },
   {
