@@ -81,6 +81,11 @@ public class RequestBuilder {
             return this;
         }
 
+        public Options queryParams(Map<String, String> parameters) {
+            this.queryParams.addAll(parameters.entrySet());
+            return this;
+        }
+
         public HttpResponse build() {
             if (loginFlag) {
                 if (accessToken != null && !defaultToken.equals(accessToken)) {
