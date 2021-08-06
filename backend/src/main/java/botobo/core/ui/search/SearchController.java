@@ -1,6 +1,7 @@
 package botobo.core.ui.search;
 
 import botobo.core.application.SearchService;
+import botobo.core.dto.search.SearchUserResponse;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -36,9 +37,9 @@ public class SearchController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
+    public ResponseEntity<List<SearchUserResponse>> searchUsers(@RequestParam String keyword) {
         SearchKeyword searchKeyword = SearchKeyword.of(keyword);
-        List<UserResponse> userResponses = searchService.searchUsers(searchKeyword);
+        List<SearchUserResponse> userResponses = searchService.searchUsers(searchKeyword);
         return ResponseEntity.ok(userResponses);
     }
 }

@@ -6,6 +6,7 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.dto.search.SearchUserResponse;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -47,8 +48,8 @@ public class SearchService {
         return TagResponse.listOf(tags);
     }
 
-    public List<UserResponse> searchUsers(SearchKeyword keyword) {
+    public List<SearchUserResponse> searchUsers(SearchKeyword keyword) {
         List<User> users = userRepository.findByKeyword(keyword.getValue());
-        return UserResponse.listOfSearch(users);
+        return SearchUserResponse.listOf(users);
     }
 }

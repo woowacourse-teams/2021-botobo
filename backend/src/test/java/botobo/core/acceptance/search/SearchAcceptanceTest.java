@@ -3,9 +3,9 @@ package botobo.core.acceptance.search;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.search.SearchUserResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.exception.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -572,12 +572,12 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         HttpResponse response = 유저_검색_요청(keyword);
 
         // then
-        List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+        List<SearchUserResponse> searchUserResponse = response.convertBodyToList(SearchUserResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(userResponses).hasSize(1);
-        assertThat(userResponses)
-                .extracting(UserResponse::getUserName)
-                .allMatch(userName -> userName.contains(keyword));
+        assertThat(searchUserResponse).hasSize(1);
+        assertThat(searchUserResponse)
+                .extracting(SearchUserResponse::getName)
+                .allMatch(name -> name.contains(keyword));
     }
 
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
