@@ -78,6 +78,7 @@ const usePublicSearch = () => {
   const resetSearchResult = () => {
     setKeywordSearchResult([]);
     setWorkbookSearchResult([]);
+    setStartIndex(0);
   };
 
   return {

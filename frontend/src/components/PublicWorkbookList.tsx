@@ -1,24 +1,22 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { PublicWorkbookAsync } from '../api';
-import { SEARCH_TYPE, STORAGE_KEY } from '../constants';
+import { STORAGE_KEY } from '../constants';
 import { useRouter } from '../hooks';
+import { searchKeywordState, searchTypeState } from '../recoil';
 import { PublicWorkbookResponse } from '../types';
-import { ValueOf } from '../types/utils';
 import { setSessionStorage } from '../utils';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
   publicWorkbooks: PublicWorkbookResponse[];
   startIndex: number;
-  searchKeyword: string;
-  searchType: ValueOf<typeof SEARCH_TYPE>;
   searchForPublicWorkbook: ({
     keyword,
     ...options
   }: PublicWorkbookAsync) => Promise<void>;
-  onClickItem?: () => void;
 }
 
 const loadItemCount = 20;
@@ -27,12 +25,12 @@ let scrollObserver: IntersectionObserver;
 const PublicWorkbookList = ({
   publicWorkbooks,
   startIndex,
-  searchKeyword,
-  searchType,
   searchForPublicWorkbook,
-  onClickItem,
 }: Props) => {
   const scrollTarget = useRef<HTMLLIElement>(null);
+
+  const searchKeyword = useRecoilValue(searchKeywordState);
+  const searchType = useRecoilValue(searchTypeState);
 
   const { routePublicCards } = useRouter();
 
@@ -81,7 +79,6 @@ const PublicWorkbookList = ({
             author={author}
             onClick={() => {
               setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-              onClickItem?.();
               routePublicCards();
             }}
           />

@@ -76,8 +76,6 @@ const PublicWorkbookPage = () => {
             <PublicWorkbookList
               publicWorkbooks={workbookSearchResult}
               startIndex={startIndex}
-              searchKeyword={searchKeyword}
-              searchType={searchType}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
           </>

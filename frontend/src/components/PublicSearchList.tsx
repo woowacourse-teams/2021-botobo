@@ -1,23 +1,23 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import UserIcon from '../assets/business-card.svg';
 import TagIcon from '../assets/tag.svg';
-import { SEARCH_TYPE } from '../constants';
 import { useRouter } from '../hooks';
+import { searchTypeState } from '../recoil';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
 interface Props {
   searchItems: SearchKeywordResponse[];
-  type: typeof SEARCH_TYPE.TAG | typeof SEARCH_TYPE.USER;
-  onClickItem?: () => void;
 }
 
-const PublicSearchList = ({ searchItems, type, onClickItem }: Props) => {
+const PublicSearchList = ({ searchItems }: Props) => {
   const { routePublicWorkbook } = useRouter();
+  const searchType = useRecoilValue(searchTypeState);
 
   return (
     <StyledUl>
@@ -25,13 +25,12 @@ const PublicSearchList = ({ searchItems, type, onClickItem }: Props) => {
         <li key={id}>
           <SearchItem
             onClick={() => {
-              onClickItem?.();
               routePublicWorkbook();
             }}
           >
             <IconWrapper>
-              {type === 'tag' && <TagIcon width="1rem" height="1rem" />}
-              {type === 'user' && <UserIcon width="1rem" height="1rem" />}
+              {searchType === 'tag' && <TagIcon width="1rem" height="1rem" />}
+              {searchType === 'user' && <UserIcon width="1rem" height="1rem" />}
             </IconWrapper>
             <Name>{name}</Name>
           </SearchItem>

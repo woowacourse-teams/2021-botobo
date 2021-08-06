@@ -54,9 +54,9 @@ const searchTabList = [
 const PublicSearchPage = () => {
   const {
     setSearchKeyword,
+    searchType,
     setSearchType,
     startIndex,
-    setStartIndex,
     inputValue,
     setInputValue,
     keywordSearchResult,
@@ -69,7 +69,9 @@ const PublicSearchPage = () => {
   } = usePublicSearch();
   const [isFocus, setIsFocus] = useState(false);
 
-  const [currentFocusTab, setCurrentFocusTab] = useState(searchTabList[0]);
+  const [currentFocusTab, setCurrentFocusTab] = useState(
+    searchTabList.find((item) => item.type === searchType) ?? searchTabList[0]
+  );
 
   useEffect(() => {
     const resetKeyword = () => setSearchKeyword('');
@@ -96,7 +98,6 @@ const PublicSearchPage = () => {
 
                     setCurrentFocusTab(currentTab);
                     setSearchType(currentTab.type);
-                    setStartIndex(0);
                     setInputValue('');
                     resetSearchResult();
                   }}
@@ -118,6 +119,7 @@ const PublicSearchPage = () => {
               setIsLoading(true);
               resetSearchResult();
               debounce(() => {
+                setSearchKeyword(target.value);
                 searchForKeyword({
                   keyword: target.value,
                   type: currentFocusTab.type,
@@ -139,22 +141,17 @@ const PublicSearchPage = () => {
             </button>
           )}
         </SearchBar>
-        {currentFocusTab.type === 'name' ? (
-          <PublicWorkbookList
-            publicWorkbooks={workbookSearchResult}
-            startIndex={startIndex}
-            searchKeyword={inputValue}
-            searchType={currentFocusTab.type}
-            searchForPublicWorkbook={searchForPublicWorkbook}
-            onClickItem={() => setSearchKeyword(inputValue)}
-          />
-        ) : (
-          <PublicSearchList
-            searchItems={keywordSearchResult}
-            onClickItem={() => setSearchKeyword(inputValue)}
-            type={currentFocusTab.type}
-          />
-        )}
+        {currentFocusTab.type === 'name'
+          ? workbookSearchResult.length > 0 && (
+              <PublicWorkbookList
+                publicWorkbooks={workbookSearchResult}
+                startIndex={startIndex}
+                searchForPublicWorkbook={searchForPublicWorkbook}
+              />
+            )
+          : keywordSearchResult.length > 0 && (
+              <PublicSearchList searchItems={keywordSearchResult} />
+            )}
         <LoadImage isLoading={isLoading} />
       </Container>
     </>
