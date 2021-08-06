@@ -3,9 +3,9 @@ package botobo.core.ui.auth;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class PathPatterns {
     private final Map<String, PathMethods> includePatterns;
@@ -19,11 +19,11 @@ public class PathPatterns {
     }
 
     public void addPathPatterns(String pathPattern, PathMethod... pathMethods) {
-        includePatterns.put(pathPattern, new PathMethods(Arrays.asList(pathMethods)));
+        includePatterns.put(pathPattern, new PathMethods(Set.of(pathMethods)));
     }
 
     public void excludePathPatterns(String pathPattern, PathMethod... pathMethods) {
-        excludePatterns.put(pathPattern, new PathMethods(Arrays.asList(pathMethods)));
+        excludePatterns.put(pathPattern, new PathMethods(Set.of(pathMethods)));
     }
 
     public boolean isExcludedPath(String uri, PathMethod pathMethod) {

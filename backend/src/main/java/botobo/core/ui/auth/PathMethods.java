@@ -1,11 +1,11 @@
 package botobo.core.ui.auth;
 
-import java.util.List;
+import java.util.Set;
 
 public class PathMethods {
-    private final List<PathMethod> pathMethods;
+    private final Set<PathMethod> pathMethods;
 
-    public PathMethods(List<PathMethod> pathMethods) {
+    public PathMethods(Set<PathMethod> pathMethods) {
         this.pathMethods = pathMethods;
     }
 
