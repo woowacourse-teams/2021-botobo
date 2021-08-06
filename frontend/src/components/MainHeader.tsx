@@ -2,15 +2,14 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import LogoutIcon from '../assets/logout.svg';
 import MenuIcon from '../assets/menu.svg';
-import { CLOUD_FRONT_DOMAIN, STORAGE_KEY } from '../constants';
+import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { useRouter } from '../hooks';
 import { userState } from '../recoil';
 import { Flex } from '../styles';
-import { removeLocalStorage } from '../utils';
 
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
@@ -24,16 +23,9 @@ interface MenuStyleProps {
 }
 
 const MainHeader = ({ sticky = true }: Props) => {
-  const { routeMain, routeLogin } = useRouter();
-  const [userInfo, setUserInfo] = useRecoilState(userState);
+  const { routeMain, routeLogin, routeLogout } = useRouter();
+  const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-
-  const logout = () => {
-    removeLocalStorage(STORAGE_KEY.TOKEN);
-    setUserInfo(null);
-    setIsMenuVisible(false);
-    routeMain();
-  };
 
   return (
     <StyledHeader sticky={sticky}>
@@ -64,7 +56,7 @@ const MainHeader = ({ sticky = true }: Props) => {
           <Avatar src={userInfo?.profileUrl ?? userSrc} />
           <div>{userInfo?.userName ?? 'Unknown User'}</div>
         </Link>
-        <button type="button" role="logout-button" onClick={logout}>
+        <button type="button" role="logout-button" onClick={routeLogout}>
           <StyledLogoutIcon width={'1rem'} height={'1rem'} />
           <div>로그아웃</div>
         </button>

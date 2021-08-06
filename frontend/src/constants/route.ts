@@ -6,6 +6,9 @@ const ROUTE = {
     PATH: '/login',
     TITLE: '로그인',
   },
+  LOGOUT: {
+    PATH: '/logout',
+  },
   WORKBOOK_ADD: {
     PATH: '/workbookAdd',
     TITLE: '문제집 추가',
