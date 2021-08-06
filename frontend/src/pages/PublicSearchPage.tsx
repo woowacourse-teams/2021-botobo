@@ -75,8 +75,6 @@ const PublicSearchPage = () => {
 
   useEffect(() => {
     const resetKeyword = () => setSearchKeyword('');
-    searchForKeyword({ keyword: inputValue, type: currentFocusTab.type });
-
     window.addEventListener('popstate', resetKeyword);
 
     return () => window.removeEventListener('popstate', resetKeyword);

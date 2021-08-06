@@ -1,12 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import UserIcon from '../assets/business-card.svg';
 import TagIcon from '../assets/tag.svg';
 import { useRouter } from '../hooks';
-import { searchTypeState } from '../recoil';
+import { searchKeywordState, searchTypeState } from '../recoil';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import CardTemplate from './CardTemplate';
@@ -16,8 +16,10 @@ interface Props {
 }
 
 const PublicSearchList = ({ searchItems }: Props) => {
-  const { routePublicWorkbook } = useRouter();
+  const setSearchKeyword = useSetRecoilState(searchKeywordState);
   const searchType = useRecoilValue(searchTypeState);
+
+  const { routePublicWorkbook } = useRouter();
 
   return (
     <StyledUl>
@@ -25,6 +27,7 @@ const PublicSearchList = ({ searchItems }: Props) => {
         <li key={id}>
           <SearchItem
             onClick={() => {
+              setSearchKeyword(name);
               routePublicWorkbook();
             }}
           >

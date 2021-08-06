@@ -13,7 +13,7 @@ import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 const usePublicSearch = () => {
   const [searchType, setSearchType] = useRecoilState(searchTypeState);
   const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
-  const [inputValue, setInputValue] = useState(searchKeyword);
+  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [keywordSearchResult, setKeywordSearchResult] = useState<
@@ -27,6 +27,8 @@ const usePublicSearch = () => {
     keyword,
     ...options
   }: PublicWorkbookAsync) => {
+    setIsLoading(true);
+
     if (keyword === '') {
       setIsLoading(false);
 
@@ -48,6 +50,8 @@ const usePublicSearch = () => {
     keyword,
     type = 'name',
   }: Pick<PublicWorkbookAsync, 'keyword' | 'type'>) => {
+    setIsLoading(true);
+
     if (keyword === '') {
       setIsLoading(false);
 

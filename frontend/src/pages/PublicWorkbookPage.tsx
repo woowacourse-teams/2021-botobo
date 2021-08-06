@@ -14,6 +14,7 @@ const filters = [
   { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
+// TODO: 스켈레톤 만들기
 const PublicWorkbookPage = () => {
   const {
     searchKeyword,
