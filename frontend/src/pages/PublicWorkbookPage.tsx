@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
@@ -14,20 +14,60 @@ const filters = [
   { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
+let scrollObserver: IntersectionObserver;
+
 const PublicWorkbookPage = () => {
   const {
     searchKeyword,
     searchType,
     workbookSearchResult,
+    startIndex,
+    setStartIndex,
     searchForPublicWorkbook,
   } = usePublicSearch();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
+  const scrollTarget = useRef<HTMLLIElement>(null);
 
   const { routePrevPage } = useRouter();
 
   useEffect(() => {
     searchForPublicWorkbook({ keyword: searchKeyword, type: searchType });
   }, [searchKeyword]);
+
+  useEffect(() => {
+    if (!scrollTarget.current) return;
+
+    scrollObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach(async (entry) => {
+          if (!entry.isIntersecting) return;
+          if (!scrollTarget.current) return;
+
+          await searchForPublicWorkbook({
+            keyword: searchKeyword,
+            type: searchType,
+            start: startIndex,
+          });
+
+          observer.unobserve(entry.target);
+          observer.observe(scrollTarget.current);
+        });
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    scrollObserver.observe(scrollTarget.current);
+
+    return () => scrollObserver?.disconnect();
+  }, [scrollTarget.current]);
+
+  useEffect(() => {
+    if (startIndex % 20 === 0) return;
+
+    scrollObserver.disconnect();
+  }, [startIndex]);
 
   return (
     <>
@@ -58,9 +98,11 @@ const PublicWorkbookPage = () => {
                     if (id === currentFilterId) return;
 
                     setCurrentFilterId(id);
+                    setStartIndex(0);
                     searchForPublicWorkbook({
                       keyword: searchKeyword,
                       type: searchType,
+                      start: 0,
                       criteria,
                     });
                   }}
@@ -69,7 +111,10 @@ const PublicWorkbookPage = () => {
                 </Button>
               ))}
             </Filter>
-            <PublicWorkbookList publicWorkbooks={workbookSearchResult} />
+            <PublicWorkbookList
+              ref={scrollTarget}
+              publicWorkbooks={workbookSearchResult}
+            />
           </>
         )}
       </Container>

@@ -15,6 +15,7 @@ const usePublicSearch = () => {
   const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
   const [inputValue, setInputValue] = useState(searchKeyword);
   const [isLoading, setIsLoading] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
   const [keywordSearchResult, setKeywordSearchResult] = useState<
     SearchKeywordResponse[]
   >([]);
@@ -34,7 +35,8 @@ const usePublicSearch = () => {
 
     try {
       const data = await getPublicWorkbookAsync({ keyword, ...options });
-      setWorkbookSearchResult(data);
+      setWorkbookSearchResult((prevValue) => [...prevValue, ...data]);
+      setStartIndex(data.length);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -85,6 +87,8 @@ const usePublicSearch = () => {
     setSearchKeyword,
     inputValue,
     setInputValue,
+    startIndex,
+    setStartIndex,
     keywordSearchResult,
     workbookSearchResult,
     resetSearchResult,
