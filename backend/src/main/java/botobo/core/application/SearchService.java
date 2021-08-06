@@ -34,7 +34,11 @@ public class SearchService {
     }
 
     public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter) {
-        List<Workbook> workbooks = workbookRepository.findAll();
+        Specification<Workbook> specification = workbookSearchParameter.toSpecification();
+        PageRequest pageRequest = workbookSearchParameter.toPageRequest();
+
+        Page<Workbook> page = workbookRepository.findAll(specification, pageRequest);
+        List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);
     }
 

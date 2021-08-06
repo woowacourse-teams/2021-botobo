@@ -1,6 +1,8 @@
 package botobo.core.ui.search;
 
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.exception.search.InvalidSearchOrderException;
+import lombok.Getter;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
@@ -29,5 +31,11 @@ public enum SearchOrder {
                 .findFirst()
                 .orElseThrow(InvalidSearchOrderException::new);
     }
+
+    public Order toOrder(CriteriaBuilder builder, Root<Workbook> root, SearchCriteria searchCriteria) {
+        if (SearchOrder.ASC.equals(this)) {
+            return builder.asc(searchCriteria.toExpression(builder, root));
+        }
+        return builder.desc(searchCriteria.toExpression(builder, root));
     }
 }
