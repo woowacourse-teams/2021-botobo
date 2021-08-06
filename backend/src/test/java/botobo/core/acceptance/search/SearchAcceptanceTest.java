@@ -5,6 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
+import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.exception.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,7 +109,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 검색어를 제외한 다른 인자는 생략 가능")
     void searchWithDefault() {
-        // give
+        // given
         Map<String, String> parameters = Map.of("keyword", "java");
 
         // when
@@ -121,7 +122,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 문제집 이름으로 검색")
     void searchFromNameType() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "기초");
         parameters.put("type", "name");
@@ -141,7 +142,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 태그 이름으로 검색")
     void searchFromTagType() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("type", "tag");
@@ -161,7 +162,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 유저 이름으로 검색")
     void searchFromUserType() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -180,7 +181,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 시간 기준 최신 순 정렬")
     void searchFromDateDesc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -207,7 +208,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 시간 기준 오랜 순 정렬")
     void searchFromDateAsc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -234,7 +235,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 사전 역순 정렬")
     void searchFromNameDesc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -261,7 +262,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 사전 순 정렬")
     void searchFromNameAsc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -301,7 +302,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 카드 많은 순 정렬")
     void searchFromCountDesc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -328,7 +329,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 카드 적은 순 정렬")
     void searchFromCountAsc() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -355,7 +356,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 요청한 크기보다 문제집을 조금 가진 경우 가지고 있는 문제집만 보여준다.")
     void searchWithBiggerSizeThanStored() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -383,7 +384,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 페이징 이용")
     void searchWithPaging() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "pk");
         parameters.put("type", "user");
@@ -410,7 +411,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 성공, 카드의 수가 0개인 문제집은 조회되지 않음")
     void searchExceptZeroCards() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "bear");
         parameters.put("type", "user");
@@ -430,7 +431,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 검색어 없음")
     void searchWithNoKeyword() {
-        // give
+        // given
         Map<String, String> parameters = Map.of("type", "name");
 
         // when
@@ -445,7 +446,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 30자를 초과하는 검색어")
     void searchWithLongKeyword() {
-        // give
+        // given
         Map<String, String> parameters = Map.of("keyword", stringGenerator(31));
 
         // when
@@ -460,7 +461,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 지원하지 않는 검색 타입")
     void searchWithInvalidType() {
-        // give
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("type", "alphabet");
@@ -477,6 +478,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 지원하지 않는 정렬 기준")
     void searchWithInvalidCriteria() {
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("criteria", "random");
@@ -493,6 +495,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 지원하지 않는 정렬 방법")
     void searchWithInvalidOrder() {
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("order", "center");
@@ -509,6 +512,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 올바르지 않은 시작 페이지")
     void searchWithInvalidStart() {
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("start", "-1");
@@ -526,6 +530,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     @ValueSource(strings = {"0", "-1", "101"})
     @DisplayName("문제집 검색 - 올바르지 않은 페이지 크기")
     void searchWithInvalidSize(String size) {
+        // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "java");
         parameters.put("size", size);
@@ -539,10 +544,62 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).contains("유효하지 않은 페이지 크기입니다. 유효한 크기 : 1 ~ 100");
     }
 
+    @Test
+    @DisplayName("태그 검색 - 성공")
+    void searchTagsWithKeyword() {
+        // given
+        String keyword = "ava";
+
+        // when
+        HttpResponse response = 태그_검색_요청(keyword);
+
+        // then
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tagResponses).hasSize(1);
+        assertThat(tagResponses)
+                .extracting(TagResponse::getName)
+                .allMatch(name -> name.contains(keyword));
+    }
+
+    @Test
+    @DisplayName("유저 검색 - 성공")
+    void searchUsersWithKeyword() {
+        // given
+        String keyword = "ear";
+
+        // when
+        HttpResponse response = 유저_검색_요청(keyword);
+
+        // then
+        List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(userResponses).hasSize(1);
+        assertThat(userResponses)
+                .extracting(UserResponse::getUserName)
+                .allMatch(userName -> userName.contains(keyword));
+    }
+
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
         return request()
                 .get("/api/search/workbooks")
                 .queryParams(parameters)
+                .auth(createToken(user.getId()))
+                .build();
+    }
+
+    private HttpResponse 태그_검색_요청(String keyword) {
+        return request()
+                .get("/api/search/tags")
+                .queryParam("keyword", keyword)
+                .auth(createToken(user.getId()))
+                .build();
+    }
+
+    private HttpResponse 유저_검색_요청(String keyword) {
+        return request()
+                .get("/api/search/users")
+                .queryParam("keyword", keyword)
                 .auth(createToken(user.getId()))
                 .build();
     }
