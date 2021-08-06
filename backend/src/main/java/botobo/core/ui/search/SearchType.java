@@ -12,8 +12,8 @@ import java.util.function.Function;
 
 @Getter
 public enum SearchType {
-    NAME("name", root -> root.get("name"), keyword -> "%" + keyword + "%"),
-    TAG("tag", root -> root.join("workbookTags").get("tag").get("tagName").get("value"), keyword -> keyword),
+    NAME("name", root -> root.get("name"), keyword -> "%" + keyword.toLowerCase() + "%"),
+    TAG("tag", root -> root.join("workbookTags").get("tag").get("tagName").get("value"), String::toLowerCase),
     USER("user", root -> root.get("user").get("userName"), keyword -> keyword);
 
     private final String value;

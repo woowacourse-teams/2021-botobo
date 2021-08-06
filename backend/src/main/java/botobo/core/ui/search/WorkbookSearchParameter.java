@@ -73,18 +73,21 @@ public class WorkbookSearchParameter {
         Specification<Workbook> first = (root, query, builder) ->
                 builder.greaterThan(builder.size(root.get("cards").get("cards")), 0);
         Specification<Workbook> second = (root, query, builder) -> {
-            Order order = toOrder(builder, root);
+            Order order = toOrder(root, builder);
             query.orderBy(order);
-            return builder.like(toTargetObject(root), toPattern());
+            return builder.like(toTargetObject(root, builder), toPattern());
         };
         return Specification.where(first).and(second);
     }
 
-    public Order toOrder(CriteriaBuilder builder, Root<Workbook> root) {
+    public Order toOrder(Root<Workbook> root, CriteriaBuilder builder) {
         return searchOrder.toOrder(builder, root, searchCriteria);
     }
 
-    public Expression<String> toTargetObject(Root<Workbook> root) {
+    public Expression<String> toTargetObject(Root<Workbook> root, CriteriaBuilder builder) {
+        if (SearchType.NAME.equals(this.searchType)) {
+            return builder.lower(searchType.getExpression().apply(root));
+        }
         return searchType.getExpression().apply(root);
     }
 
