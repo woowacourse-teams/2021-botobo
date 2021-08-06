@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-import { SEARCH_TYPE, STORAGE_KEY } from '../constants';
+import {
+  SEARCH_CRITERIA,
+  SEARCH_ORDER,
+  SEARCH_TYPE,
+  STORAGE_KEY,
+} from '../constants';
 import {
   AccessTokenResponse,
   CardResponse,
@@ -30,8 +35,8 @@ interface PostWorkbookAsync {
 
 export interface PublicWorkbookAsync {
   keyword: string;
-  criteria?: 'date' | 'name' | 'count' | 'like';
-  order?: 'desc' | 'asc';
+  criteria?: ValueOf<typeof SEARCH_CRITERIA>;
+  order?: ValueOf<typeof SEARCH_ORDER>;
   type?: ValueOf<typeof SEARCH_TYPE>;
   start?: number;
   size?: number;

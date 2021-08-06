@@ -1,9 +1,18 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, MainHeader, PublicWorkbookList } from '../components';
+import { SEARCH_CRITERIA } from '../constants';
 import { usePublicSearch, useRouter } from '../hooks';
+import { Flex } from '../styles';
+
+const filters = [
+  { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
+  { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.LIKE },
+  { id: 3, name: '이름 순', criteria: SEARCH_CRITERIA.NAME },
+  { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
+];
 
 const PublicWorkbookPage = () => {
   const {
@@ -12,6 +21,7 @@ const PublicWorkbookPage = () => {
     workbookSearchResult,
     searchForPublicWorkbook,
   } = usePublicSearch();
+  const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
   const { routePrevPage } = useRouter();
 
@@ -35,9 +45,33 @@ const PublicWorkbookPage = () => {
             </Button>
           </NoSearchResult>
         ) : (
-          <Title>{searchKeyword} 검색 결과</Title>
+          <>
+            <Title>{searchKeyword} 검색 결과</Title>
+            <Filter>
+              {filters.map(({ id, name, criteria }) => (
+                <Button
+                  key={id}
+                  shape="round"
+                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+                  inversion={true}
+                  onClick={() => {
+                    if (id === currentFilterId) return;
+
+                    setCurrentFilterId(id);
+                    searchForPublicWorkbook({
+                      keyword: searchKeyword,
+                      type: searchType,
+                      criteria,
+                    });
+                  }}
+                >
+                  {name}
+                </Button>
+              ))}
+            </Filter>
+            <PublicWorkbookList publicWorkbooks={workbookSearchResult} />
+          </>
         )}
-        <PublicWorkbookList publicWorkbooks={workbookSearchResult} />
       </Container>
     </>
   );
@@ -74,4 +108,13 @@ const Title = styled.h2`
     font-size: ${theme.fontSize.medium};
   `}
 `;
+
+const Filter = styled.div`
+  ${Flex()};
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+`;
+
 export default PublicWorkbookPage;
