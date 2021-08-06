@@ -47,8 +47,10 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected User user;
 
+    @Override
     @BeforeEach
-    void setUser() {
+    protected void setUp() {
+        super.setUp();
         user = User.builder()
                 .githubId(1L)
                 .userName("admin")
