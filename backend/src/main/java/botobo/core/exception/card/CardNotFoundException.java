@@ -1,6 +1,6 @@
 package botobo.core.exception.card;
 
-import botobo.core.exception.NotFoundException;
+import botobo.core.exception.common.NotFoundException;
 
 public class CardNotFoundException extends NotFoundException {
     public CardNotFoundException() {
