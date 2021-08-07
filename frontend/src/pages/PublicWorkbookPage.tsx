@@ -22,6 +22,7 @@ const PublicWorkbookPage = () => {
     workbookSearchResult,
     startIndex,
     isLoading,
+    setIsLoading,
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
@@ -30,6 +31,7 @@ const PublicWorkbookPage = () => {
   const { routePrevPage } = useRouter();
 
   useEffect(() => {
+    setIsLoading(true);
     searchForPublicWorkbook({ keyword: searchKeyword, type: searchType });
   }, [searchKeyword]);
 
@@ -67,6 +69,7 @@ const PublicWorkbookPage = () => {
 
                     setCurrentFilterId(id);
                     resetSearchResult();
+                    setIsLoading(true);
                     searchForPublicWorkbook({
                       keyword: searchKeyword,
                       type: searchType,

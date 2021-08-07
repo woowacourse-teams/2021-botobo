@@ -27,8 +27,6 @@ const usePublicSearch = () => {
     keyword,
     ...options
   }: PublicWorkbookAsync) => {
-    setIsLoading(true);
-
     if (keyword === '') {
       setIsLoading(false);
 
@@ -50,8 +48,6 @@ const usePublicSearch = () => {
     keyword,
     type = 'name',
   }: Pick<PublicWorkbookAsync, 'keyword' | 'type'>) => {
-    setIsLoading(true);
-
     if (keyword === '') {
       setIsLoading(false);
 
