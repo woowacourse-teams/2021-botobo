@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import EditIcon from '../assets/pencil.svg';
-import { Button, InputField, MainHeader } from '../components';
+import { Button, InputField, MainHeader, TextAreaField } from '../components';
 import {
   BIO_MAXIMUM_LENGTH,
   CLOUD_FRONT_DOMAIN,
@@ -71,7 +71,11 @@ const ProfilePage = () => {
               maxLength={USER_NAME_MAXIMUM_LENGTH}
             />
             <InputTitle>소개글</InputTitle>
-            <BioInput name="bio"></BioInput>
+            <BioInput
+              name="bio"
+              focusColor="gray"
+              maxLength={BIO_MAXIMUM_LENGTH}
+            />
             <Button size="full">프로필 수정</Button>
           </FormProvider>
         </Profile>
@@ -208,18 +212,13 @@ const NameInput = styled(InputField)`
   `}
 `;
 
-const BioInput = styled.textarea`
+const BioInput = styled(TextAreaField)`
   width: 100%;
   height: 5rem;
-  margin-bottom: 2rem;
   padding: 0.5rem;
-  outline: none;
-  resize: none;
-  overflow-y: auto;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
-    border: 1px solid ${theme.color.gray_5};
     border-radius: ${theme.borderRadius.square};
 
     &:focus {
