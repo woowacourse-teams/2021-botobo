@@ -1,11 +1,15 @@
 package botobo.core.application;
 
+import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
+import botobo.core.ui.auth.OauthManagerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +30,9 @@ import static org.mockito.Mockito.times;
 class AuthServiceTest {
 
     @Mock
+    private OauthManagerFactory oauthManagerFactory;
+
+    @Mock
     private GithubOauthManager githubOauthManager;
 
     @Mock
@@ -41,36 +48,42 @@ class AuthServiceTest {
     @DisplayName("토큰을 만든다. - 성공, 유저가 이미 존재하는 경우")
     void createToken() {
         // given
-        GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .githubId(1L)
+        UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
+                .socialId(1L)
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId(1L)
                 .userName("user")
                 .profileUrl("user.io")
+                .socialType(SocialType.GITHUB)
                 .build();
 
+        LoginRequest loginRequest = new LoginRequest("code", SocialType.GITHUB);
         String accessToken = "토큰입니다";
 
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
-        given(userRepository.findByGithubId(anyLong())).willReturn(Optional.of(user));
+        given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
+        given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
+        given(userRepository.findBySocialIdAndSocialType(anyLong(), any())).willReturn(Optional.of(user));
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken(any());
+        TokenResponse tokenResponse = authService.createToken(loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
 
+        then(oauthManagerFactory)
+                .should(times(1))
+                .findOauthMangerBySocialType(any());
         then(githubOauthManager)
                 .should(times(1))
-                .getUserInfoFromGithub(any());
+                .getUserInfo(any());
         then(userRepository)
                 .should(times(1))
-                .findByGithubId(anyLong());
+                .findBySocialIdAndSocialType(anyLong(), any());
         then(jwtTokenProvider)
                 .should(times(1))
                 .createToken(anyLong());
@@ -80,37 +93,42 @@ class AuthServiceTest {
     @DisplayName("토큰을 만든다. - 성공, 새로운 유저인 경우")
     void createTokenWithNewUser() {
         // given
-        GithubUserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .githubId(1L)
+        UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
+                .socialId(1L)
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId(1L)
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
 
+        LoginRequest loginRequest = new LoginRequest("code", SocialType.GITHUB);
         String accessToken = "토큰입니다";
 
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(githubUserInfoResponse);
-        given(userRepository.findByGithubId(anyLong())).willReturn(Optional.empty());
+        given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
+        given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
+        given(userRepository.findBySocialIdAndSocialType(anyLong(), any())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willReturn(user);
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken(any());
+        TokenResponse tokenResponse = authService.createToken(loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
 
+        then(oauthManagerFactory)
+                .should(times(1))
+                .findOauthMangerBySocialType(any());
         then(githubOauthManager)
                 .should(times(1))
-                .getUserInfoFromGithub(any());
+                .getUserInfo(any());
         then(userRepository)
                 .should(times(1))
-                .findByGithubId(anyLong());
+                .findBySocialIdAndSocialType(anyLong(), any());
         then(userRepository)
                 .should(times(1))
                 .save(any(User.class));

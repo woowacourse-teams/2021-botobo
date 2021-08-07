@@ -22,7 +22,7 @@ import java.util.Objects;
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private Long githubId;
+    private Long socialId;
 
     @Column(nullable = false)
     private String userName;
@@ -34,13 +34,16 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
 
     @Builder
-    public User(Long id, Long githubId, String userName, String profileUrl, Role role, List<Workbook> workbooks) {
+    public User(Long id, Long socialId, String userName, String profileUrl, Role role, List<Workbook> workbooks, SocialType socialType) {
         this.id = id;
-        this.githubId = githubId;
+        this.socialId = socialId;
         this.userName = userName;
         this.profileUrl = profileUrl;
         if (Objects.nonNull(role)) {
@@ -49,6 +52,7 @@ public class User extends BaseEntity {
         if (Objects.nonNull(workbooks)) {
             this.workbooks = workbooks;
         }
+        this.socialType = socialType;
     }
 
     public AppUser toAppUser() {

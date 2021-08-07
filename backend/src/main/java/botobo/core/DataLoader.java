@@ -104,7 +104,7 @@ public class DataLoader implements CommandLineRunner {
     private User saveAdminUser() {
         User user = User.builder()
                 .userName("1번 어드민")
-                .githubId(88036280L)
+                .socialId(88036280L)
                 .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
                 .role(Role.ADMIN)
                 .build();
@@ -114,7 +114,7 @@ public class DataLoader implements CommandLineRunner {
     private User saveNormalUser() {
         User user = User.builder()
                 .userName("일반 유저")
-                .githubId(88143445L)
+                .socialId(88143445L)
                 .profileUrl("botobo.profile.url")
                 .role(Role.USER)
                 .build();

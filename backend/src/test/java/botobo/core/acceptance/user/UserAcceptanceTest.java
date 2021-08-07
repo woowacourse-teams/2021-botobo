@@ -18,7 +18,7 @@ public class UserAcceptanceTest extends AuthAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .get("/api/users/me")
-                .auth(로그인되어_있음().getAccessToken())
+                .auth(깃헙_로그인되어_있음().getAccessToken())
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);

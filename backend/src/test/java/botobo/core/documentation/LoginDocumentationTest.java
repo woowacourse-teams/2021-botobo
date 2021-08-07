@@ -1,6 +1,6 @@
 package botobo.core.documentation;
 
-
+import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.ui.auth.AuthController;
@@ -20,7 +20,7 @@ public class LoginDocumentationTest extends DocumentationTest {
     @DisplayName("로그인 - 성공")
     void login() throws Exception {
         //given
-        LoginRequest loginRequest = new LoginRequest("githubCode");
+        LoginRequest loginRequest = new LoginRequest("githubCode", SocialType.GITHUB);
         given(authService.createToken(any())).willReturn(
                 TokenResponse.of("botobo.access.token")
         );

@@ -3,6 +3,7 @@ package botobo.core.acceptance;
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.user.Role;
+import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.admin.AdminCardRequest;
@@ -10,6 +11,7 @@ import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.tag.TagRequest;
@@ -17,6 +19,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
+import botobo.core.ui.auth.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,12 +48,15 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @Autowired
     protected JwtTokenProvider jwtTokenProvider;
 
+    @MockBean
+    private OauthManagerFactory oauthManagerFactory;
+
     protected User user;
 
     @BeforeEach
     void setUser() {
         user = User.builder()
-                .githubId(1L)
+                .socialId(1L)
                 .userName("admin")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
@@ -60,7 +66,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected User anyUser() {
         User anyUser = User.builder()
-                .githubId(1L)
+                .socialId(1L)
                 .userName("joanne")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -165,15 +171,21 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return jwtTokenProvider.createToken(id);
     }
 
-    protected String 로그인되어_있음(GithubUserInfoResponse userInfo) {
-        ExtractableResponse<Response> response = 로그인_요청(userInfo);
+    protected String 깃헙_로그인되어_있음(GithubUserInfoResponse userInfo) {
+        ExtractableResponse<Response> response = 깃헙_로그인_요청(userInfo);
         return response.as(TokenResponse.class).getAccessToken();
     }
 
-    protected ExtractableResponse<Response> 로그인_요청(GithubUserInfoResponse userInfo) {
-        LoginRequest loginRequest = new LoginRequest("githubCode");
+    protected ExtractableResponse<Response> 깃헙_로그인_요청(GithubUserInfoResponse userInfo) {
+        LoginRequest loginRequest = new LoginRequest("githubCode", SocialType.GITHUB);
+        UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
+                .userName("githubUser")
+                .socialId(2L)
+                .profileUrl("github.io")
+                .build();
 
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(userInfo);
+        given(oauthManagerFactory.findOauthMangerBySocialType(SocialType.GITHUB)).willReturn(githubOauthManager);
+        given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
 
         return request()
                 .post("/api/login", loginRequest)

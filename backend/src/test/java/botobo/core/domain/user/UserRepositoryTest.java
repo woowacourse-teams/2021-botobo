@@ -21,10 +21,11 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .githubId(1L)
+                .socialId(1L)
                 .userName("user")
                 .profileUrl("profile.io")
                 .role(Role.USER)
+                .socialType(SocialType.GITHUB)
                 .build();
     }
 
@@ -59,7 +60,7 @@ public class UserRepositoryTest {
         userRepository.save(user);
 
         // when, then
-        Optional<User> findUser = userRepository.findByGithubId(user.getGithubId());
+        Optional<User> findUser = userRepository.findBySocialIdAndSocialType(user.getSocialId(), SocialType.GITHUB);
         assertThat(findUser).containsSame(user);
     }
 }

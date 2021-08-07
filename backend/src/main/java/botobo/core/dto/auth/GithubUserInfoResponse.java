@@ -12,22 +12,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GithubUserInfoResponse {
+public class GithubUserInfoResponse implements UserInfoResponse {
 
     @JsonProperty("login")
     private String userName;
     @JsonProperty("id")
-    private Long githubId;
+    private Long socialId;
     @JsonProperty("avatar_url")
     private String profileUrl;
 
     public User toUser() {
         return User.builder()
-                .githubId(githubId)
+                .socialId(socialId)
                 .userName(userName)
                 .profileUrl(profileUrl)
                 .role(Role.USER)
                 .build();
     }
-
 }
