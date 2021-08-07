@@ -21,8 +21,8 @@ const PublicWorkbookPage = () => {
     searchType,
     workbookSearchResult,
     startIndex,
-    setStartIndex,
     searchForPublicWorkbook,
+    resetSearchResult,
   } = usePublicSearch();
   const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
 
@@ -61,7 +61,7 @@ const PublicWorkbookPage = () => {
                     if (id === currentFilterId) return;
 
                     setCurrentFilterId(id);
-                    setStartIndex(0);
+                    resetSearchResult();
                     searchForPublicWorkbook({
                       keyword: searchKeyword,
                       type: searchType,
