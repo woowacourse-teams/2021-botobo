@@ -1,6 +1,6 @@
 package botobo.core.exception.user.s3;
 
-import botobo.core.exception.InternalServerErrorException;
+import botobo.core.exception.common.InternalServerErrorException;
 
 public class FileConvertFailedException extends InternalServerErrorException {
     public FileConvertFailedException() {

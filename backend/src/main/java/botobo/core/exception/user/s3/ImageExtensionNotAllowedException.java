@@ -1,6 +1,6 @@
 package botobo.core.exception.user.s3;
 
-import botobo.core.exception.BadRequestException;
+import botobo.core.exception.common.BadRequestException;
 
 public class ImageExtensionNotAllowedException extends BadRequestException {
     public ImageExtensionNotAllowedException() {
