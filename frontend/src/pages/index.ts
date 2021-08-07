@@ -1,6 +1,7 @@
 export { default as MainPage } from './MainPage';
 export { default as MainLoadable } from './MainLoadable';
 export { default as LoginPage } from './LoginPage';
+export { default as LogoutPage } from './LogoutPage';
 export { default as WorkbookAddPage } from './WorkbookAddPage';
 export { default as WorkbookEditPage } from './WorkbookEditPage';
 export { default as QuizSettingPage } from './QuizSettingPage';
@@ -14,3 +15,4 @@ export { default as GithubCallbackPage } from './GithubCallbackPage';
 export { default as PublicWorkbookPage } from './PublicWorkbookPage';
 export { default as PublicCardsPage } from './PublicCardsPage';
 export { default as PublicCardsLoadable } from './PublicCardsLoadable';
+export { default as ProfilePage } from './ProfilePage';

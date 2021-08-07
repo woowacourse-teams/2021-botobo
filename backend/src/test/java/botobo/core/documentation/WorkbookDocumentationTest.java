@@ -73,7 +73,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findWorkbooksByUser() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findWorkbooksByUser(any())).willReturn(generateUserWorkbookResponse());
+        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
 
         // when, then
         document()
