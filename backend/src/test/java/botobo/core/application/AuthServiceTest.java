@@ -9,7 +9,7 @@ import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
-import botobo.core.ui.auth.OauthManagerFactory;
+import botobo.core.infrastructure.OauthManagerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -49,28 +49,28 @@ class AuthServiceTest {
     void createToken() {
         // given
         UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
         User user = User.builder()
                 .id(1L)
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("user.io")
                 .socialType(SocialType.GITHUB)
                 .build();
 
-        LoginRequest loginRequest = new LoginRequest("code", SocialType.GITHUB);
+        LoginRequest loginRequest = new LoginRequest("code");
         String accessToken = "토큰입니다";
 
         given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
-        given(userRepository.findBySocialIdAndSocialType(anyLong(), any())).willReturn(Optional.of(user));
+        given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.of(user));
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken(loginRequest);
+        TokenResponse tokenResponse = authService.createToken("github", loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
@@ -83,7 +83,7 @@ class AuthServiceTest {
                 .getUserInfo(any());
         then(userRepository)
                 .should(times(1))
-                .findBySocialIdAndSocialType(anyLong(), any());
+                .findBySocialIdAndSocialType(any(), any());
         then(jwtTokenProvider)
                 .should(times(1))
                 .createToken(anyLong());
@@ -94,28 +94,28 @@ class AuthServiceTest {
     void createTokenWithNewUser() {
         // given
         UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
         User user = User.builder()
                 .id(1L)
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("user.io")
                 .build();
 
-        LoginRequest loginRequest = new LoginRequest("code", SocialType.GITHUB);
+        LoginRequest loginRequest = new LoginRequest("code");
         String accessToken = "토큰입니다";
 
         given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
-        given(userRepository.findBySocialIdAndSocialType(anyLong(), any())).willReturn(Optional.empty());
+        given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willReturn(user);
         given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken(loginRequest);
+        TokenResponse tokenResponse = authService.createToken("github", loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
@@ -128,7 +128,7 @@ class AuthServiceTest {
                 .getUserInfo(any());
         then(userRepository)
                 .should(times(1))
-                .findBySocialIdAndSocialType(anyLong(), any());
+                .findBySocialIdAndSocialType(any(), any());
         then(userRepository)
                 .should(times(1))
                 .save(any(User.class));

@@ -206,7 +206,7 @@ class WorkbookTest {
         // given
         User user = User.builder()
                 .id(1L)
-                .socialId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -240,7 +240,7 @@ class WorkbookTest {
         // given
         User user = User.builder()
                 .id(1L)
-                .socialId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)

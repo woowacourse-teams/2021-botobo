@@ -21,7 +21,7 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .role(Role.USER)
@@ -54,7 +54,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("User Github Id로 조회 - 성공")
+    @DisplayName("User Social Id와 Social Type 으로 조회 - 성공")
     void findByGithubId() {
         // given
         userRepository.save(user);

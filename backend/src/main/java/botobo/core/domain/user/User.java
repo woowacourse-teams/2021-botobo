@@ -22,7 +22,7 @@ import java.util.Objects;
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private Long socialId;
+    private String socialId;
 
     @Column(nullable = false)
     private String userName;
@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     private List<Workbook> workbooks = new ArrayList<>();
 
     @Builder
-    public User(Long id, Long socialId, String userName, String profileUrl, Role role, List<Workbook> workbooks, SocialType socialType) {
+    public User(Long id, String socialId, String userName, String profileUrl, Role role, List<Workbook> workbooks, SocialType socialType) {
         this.id = id;
         this.socialId = socialId;
         this.userName = userName;

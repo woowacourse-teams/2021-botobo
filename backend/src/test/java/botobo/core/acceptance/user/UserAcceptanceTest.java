@@ -2,6 +2,7 @@ package botobo.core.acceptance.user;
 
 import botobo.core.acceptance.AuthAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
+import botobo.core.domain.user.SocialType;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.exception.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +19,15 @@ public class UserAcceptanceTest extends AuthAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .get("/api/users/me")
-                .auth(깃헙_로그인되어_있음().getAccessToken())
+                .auth(소셜_로그인되어_있음(SocialType.GITHUB).getAccessToken())
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
 
         //then
         assertThat(userResponse.getId()).isNotNull();
-        assertThat(userResponse.getUserName()).isEqualTo("githubUser");
-        assertThat(userResponse.getProfileUrl()).isEqualTo("github.io");
+        assertThat(userResponse.getUserName()).isEqualTo("socialUser");
+        assertThat(userResponse.getProfileUrl()).isEqualTo("social.io");
     }
 
     @Test

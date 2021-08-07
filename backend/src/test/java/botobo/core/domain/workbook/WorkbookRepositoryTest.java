@@ -130,7 +130,7 @@ public class WorkbookRepositoryTest {
     void findAllByUserId() {
         // given
         User user = User.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -170,7 +170,7 @@ public class WorkbookRepositoryTest {
     void updateWorkbook() {
         // given
         User user = User.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -218,7 +218,7 @@ public class WorkbookRepositoryTest {
     void deleteWorkbook() {
         // given
         User user = User.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)

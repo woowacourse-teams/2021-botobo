@@ -34,7 +34,7 @@ public class UserServiceTest {
         // given
         User user = User.builder()
                 .id(1L)
-                .socialId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();

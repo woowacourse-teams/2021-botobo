@@ -19,7 +19,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
-import botobo.core.ui.auth.OauthManagerFactory;
+import botobo.core.infrastructure.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +56,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUser() {
         user = User.builder()
-                .socialId(1L)
+                .socialId("1")
                 .userName("admin")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
@@ -66,7 +66,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected User anyUser() {
         User anyUser = User.builder()
-                .socialId(1L)
+                .socialId("2")
                 .userName("joanne")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -171,24 +171,19 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return jwtTokenProvider.createToken(id);
     }
 
-    protected String 깃헙_로그인되어_있음(GithubUserInfoResponse userInfo) {
-        ExtractableResponse<Response> response = 깃헙_로그인_요청(userInfo);
+    protected String 소셜_로그인되어_있음(UserInfoResponse userInfo, SocialType socialType) {
+        ExtractableResponse<Response> response = 소셜_로그인_요청(userInfo, socialType);
         return response.as(TokenResponse.class).getAccessToken();
     }
 
-    protected ExtractableResponse<Response> 깃헙_로그인_요청(GithubUserInfoResponse userInfo) {
-        LoginRequest loginRequest = new LoginRequest("githubCode", SocialType.GITHUB);
-        UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
-                .userName("githubUser")
-                .socialId(2L)
-                .profileUrl("github.io")
-                .build();
+    protected ExtractableResponse<Response> 소셜_로그인_요청(UserInfoResponse userInfo, SocialType socialType) {
+        LoginRequest loginRequest = new LoginRequest("code");
 
-        given(oauthManagerFactory.findOauthMangerBySocialType(SocialType.GITHUB)).willReturn(githubOauthManager);
-        given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
+        given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(githubOauthManager);
+        given(githubOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
 
         return request()
-                .post("/api/login", loginRequest)
+                .post("/api/login/{socialType}", loginRequest, socialType)
                 .build()
                 .extract();
     }
