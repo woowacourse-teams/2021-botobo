@@ -17,7 +17,7 @@ interface Props {
 }
 
 const MainHeader = ({ sticky = true }: Props) => {
-  const { routeMain, routeLogin } = useRouter();
+  const { routeMain, routeLogin, routeProfile } = useRouter();
   const [userInfo, setUserInfo] = useRecoilState(userState);
 
   const logout = () => {
@@ -42,7 +42,10 @@ const MainHeader = ({ sticky = true }: Props) => {
       <RightContent>
         {userInfo ? (
           <>
-            <Avatar src={userInfo.profileUrl ?? userSrc} />
+            <Avatar
+              src={userInfo.profileUrl ?? userSrc}
+              onClick={routeProfile}
+            />
             {/* TODO: 로그아웃 감추기 */}
             <AuthButton onClick={logout}>로그아웃</AuthButton>
           </>

@@ -12,6 +12,7 @@ const useRouter = () => {
   };
 
   const routeMain = () => history.push(ROUTE.HOME.PATH);
+  const routeProfile = () => history.push(ROUTE.PROFILE.PATH);
   const routeWorkbookAdd = () => history.push(ROUTE.WORKBOOK_ADD.PATH);
   const routeWorkbookEdit = () => history.push(ROUTE.WORKBOOK_EDIT.PATH);
   const routeQuizSetting = () => history.push(ROUTE.QUIZ_SETTING.PATH);
@@ -26,6 +27,7 @@ const useRouter = () => {
   return {
     routeMain,
     routeLogin,
+    routeProfile,
     routeWorkbookAdd,
     routeWorkbookEdit,
     routeQuizSetting,

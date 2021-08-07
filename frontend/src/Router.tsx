@@ -18,6 +18,7 @@ import {
   LoginPage,
   MainLoadable,
   MainPage,
+  ProfilePage,
   PublicCardsPage,
   PublicWorkbookPage,
   QuizPage,
@@ -37,6 +38,11 @@ const routes = [
       </Suspense>
     ),
     isPublic: true,
+  },
+  {
+    path: ROUTE.PROFILE.PATH,
+    component: <ProfilePage />,
+    isPublic: false,
   },
   {
     path: ROUTE.LOGIN.PATH,
