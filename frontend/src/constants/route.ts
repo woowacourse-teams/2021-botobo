@@ -9,6 +9,9 @@ const ROUTE = {
   LOGOUT: {
     PATH: '/logout',
   },
+    PROFILE: {
+    PATH: '/profile',
+  },
   WORKBOOK_ADD: {
     PATH: '/workbookAdd',
     TITLE: '문제집 추가',

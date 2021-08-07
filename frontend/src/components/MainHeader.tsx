@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import LogoutIcon from '../assets/logout.svg';
@@ -23,7 +22,7 @@ interface MenuStyleProps {
 }
 
 const MainHeader = ({ sticky = true }: Props) => {
-  const { routeMain, routeLogin, routeLogout } = useRouter();
+  const { routeMain, routeLogin, routeLogout, routeProfile } = useRouter();
   const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
@@ -52,10 +51,10 @@ const MainHeader = ({ sticky = true }: Props) => {
         )}
       </RightContent>
       <Menu isMenuVisible={isMenuVisible}>
-        <Link to={'/'} role="profile-link">
+        <button role="profile-link" onClick={routeProfile}>
           <Avatar src={userInfo?.profileUrl ?? userSrc} />
           <div>{userInfo?.userName ?? 'Unknown User'}</div>
-        </Link>
+        </button>
         <button type="button" role="logout-button" onClick={routeLogout}>
           <StyledLogoutIcon width={'1rem'} height={'1rem'} />
           <div>로그아웃</div>

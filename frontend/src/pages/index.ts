@@ -15,3 +15,4 @@ export { default as GithubCallbackPage } from './GithubCallbackPage';
 export { default as PublicWorkbookPage } from './PublicWorkbookPage';
 export { default as PublicCardsPage } from './PublicCardsPage';
 export { default as PublicCardsLoadable } from './PublicCardsLoadable';
+export { default as ProfilePage } from './ProfilePage';
