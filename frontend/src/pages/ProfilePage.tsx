@@ -96,7 +96,6 @@ const Container = styled.div`
 
 const Profile = styled.div`
   ${Flex({ direction: 'column', items: 'center' })};
-  position: relative;
   width: 100%;
   height: 37.5rem;
   padding: 2rem;
