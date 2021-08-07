@@ -13,13 +13,7 @@ import {
   PublicQnACard,
 } from '../components';
 import { QUIZ_MODE, ROUTE } from '../constants';
-import {
-  useModal,
-  usePublicCard,
-  useRouter,
-  useSnackbar,
-  useWorkbook,
-} from '../hooks';
+import { useModal, usePublicCard, useRouter, useWorkbook } from '../hooks';
 import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
 import PublicCardsLoadable from './PublicCardsLoadable';
@@ -42,7 +36,6 @@ const PublicCardsPage = () => {
     isLoading,
   } = usePublicCard();
 
-  const showSnackbar = useSnackbar();
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
 
