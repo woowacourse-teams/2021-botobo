@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -24,6 +25,7 @@ public class Heart extends BaseEntity {
     @JoinColumn(name = "workbook_id", nullable = false, foreignKey = @ForeignKey(name = "FK_like_to_workbook"))
     private Workbook workbook;
 
+    @Column(nullable = false)
     private Long userId;
 
     @Builder
@@ -36,7 +38,7 @@ public class Heart extends BaseEntity {
 
     private void validateNotNull(Workbook workbook, Long userId) {
         if (Objects.isNull(workbook)) {
-             throw new HeartCreationFailureException("문제집 필요");
+            throw new HeartCreationFailureException("문제집 필요");
         }
         if (Objects.isNull(userId)) {
             throw new HeartCreationFailureException("유저 아이디 필요");
