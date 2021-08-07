@@ -38,7 +38,7 @@ const Container = styled.div`
 
 const Title = styled.div`
   width: 40%;
-  height: 2rem;
+  height: 1.5rem;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 
