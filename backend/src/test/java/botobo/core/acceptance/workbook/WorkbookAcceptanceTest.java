@@ -12,7 +12,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.ErrorResponse;
-import lombok.Getter;
+import botobo.core.utils.DummyRequestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,6 +72,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponse.getTags()).hasSize(1);
         assertThat(workbookResponse.getTags().get(0).getId()).isNotZero();
         assertThat(workbookResponse.getTags().get(0).getName()).isEqualTo("자바");
+        assertThat(workbookResponse.getHeartCount()).isEqualTo(0);
     }
 
     @Test
@@ -374,6 +375,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(updatedTagRequests)
                 .build();
 
@@ -403,6 +405,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name(name)
                 .opened(true)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(Collections.emptyList())
                 .build();
 
@@ -425,6 +428,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name(stringGenerator(31))
                 .opened(true)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(Collections.emptyList())
                 .build();
 
@@ -446,6 +450,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(stringGenerator(31))
                 .cardCount(0)
+                .heartCount(0)
                 .tags(Collections.emptyList())
                 .build();
 
@@ -468,6 +473,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(true)
                 .cardCount(-5)
+                .heartCount(0)
                 .tags(Collections.emptyList())
                 .build();
 
@@ -481,6 +487,29 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("유저가 문제집 수정 - 실패, heartCount가 음수")
+    void updateWorkbookWhenHeartCountNegative() {
+        // given
+        final String accessToken = 로그인되어_있음(userInfo);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
+        WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
+                .name("Java 문제집 비공개버전")
+                .opened(true)
+                .cardCount(0)
+                .heartCount(-5)
+                .tags(Collections.emptyList())
+                .build();
+
+        // when
+        final HttpResponse response = 유저_문제집_수정_요청(workbookUpdateRequest, workbookResponse, accessToken);
+
+        // then
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("하트 수는 0이상 입니다.");
+    }
+
+    @Test
     @DisplayName("유저가 문제집 수정 - 실패, Tag 없음")
     void updateWorkbookByUserWhenTagNull() {
         // given
@@ -491,6 +520,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .build();
 
         // when
@@ -515,6 +545,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(updatedTagRequests)
                 .build();
 
@@ -540,6 +571,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(updatedTagRequests)
                 .build();
 
@@ -565,6 +597,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(updatedTagRequests)
                 .build();
 
@@ -590,6 +623,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(updatedTagRequests)
                 .build();
 
@@ -614,6 +648,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
+                .heartCount(0)
                 .tags(Collections.emptyList())
                 .build();
 
@@ -907,7 +942,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
         return request()
-                .put("/api/workbooks/{workbookId}/hearts", new EmptyRequest(), workbookId)
+                .put("/api/workbooks/{workbookId}/hearts", DummyRequestBuilder.build(), workbookId)
                 .auth(accessToken)
                 .build();
     }
@@ -926,10 +961,5 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .delete("/api/workbooks/{id}", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
-    }
-
-    @Getter
-    private static class EmptyRequest {
-        private String dummy;
     }
 }
