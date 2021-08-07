@@ -12,6 +12,7 @@ export { default as CardAddPage } from '../components/CardAddForm';
 export { default as CardEditPage } from '../components/CardEditForm';
 export { default as GithubCallbackPage } from './GithubCallbackPage';
 export { default as PublicWorkbookPage } from './PublicWorkbookPage';
+export { default as PublicWorkbookLoadable } from './PublicWorkbookLoadable';
 export { default as PublicCardsPage } from './PublicCardsPage';
 export { default as PublicCardsLoadable } from './PublicCardsLoadable';
 export { default as PublicSearchPage } from './PublicSearchPage';

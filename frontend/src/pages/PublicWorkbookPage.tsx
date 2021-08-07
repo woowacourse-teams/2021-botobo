@@ -6,6 +6,7 @@ import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
 import { usePublicSearch, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import PublicWorkbookLoadable from './PublicWorkbookLoadable';
 
 const filters = [
   { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
@@ -14,13 +15,13 @@ const filters = [
   { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
-// TODO: 스켈레톤 만들기
 const PublicWorkbookPage = () => {
   const {
     searchKeyword,
     searchType,
     workbookSearchResult,
     startIndex,
+    isLoading,
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
@@ -31,6 +32,10 @@ const PublicWorkbookPage = () => {
   useEffect(() => {
     searchForPublicWorkbook({ keyword: searchKeyword, type: searchType });
   }, [searchKeyword]);
+
+  if (isLoading) {
+    return <PublicWorkbookLoadable />;
+  }
 
   return (
     <>
