@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { useForm } from '../hooks';
