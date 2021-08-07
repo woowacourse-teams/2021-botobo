@@ -150,11 +150,6 @@ const Dimmed = styled.div`
 `;
 
 const ImageEditor = styled.div<ImageEditorStyleProp>`
-  ${Flex({
-    direction: 'column',
-    justify: 'space-around',
-    items: 'flex-start',
-  })};
   position: absolute;
   top: 5.5rem;
   right: -4.5rem;
