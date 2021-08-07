@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
@@ -164,5 +165,16 @@ public class WorkbookService {
 
     private void addScrappedCardsToWorkbook(Workbook workbook, Cards scrappedCards) {
         workbook.addCards(scrappedCards);
+    }
+
+    @Transactional
+    public void toggleHeart(Long workbookId, AppUser appUser) {
+        Long userId = appUser.getId();
+        Workbook workbook = findWorkbook(workbookId);
+        Heart heart = Heart.builder()
+                .workbook(workbook)
+                .userId(userId)
+                .build();
+        workbook.toggleHeart(heart);
     }
 }
