@@ -75,6 +75,7 @@ const PublicSearchPage = () => {
 
   useEffect(() => {
     const resetKeyword = () => setSearchKeyword('');
+
     window.addEventListener('popstate', resetKeyword);
 
     return () => window.removeEventListener('popstate', resetKeyword);

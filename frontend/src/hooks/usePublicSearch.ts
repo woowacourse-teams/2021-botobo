@@ -36,7 +36,7 @@ const usePublicSearch = () => {
     try {
       const data = await getPublicWorkbookAsync({ keyword, ...options });
       setWorkbookSearchResult((prevValue) => [...prevValue, ...data]);
-      setStartIndex(startIndex + 1);
+      setStartIndex((prevValue) => prevValue + 1);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
