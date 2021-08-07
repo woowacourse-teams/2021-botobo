@@ -41,19 +41,21 @@ const ProfilePage = () => {
       <MainHeader />
       <Container>
         <Profile>
-          <ImageWrapper
-            onClick={() => setIsEditable((prevState) => !prevState)}
-          >
-            <Avatar src={userInfo?.profileUrl ?? userSrc} />
-            <EditIconWrapper>
-              <EditIcon width="1.3rem" height="1.3rem" />
-            </EditIconWrapper>
-          </ImageWrapper>
-          {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
-          <ImageEditor isEditable={isEditable}>
-            <button>이미지 업로드</button>
-            <button>이미지 제거</button>
-          </ImageEditor>
+          <ImageContainer>
+            <ImageWrapper
+              onClick={() => setIsEditable((prevState) => !prevState)}
+            >
+              <Avatar src={userInfo?.profileUrl ?? userSrc} />
+              <EditIconWrapper>
+                <EditIcon width="1.3rem" height="1.3rem" />
+              </EditIconWrapper>
+            </ImageWrapper>
+            {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
+            <ImageEditor isEditable={isEditable}>
+              <button>이미지 업로드</button>
+              <button>이미지 제거</button>
+            </ImageEditor>
+          </ImageContainer>
           <FormProvider
             initialValues={{
               name: userInfo?.userName ?? 'Unknown User',
@@ -102,8 +104,11 @@ const Profile = styled.div`
   `};
 `;
 
-const ImageWrapper = styled.div`
+const ImageContainer = styled.div`
   position: relative;
+`;
+
+const ImageWrapper = styled.div`
   cursor: pointer;
 `;
 
@@ -148,8 +153,8 @@ const ImageEditor = styled.div<ImageEditorStyleProp>`
     items: 'flex-start',
   })};
   position: absolute;
-  top: 7.5rem;
-  right: 0.8rem;
+  top: 5.5rem;
+  right: -4.5rem;
   width: 7rem;
   height: 4rem;
   padding: 0.5rem;
@@ -163,7 +168,7 @@ const ImageEditor = styled.div<ImageEditorStyleProp>`
     display: ${isEditable ? 'block' : 'none'};
   `};
 
-  &:before {
+  &::before {
     display: inline-block;
     position: absolute;
     left: 9px;

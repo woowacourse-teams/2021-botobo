@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import LogoutIcon from '../assets/logout.svg';
