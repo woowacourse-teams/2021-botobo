@@ -43,8 +43,8 @@ const MainHeader = ({ sticky = true }: Props) => {
       <RightContent>
         {userInfo ? (
           <MenuIcon
-            width={'1.3rem'}
-            height={'1.3rem'}
+            width="1.3rem"
+            height="1.3rem"
             onClick={() => setIsMenuVisible((prevState) => !prevState)}
           />
         ) : (
@@ -52,7 +52,7 @@ const MainHeader = ({ sticky = true }: Props) => {
         )}
       </RightContent>
       <Menu isMenuVisible={isMenuVisible}>
-        <Link to={'/'} role="menu-item">
+        <Link to={'/'} role="profile-link">
           <Avatar src={userInfo?.profileUrl ?? userSrc} />
           <div>{userInfo?.userName ?? 'Unknown User'}</div>
         </Link>
@@ -112,8 +112,9 @@ const Logo = styled.a`
 const RightContent = styled.div`
   ${Flex({ items: 'center' })};
 
-  & > * {
+  & > svg {
     margin-left: 0.7rem;
+    cursor: pointer;
   }
 `;
 
@@ -130,7 +131,7 @@ const Menu = styled.nav<MenuStyleProps>`
   ${({ theme, isMenuVisible }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
-    transition: height 0.3s ease;
+    transition: height 0.2s ease;
 
     ${isMenuVisible &&
     css`
