@@ -38,9 +38,9 @@ const ROUTE = {
     PATH: '/publicSearch',
     TITLE: '문제집 검색',
   },
-  PUBLIC_WORKBOOK: {
-    PATH: '/publicWorkbook',
-    TITLE: '공유 문제집',
+  PUBLIC_SEARCH_RESULT: {
+    PATH: '/publicSearchResult',
+    TITLE: '검색 결과',
   },
   PUBLIC_CARDS: {
     PATH: '/publicCards',

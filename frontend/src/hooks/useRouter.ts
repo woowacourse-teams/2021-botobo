@@ -19,7 +19,8 @@ const useRouter = () => {
   const routeQuizResult = () => history.push(ROUTE.QUIZ_RESULT.PATH);
   const routeCards = () => history.push(ROUTE.CARDS.PATH);
   const routePublicSearch = () => history.push(ROUTE.PUBLIC_SEARCH.PATH);
-  const routePublicWorkbook = () => history.push(ROUTE.PUBLIC_WORKBOOK.PATH);
+  const routePublicSearchResult = () =>
+    history.push(ROUTE.PUBLIC_SEARCH_RESULT.PATH);
   const routePublicCards = () => history.push(ROUTE.PUBLIC_CARDS.PATH);
   const routeGithubCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
   const routePrevPage = () => history.goBack();
@@ -34,7 +35,7 @@ const useRouter = () => {
     routeQuizResult,
     routeCards,
     routePublicSearch,
-    routePublicWorkbook,
+    routePublicSearchResult,
     routePublicCards,
     routeGithubCallback,
     routePrevPage,

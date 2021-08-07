@@ -6,7 +6,7 @@ import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
 import { usePublicSearch, useRouter } from '../hooks';
 import { Flex } from '../styles';
-import PublicWorkbookLoadable from './PublicWorkbookLoadable';
+import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
 const filters = [
   { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
@@ -15,7 +15,7 @@ const filters = [
   { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
-const PublicWorkbookPage = () => {
+const PublicSearchResultPage = () => {
   const {
     searchKeyword,
     searchType,
@@ -134,4 +134,4 @@ const Filter = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-export default PublicWorkbookPage;
+export default PublicSearchResultPage;

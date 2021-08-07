@@ -5,7 +5,7 @@ import React from 'react';
 import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 
-const PublicWorkbookLoadable = () => (
+const PublicSearchResultLoadable = () => (
   <>
     <HeaderSkeleton />
     <Container>
@@ -58,4 +58,4 @@ const Filter = styled.div`
   }
 `;
 
-export default PublicWorkbookLoadable;
+export default PublicSearchResultLoadable;

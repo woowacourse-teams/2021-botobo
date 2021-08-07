@@ -19,7 +19,7 @@ const PublicSearchList = ({ searchItems }: Props) => {
   const setSearchKeyword = useSetRecoilState(searchKeywordState);
   const searchType = useRecoilValue(searchTypeState);
 
-  const { routePublicWorkbook } = useRouter();
+  const { routePublicSearchResult } = useRouter();
 
   return (
     <StyledUl>
@@ -28,7 +28,7 @@ const PublicSearchList = ({ searchItems }: Props) => {
           <SearchItem
             onClick={async () => {
               await setSearchKeyword(name);
-              routePublicWorkbook();
+              routePublicSearchResult();
             }}
           >
             <IconWrapper>
