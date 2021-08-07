@@ -11,7 +11,7 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

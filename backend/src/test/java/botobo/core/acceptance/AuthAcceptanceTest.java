@@ -6,7 +6,7 @@ import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
