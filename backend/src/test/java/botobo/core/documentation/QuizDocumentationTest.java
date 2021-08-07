@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,9 +30,9 @@ public class QuizDocumentationTest extends DocumentationTest {
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L));
+        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L), 10);
         String token = "botobo.access.token";
-        given(quizService.createQuiz(Arrays.asList(1L, 2L, 3L))).willReturn(generateQuizResponses());
+        given(quizService.createQuiz(any(QuizRequest.class), any())).willReturn(generateQuizResponses());
 
         // when, then
         document()
@@ -43,13 +44,14 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .identifier("quizzes-post-success");
     }
 
+    // 실패 케이스는 삭제했었는데, 이후 DocumentTest 리팩토링 시 한번에 지운다고 하여 우선 남겨둠!
     @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
     void createQuizWithInvalidWorkbookId() throws Exception {
         // given
         String token = "botobo.access.token";
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L));
-        given(quizService.createQuiz(Arrays.asList(1L, 2L, 1000L))).willThrow(new WorkbookNotFoundException());
+        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L), 10);
+        given(quizService.createQuiz(any(QuizRequest.class), any())).willThrow(new WorkbookNotFoundException());
 
         // when, then
         document()
@@ -66,8 +68,8 @@ public class QuizDocumentationTest extends DocumentationTest {
     void createQuizWithEmptyCards() throws Exception {
         // given
         String token = "botobo.access.token";
-        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L));
-        given(quizService.createQuiz(Collections.singletonList(100L))).willThrow(new QuizEmptyException());
+        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L), 10);
+        given(quizService.createQuiz(any(QuizRequest.class), any())).willThrow(new QuizEmptyException());
 
         // when, then
         document()
@@ -95,60 +97,6 @@ public class QuizDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("quizzes-from-workbook-get-success");
-    }
-
-    @Test
-    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집 아이디 없음")
-    void createQuizFromWorkbookFailedWhenIdNotFound() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        Long workbookId = 100L;
-        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/quizzes/{workbookId}", workbookId)
-                .auth(token)
-                .build()
-                .status(status().isNotFound())
-                .identifier("quizzes-from-workbook-get-fail-id-not-found");
-    }
-
-    @Test
-    @DisplayName("문제집에서 바로 풀기 - 실패, 퀴즈에 문제가 존재하지 않음")
-    void createQuizFromWorkbookFailedWhenQuizIsEmpty() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        Long workbookId = 1L;
-        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(QuizEmptyException.class);
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/quizzes/{workbookId}", workbookId)
-                .auth(token)
-                .build()
-                .status(status().isBadRequest())
-                .identifier("quizzes-from-workbook-get-fail-quiz-empty");
-    }
-
-    @Test
-    @DisplayName("문제집에서 바로 풀기 - 실패, 문제집이 Public이 아님")
-    void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        Long workbookId = 1L;
-        given(quizService.createQuizFromWorkbook(workbookId)).willThrow(WorkbookNotFoundException.class);
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/quizzes/{workbookId}", workbookId)
-                .auth(token)
-                .build()
-                .status(status().isNotFound())
-                .identifier("quizzes-from-workbook-get-fail-workbook-not-public");
     }
 
     @Test

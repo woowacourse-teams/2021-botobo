@@ -1,5 +1,6 @@
-package botobo.core.exception;
+package botobo.core.exception.common;
 
+import botobo.core.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

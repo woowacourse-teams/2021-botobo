@@ -1,6 +1,6 @@
 package botobo.core.exception.workbook;
 
-import botobo.core.exception.BadRequestException;
+import botobo.core.exception.common.BadRequestException;
 
 public class WorkbookTagLimitException extends BadRequestException {
 

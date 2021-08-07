@@ -1,8 +1,10 @@
 package botobo.core.ui;
 
 import botobo.core.application.QuizService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
+import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +27,9 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity<List<QuizResponse>> createQuiz(@Valid @RequestBody QuizRequest quizRequest) {
-        List<QuizResponse> quizResponses = quizService.createQuiz(quizRequest.getWorkbookIds());
+    public ResponseEntity<List<QuizResponse>> createQuiz(@Valid @RequestBody QuizRequest quizRequest,
+                                                         @AuthenticationPrincipal AppUser appUser) {
+        List<QuizResponse> quizResponses = quizService.createQuiz(quizRequest, appUser);
         return ResponseEntity.ok(quizResponses);
     }
 
