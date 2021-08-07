@@ -10,7 +10,7 @@ const useRouter = () => {
     setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
     history.push(ROUTE.LOGIN.PATH);
   };
-
+  const routeLogout = () => history.push(ROUTE.LOGOUT.PATH);
   const routeMain = () => history.push(ROUTE.HOME.PATH);
   const routeProfile = () => history.push(ROUTE.PROFILE.PATH);
   const routeWorkbookAdd = () => history.push(ROUTE.WORKBOOK_ADD.PATH);
@@ -27,6 +27,7 @@ const useRouter = () => {
   return {
     routeMain,
     routeLogin,
+    routeLogout,
     routeProfile,
     routeWorkbookAdd,
     routeWorkbookEdit,

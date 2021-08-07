@@ -1,6 +1,6 @@
 package botobo.core.exception.tag;
 
-import botobo.core.exception.BadRequestException;
+import botobo.core.exception.common.BadRequestException;
 
 public class TagsCreationFailureException extends BadRequestException {
     public TagsCreationFailureException(String reason) {

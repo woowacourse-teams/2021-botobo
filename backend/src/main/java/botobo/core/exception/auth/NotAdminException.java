@@ -1,6 +1,6 @@
 package botobo.core.exception.auth;
 
-import botobo.core.exception.ForbiddenException;
+import botobo.core.exception.common.ForbiddenException;
 
 public class NotAdminException extends ForbiddenException {
     public NotAdminException() {

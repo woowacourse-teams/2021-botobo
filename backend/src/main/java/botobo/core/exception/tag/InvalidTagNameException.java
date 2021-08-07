@@ -1,6 +1,6 @@
 package botobo.core.exception.tag;
 
-import botobo.core.exception.BadRequestException;
+import botobo.core.exception.common.BadRequestException;
 
 public class InvalidTagNameException extends BadRequestException {
     public InvalidTagNameException(String reason) {
