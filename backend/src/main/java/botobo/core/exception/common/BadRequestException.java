@@ -1,4 +1,4 @@
-package botobo.core.exception;
+package botobo.core.exception.common;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException() {

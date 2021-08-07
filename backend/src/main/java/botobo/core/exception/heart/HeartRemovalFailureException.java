@@ -1,6 +1,7 @@
 package botobo.core.exception.heart;
 
-import botobo.core.exception.BadRequestException;
+
+import botobo.core.exception.common.BadRequestException;
 
 public class HeartRemovalFailureException extends BadRequestException {
     public HeartRemovalFailureException() {

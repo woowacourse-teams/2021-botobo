@@ -19,9 +19,8 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.card.CardNotFoundException;
-import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,17 +31,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class WorkbookService {
+public class WorkbookService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
-    private final UserRepository userRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
 
     public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
                            CardRepository cardRepository, TagService tagService) {
+        super(userRepository);
         this.workbookRepository = workbookRepository;
-        this.userRepository = userRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
     }
@@ -142,11 +140,6 @@ public class WorkbookService {
         }
         Cards scrappedCards = new Cards(scrapCards(scrapCardRequest.distinctCardIds()));
         addScrappedCardsToWorkbook(workbook, scrappedCards);
-    }
-
-    private User findUser(AppUser appUser) {
-        return userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
     }
 
     private Workbook findWorkbook(Long workbookId) {

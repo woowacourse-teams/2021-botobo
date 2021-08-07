@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import React, { createContext, useState } from 'react';
 
 interface Values {
@@ -91,9 +92,13 @@ const FormProvider = ({
 
   return (
     <FormContext.Provider value={{ values, errorMessages, onChange, onBlur }}>
-      <form onSubmit={onSubmitForm}>{children}</form>
+      <Form onSubmit={onSubmitForm}>{children}</Form>
     </FormContext.Provider>
   );
 };
+
+const Form = styled.form`
+  width: 100%;
+`;
 
 export default FormProvider;
