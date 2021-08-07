@@ -3,26 +3,22 @@ package botobo.core.acceptance.workbook;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
-import botobo.core.dto.auth.LoginRequest;
-import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.ErrorResponse;
-import botobo.core.infrastructure.GithubOauthManager;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -32,8 +28,6 @@ import java.util.List;
 
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("Workbook 인수 테스트")
 public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
@@ -889,6 +883,35 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("해당 카드를 찾을 수 없습니다.");
     }
 
+    @Test
+    @DisplayName("유저가 하트를 토글한다.")
+    void toggleOnHeart() {
+        // given
+        String accessToken = 로그인되어_있음(userInfo);
+        WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("자바 문제집", true, accessToken);
+
+        Long workbookId = workbookResponse.getId();
+        String anotherToken = 로그인되어_있음(anotherUserInfo);
+
+        // when, then
+        HttpResponse httpResponse = 하트_토글_요청(workbookId, anotherToken);
+        HeartResponse heartResponse = httpResponse.convertBody(HeartResponse.class);
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(heartResponse.isHeart()).isTrue();
+
+        httpResponse = 하트_토글_요청(workbookId, anotherToken);
+        heartResponse = httpResponse.convertBody(HeartResponse.class);
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(heartResponse.isHeart()).isFalse();
+    }
+
+    private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
+        return request()
+                .put("/api/workbooks/{workbookId}/hearts", new EmptyRequest(), workbookId)
+                .auth(accessToken)
+                .build();
+    }
+
     private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,
                                       WorkbookResponse workbookResponse,
                                       String accessToken) {
@@ -903,5 +926,10 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .delete("/api/workbooks/{id}", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
+    }
+
+    @Getter
+    private static class EmptyRequest {
+        private String dummy;
     }
 }
