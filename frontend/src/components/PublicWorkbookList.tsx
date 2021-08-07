@@ -38,18 +38,16 @@ const PublicWorkbookList = ({
     if (!scrollTarget.current) return;
 
     const scrollObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach(async (entry) => {
-          if (!entry.isIntersecting) return;
-          if (!scrollTarget.current) return;
+      async ([entry], observer) => {
+        if (!entry.isIntersecting) return;
+        if (!scrollTarget.current) return;
 
-          observer.unobserve(entry.target);
+        observer.unobserve(entry.target);
 
-          await searchForPublicWorkbook({
-            keyword: searchKeyword,
-            type: searchType,
-            start: startIndex,
-          });
+        await searchForPublicWorkbook({
+          keyword: searchKeyword,
+          type: searchType,
+          start: startIndex,
         });
       },
       {
