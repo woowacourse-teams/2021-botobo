@@ -8,7 +8,7 @@ export const SEARCH_CRITERIA = {
   DATE: 'date',
   NAME: 'name',
   COUNT: 'count',
-  LIKE: 'like',
+  HEART: 'heart',
 } as const;
 
 export const SEARCH_ORDER = {

@@ -9,7 +9,7 @@ import { Flex } from '../styles';
 
 const filters = [
   { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.LIKE },
+  { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
   { id: 3, name: '이름 순', criteria: SEARCH_CRITERIA.NAME },
   { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
