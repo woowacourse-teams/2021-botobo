@@ -351,6 +351,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .workbookId(1L)
                 .workbookName("자바의 정석")
                 .cardCount(3)
+                .heartCount(100)
                 .tags(generateTagResponses())
                 .cards(generateCardResponses())
                 .build();

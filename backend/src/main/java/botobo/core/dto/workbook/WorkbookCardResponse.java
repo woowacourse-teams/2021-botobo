@@ -23,6 +23,8 @@ public class WorkbookCardResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer cardCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer heartCount;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<TagResponse> tags;
     private List<CardResponse> cards;
 
@@ -42,6 +44,7 @@ public class WorkbookCardResponse {
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
                 .cardCount(workbook.cardCount())
+                .heartCount(workbook.heartCount())
                 .tags(tagResponses)
                 .cards(cardResponses)
                 .build();
