@@ -13,6 +13,7 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -762,10 +763,11 @@ class WorkbookServiceTest {
         given(workbookRepository.findById(workbook.getId())).willReturn(Optional.of(workbook));
 
         // when
-        workbookService.toggleHeart(workbook.getId(), appUser);
+        HeartResponse heartResponse = workbookService.toggleHeart(workbook.getId(), appUser);
 
         // then
         assertThat(workbook.getHearts().getHearts()).hasSize(1);
+        assertThat(heartResponse.isHeart()).isTrue();
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }
@@ -786,10 +788,11 @@ class WorkbookServiceTest {
         given(workbookRepository.findById(workbook.getId())).willReturn(Optional.of(workbook));
 
         // when
-        workbookService.toggleHeart(workbook.getId(), appUser);
+        HeartResponse heartResponse = workbookService.toggleHeart(workbook.getId(), appUser);
 
         // then
         assertThat(workbook.getHearts().getHearts()).hasSize(0);
+        assertThat(heartResponse.isHeart()).isFalse();
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
     }

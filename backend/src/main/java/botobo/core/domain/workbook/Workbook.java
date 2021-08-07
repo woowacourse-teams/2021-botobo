@@ -191,7 +191,7 @@ public class Workbook extends BaseEntity {
         cards.addCard(card);
     }
 
-    public void toggleHeart(Heart heart) {
-        hearts.toggleHeart(heart);
+    public boolean toggleHeart(Heart heart) {
+        return hearts.toggleHeart(heart);
     }
 }

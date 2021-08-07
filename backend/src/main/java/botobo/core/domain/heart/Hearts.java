@@ -70,12 +70,13 @@ public class Hearts {
                 .anyMatch(h -> h.ownedBy(userId));
     }
 
-    public void toggleHeart(Heart heart) {
+    public boolean toggleHeart(Heart heart) {
         if (contains(heart)) {
             removeHeart(heart);
-            return;
+            return false;
         }
         hearts.add(heart);
+        return true;
     }
 
     private void removeHeart(Heart heart) {

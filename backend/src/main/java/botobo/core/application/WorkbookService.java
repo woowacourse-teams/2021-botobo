@@ -14,6 +14,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.domain.workbook.criteria.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -168,13 +169,15 @@ public class WorkbookService {
     }
 
     @Transactional
-    public void toggleHeart(Long workbookId, AppUser appUser) {
+    public HeartResponse toggleHeart(Long workbookId, AppUser appUser) {
         Long userId = appUser.getId();
         Workbook workbook = findWorkbook(workbookId);
         Heart heart = Heart.builder()
                 .workbook(workbook)
                 .userId(userId)
                 .build();
-        workbook.toggleHeart(heart);
+        return HeartResponse.of(
+                workbook.toggleHeart(heart)
+        );
     }
 }
