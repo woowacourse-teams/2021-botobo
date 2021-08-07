@@ -58,6 +58,7 @@ const StyledHeader = styled.header<Required<Props>>`
   ${Flex({ justify: 'space-between', items: 'center' })};
   height: 3.75rem;
   padding: 0 0.75rem;
+  z-index: 1;
 
   ${({ theme, sticky }) => css`
     background-color: ${theme.color.white};
