@@ -26,8 +26,8 @@ const PublicSearchList = ({ searchItems }: Props) => {
       {searchItems.map(({ id, name }) => (
         <li key={id}>
           <SearchItem
-            onClick={() => {
-              setSearchKeyword(name);
+            onClick={async () => {
+              await setSearchKeyword(name);
               routePublicWorkbook();
             }}
           >
