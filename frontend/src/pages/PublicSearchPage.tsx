@@ -1,6 +1,6 @@
 import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { getTagKeywordAsync, getUserKeywordAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
@@ -18,8 +18,9 @@ import { debounce } from '../utils';
 
 const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
 
-interface Focus {
+interface SearchBarStyleProps {
   isFocus: boolean;
+  isSticky: boolean;
 }
 
 interface LoadImageStyleProps {
@@ -62,7 +63,10 @@ const PublicSearchPage = () => {
 
   const { routePublicSearchQuery } = useRouter();
 
+  const stickyTriggerRef = useRef<HTMLDivElement>(null);
+
   const [isFocus, setIsFocus] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
   const [inputValue, setInputValue] = useState(keyword);
   const [currentFocusTab, setCurrentFocusTab] = useState(
     searchInfos.find((item) => item.type === type) ?? searchInfos[0]
@@ -102,6 +106,27 @@ const PublicSearchPage = () => {
     searchForKeyword(keyword);
   }, []);
 
+  useEffect(() => {
+    if (!stickyTriggerRef.current) return;
+
+    const searchTabObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsSticky(false);
+
+          return;
+        }
+
+        setIsSticky(true);
+      },
+      { threshold: [0, 1] }
+    );
+
+    searchTabObserver.observe(stickyTriggerRef.current);
+
+    return () => searchTabObserver.disconnect();
+  }, [stickyTriggerRef.current]);
+
   return (
     <>
       <MainHeader sticky={false} />
@@ -129,7 +154,8 @@ const PublicSearchPage = () => {
           </SearchInfo>
           <SearchHr />
         </SearchTabWrapper>
-        <SearchBar isFocus={isFocus}>
+        <SearchBarStickyTrigger ref={stickyTriggerRef} />
+        <SearchBar isSticky={isSticky} isFocus={isFocus}>
           <SearchIcon width="1.3rem" height="1.3rem" />
           <SearchInput
             autoFocus={true}
@@ -212,7 +238,7 @@ const SearchInfo = styled.ul`
   height: 2rem;
 `;
 
-const SearchTabItem = styled.li<Focus>`
+const SearchTabItem = styled.li<Pick<SearchBarStyleProps, 'isFocus'>>`
   ${({ theme, isFocus }) => css`
     ${isFocus
       ? css`
@@ -243,19 +269,30 @@ const SearchHr = styled.hr`
   `}
 `;
 
-const SearchBar = styled.div<Focus>`
-  position: sticky;
-  top: 0;
+const SearchBarStickyTrigger = styled.div``;
+
+const SearchBar = styled.div<SearchBarStyleProps>`
   ${Flex({ justify: 'space-between', items: 'center' })};
   width: 100%;
   height: 3rem;
   margin-bottom: 1.5rem;
   padding: 0.5rem 1rem;
-  transition: border 0.3s ease;
+  transition: all 0.2s ease;
 
-  ${({ theme, isFocus }) => css`
+  ${({ theme, isFocus, isSticky }) => css`
     background-color: ${theme.color.white};
     border: 1px solid ${isFocus ? theme.color.green : theme.color.gray_3};
+
+    ${isSticky &&
+    css`
+      position: sticky;
+      top: 0;
+      transform: translateX(-1.25rem);
+      width: calc(100% + 2.5rem);
+      border: none;
+      border-bottom: 1px solid
+        ${isFocus ? theme.color.green : theme.color.gray_3};
+    `}
 
     & > svg {
       transition: all 0.3s ease;
