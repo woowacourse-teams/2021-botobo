@@ -1,6 +1,10 @@
-package botobo.core.exception.common;
+package botobo.core.exception;
 
-import botobo.core.exception.UnauthorizedException;
+import botobo.core.exception.common.UnAuthorizedException;
+import botobo.core.exception.common.BadRequestException;
+import botobo.core.exception.common.ErrorResponse;
+import botobo.core.exception.common.ForbiddenException;
+import botobo.core.exception.common.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -22,8 +26,8 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.of(e.getMessage()));
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnAuthorizedException e) {
         log.info("UnauthorizedException", e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
     }

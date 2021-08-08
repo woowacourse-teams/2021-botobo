@@ -2,6 +2,7 @@ package botobo.core.domain.user;
 
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,5 +76,17 @@ public class User extends BaseEntity {
 
     public boolean isUser() {
         return role.isUser();
+    }
+
+    public void update(User other) {
+        validateProfileUrl(other.getProfileUrl());
+        this.userName = other.getUserName();
+        this.bio = other.getBio();
+    }
+
+    private void validateProfileUrl(String profileUrl) {
+        if (!Objects.equals(this.profileUrl, profileUrl)) {
+            throw new ProfileUpdateNotAllowedException();
+        }
     }
 }
