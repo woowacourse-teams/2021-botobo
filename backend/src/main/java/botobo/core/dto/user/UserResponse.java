@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
-
+    //TODO bio 필드 추가
     private Long id;
     private String userName;
     private String bio;
