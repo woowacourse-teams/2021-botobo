@@ -1,8 +1,10 @@
 package botobo.core.application;
 
+import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.dto.user.UserUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

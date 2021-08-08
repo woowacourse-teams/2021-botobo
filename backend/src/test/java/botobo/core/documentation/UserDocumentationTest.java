@@ -4,6 +4,7 @@ import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,5 +47,38 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("users-find-me-get-success");
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 성공")
+    void update() throws Exception {
+        String token = "botobo.access.token";
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 이름")
+                .bio("수정된 바이오")
+                .profileUrl("profile.io")
+                .build();
+
+        UserResponse userResponse = UserResponse.builder()
+                .id(1L)
+                .userName("이름")
+                .profileUrl("profile.io")
+                .build();
+
+        AppUser appUser = AppUser.builder()
+                .id(1L)
+                .role(Role.USER)
+                .build();
+
+        given(authService.findAppUserByToken(token)).willReturn(appUser);
+        given(userService.findById(1L)).willReturn(userResponse);
+
+        document()
+                .mockMvc(mockMvc)
+                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("users-update-put-success");
     }
 }

@@ -89,4 +89,8 @@ public class User extends BaseEntity {
             throw new ProfileUpdateNotAllowedException();
         }
     }
+
+    public boolean isSameId(Long id) {
+        return Objects.equals(this.id, id);
+    }
 }

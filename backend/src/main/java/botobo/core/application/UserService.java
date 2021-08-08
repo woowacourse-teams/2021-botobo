@@ -31,15 +31,11 @@ public class UserService {
 
     @Transactional
     public UserResponse update(Long id, UserUpdateRequest userUpdateRequest, AppUser appUser) {
-        validateId(id, appUser.getId());
         User user = findUserById(appUser.getId());
-        user.update(userUpdateRequest.toUser());
-        return UserResponse.of(user);
-    }
-
-    private void validateId(Long id, long appUserId) {
-        if (id != appUserId) {
+        if (!user.isSameId(id)) {
             throw new UserUpdateNotAllowedException();
         }
+        user.update(userUpdateRequest.toUser());
+        return UserResponse.of(user);
     }
 }
