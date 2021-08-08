@@ -7,7 +7,7 @@ import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,9 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.utils.Fixture.CARD_REQUEST_1;
-import static botobo.core.utils.Fixture.CARD_REQUEST_2;
-import static botobo.core.utils.Fixture.CARD_REQUEST_3;
+import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,11 +29,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @BeforeEach
     void setFixture() {
         문제집_생성_요청(WORKBOOK_REQUEST_1);
-        여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3));
-    }
-
-    protected String createToken(Long id) {
-        return jwtTokenProvider.createToken(id);
+        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK);
     }
 
     @Test

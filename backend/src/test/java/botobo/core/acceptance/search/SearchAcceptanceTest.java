@@ -7,7 +7,7 @@ import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

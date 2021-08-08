@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
@@ -10,13 +11,13 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.card.CardNotFoundException;
-import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,17 +28,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class WorkbookService {
+public class WorkbookService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
-    private final UserRepository userRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
 
     public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
                            CardRepository cardRepository, TagService tagService) {
+        super(userRepository);
         this.workbookRepository = workbookRepository;
-        this.userRepository = userRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
     }
@@ -97,12 +97,13 @@ public class WorkbookService {
                 .orElseThrow(WorkbookNotFoundException::new);
     }
 
-    public WorkbookCardResponse findPublicWorkbookById(Long id) {
+    public WorkbookCardResponse findPublicWorkbookById(Long id, AppUser appUser) {
         Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
         if (!workbook.isOpened()) {
             throw new NotAuthorException();
         }
-        return WorkbookCardResponse.ofOpenedWorkbook(workbook);
+        boolean heartExists = workbook.existsHeartByUserId(appUser.getId());
+        return WorkbookCardResponse.ofOpenedWorkbook(workbook, heartExists);
     }
 
     private void validateAuthor(User user, Workbook workbook) {
@@ -122,11 +123,6 @@ public class WorkbookService {
         addScrappedCardsToWorkbook(workbook, scrappedCards);
     }
 
-    private User findUser(AppUser appUser) {
-        return userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
-    }
-
     private Workbook findWorkbook(Long workbookId) {
         return workbookRepository.findById(workbookId)
                 .orElseThrow(WorkbookNotFoundException::new);
@@ -144,5 +140,18 @@ public class WorkbookService {
 
     private void addScrappedCardsToWorkbook(Workbook workbook, Cards scrappedCards) {
         workbook.addCards(scrappedCards);
+    }
+
+    @Transactional
+    public HeartResponse toggleHeart(Long workbookId, AppUser appUser) {
+        Long userId = appUser.getId();
+        Workbook workbook = findWorkbook(workbookId);
+        Heart heart = Heart.builder()
+                .workbook(workbook)
+                .userId(userId)
+                .build();
+        return HeartResponse.of(
+                workbook.toggleHeart(heart)
+        );
     }
 }

@@ -16,8 +16,10 @@ import {
   CardsPage,
   GithubCallbackPage,
   LoginPage,
+  LogoutPage,
   MainLoadable,
   MainPage,
+  ProfilePage,
   PublicCardsPage,
   PublicWorkbookPage,
   QuizPage,
@@ -39,9 +41,19 @@ const routes = [
     isPublic: true,
   },
   {
+    path: ROUTE.PROFILE.PATH,
+    component: <ProfilePage />,
+    isPublic: false,
+  },
+  {
     path: ROUTE.LOGIN.PATH,
     component: <LoginPage />,
     isPublic: true,
+  },
+  {
+    path: ROUTE.LOGOUT.PATH,
+    component: <LogoutPage />,
+    isPublic: false,
   },
   {
     path: ROUTE.WORKBOOK_ADD.PATH,

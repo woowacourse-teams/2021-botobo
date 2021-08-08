@@ -1,6 +1,7 @@
 package botobo.core.exception.search;
 
-import botobo.core.exception.BadRequestException;
+
+import botobo.core.exception.common.BadRequestException;
 
 public class InvalidSearchOrderException extends BadRequestException {
     public InvalidSearchOrderException() {

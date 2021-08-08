@@ -13,6 +13,7 @@ import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
@@ -161,6 +162,14 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 TagRequest.builder().id(1L).name("자바").build()
         );
         return 유저_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
+    }
+
+    protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
+        RequestBuilder.HttpResponse response = request()
+                .get("/api/workbooks/{id}/cards", workbookId)
+                .auth(createToken(1L))
+                .build();
+        return response.convertBody(WorkbookCardResponse.class);
     }
 
     protected String createToken(Long id) {

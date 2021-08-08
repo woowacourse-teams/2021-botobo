@@ -3,6 +3,7 @@ package botobo.core.ui;
 import botobo.core.application.WorkbookService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -56,9 +57,10 @@ public class WorkbookController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id) {
+    public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id,
+                                                                       @AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
-                workbookService.findPublicWorkbookById(id)
+                workbookService.findPublicWorkbookById(id, appUser)
         );
     }
 
@@ -83,5 +85,12 @@ public class WorkbookController {
                                                              @AuthenticationPrincipal AppUser appUser) {
         workbookService.scrapSelectedCardsToWorkbook(workbookId, scrapCardRequest, appUser);
         return ResponseEntity.created(URI.create(String.format("/api/workbooks/%d/cards", workbookId))).build();
+    }
+
+    @PutMapping("/{workbookId}/hearts")
+    public ResponseEntity<HeartResponse> toggleHeart(@PathVariable Long workbookId, @AuthenticationPrincipal AppUser appUser) {
+        return ResponseEntity.ok(
+                workbookService.toggleHeart(workbookId, appUser)
+        );
     }
 }

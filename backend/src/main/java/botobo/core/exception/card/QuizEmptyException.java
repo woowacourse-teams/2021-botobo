@@ -1,6 +1,6 @@
 package botobo.core.exception.card;
 
-import botobo.core.exception.BadRequestException;
+import botobo.core.exception.common.BadRequestException;
 
 public class QuizEmptyException extends BadRequestException {
     public QuizEmptyException() {
