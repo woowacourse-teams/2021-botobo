@@ -149,3 +149,9 @@ export const postPublicCardsAsync = async (
 export const putNextQuizAsync = async (cardIds: number[]) => {
   await request.put(`/cards/next-quiz`, { cardIds });
 };
+
+export const putHeartAsync = async (id: number) => {
+  const { data } = await request.put<boolean>(`workbooks/${id}/hearts`);
+
+  return data;
+};

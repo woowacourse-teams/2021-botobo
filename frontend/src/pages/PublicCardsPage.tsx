@@ -4,6 +4,8 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
+import EmptyHeartIcon from '../assets/heart-regular.svg';
+import FillHeartIcon from '../assets/heart-solid.svg';
 import {
   Button,
   Checkbox,
@@ -12,16 +14,11 @@ import {
   PublicCardsSelectBox,
   PublicQnACard,
 } from '../components';
-import { QUIZ_MODE, ROUTE } from '../constants';
-import {
-  useModal,
-  usePublicCard,
-  useRouter,
-  useSnackbar,
-  useWorkbook,
-} from '../hooks';
+import { QUIZ_MODE, ROUTE, theme } from '../constants';
+import { useModal, usePublicCard, useRouter, useWorkbook } from '../hooks';
 import { quizModeState, quizState } from '../recoil';
 import { Flex } from '../styles';
+import { debounce } from '../utils';
 import PublicCardsLoadable from './PublicCardsLoadable';
 
 const PublicCardsPage = () => {
@@ -34,17 +31,45 @@ const PublicCardsPage = () => {
     cards,
     cardCount,
     tags,
+    heartInfo,
+    setHeartInfo,
     isAllCardChecked,
     checkAllCard,
     checkedCardCount,
     checkCard,
     takeCardsToMyWorkbook,
     isLoading,
+    toggleHeart,
   } = usePublicCard();
 
-  const showSnackbar = useSnackbar();
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
+
+  const { heart, heartCount, serverHeart } = heartInfo;
+
+  const onClickHeart = () => {
+    debounce(() => {
+      if (serverHeart === !heart) return;
+
+      toggleHeart();
+    }, 200);
+
+    if (heart) {
+      setHeartInfo((prevValue) => ({
+        ...prevValue,
+        heart: false,
+        heartCount: heartCount - 1,
+      }));
+
+      return;
+    }
+
+    setHeartInfo((prevValue) => ({
+      ...prevValue,
+      heart: true,
+      heartCount: heartCount + 1,
+    }));
+  };
 
   if (isLoading) {
     return <PublicCardsLoadable />;
@@ -73,18 +98,34 @@ const PublicCardsPage = () => {
         }
       />
       <Container>
-        <WorkbookName>{workbookName}</WorkbookName>
-        <CardCount>{cardCount}개의 카드</CardCount>
-        <TagList>
-          {tags.map(({ id, name }) => (
-            <li key={id}>
-              <Tag>
-                <span>#</span>
-                {name}
-              </Tag>
-            </li>
-          ))}
-        </TagList>
+        <TopContent>
+          <WorkbookName>{workbookName}</WorkbookName>
+          <CardCount>{cardCount}개의 카드</CardCount>
+          <TagList>
+            {tags.map(({ id, name }) => (
+              <li key={id}>
+                <Tag>
+                  <span>#</span>
+                  {name}
+                </Tag>
+              </li>
+            ))}
+          </TagList>
+          <Heart>
+            <button type="button" onClick={onClickHeart}>
+              {heart ? (
+                <FillHeartIcon
+                  width="1.5rem"
+                  height="1.5rem"
+                  fill={theme.color.red}
+                />
+              ) : (
+                <EmptyHeartIcon width="1.5rem" height="1.5rem" />
+              )}
+            </button>
+            <div>{heartCount}</div>
+          </Heart>
+        </TopContent>
         <ul>
           {cards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
@@ -155,6 +196,10 @@ const Container = styled.div`
     `}
 `;
 
+const TopContent = styled.div`
+  position: relative;
+`;
+
 const WorkbookName = styled.h2`
   margin-bottom: 0.5rem;
 `;
@@ -165,6 +210,14 @@ const CardCount = styled.div`
   ${({ theme }) => css`
     color: ${theme.color.gray_6};
   `};
+`;
+
+const Heart = styled.div`
+  ${Flex({ direction: 'column', items: 'center' })};
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.5rem;
 `;
 
 const TagList = styled.ul`
