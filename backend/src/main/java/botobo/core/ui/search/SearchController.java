@@ -1,8 +1,8 @@
 package botobo.core.ui.search;
 
 import botobo.core.application.SearchService;
-import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.tag.TagResponse;
+import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

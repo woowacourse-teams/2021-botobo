@@ -4,7 +4,6 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
-import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.ui.search.SearchKeyword;
