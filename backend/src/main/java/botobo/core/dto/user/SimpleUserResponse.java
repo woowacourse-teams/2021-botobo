@@ -1,8 +1,6 @@
-package botobo.core.dto.search;
+package botobo.core.dto.user;
 
 import botobo.core.domain.user.User;
-import botobo.core.dto.user.UserResponse;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,19 +13,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SearchUserResponse {
+public class SimpleUserResponse {
 
     private Long id;
     private String name;
 
-    public static List<SearchUserResponse> listOf(List<User> users) {
+    public static List<SimpleUserResponse> listOf(List<User> users) {
         return users.stream()
-                .map(SearchUserResponse::of)
+                .map(SimpleUserResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public static SearchUserResponse of(User user) {
-        return SearchUserResponse.builder()
+    public static SimpleUserResponse of(User user) {
+        return SimpleUserResponse.builder()
                 .id(user.getId())
                 .name(user.getUserName())
                 .build();
