@@ -182,6 +182,11 @@ public class RequestBuilder {
 
         @Override
         public ValidatableResponse action(RequestSpecification specification) {
+            if (Objects.isNull(body)) {
+                return specification
+                        .post(path, params)
+                        .then();
+            }
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .post(path, params)
