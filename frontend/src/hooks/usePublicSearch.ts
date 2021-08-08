@@ -5,13 +5,14 @@ import { PublicWorkbookResponse } from '../types';
 
 const usePublicSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [start, setStart] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
   const [workbookSearchResult, setWorkbookSearchResult] = useState<
     PublicWorkbookResponse[]
   >([]);
 
   const searchForPublicWorkbook = async ({
     keyword,
+    start,
     ...options
   }: PublicWorkbookAsync) => {
     if (keyword === '') {
@@ -23,11 +24,11 @@ const usePublicSearch = () => {
     try {
       const data = await getPublicWorkbookAsync({
         keyword,
-        start,
+        start: start ?? startIndex,
         ...options,
       });
       setWorkbookSearchResult((prevValue) => [...prevValue, ...data]);
-      setStart((prevState) => prevState + 1);
+      setStartIndex((prevState) => prevState + 1);
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -37,12 +38,10 @@ const usePublicSearch = () => {
 
   const resetSearchResult = () => {
     setWorkbookSearchResult([]);
-    setStart(0);
+    setStartIndex(0);
   };
 
   return {
-    start,
-    setStart,
     workbookSearchResult,
     resetSearchResult,
     isLoading,

@@ -79,7 +79,7 @@ const PublicSearchPage = () => {
     }
 
     if (!currentFocusTab.searchForKeyword)
-      return searchForPublicWorkbook({ keyword });
+      return searchForPublicWorkbook({ keyword, start: 0 });
 
     try {
       const data = await currentFocusTab.searchForKeyword(keyword);
@@ -104,7 +104,7 @@ const PublicSearchPage = () => {
 
   return (
     <>
-      <MainHeader />
+      <MainHeader sticky={false} />
       <Container>
         <SearchTabWrapper>
           <SearchInfo>
@@ -143,6 +143,7 @@ const PublicSearchPage = () => {
                   keyword: target.value,
                   type: currentFocusTab.type,
                 });
+                console.log(target.value);
                 searchForKeyword(target.value);
               }, 400);
             }}
@@ -243,6 +244,8 @@ const SearchHr = styled.hr`
 `;
 
 const SearchBar = styled.div<Focus>`
+  position: sticky;
+  top: 0;
   ${Flex({ justify: 'space-between', items: 'center' })};
   width: 100%;
   height: 3rem;
