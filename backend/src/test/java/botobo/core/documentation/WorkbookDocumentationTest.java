@@ -39,7 +39,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 추가 - 성공")
     void createWorkbookByUser() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .opened(true)
@@ -59,7 +59,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .cardCount(0)
                 .heartCount(0)
                 .build();
-        given(workbookService.createWorkbookByUser(any(), any())).willReturn(workbookResponse);
+        given(workbookService.createWorkbookByUser(any(WorkbookRequest.class), any(AppUser.class)))
+                .willReturn(workbookResponse);
 
         // when, then
         document()
@@ -75,7 +76,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저 문제집 전체 조회 - 성공")
     void findWorkbooksByUser() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
 
         // when, then
@@ -92,7 +93,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("비회원 문제집 조회 - 성공")
     void findWorkbooksByAnonymous() throws Exception {
         // given
-        given(workbookService.findWorkbooksByUser(any())).willReturn(Collections.emptyList());
+        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(Collections.emptyList());
 
         // when, then
         document()
@@ -107,7 +108,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("문제집의 카드 모아보기 - 성공")
     void findWorkbookCardsById() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         given(workbookService.findWorkbookCardsById(anyLong(), any(AppUser.class))).willReturn(generatePersonalWorkbookCardsResponse());
 
         // when, then
@@ -124,7 +125,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 수정 - 성공")
     void updateWorkbook() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 수정")
                 .opened(true)
@@ -148,7 +149,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         TagResponse.builder().id(3L).name("stream").build()
                 ))
                 .build();
-        given(workbookService.updateWorkbook(anyLong(), any(), any())).willReturn(workbookResponse);
+        given(workbookService.updateWorkbook(anyLong(), any(WorkbookUpdateRequest.class), any(AppUser.class)))
+                .willReturn(workbookResponse);
 
         // when, then
         document()
@@ -164,7 +166,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("공유 문제집 검색 - 성공")
     void findPublicWorkbooksBySearch() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicWorkbookResponse());
 
         // when, then
@@ -181,8 +183,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() throws Exception {
         // given
-        String token = "botobo.access.token";
-        given(workbookService.findPublicWorkbookById(anyLong(), any())).willReturn(generatePublicWorkbookCardsResponse());
+        String token = obtainAuthenticatedToken();
+        given(workbookService.findPublicWorkbookById(anyLong(), any(AppUser.class))).willReturn(generatePublicWorkbookCardsResponse());
 
         // when, then
         document()
@@ -198,7 +200,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집 수정")
@@ -221,7 +223,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("문제집으로 카드 가져오기 - 성공")
     void scrapSelectedCardsToWorkbook() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         long workbookId = 1L;
         ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(10L, 11L, 12L))
@@ -242,10 +244,10 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 하트 토글 - 성공")
     void toggleHeart() throws Exception {
         // given
-        String token = "botobo.access.token";
+        String token = obtainAuthenticatedToken();
         HeartResponse heartResponse = HeartResponse.of(true);
 
-        given(workbookService.toggleHeart(any(), any())).willReturn(heartResponse);
+        given(workbookService.toggleHeart(anyLong(), any(AppUser.class))).willReturn(heartResponse);
 
         // when, then
         document()
