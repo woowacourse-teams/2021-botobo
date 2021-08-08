@@ -1,21 +1,11 @@
 import { useState } from 'react';
 
-import {
-  PublicWorkbookAsync,
-  getPublicWorkbookAsync,
-  getTagKeywordAsync,
-  getUserKeywordAsync,
-} from '../api';
-import { SEARCH_TYPE } from '../constants';
-import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
-import { ValueOf } from '../types/utils';
+import { PublicWorkbookAsync, getPublicWorkbookAsync } from '../api';
+import { PublicWorkbookResponse } from '../types';
 
 const usePublicSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [start, setStart] = useState(0);
-  const [keywordSearchResult, setKeywordSearchResult] = useState<
-    SearchKeywordResponse[]
-  >([]);
   const [workbookSearchResult, setWorkbookSearchResult] = useState<
     PublicWorkbookResponse[]
   >([]);
@@ -45,39 +35,7 @@ const usePublicSearch = () => {
     }
   };
 
-  const searchForKeyword = async (
-    keyword: string,
-    type: ValueOf<typeof SEARCH_TYPE>
-  ) => {
-    if (keyword === '') {
-      setIsLoading(false);
-
-      return;
-    }
-
-    try {
-      if (type === 'name') return searchForPublicWorkbook({ keyword });
-
-      let data: SearchKeywordResponse[] = [];
-
-      if (type === 'tag') {
-        data = await getTagKeywordAsync(keyword);
-      }
-
-      if (type === 'user') {
-        data = await getUserKeywordAsync(keyword);
-      }
-
-      setKeywordSearchResult(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-    }
-  };
-
   const resetSearchResult = () => {
-    setKeywordSearchResult([]);
     setWorkbookSearchResult([]);
     setStart(0);
   };
@@ -85,13 +43,11 @@ const usePublicSearch = () => {
   return {
     start,
     setStart,
-    keywordSearchResult,
     workbookSearchResult,
     resetSearchResult,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
-    searchForKeyword,
   };
 };
 

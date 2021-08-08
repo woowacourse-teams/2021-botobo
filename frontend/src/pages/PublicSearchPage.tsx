@@ -2,6 +2,7 @@ import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
+import { getTagKeywordAsync, getUserKeywordAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import {
@@ -12,6 +13,7 @@ import {
 import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE } from '../constants';
 import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import { SearchKeywordResponse } from '../types';
 import { debounce } from '../utils';
 
 const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
@@ -24,42 +26,37 @@ interface LoadImageStyleProps {
   isLoading: boolean;
 }
 
-type SearchTabList = {
-  id: number;
-  name: string;
-  placeholder: string;
-};
-
-const searchTabList = [
+const searchInfo = [
   {
     id: 1,
     name: '문제집',
     placeholder: '문제집을 검색해보세요',
     type: SEARCH_TYPE.NAME,
+    searchForKeyword: null,
   },
   {
     id: 2,
     name: '태그',
     placeholder: '태그를 검색해보세요',
     type: SEARCH_TYPE.TAG,
+    searchForKeyword: getTagKeywordAsync,
   },
   {
     id: 3,
     name: '작성자',
     placeholder: '작성자를 검색해보세요',
     type: SEARCH_TYPE.USER,
+    searchForKeyword: getUserKeywordAsync,
   },
 ];
 
 const PublicSearchPage = () => {
   const {
-    keywordSearchResult,
     workbookSearchResult,
     resetSearchResult,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
-    searchForKeyword,
   } = usePublicSearch();
   const { keyword, type } = usePublicSearchQuery();
 
@@ -67,14 +64,42 @@ const PublicSearchPage = () => {
 
   const [isFocus, setIsFocus] = useState(false);
   const [inputValue, setInputValue] = useState(keyword);
-
   const [currentFocusTab, setCurrentFocusTab] = useState(
-    searchTabList.find((item) => item.type === type) ?? searchTabList[0]
+    searchInfo.find((item) => item.type === type) ?? searchInfo[0]
   );
+  const [keywordSearchResult, setKeywordSearchResult] = useState<
+    SearchKeywordResponse[]
+  >([]);
+
+  const searchForKeyword = async (keyword: string) => {
+    if (keyword === '') {
+      setIsLoading(false);
+
+      return;
+    }
+
+    if (!currentFocusTab.searchForKeyword)
+      return searchForPublicWorkbook({ keyword });
+
+    try {
+      const data = await currentFocusTab.searchForKeyword(keyword);
+
+      setKeywordSearchResult(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
+  };
+
+  const resetSearch = () => {
+    resetSearchResult();
+    setKeywordSearchResult([]);
+  };
 
   useEffect(() => {
     routePublicSearchQuery({ keyword, type });
-    searchForKeyword(keyword, type);
+    searchForKeyword(keyword);
   }, []);
 
   return (
@@ -82,18 +107,18 @@ const PublicSearchPage = () => {
       <MainHeader />
       <Container>
         <SearchTabWrapper>
-          <SearchTabList>
-            {searchTabList.map(({ id, name, type }) => (
+          <SearchInfo>
+            {searchInfo.map(({ id, name, type }) => (
               <SearchTabItem key={id} isFocus={currentFocusTab.id === id}>
                 <button
                   onClick={() => {
                     const currentTab =
-                      searchTabList.find((item) => item.id === id) ??
-                      searchTabList[0];
+                      searchInfo.find((item) => item.id === id) ??
+                      searchInfo[0];
 
                     setCurrentFocusTab(currentTab);
                     setInputValue('');
-                    resetSearchResult();
+                    resetSearch();
                     routePublicSearchQuery({ type });
                   }}
                 >
@@ -101,7 +126,7 @@ const PublicSearchPage = () => {
                 </button>
               </SearchTabItem>
             ))}
-          </SearchTabList>
+          </SearchInfo>
           <SearchHr />
         </SearchTabWrapper>
         <SearchBar isFocus={isFocus}>
@@ -112,13 +137,13 @@ const PublicSearchPage = () => {
             onChange={({ target }) => {
               setInputValue(target.value);
               setIsLoading(true);
-              resetSearchResult();
+              resetSearch();
               debounce(() => {
                 routePublicSearchQuery({
                   keyword: target.value,
                   type: currentFocusTab.type,
                 });
-                searchForKeyword(target.value, currentFocusTab.type);
+                searchForKeyword(target.value);
               }, 400);
             }}
             placeholder={currentFocusTab.placeholder}
@@ -129,7 +154,7 @@ const PublicSearchPage = () => {
             <button
               onClick={() => {
                 setInputValue('');
-                resetSearchResult();
+                resetSearch();
               }}
             >
               <SearchCloseIcon width="0.5rem" height="0.5rem" />
@@ -179,7 +204,7 @@ const SearchTabWrapper = styled.nav`
   margin-bottom: 1rem;
 `;
 
-const SearchTabList = styled.ul`
+const SearchInfo = styled.ul`
   ${Flex()};
   column-gap: 2rem;
   margin-top: 0.5rem;
