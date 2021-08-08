@@ -70,7 +70,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        UserResponse userResponse = userService.findById(user.getId());
+        UserResponse userResponse = userService.findById(appUser);
 
         // then
         assertThat(userResponse.getId()).isEqualTo(user.getId());

@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> findUserOfMine(@AuthenticationPrincipal AppUser appUser) {
-        UserResponse userResponse = userService.findById(appUser.getId());
+        UserResponse userResponse = userService.findById(appUser);
         return ResponseEntity.ok(userResponse);
     }
 

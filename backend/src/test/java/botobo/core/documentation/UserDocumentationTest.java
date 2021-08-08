@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +43,7 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build();
 
         given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.findById(anyLong())).willReturn(userResponse);
+        given(userService.findById(any(AppUser.class))).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)

@@ -8,7 +8,6 @@ import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
-import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.UserUpdateNotAllowedException;
 import botobo.core.infrastructure.S3Uploader;
 import org.springframework.stereotype.Service;
@@ -20,23 +19,22 @@ import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
-public class UserService {
+public class UserService extends AbstractUserService {
 
-    private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
     public UserService(UserRepository userRepository, S3Uploader s3Uploader) {
-        this.userRepository = userRepository;
+        super(userRepository);
         this.s3Uploader = s3Uploader;
     }
 
-    public UserResponse findById(Long id) {
-        return UserResponse.of(findUserById(id));
+    public UserResponse findById(AppUser appUser) {
+        return UserResponse.of(findUser(appUser));
     }
 
     @Transactional
     public UserResponse update(Long id, UserUpdateRequest userUpdateRequest, AppUser appUser) {
-        User user = findUserById(appUser.getId());
+        User user = findUser(appUser);
         if (!user.isSameId(id)) {
             throw new UserUpdateNotAllowedException();
         }
@@ -55,14 +53,9 @@ public class UserService {
         );
     }
 
-    private User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-    }
-
     @Transactional
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
-        User user = findUserById(appUser.getId());
+        User user = findUser(appUser);
         String updateProfileUrl = s3Uploader.upload(multipartFile, user.getUserName());
         user.updateProfileUrl(updateProfileUrl);
         return ProfileResponse.builder()
@@ -71,6 +64,6 @@ public class UserService {
     }
 
     public void checkSameUserNameAlreadyExist(UserNameRequest userNameRequest, AppUser appUser) {
-        validateDuplicatedUserName(userNameRequest.getUserName(), findUserById(appUser.getId()));
+        validateDuplicatedUserName(userNameRequest.getUserName(), findUser(appUser));
     }
 }
