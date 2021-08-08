@@ -4,6 +4,7 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -266,6 +268,69 @@ public class UserServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공")
+    void checkSameUserNameAlreadyExist() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("날씨가덥다.")
+                .build();
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.empty());
+
+        assertThatCode(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+                .doesNotThrowAnyException();
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공, 로그인 유저와 동일한 이름")
+    void checkSameUserNameAlreadyExistWithSameUser() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("user")
+                .build();
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.of(user));
+
+        assertThatCode(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+                .doesNotThrowAnyException();
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 존재하는 이름")
+    void checkSameUserNameAlreadyExistFailed() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("이미_존재하는_이름")
+                .build();
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
+
+        assertThatThrownBy(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+                .isInstanceOf(UserNameDuplicatedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
         then(userRepository)
                 .should(times(1))
                 .findById(anyLong());

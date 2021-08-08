@@ -3,6 +3,7 @@ package botobo.core.acceptance.user;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.common.ErrorResponse;
@@ -338,9 +339,128 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         UserResponse userResponse = response.convertBody(UserResponse.class);
 
         //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(userResponse.getId()).isNotNull();
         assertThat(userResponse.getUserName()).isEqualTo("admin");
         assertThat(userResponse.getProfileUrl()).isEqualTo("github.io");
         assertThat(userResponse.getBio()).isEqualTo("");
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공, 중복되지 않은 이름")
+    void checkSameUserNameAlreadyExist() {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("클러치박")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공, 현재 로그인한 회원의 이름과 동일할 때에도 OK를 보낸다.")
+    void checkSameUserNameAlreadyExistWhenSameUser() {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("admin")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 중복된 이름")
+    void checkSameUserNameAlreadyExistFailed() {
+        //given
+        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("admin")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(id))
+                .build();
+
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 요청 회원 명은 null이 될 수 없다.")
+    void checkSameUserNameAlreadyExistFailedWhenNameIsNull() {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName(null)
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명 중복 조회를 위해서는 이름이 필요합니다.");
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 요청 회원 명은 최소 한글자 이상이어야한다.")
+    void checkSameUserNameAlreadyExistFailedWhenNameIsEmpty() {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("이름은 최소 1자 이상, 최대 20자까지 입력 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 요청 회원 명은 최대 20글자까지 가능하다.")
+    void checkSameUserNameAlreadyExistFailedWhenNameIsLong() {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName(stringGenerator(21))
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("이름은 최소 1자 이상, 최대 20자까지 입력 가능합니다.");
     }
 }

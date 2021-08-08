@@ -4,6 +4,7 @@ import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.UserController;
@@ -16,6 +17,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -106,7 +108,7 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build();
 
         given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.findById(1L)).willReturn(userResponse);
+        given(userService.update(1L, userUpdateRequest, appUser)).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)
@@ -115,5 +117,33 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("users-update-put-success");
+    }
+
+    @Test
+    @DisplayName("회원명 중복 조회 - 성공")
+    void checkSameUserNameAlreadyExist() throws Exception {
+        String token = "botobo.access.token";
+
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("중복되지_않는_이름")
+                .build();
+
+        AppUser appUser = AppUser.builder()
+                .id(1L)
+                .role(Role.USER)
+                .build();
+
+        given(authService.findAppUserByToken(token)).willReturn(appUser);
+        doNothing()
+                .when(userService)
+                .checkSameUserNameAlreadyExist(userNameRequest, appUser);
+
+        document()
+                .mockMvc(mockMvc)
+                .post("/api/users/name-check", userNameRequest)
+                .auth(token)
+                .build()
+                .status(status().isOk())
+                .identifier("users-name-check-post-success");
     }
 }

@@ -18,4 +18,15 @@ include::{snippets}/users-update-put-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/users-update-put-success/http-response.adoc[]
 
+=== 회원명 중복 조회
+==== 요청
+include::{snippets}/users-name-check-post-success/http-request.adoc[]
+==== 응답
+include::{snippets}/users-name-check-post-success/http-response.adoc[]
 
+===== 회원명 중복 발생 시
+|===
+|Http Status|메시지
+|409 Conflict
+|"[중복된 회원명](은)는 이미 존재합니다."
+|===

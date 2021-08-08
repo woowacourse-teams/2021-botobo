@@ -17,7 +17,7 @@ public class UserResponse {
     private String bio;
     private String profileUrl;
 
-    public static UserResponse of (User user) {
+    public static UserResponse of(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .userName(user.getUserName())

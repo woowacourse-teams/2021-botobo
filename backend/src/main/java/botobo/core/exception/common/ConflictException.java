@@ -1,6 +1,6 @@
 package botobo.core.exception.common;
 
-public class ConflictException extends RuntimeException{
+public class ConflictException extends RuntimeException {
     public ConflictException() {
         super();
     }
