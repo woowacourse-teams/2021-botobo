@@ -59,7 +59,7 @@ const ProfilePage = () => {
           <FormProvider
             initialValues={{
               name: userInfo?.userName ?? 'Unknown User',
-              bio: '',
+              bio: userInfo?.bio ?? '',
             }}
             validators={{ name: validateUserName, bio: validateBio }}
             onSubmit={({ name, bio }) => console.log(name, bio)}
@@ -74,6 +74,7 @@ const ProfilePage = () => {
             <BioInput
               name="bio"
               focusColor="gray"
+              placeholder="소개글을 작성해주세요."
               maxLength={BIO_MAXIMUM_LENGTH}
             />
             <Button size="full">프로필 수정</Button>
@@ -214,10 +215,7 @@ const BioInput = styled(TextAreaField)`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
     border-radius: ${theme.borderRadius.square};
-
-    &:focus {
-      border: 1px solid ${theme.color.gray_8};
-    }
+    border: 1px solid ${theme.color.gray_4};
   `}
 `;
 
