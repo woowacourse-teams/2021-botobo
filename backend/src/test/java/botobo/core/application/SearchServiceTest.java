@@ -26,9 +26,6 @@ import static org.mockito.Mockito.times;
 class SearchServiceTest {
 
     @Mock
-    private WorkbookRepository workbookRepository;
-
-    @Mock
     private TagRepository tagRepository;
 
     @Mock

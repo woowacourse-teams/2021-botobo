@@ -70,29 +70,41 @@ public class WorkbookSearchParameter {
     }
 
     public Specification<Workbook> toSpecification() {
-        Specification<Workbook> first = (root, query, builder) ->
-                builder.greaterThan(builder.size(root.get("cards").get("cards")), 0);
-        Specification<Workbook> second = (root, query, builder) -> {
-            Order order = toOrder(root, builder);
+        return Specification.where(matchesKeyword())
+                .and(orderByCriteria())
+                .and(containsAtLeastOneCard());
+    }
+
+    private Specification<Workbook> matchesKeyword() {
+        return (root, query, builder) -> builder.like(
+                expression(root, builder),
+                pattern()
+        );
+    }
+
+    private Expression<String> expression(Root<Workbook> root, CriteriaBuilder builder) {
+        return searchType.toExpression(root, builder);
+    }
+
+    private String pattern() {
+        return searchType.getPattern()
+                .apply(searchKeyword.getValue());
+    }
+
+    private Specification<Workbook> orderByCriteria() {
+        return (root, query, builder) -> {
+            Order order = searchOrder.toOrder(builder, root, searchCriteria);
             query.orderBy(order);
-            return builder.like(toTargetObject(root, builder), toPattern());
+            return null;
         };
-        return Specification.where(first).and(second);
     }
 
-    public Order toOrder(Root<Workbook> root, CriteriaBuilder builder) {
-        return searchOrder.toOrder(builder, root, searchCriteria);
-    }
-
-    public Expression<String> toTargetObject(Root<Workbook> root, CriteriaBuilder builder) {
-        if (SearchType.NAME.equals(this.searchType)) {
-            return builder.lower(searchType.getExpression().apply(root));
-        }
-        return searchType.getExpression().apply(root);
-    }
-
-    public String toPattern() {
-        return searchType.getPattern().apply(searchKeyword.getValue());
+    private Specification<Workbook> containsAtLeastOneCard() {
+        return (root, query, builder) -> builder
+                .greaterThan(
+                        builder.size(root.get("cards").get("cards")),
+                        0
+                );
     }
 
     public PageRequest toPageRequest() {

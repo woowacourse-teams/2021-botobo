@@ -33,7 +33,7 @@ public enum SearchOrder {
     }
 
     public Order toOrder(CriteriaBuilder builder, Root<Workbook> root, SearchCriteria searchCriteria) {
-        if (SearchOrder.ASC.equals(this)) {
+        if (this.equals(ASC)) {
             return builder.asc(searchCriteria.toExpression(builder, root));
         }
         return builder.desc(searchCriteria.toExpression(builder, root));
