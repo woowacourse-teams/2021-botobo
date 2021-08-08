@@ -18,8 +18,6 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-// ref: https://techblog.woowahan.com/2638/
-// 테스트가 통과하는데, docker image를 가져오느라 오래 걸려서 jenkins ec2 메모리 초과 우려로 우선은 disabled 처리 해 둠.
 @Disabled
 @DisplayName("S3 Uploader 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalStackS3Config.class)
@@ -39,10 +37,10 @@ class S3UploaderTest {
     private String userDefaultImage;
 
     @Autowired
-    AmazonS3 amazonS3;
+    private AmazonS3 amazonS3;
 
     @Autowired
-    S3Uploader s3Uploader;
+    private S3Uploader s3Uploader;
 
     @BeforeEach
     void setUp() {

@@ -11,7 +11,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 
 @TestConfiguration
 public class LocalStackS3Config {
-    DockerImageName localstackImage = DockerImageName.parse("localstack/localstack");
+    private final DockerImageName localstackImage = DockerImageName.parse("localstack/localstack");
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public LocalStackContainer localStackContainer() {

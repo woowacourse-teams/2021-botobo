@@ -15,21 +15,9 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * ::흐름::
- * 1. MultipartFile을 전달 받는다.
- * 2. S3에 전달할 수 있도록 MultiPartFile을 File로 변환한다.
- * (S3에는 MultipartFile 타입은 전송할 수 없기 때문)
- * 3. 전환된 File을 S3로 PUT
- * 4. 로컬에 생성된 File 삭제
- * (Multipartfile -> File로 변환되면서 로컬에 파일 생성된 것을 삭제)
- * 5. 업로드된 파일의 S3 URL 주소를 반환
- */
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
-
 public class S3Uploader {
     private final AmazonS3 amazonS3Client;
     private final FileNameGenerator fileNameGenerator;
