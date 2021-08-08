@@ -31,6 +31,9 @@ import static org.mockito.Mockito.times;
 @MockitoSettings
 public class UserServiceTest {
 
+    private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
+    private static final String USER_DEFAULT_IMAGE = "botobo-default-profile.png";
+
     @Mock
     private UserRepository userRepository;
 
@@ -100,10 +103,14 @@ public class UserServiceTest {
     @DisplayName("유저의 프로필 이미지를 변경한다. - 성공, 이미지가 들어오지 않은 경우 디폴트 이미지로 대체")
     void updateProfileImageWhenEmpty() throws IOException {
         // given
-        String defaultImageUrl = "https://d1mlkr1uzdb8as.cloudfront.net/users/botobo.png";
+        String defaultImageUrl = String.format(CLOUDFRONT_URL_FORMAT, USER_DEFAULT_IMAGE);
+        MockMultipartFile mockMultipartFile = null;
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(defaultImageUrl);
 
         // when
-        ProfileResponse profileResponse = userService.updateProfile(null, appUser);
+        ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
 
         // then
         assertThat(profileResponse.getProfileUrl()).isEqualTo(defaultImageUrl);

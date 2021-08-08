@@ -29,6 +29,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+
 public class S3Uploader {
     private final AmazonS3 amazonS3Client;
     private final FileNameGenerator fileNameGenerator;
@@ -39,12 +40,22 @@ public class S3Uploader {
     @Value("${aws.s3.bucket}")
     private String bucket;
 
+    @Value("${aws.user-default-image}")
+    private String userDefaultImage;
+
     public String upload(MultipartFile multipartFile, String userName) throws IOException {
+        if (isEmpty(multipartFile)) {
+            return makeCloudFrontUrl(userDefaultImage);
+        }
         final String newlyCreatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
         File uploadImageFile = convert(multipartFile)
                 .orElseThrow(FileConvertFailedException::new);
         uploadImageToS3(uploadImageFile, newlyCreatedFileName);
         return makeCloudFrontUrl(newlyCreatedFileName);
+    }
+
+    private boolean isEmpty(MultipartFile multipartFile) {
+        return Objects.isNull(multipartFile) || multipartFile.isEmpty();
     }
 
     private String makeCloudFrontUrl(String uploadImageUrl) {

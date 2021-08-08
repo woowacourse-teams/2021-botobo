@@ -33,6 +33,7 @@ aws:
     url-format: https://d1mlkr1uzdb8as.cloudfront.net/%s
   s3:
     bucket: s3-botobo-storage
+  user-default-image: botobo-default-profile.png
 
 cloud:
   aws:

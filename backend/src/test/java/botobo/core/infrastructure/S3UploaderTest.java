@@ -27,7 +27,7 @@ class S3UploaderTest {
 
     public static final String FILE_PATH = "/src/test/resources/";
     public static final String UPLOAD_IMAGE_NAME = "uploadBotobo.png";
-
+    private static final String USER_DEFAULT_IMAGE = "botobo-default-profile.png";
 
     @Value("${aws.s3.bucket}")
     private String bucket;
@@ -35,8 +35,8 @@ class S3UploaderTest {
     @Value("${aws.cloudfront.url-format}")
     private String cloudfrontUrlFormat;
 
-    // 변경 예정
-    private static final String defaultImage = "botobo.png";
+    @Value("${aws.user-default-image}")
+    private String userDefaultImage;
 
     @Autowired
     AmazonS3 amazonS3;
@@ -47,7 +47,10 @@ class S3UploaderTest {
     @BeforeEach
     void setUp() {
         amazonS3.createBucket(bucket);
-        amazonS3.putObject(bucket, "botobo.png", new File(new File("").getAbsolutePath() + FILE_PATH + defaultImage));
+        amazonS3.putObject(bucket,
+                "botobo-default-profile.png",
+                new File(new File("").getAbsolutePath() + FILE_PATH + USER_DEFAULT_IMAGE)
+        );
     }
 
     @Test
@@ -61,6 +64,23 @@ class S3UploaderTest {
         String uploadImageName = uploadUrl.replace(cloudfrontUrl, "");
 
         assertAll(
+                () -> assertThat(uploadUrl).isNotNull(),
+                () -> assertThat(amazonS3.doesObjectExist(bucket, uploadImageName)).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 비어있는 경우에는 디폴트 이미지로 대체")
+    void uploadWithDefault() throws IOException {
+        MultipartFile multipartFile = null;
+        String uploadUrl = s3Uploader.upload(multipartFile, "조앤");
+        String cloudfrontUrl = cloudfrontUrlFormat.replace("%s", "");
+        String uploadImageName = uploadUrl.replace(cloudfrontUrl, "");
+
+        System.out.println(userDefaultImage);
+
+        assertAll(
+                () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImage)),
                 () -> assertThat(uploadUrl).isNotNull(),
                 () -> assertThat(amazonS3.doesObjectExist(bucket, uploadImageName)).isTrue()
         );

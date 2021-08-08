@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,18 +41,11 @@ public class UserService {
 
     @Transactional
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
-        if (isEmpty(multipartFile)) {
-            return ProfileResponse.fromDefaultProfileImage();
-        }
         User user = findUserById(appUser.getId());
         String updateProfileUrl = s3Uploader.upload(multipartFile, user.getUserName());
         user.updateProfileUrl(updateProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(updateProfileUrl)
                 .build();
-    }
-
-    private boolean isEmpty(MultipartFile multipartFile) {
-        return Objects.isNull(multipartFile) || multipartFile.isEmpty();
     }
 }
