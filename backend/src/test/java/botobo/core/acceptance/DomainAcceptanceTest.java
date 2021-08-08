@@ -30,10 +30,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-public class DomainAcceptanceTest extends AcceptanceTest {
-
-    @MockBean
-    protected GithubOauthManager githubOauthManager;
+public class DomainAcceptanceTest extends AuthAcceptanceTest {
 
     protected GithubUserInfoResponse userInfo, anotherUserInfo;
 

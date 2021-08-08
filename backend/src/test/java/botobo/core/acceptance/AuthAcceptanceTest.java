@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.given;
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @MockBean
-    private GithubOauthManager githubOauthManager;
+    protected GithubOauthManager githubOauthManager;
 
     protected TokenResponse 로그인되어_있음() {
         ExtractableResponse<Response> response = 로그인_요청();
