@@ -12,7 +12,6 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.common.ErrorResponse;
-import botobo.core.utils.DummyRequestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -919,13 +918,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         heartResponse = httpResponse.convertBody(HeartResponse.class);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(heartResponse.isHeart()).isFalse();
-    }
-
-    private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
-        return request()
-                .put("/api/workbooks/{workbookId}/hearts", DummyRequestBuilder.build(), workbookId)
-                .auth(accessToken)
-                .build();
     }
 
     private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,

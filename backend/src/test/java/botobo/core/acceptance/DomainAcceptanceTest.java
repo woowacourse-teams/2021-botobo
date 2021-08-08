@@ -1,7 +1,6 @@
 package botobo.core.acceptance;
 
-import botobo.core.acceptance.utils.RequestBuilder;
-import botobo.core.domain.card.CardRepository;
+import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -18,6 +17,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
+import botobo.core.utils.DummyRequestBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +39,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     protected UserRepository userRepository;
-
-    @Autowired
-    private CardRepository cardRepository;
 
     @Autowired
     protected JwtTokenProvider jwtTokenProvider;
@@ -109,7 +106,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 카드_생성_요청(cardRequest, userId).convertBody(CardResponse.class);
     }
 
-    private RequestBuilder.HttpResponse 카드_생성_요청(CardRequest cardRequest, Long userId) {
+    private HttpResponse 카드_생성_요청(CardRequest cardRequest, Long userId) {
         return request()
                 .post("/api/cards", cardRequest)
                 .auth(createToken(userId))
@@ -130,7 +127,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private RequestBuilder.HttpResponse 카드_생성_요청(CardRequest cardRequest, String accessToken) {
+    private HttpResponse 카드_생성_요청(CardRequest cardRequest, String accessToken) {
         return request()
                 .post("/api/cards", cardRequest)
                 .auth(accessToken)
@@ -150,7 +147,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 유저_문제집_생성_요청(workbookRequest, accessToken).convertBody(WorkbookResponse.class);
     }
 
-    protected RequestBuilder.HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, String accessToken) {
+    protected HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, String accessToken) {
         return request()
                 .post("/api/workbooks", workbookRequest)
                 .auth(accessToken)
@@ -165,7 +162,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     }
 
     protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
-        RequestBuilder.HttpResponse response = request()
+        HttpResponse response = request()
                 .get("/api/workbooks/{id}/cards", workbookId)
                 .auth(createToken(1L))
                 .build();
@@ -174,6 +171,13 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected String createToken(Long id) {
         return jwtTokenProvider.createToken(id);
+    }
+
+    protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
+        return request()
+                .put("/api/workbooks/{workbookId}/hearts", DummyRequestBuilder.build(), workbookId)
+                .auth(accessToken)
+                .build();
     }
 
     protected String 로그인되어_있음(GithubUserInfoResponse userInfo) {

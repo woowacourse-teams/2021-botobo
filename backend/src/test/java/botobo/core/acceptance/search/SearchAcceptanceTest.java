@@ -79,12 +79,25 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         );
 
         // 중간곰의 문제집 생성
-        카드도_함께_등록(
+        카드와_좋아요도_함께_등록(
                 유저_문제집_등록되어_있음("중간곰의 자바 기초 문제집", true, makeJavaTags(), bearToken),
                 1,
-                bearToken
+                bearToken,
+                List.of(pkToken)
         );
-        유저_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken);
+        카드와_좋아요도_함께_등록(
+                유저_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken),
+                1,
+                bearToken,
+                List.of(pkToken, bearToken)
+        );
+        카드와_좋아요도_함께_등록(
+                유저_문제집_등록되어_있음("중간곰의 자바 고급 문제집", true, makeJavaTags(), bearToken),
+                1,
+                bearToken,
+                List.of()
+        );
+        유저_문제집_등록되어_있음("너도 자바 할 수 있어", true, makeJavaTags(), bearToken);
     }
 
     private List<TagRequest> makeJavaTags() {
@@ -100,10 +113,21 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         );
     }
 
+    private void 카드와_좋아요도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken, List<String> heartUserTokens) {
+        카드도_함께_등록(workbookResponse, cardCount, accessToken);
+        좋아요도_함께_등록(workbookResponse, heartUserTokens);
+    }
+
     private void 카드도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken) {
         Long workbookId = workbookResponse.getId();
         IntStream.rangeClosed(1, cardCount)
                 .forEach(number -> 카드_등록되어_있음("질문", "정답", workbookId, accessToken));
+    }
+
+    private void 좋아요도_함께_등록(WorkbookResponse workbookResponse, List<String> heartUserTokens) {
+        Long workbookId = workbookResponse.getId();
+        heartUserTokens
+                .forEach(token -> 하트_토글_요청(workbookId, token));
     }
 
     @Test
@@ -153,7 +177,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(4);
+        assertThat(workbookResponses).hasSize(6);
         workbookResponses.forEach(workbookResponse ->
                 assertThat(workbookResponse.getTags()).extracting(TagResponse::getName).contains("java")
         );
@@ -286,17 +310,56 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 );
     }
 
-    // TODO : 좋아요 기능 생기면 추가
     @Test
     @DisplayName("문제집 검색 - 성공, 좋아요 많은 순 정렬")
     void searchFromHeartDesc() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "bear");
+        parameters.put("type", "user");
+        parameters.put("criteria", "heart");
+        parameters.put("order", "desc");
 
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "중간곰의 자바 고급 문제집"
+                );
     }
 
     @Test
     @DisplayName("문제집 검색 - 성공, 좋아요 적은 순 정렬")
     void searchFromHeartAsc() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "bear");
+        parameters.put("type", "user");
+        parameters.put("criteria", "heart");
+        parameters.put("order", "asc");
 
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 고급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "중간곰의 자바 중급 문제집"
+                );
     }
 
     @Test
@@ -422,7 +485,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(1);
+        assertThat(workbookResponses).hasSize(3);
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getCardCount)
                 .allMatch(cardCount -> cardCount > 0);
