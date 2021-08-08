@@ -26,7 +26,7 @@ interface LoadImageStyleProps {
   isLoading: boolean;
 }
 
-const searchInfo = [
+const searchInfos = [
   {
     id: 1,
     name: '문제집',
@@ -65,7 +65,7 @@ const PublicSearchPage = () => {
   const [isFocus, setIsFocus] = useState(false);
   const [inputValue, setInputValue] = useState(keyword);
   const [currentFocusTab, setCurrentFocusTab] = useState(
-    searchInfo.find((item) => item.type === type) ?? searchInfo[0]
+    searchInfos.find((item) => item.type === type) ?? searchInfos[0]
   );
   const [keywordSearchResult, setKeywordSearchResult] = useState<
     SearchKeywordResponse[]
@@ -108,13 +108,13 @@ const PublicSearchPage = () => {
       <Container>
         <SearchTabWrapper>
           <SearchInfo>
-            {searchInfo.map(({ id, name, type }) => (
+            {searchInfos.map(({ id, name, type }) => (
               <SearchTabItem key={id} isFocus={currentFocusTab.id === id}>
                 <button
                   onClick={() => {
                     const currentTab =
-                      searchInfo.find((item) => item.id === id) ??
-                      searchInfo[0];
+                      searchInfos.find((searchInfo) => searchInfo.id === id) ??
+                      searchInfos[0];
 
                     setCurrentFocusTab(currentTab);
                     setInputValue('');
