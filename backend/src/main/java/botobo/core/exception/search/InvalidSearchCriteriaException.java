@@ -5,6 +5,6 @@ import botobo.core.exception.common.BadRequestException;
 
 public class InvalidSearchCriteriaException extends BadRequestException {
     public InvalidSearchCriteriaException() {
-        super("유효하지 않은 정렬 조건입니다. 유효한 정렬 조건 : date, name, count, like");
+        super("유효하지 않은 정렬 조건입니다. 유효한 정렬 조건 : date, name, count, heart");
     }
 }

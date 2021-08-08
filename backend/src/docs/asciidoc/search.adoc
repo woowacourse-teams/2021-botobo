@@ -17,7 +17,7 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |검색 타입
 
 |criteria
-|date, name, count, like
+|date, name, count, heart
 |false
 |date
 |정렬 기준
@@ -66,7 +66,7 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |count
 |문제집에 포함된 카드 수
 
-|like
+|heart
 |좋아요 수
 
 |asc

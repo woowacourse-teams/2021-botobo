@@ -289,13 +289,13 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     // TODO : 좋아요 기능 생기면 추가
     @Test
     @DisplayName("문제집 검색 - 성공, 좋아요 많은 순 정렬")
-    void searchFromLikeDesc() {
+    void searchFromHeartDesc() {
 
     }
 
     @Test
     @DisplayName("문제집 검색 - 성공, 좋아요 적은 순 정렬")
-    void searchFromLikeAsc() {
+    void searchFromHeartAsc() {
 
     }
 
@@ -489,7 +489,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("유효하지 않은 정렬 조건입니다. 유효한 정렬 조건 : date, name, count, like");
+        assertThat(errorResponse.getMessage()).contains("유효하지 않은 정렬 조건입니다. 유효한 정렬 조건 : date, name, count, heart");
     }
 
     @Test

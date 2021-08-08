@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SearchCriteriaTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"date", "name", "count", "like"})
+    @ValueSource(strings = {"date", "name", "count", "heart"})
     @DisplayName("SearchCriteria 생성 - 성공")
     void create(String value) {
         // when

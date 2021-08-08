@@ -15,7 +15,7 @@ public enum SearchCriteria {
     DATE("date"),
     NAME("name"),
     COUNT("count"),
-    LIKE("like");
+    HEART("heart");
 
     private String value;
 
@@ -43,6 +43,6 @@ public enum SearchCriteria {
         if (COUNT.equals(this)) {
             return builder.size(root.get("cards").get("cards"));
         }
-        throw new IllegalStateException();
+        return builder.size(root.get("hearts").get("hearts"));
     }
 }
