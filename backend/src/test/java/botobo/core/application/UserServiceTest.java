@@ -5,13 +5,14 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
+import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.UserUpdateNotAllowedException;
 import botobo.core.infrastructure.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
-import botobo.core.dto.user.UserUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -124,6 +125,7 @@ public class UserServiceTest {
     void updateProfileImageFailedWhenUserNotFound() throws IOException {
         // given
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
+
         given(userRepository.findById(anyLong())).willThrow(UserNotFoundException.class);
 
         // when
@@ -139,14 +141,16 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 정보를 변경한다. - 성공")
-    void update() {
+    @DisplayName("유저의 정보를 변경한다. - 성공, 변경사항이 없어도 요청은 실패하지 않는다.")
+    void updateWithSameInfo() {
         // given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("수정된 user")
+                .userName("user")
                 .profileUrl("profile.io")
-                .bio("수정된 bio")
+                .bio("")
                 .build();
+
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.of(user));
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
@@ -157,6 +161,38 @@ public class UserServiceTest {
         assertThat(userResponse.getUserName()).isEqualTo(userUpdateRequest.getUserName());
         assertThat(userResponse.getBio()).isEqualTo(userUpdateRequest.getBio());
 
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 성공")
+    void update() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("profile.io")
+                .bio("수정된 bio")
+                .build();
+
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        UserResponse userResponse = userService.update(1L, userUpdateRequest, appUser);
+
+        // then
+        assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
+        assertThat(userResponse.getUserName()).isEqualTo(userUpdateRequest.getUserName());
+        assertThat(userResponse.getBio()).isEqualTo(userUpdateRequest.getBio());
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
         then(userRepository)
                 .should(times(1))
                 .findById(anyLong());
@@ -171,12 +207,16 @@ public class UserServiceTest {
                 .profileUrl("profile.io")
                 .bio("수정된 bio")
                 .build();
+
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
         assertThatThrownBy(() -> userService.update(2L, userUpdateRequest, appUser))
                 .isInstanceOf(UserUpdateNotAllowedException.class);
 
+        then(userRepository)
+                .should(never())
+                .findByUserName(userUpdateRequest.getUserName());
         then(userRepository)
                 .should(times(1))
                 .findById(anyLong());
@@ -191,12 +231,41 @@ public class UserServiceTest {
                 .profileUrl("수정된.profile.url")
                 .bio("수정된 bio")
                 .build();
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
         assertThatThrownBy(() -> userService.update(1L, userUpdateRequest, appUser))
                 .isInstanceOf(ProfileUpdateNotAllowedException.class);
 
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 실패, userName은 중복될 수 없다.")
+    void updateFailedWhenDuplicatedUserName() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("이미_존재하는_이름")
+                .profileUrl("수정된.profile.url")
+                .bio("수정된 bio")
+                .build();
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
+
+        // when
+        assertThatThrownBy(() -> userService.update(1L, userUpdateRequest, appUser))
+                .isInstanceOf(UserNameDuplicatedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
         then(userRepository)
                 .should(times(1))
                 .findById(anyLong());

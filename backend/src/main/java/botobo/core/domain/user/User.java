@@ -99,4 +99,8 @@ public class User extends BaseEntity {
     public boolean isSameId(Long id) {
         return Objects.equals(this.id, id);
     }
+
+    public boolean isSameName(User other) {
+        return Objects.equals(this.userName, other.getUserName());
+    }
 }

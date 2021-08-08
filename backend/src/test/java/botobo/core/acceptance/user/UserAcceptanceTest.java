@@ -8,8 +8,6 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
@@ -278,7 +276,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 소개글은 null이 될 수 없다.")
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 소개글은 최대 255자까지만 가능하다.")
     void updateFailedLongBio() {
         //given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
@@ -297,5 +295,52 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("소개글은 최대 255자까지 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 회원명은 중복될 수 없다.")
+    void updateFailedDuplicateUserName() {
+        //given
+        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("admin") // 기존에 존재하는 1번 유저의 admin 이름으로 변경한다.
+                .profileUrl("github.io")
+                .bio("안녕하세요~")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .put("/api/users/me/{id}", userUpdateRequest, id)
+                .auth(createToken(id))
+                .build();
+
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 성공, 변경사항이 없어도 요청에서는 실패하지 않는다.")
+    void updateWhenRequestIsSame() {
+        //given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("admin") // 기존에 존재하는 1번 유저의 admin 이름으로 변경한다.
+                .profileUrl("github.io")
+                .bio("")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .auth(createToken(1L))
+                .build();
+
+        UserResponse userResponse = response.convertBody(UserResponse.class);
+
+        //then
+        assertThat(userResponse.getId()).isNotNull();
+        assertThat(userResponse.getUserName()).isEqualTo("admin");
+        assertThat(userResponse.getProfileUrl()).isEqualTo("github.io");
+        assertThat(userResponse.getBio()).isEqualTo("");
     }
 }

@@ -63,4 +63,15 @@ public class UserRepositoryTest {
         Optional<User> findUser = userRepository.findByGithubId(user.getGithubId());
         assertThat(findUser).containsSame(user);
     }
+
+    @Test
+    @DisplayName("UserName으로 조회 - 성공")
+    void findByUserName() {
+        // given
+        userRepository.save(user);
+
+        // when, then
+        Optional<User> findUser = userRepository.findByUserName(user.getUserName());
+        assertThat(findUser).containsSame(user);
+    }
 }

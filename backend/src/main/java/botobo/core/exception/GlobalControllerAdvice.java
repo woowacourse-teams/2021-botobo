@@ -1,6 +1,7 @@
 package botobo.core.exception;
 
 import botobo.core.exception.common.BadRequestException;
+import botobo.core.exception.common.ConflictException;
 import botobo.core.exception.common.ErrorResponse;
 import botobo.core.exception.common.ForbiddenException;
 import botobo.core.exception.common.InternalServerErrorException;
@@ -85,6 +86,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleSizeLimitExceededException(SizeLimitExceededException e) {
         log.info("SizeLimitExceededException", e);
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(ErrorResponse.of("요청할 수 있는 최대 파일 크기는 100MB 입니다."));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException e) {
+        log.info("ConflictException", e);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse.of(e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

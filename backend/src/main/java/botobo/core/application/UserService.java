@@ -6,14 +6,16 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
+import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.S3Uploader;
 import botobo.core.exception.user.UserUpdateNotAllowedException;
+import botobo.core.infrastructure.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,8 +39,19 @@ public class UserService {
         if (!user.isSameId(id)) {
             throw new UserUpdateNotAllowedException();
         }
+        validateDuplicatedUserName(userUpdateRequest.getUserName(), user);
         user.update(userUpdateRequest.toUser());
         return UserResponse.of(user);
+    }
+
+    private void validateDuplicatedUserName(String requestedName, User user) {
+        userRepository.findByUserName(requestedName).ifPresent(
+                findUser -> {
+                    if (!Objects.equals(user, findUser)) {
+                        throw new UserNameDuplicatedException(requestedName);
+                    }
+                }
+        );
     }
 
     private User findUserById(Long id) {
