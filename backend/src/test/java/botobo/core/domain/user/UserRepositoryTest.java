@@ -39,6 +39,7 @@ public class UserRepositoryTest {
         assertThat(savedUser).isSameAs(user);
         assertThat(savedUser.getCreatedAt()).isNotNull();
         assertThat(savedUser.getUpdatedAt()).isNotNull();
+        assertThat(savedUser.getBio()).isEqualTo("");
     }
 
     @Test
