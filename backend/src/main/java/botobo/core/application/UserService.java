@@ -29,6 +29,7 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Transactional
     public UserResponse update(Long id, UserUpdateRequest userUpdateRequest, AppUser appUser) {
         validateId(id, appUser.getId());
         User user = findUserById(appUser.getId());
