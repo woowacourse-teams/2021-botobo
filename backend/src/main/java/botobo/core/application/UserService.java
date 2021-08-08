@@ -31,11 +31,6 @@ public class UserService {
         return UserResponse.of(findUserById(id));
     }
 
-    private User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-    }
-
     @Transactional
     public UserResponse update(Long id, UserUpdateRequest userUpdateRequest, AppUser appUser) {
         User user = findUserById(appUser.getId());

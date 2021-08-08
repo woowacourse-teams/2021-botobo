@@ -5,7 +5,9 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.user.UserUpdateNotAllowedException;
 import botobo.core.infrastructure.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,5 +136,69 @@ public class UserServiceTest {
         then(s3Uploader)
                 .should(never())
                 .upload(mockMultipartFile, user.getUserName());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 성공")
+    void update() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("profile.io")
+                .bio("수정된 bio")
+                .build();
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        UserResponse userResponse = userService.update(1L, userUpdateRequest, appUser);
+
+        // then
+        assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
+        assertThat(userResponse.getUserName()).isEqualTo(userUpdateRequest.getUserName());
+        assertThat(userResponse.getBio()).isEqualTo(userUpdateRequest.getBio());
+
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @DisplayName("유저의 정보를 변경한다. - 실패, pathVariable의 id와 로그인한 유저의 id가 다름.")
+    @Test
+    void updateFailedWhenDifferentIds() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("profile.io")
+                .bio("수정된 bio")
+                .build();
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        assertThatThrownBy(() -> userService.update(2L, userUpdateRequest, appUser))
+                .isInstanceOf(UserUpdateNotAllowedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 실패, profileUrl은 내 정보 수정에서 변경할 수 없다.")
+    void updateFailedWhenDifferentProfileUrl() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("수정된.profile.url")
+                .bio("수정된 bio")
+                .build();
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        assertThatThrownBy(() -> userService.update(1L, userUpdateRequest, appUser))
+                .isInstanceOf(ProfileUpdateNotAllowedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
     }
 }
