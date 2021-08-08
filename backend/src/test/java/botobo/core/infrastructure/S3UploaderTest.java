@@ -77,8 +77,6 @@ class S3UploaderTest {
         String cloudfrontUrl = cloudfrontUrlFormat.replace("%s", "");
         String uploadImageName = uploadUrl.replace(cloudfrontUrl, "");
 
-        System.out.println(userDefaultImage);
-
         assertAll(
                 () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImage)),
                 () -> assertThat(uploadUrl).isNotNull(),
