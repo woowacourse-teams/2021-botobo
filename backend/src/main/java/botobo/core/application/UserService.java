@@ -4,6 +4,7 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
@@ -67,5 +68,9 @@ public class UserService {
         return ProfileResponse.builder()
                 .profileUrl(updateProfileUrl)
                 .build();
+    }
+
+    public void checkSameUserNameAlreadyExist(UserNameRequest userNameRequest, AppUser appUser) {
+        validateDuplicatedUserName(userNameRequest.getUserName(), findUserById(appUser.getId()));
     }
 }

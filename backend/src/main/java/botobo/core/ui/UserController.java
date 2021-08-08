@@ -3,6 +3,7 @@ package botobo.core.ui;
 import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
@@ -53,5 +54,12 @@ public class UserController {
                                                @AuthenticationPrincipal AppUser appUser) {
         UserResponse userResponse = userService.update(id, userUpdateRequest, appUser);
         return ResponseEntity.ok(userResponse);
+    }
+
+    @PostMapping("/name-check")
+    public ResponseEntity<Void> checkDuplicateUserName(@Valid @RequestBody UserNameRequest userNameRequest,
+                                                       @AuthenticationPrincipal AppUser appUser) {
+        userService.checkSameUserNameAlreadyExist(userNameRequest, appUser);
+        return ResponseEntity.ok().build();
     }
 }
