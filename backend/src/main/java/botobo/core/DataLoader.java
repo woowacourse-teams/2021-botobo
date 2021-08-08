@@ -2,6 +2,7 @@ package botobo.core;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +31,7 @@ import java.util.Objects;
 @Component
 @Slf4j
 @Profile("local")
+@Transactional
 public class DataLoader implements CommandLineRunner {
 
     @Value("${dummy.file-path}")
@@ -58,7 +61,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
         this.adminUser = saveAdminUser();
         this.normalUser = saveNormalUser();
-        this.adminWorkbookCount = 101;
+        this.adminWorkbookCount = 11;
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
@@ -124,9 +127,9 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private Workbook saveWorkbook(String workbookName) {
-        User author = this.normalUser;
+        User author = normalUser;
         if (adminWorkbookCount > 0) {
-            author = this.adminUser;
+            author = adminUser;
             adminWorkbookCount--;
         }
         Workbook workbook = Workbook.builder()
@@ -135,6 +138,22 @@ public class DataLoader implements CommandLineRunner {
                 .opened(true)
                 .tags(Tags.of(Collections.singletonList(Tag.of(workbookName))))
                 .build();
+        Heart heart1 = Heart.builder()
+                .workbook(workbook)
+                .userId(adminUser.getId())
+                .build();
+        Heart heart2 = Heart.builder()
+                .workbook(workbook)
+                .userId(normalUser.getId())
+                .build();
+        if (author.equals(adminUser)) {
+            workbook.toggleHeart(heart1);
+        }
+        if (author.equals(normalUser)) {
+
+            workbook.toggleHeart(heart1);
+            workbook.toggleHeart(heart2);
+        }
         return workbookRepository.save(workbook);
     }
 
