@@ -62,8 +62,11 @@ public class S3Uploader {
     }
 
     private void uploadImageToS3(File uploadImage, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadImage));
-        deleteTemporaryFile(uploadImage);
+        try {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadImage));
+        } finally {
+            deleteTemporaryFile(uploadImage);
+        }
     }
 
     private void deleteTemporaryFile(File uploadImage) {
