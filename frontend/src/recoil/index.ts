@@ -6,4 +6,3 @@ export {
   workbookState,
   editedWorkbookState,
 } from './workbookState';
-export { searchKeywordState, searchTypeState } from './searchState';

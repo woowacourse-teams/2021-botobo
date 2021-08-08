@@ -1,18 +1,15 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { PublicWorkbookAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
-import { useRouter } from '../hooks';
-import { searchKeywordState, searchTypeState } from '../recoil';
+import { usePublicSearchQuery, useRouter } from '../hooks';
 import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
   publicWorkbooks: PublicWorkbookResponse[];
-  startIndex: number;
   searchForPublicWorkbook: ({
     keyword,
     ...options
@@ -23,16 +20,14 @@ const loadItemCount = 20;
 
 const PublicWorkbookList = ({
   publicWorkbooks,
-  startIndex,
   searchForPublicWorkbook,
 }: Props) => {
+  const { keyword, type } = usePublicSearchQuery();
+  const { routePublicCards } = useRouter();
+
   const scrollTarget = useRef<HTMLLIElement>(null);
 
-  const searchKeyword = useRecoilValue(searchKeywordState);
-  const searchType = useRecoilValue(searchTypeState);
   const isLastItem = publicWorkbooks.length % loadItemCount !== 0;
-
-  const { routePublicCards } = useRouter();
 
   useEffect(() => {
     if (!scrollTarget.current) return;
@@ -44,11 +39,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({
-          keyword: searchKeyword,
-          type: searchType,
-          start: startIndex,
-        });
+        searchForPublicWorkbook({ keyword, type });
       },
       {
         threshold: 0.1,

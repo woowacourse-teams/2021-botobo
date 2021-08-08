@@ -1,39 +1,35 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import UserIcon from '../assets/business-card.svg';
 import TagIcon from '../assets/tag.svg';
 import { useRouter } from '../hooks';
-import { searchKeywordState, searchTypeState } from '../recoil';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
 interface Props {
   searchItems: SearchKeywordResponse[];
+  type: 'tag' | 'user';
 }
 
-const PublicSearchList = ({ searchItems }: Props) => {
-  const setSearchKeyword = useSetRecoilState(searchKeywordState);
-  const searchType = useRecoilValue(searchTypeState);
-
-  const { routePublicSearchResult } = useRouter();
+const PublicSearchList = ({ searchItems, type }: Props) => {
+  const { routePublicSearchResult, routePublicSearchResultQuery } = useRouter();
 
   return (
     <StyledUl>
       {searchItems.map(({ id, name }) => (
         <li key={id}>
           <SearchItem
-            onClick={async () => {
-              await setSearchKeyword(name);
+            onClick={() => {
               routePublicSearchResult();
+              routePublicSearchResultQuery({ keyword: name, type });
             }}
           >
             <IconWrapper>
-              {searchType === 'tag' && <TagIcon width="1rem" height="1rem" />}
-              {searchType === 'user' && <UserIcon width="1rem" height="1rem" />}
+              {type === 'tag' && <TagIcon width="1rem" height="1rem" />}
+              {type === 'user' && <UserIcon width="1rem" height="1rem" />}
             </IconWrapper>
             <Name>{name}</Name>
           </SearchItem>

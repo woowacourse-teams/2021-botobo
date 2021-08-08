@@ -10,7 +10,7 @@ import {
   PublicWorkbookList,
 } from '../components';
 import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE } from '../constants';
-import { usePublicSearch } from '../hooks';
+import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { debounce } from '../utils';
 
@@ -53,12 +53,6 @@ const searchTabList = [
 
 const PublicSearchPage = () => {
   const {
-    setSearchKeyword,
-    searchType,
-    setSearchType,
-    startIndex,
-    inputValue,
-    setInputValue,
     keywordSearchResult,
     workbookSearchResult,
     resetSearchResult,
@@ -67,18 +61,20 @@ const PublicSearchPage = () => {
     searchForPublicWorkbook,
     searchForKeyword,
   } = usePublicSearch();
+  const { keyword, type } = usePublicSearchQuery();
+
+  const { routePublicSearchQuery } = useRouter();
+
   const [isFocus, setIsFocus] = useState(false);
+  const [inputValue, setInputValue] = useState(keyword);
 
   const [currentFocusTab, setCurrentFocusTab] = useState(
-    searchTabList.find((item) => item.type === searchType) ?? searchTabList[0]
+    searchTabList.find((item) => item.type === type) ?? searchTabList[0]
   );
 
   useEffect(() => {
-    const resetKeyword = () => setSearchKeyword('');
-
-    window.addEventListener('popstate', resetKeyword);
-
-    return () => window.removeEventListener('popstate', resetKeyword);
+    routePublicSearchQuery({ keyword, type });
+    searchForKeyword(keyword, type);
   }, []);
 
   return (
@@ -87,7 +83,7 @@ const PublicSearchPage = () => {
       <Container>
         <SearchTabWrapper>
           <SearchTabList>
-            {searchTabList.map(({ id, name }) => (
+            {searchTabList.map(({ id, name, type }) => (
               <SearchTabItem key={id} isFocus={currentFocusTab.id === id}>
                 <button
                   onClick={() => {
@@ -96,9 +92,9 @@ const PublicSearchPage = () => {
                       searchTabList[0];
 
                     setCurrentFocusTab(currentTab);
-                    setSearchType(currentTab.type);
                     setInputValue('');
                     resetSearchResult();
+                    routePublicSearchQuery({ type });
                   }}
                 >
                   {name}
@@ -118,11 +114,11 @@ const PublicSearchPage = () => {
               setIsLoading(true);
               resetSearchResult();
               debounce(() => {
-                setSearchKeyword(target.value);
-                searchForKeyword({
+                routePublicSearchQuery({
                   keyword: target.value,
                   type: currentFocusTab.type,
                 });
+                searchForKeyword(target.value, currentFocusTab.type);
               }, 400);
             }}
             placeholder={currentFocusTab.placeholder}
@@ -144,12 +140,14 @@ const PublicSearchPage = () => {
           ? workbookSearchResult.length > 0 && (
               <PublicWorkbookList
                 publicWorkbooks={workbookSearchResult}
-                startIndex={startIndex}
                 searchForPublicWorkbook={searchForPublicWorkbook}
               />
             )
           : keywordSearchResult.length > 0 && (
-              <PublicSearchList searchItems={keywordSearchResult} />
+              <PublicSearchList
+                searchItems={keywordSearchResult}
+                type={currentFocusTab.type}
+              />
             )}
         <LoadImage isLoading={isLoading} />
       </Container>

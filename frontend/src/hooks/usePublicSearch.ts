@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
 
 import {
   PublicWorkbookAsync,
@@ -7,15 +6,13 @@ import {
   getTagKeywordAsync,
   getUserKeywordAsync,
 } from '../api';
-import { searchKeywordState, searchTypeState } from '../recoil';
+import { SEARCH_TYPE } from '../constants';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
+import { ValueOf } from '../types/utils';
 
 const usePublicSearch = () => {
-  const [searchType, setSearchType] = useRecoilState(searchTypeState);
-  const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
-  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [startIndex, setStartIndex] = useState(0);
+  const [start, setStart] = useState(0);
   const [keywordSearchResult, setKeywordSearchResult] = useState<
     SearchKeywordResponse[]
   >([]);
@@ -34,20 +31,24 @@ const usePublicSearch = () => {
     }
 
     try {
-      const data = await getPublicWorkbookAsync({ keyword, ...options });
+      const data = await getPublicWorkbookAsync({
+        keyword,
+        start,
+        ...options,
+      });
       setWorkbookSearchResult((prevValue) => [...prevValue, ...data]);
-      setStartIndex((prevValue) => prevValue + 1);
+      setStart((prevState) => prevState + 1);
       setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+      setIsLoading(false);
     }
   };
 
-  const searchForKeyword = async ({
-    keyword,
-    type = 'name',
-  }: Pick<PublicWorkbookAsync, 'keyword' | 'type'>) => {
+  const searchForKeyword = async (
+    keyword: string,
+    type: ValueOf<typeof SEARCH_TYPE>
+  ) => {
     if (keyword === '') {
       setIsLoading(false);
 
@@ -55,7 +56,7 @@ const usePublicSearch = () => {
     }
 
     try {
-      if (type === 'name') return searchForPublicWorkbook({ keyword, type });
+      if (type === 'name') return searchForPublicWorkbook({ keyword });
 
       let data: SearchKeywordResponse[] = [];
 
@@ -70,26 +71,20 @@ const usePublicSearch = () => {
       setKeywordSearchResult(data);
       setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+      setIsLoading(false);
     }
   };
 
   const resetSearchResult = () => {
     setKeywordSearchResult([]);
     setWorkbookSearchResult([]);
-    setStartIndex(0);
+    setStart(0);
   };
 
   return {
-    searchType,
-    setSearchType,
-    searchKeyword,
-    setSearchKeyword,
-    inputValue,
-    setInputValue,
-    startIndex,
-    setStartIndex,
+    start,
+    setStart,
     keywordSearchResult,
     workbookSearchResult,
     resetSearchResult,

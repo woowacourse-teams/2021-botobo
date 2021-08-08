@@ -14,4 +14,4 @@ export const SEARCH_CRITERIA = {
 export const SEARCH_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
-};
+} as const;

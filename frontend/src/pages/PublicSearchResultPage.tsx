@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
-import { usePublicSearch, useRouter } from '../hooks';
+import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
@@ -17,23 +17,24 @@ const filters = [
 
 const PublicSearchResultPage = () => {
   const {
-    searchKeyword,
-    searchType,
     workbookSearchResult,
-    startIndex,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
-  const [currentFilterId, setCurrentFilterId] = useState(filters[0].id);
+  const { keyword, type, criteria } = usePublicSearchQuery();
 
-  const { routePrevPage } = useRouter();
+  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
+
+  const [currentFilterId, setCurrentFilterId] = useState(
+    filters.find((filter) => filter.criteria === criteria)?.id ?? filters[0].id
+  );
 
   useEffect(() => {
     setIsLoading(true);
-    searchForPublicWorkbook({ keyword: searchKeyword, type: searchType });
-  }, [searchKeyword]);
+    searchForPublicWorkbook({ keyword, type, criteria });
+  }, []);
 
   if (isLoading) {
     return <PublicWorkbookLoadable />;
@@ -56,7 +57,7 @@ const PublicSearchResultPage = () => {
           </NoSearchResult>
         ) : (
           <>
-            <Title>{searchKeyword} 검색 결과</Title>
+            <Title>{keyword} 검색 결과</Title>
             <Filter>
               {filters.map(({ id, name, criteria }) => (
                 <Button
@@ -67,15 +68,18 @@ const PublicSearchResultPage = () => {
                   onClick={() => {
                     if (id === currentFilterId) return;
 
+                    const resetValue = {
+                      keyword,
+                      type,
+                      start: 0,
+                      criteria,
+                    };
+
                     setCurrentFilterId(id);
                     resetSearchResult();
                     setIsLoading(true);
-                    searchForPublicWorkbook({
-                      keyword: searchKeyword,
-                      type: searchType,
-                      start: 0,
-                      criteria,
-                    });
+                    routePublicSearchResultQuery(resetValue);
+                    searchForPublicWorkbook(resetValue);
                   }}
                 >
                   {name}
@@ -84,7 +88,6 @@ const PublicSearchResultPage = () => {
             </Filter>
             <PublicWorkbookList
               publicWorkbooks={workbookSearchResult}
-              startIndex={startIndex}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
           </>
