@@ -34,6 +34,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    // TODO bio 필드 추가
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
 
@@ -49,6 +51,10 @@ public class User extends BaseEntity {
         if (Objects.nonNull(workbooks)) {
             this.workbooks = workbooks;
         }
+    }
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
     }
 
     public AppUser toAppUser() {
