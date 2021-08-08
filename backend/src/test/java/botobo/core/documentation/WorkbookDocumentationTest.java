@@ -182,7 +182,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     void findPublicWorkbookById() throws Exception {
         // given
         String token = "botobo.access.token";
-        given(workbookService.findPublicWorkbookById(anyLong())).willReturn(generatePublicWorkbookCardsResponse());
+        given(workbookService.findPublicWorkbookById(anyLong(), any())).willReturn(generatePublicWorkbookCardsResponse());
 
         // when, then
         document()
@@ -352,6 +352,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .workbookName("자바의 정석")
                 .cardCount(3)
                 .heartCount(100)
+                .heart(true)
                 .tags(generateTagResponses())
                 .cards(generateCardResponses())
                 .build();

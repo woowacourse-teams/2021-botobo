@@ -65,9 +65,10 @@ public class WorkbookController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id) {
+    public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id,
+                                                                       @AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
-                workbookService.findPublicWorkbookById(id)
+                workbookService.findPublicWorkbookById(id, appUser)
         );
     }
 

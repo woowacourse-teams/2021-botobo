@@ -357,6 +357,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbookResponse.getName());
         assertThat(workbookCardResponse.getCards()).hasSize(3);
+        assertThat(workbookCardResponse.getHeart()).isNotNull();
     }
 
     @Test

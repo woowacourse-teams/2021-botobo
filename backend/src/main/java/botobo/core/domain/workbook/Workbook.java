@@ -195,6 +195,10 @@ public class Workbook extends BaseEntity {
         return hearts.toggleHeart(heart);
     }
 
+    public boolean existsHeartByUserId(Long userId) {
+        return hearts.contains(userId);
+    }
+
     public int heartCount() {
         return hearts.size();
     }

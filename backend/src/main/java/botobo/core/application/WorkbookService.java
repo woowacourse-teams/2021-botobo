@@ -117,12 +117,13 @@ public class WorkbookService extends AbstractUserService {
                 .orElseThrow(WorkbookNotFoundException::new);
     }
 
-    public WorkbookCardResponse findPublicWorkbookById(Long id) {
+    public WorkbookCardResponse findPublicWorkbookById(Long id, AppUser appUser) {
         Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
         if (!workbook.isOpened()) {
             throw new NotAuthorException();
         }
-        return WorkbookCardResponse.ofOpenedWorkbook(workbook);
+        boolean heartExists = workbook.existsHeartByUserId(appUser.getId());
+        return WorkbookCardResponse.ofOpenedWorkbook(workbook, heartExists);
     }
 
     private void validateAuthor(User user, Workbook workbook) {

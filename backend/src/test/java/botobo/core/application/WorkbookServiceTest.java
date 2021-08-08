@@ -192,13 +192,19 @@ class WorkbookServiceTest {
                 )
                 .opened(true)
                 .build();
+        Long userId = normalUser.getId();
+        Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
+        workbook.toggleHeart(heart);
+
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
 
         // when
-        assertThatCode(() -> workbookService.findPublicWorkbookById(1L))
-                .doesNotThrowAnyException();
+        WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, normalUser.toAppUser());
 
         // then
+        assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getHeart()).isTrue();
+
         then(workbookRepository).should(times(1))
                 .findByIdAndOrderCardByNew(anyLong());
     }
@@ -223,7 +229,7 @@ class WorkbookServiceTest {
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
 
         // when
-        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
                 .isInstanceOf(NotAuthorException.class)
                 .hasMessage("작성자가 아니므로 권한이 없습니다.");
 
@@ -239,7 +245,7 @@ class WorkbookServiceTest {
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
                 .isInstanceOf(WorkbookNotFoundException.class)
                 .hasMessage("해당 문제집을 찾을 수 없습니다.");
 
