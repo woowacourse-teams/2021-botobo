@@ -10,3 +10,4 @@ export { default as useWorkbook } from './useWorkbook';
 export { default as usePublicWorkbook } from './usePublicWorkbook';
 export { default as usePublicCard } from './usePublicCard';
 export { default as useModal } from './useModal';
+export { default as useProfile } from './useProfile';

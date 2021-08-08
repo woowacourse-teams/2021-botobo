@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
 
 import EditIcon from '../assets/pencil.svg';
 import { Button, InputField, MainHeader, TextAreaField } from '../components';
@@ -11,7 +10,7 @@ import {
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
-import { userState } from '../recoil';
+import { useProfile } from '../hooks';
 import { Flex } from '../styles';
 
 interface ImageEditorStyleProp {
@@ -33,7 +32,7 @@ const validateBio = (value: string) => {
 };
 
 const ProfilePage = () => {
-  const [userInfo] = useRecoilState(userState);
+  const { userInfo, editProfile } = useProfile();
   const [isEditable, setIsEditable] = useState(false);
 
   return (
@@ -58,15 +57,19 @@ const ProfilePage = () => {
           </ImageContainer>
           <FormProvider
             initialValues={{
-              name: userInfo?.userName ?? 'Unknown User',
+              userName: userInfo?.userName ?? 'Unknown User',
               bio: userInfo?.bio ?? '',
             }}
-            validators={{ name: validateUserName, bio: validateBio }}
-            onSubmit={({ name, bio }) => console.log(name, bio)}
+            validators={{ userName: validateUserName, bio: validateBio }}
+            onSubmit={({ userName, bio }) => {
+              if (!userInfo) return;
+
+              editProfile({ ...userInfo, userName, bio });
+            }}
           >
             <InputTitle>이름</InputTitle>
             <NameInput
-              name="name"
+              name="userName"
               focusColor="gray"
               maxLength={USER_NAME_MAXIMUM_LENGTH}
             />
