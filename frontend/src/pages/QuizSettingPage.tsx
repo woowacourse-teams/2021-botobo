@@ -20,7 +20,7 @@ const counts = [10, 15, 20, 25, 30].map((count, index) => ({
 const QuizSettingPage = () => {
   const { workbooks, checkWorkbook, startQuiz } = useQuizSetting();
   const [selectedCountId, setSelectedCountId] = useState(counts[0].id);
-  const [isTimeCheck, setIsTimeCheck] = useState(false);
+  const [isTimeChecked, setIsTimeChecked] = useState(false);
 
   return (
     <>
@@ -42,10 +42,20 @@ const QuizSettingPage = () => {
         <Checkbox
           name="time-check"
           labelText="시간도 확인하고 싶어요"
-          checked={isTimeCheck}
-          onChange={({ target }) => setIsTimeCheck(target.checked)}
+          checked={isTimeChecked}
+          onChange={({ target }) => setIsTimeChecked(target.checked)}
         />
-        <StyleButton onClick={startQuiz} size="full">
+        <StyleButton
+          onClick={() =>
+            startQuiz({
+              count:
+                counts.find((count) => count.id === selectedCountId)?.name ??
+                counts[0].name,
+              isTimeChecked,
+            })
+          }
+          size="full"
+        >
           시작!
         </StyleButton>
       </Container>

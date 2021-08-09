@@ -3,10 +3,15 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { QUIZ_MODE } from './../constants';
 import { quizState, workbookState } from './../recoil';
-import { quizModeState } from './../recoil/quizState';
+import { hasQuizTime, quizModeState } from './../recoil/quizState';
 import { postQuizzesAsync } from '../api';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
+
+interface StartQuiz {
+  count: number;
+  isTimeChecked: boolean;
+}
 
 const useQuizSetting = () => {
   const { data, errorMessage } = useRecoilValue(workbookState);
@@ -20,6 +25,7 @@ const useQuizSetting = () => {
   );
   const setQuizzes = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
+  const setHasQuizTime = useSetRecoilState(hasQuizTime);
 
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
@@ -37,7 +43,7 @@ const useQuizSetting = () => {
     setWorkbooks(newWorkbooks);
   };
 
-  const startQuiz = async () => {
+  const startQuiz = async ({ count, isTimeChecked }: StartQuiz) => {
     const workbookIds = workbooks
       .filter(({ isChecked }) => isChecked)
       .map((workbook) => workbook.id);
@@ -49,10 +55,11 @@ const useQuizSetting = () => {
     }
 
     try {
-      const quizzes = await postQuizzesAsync(workbookIds);
+      const quizzes = await postQuizzesAsync(workbookIds, count);
 
       setQuizzes(quizzes);
       setQuizMode(QUIZ_MODE.DEFAULT);
+      setHasQuizTime(isTimeChecked);
       routeQuiz();
     } catch (error) {
       console.error(error);

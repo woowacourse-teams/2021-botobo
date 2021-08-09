@@ -14,3 +14,8 @@ export const quizState = atom<QuizResponse[]>({
   key: 'quizState',
   default: [],
 });
+
+export const hasQuizTime = atom({
+  key: 'hasQuizTime',
+  default: false,
+});
