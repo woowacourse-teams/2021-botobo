@@ -509,7 +509,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("문제집를 수정하려면 태그가 필요합니다");
+        assertThat(errorResponse.getMessage()).contains("문제집을 수정하려면 태그가 필요합니다");
     }
 
     @Test
@@ -918,6 +918,13 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         heartResponse = httpResponse.convertBody(HeartResponse.class);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(heartResponse.isHeart()).isFalse();
+    }
+
+    private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
+        return request()
+                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
+                .auth(accessToken)
+                .build();
     }
 
     private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,

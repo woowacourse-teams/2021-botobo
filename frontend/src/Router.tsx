@@ -21,7 +21,8 @@ import {
   MainPage,
   ProfilePage,
   PublicCardsPage,
-  PublicWorkbookPage,
+  PublicSearchPage,
+  PublicSearchResultPage,
   QuizPage,
   QuizResultPage,
   QuizSettingPage,
@@ -90,8 +91,13 @@ const routes = [
     isPublic: false,
   },
   {
-    path: ROUTE.PUBLIC_WORKBOOK.PATH,
-    component: <PublicWorkbookPage />,
+    path: ROUTE.PUBLIC_SEARCH.PATH,
+    component: <PublicSearchPage />,
+    isPublic: false,
+  },
+  {
+    path: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
+    component: <PublicSearchResultPage />,
     isPublic: false,
   },
   {

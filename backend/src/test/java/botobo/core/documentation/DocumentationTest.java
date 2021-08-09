@@ -30,6 +30,7 @@ public class DocumentationTest {
     void setUp() {
         documentRequestBuilder = new DocumentRequestBuilder();
         AppUser authenticatedUser = AppUser.user(2L);
+        given(authService.findAppUserByToken(null)).willReturn(AppUser.anonymous());
         given(authService.findAppUserByToken(authenticatedToken)).willReturn(authenticatedUser);
     }
 

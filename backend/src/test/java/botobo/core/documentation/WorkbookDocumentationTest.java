@@ -234,7 +234,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/workbooks/{id}/hearts", DummyRequestBuilder.build(), 1L)
+                .putWithoutBody("/api/workbooks/{id}/hearts", 1L)
                 .auth(token)
                 .build()
                 .status(status().isOk())
