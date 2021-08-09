@@ -47,12 +47,26 @@ dependencies {
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // bind
     implementation 'javax.xml.bind:jaxb-api:2.1'
+
+    // aws s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //test containers
+    implementation("com.amazonaws:aws-java-sdk-s3")
+    testImplementation "org.testcontainers:localstack:1.15.3"
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
+    // FileNameUtils
+    implementation 'org.apache.tika:tika-core:2.0.0'
 }
 
 ext {
     snippetsDir = file('build/generated-snippets')
 }
+
+processResources.dependsOn('copyDev')
 
 task copyDev(type: Copy) {
     from '../dev/application-prod.yml'
@@ -62,6 +76,9 @@ task copyDev(type: Copy) {
     into './src/main/resources'
 
     from '../dev/application-local.yml'
+    into './src/main/resources'
+
+    from '../dev/aws-s3.yml'
     into './src/main/resources'
 }
 
@@ -86,6 +103,5 @@ task createDocument(type: Copy) {
 }
 
 build {
-    dependsOn copyDev
     dependsOn createDocument
 }

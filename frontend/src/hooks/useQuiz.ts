@@ -7,8 +7,14 @@ import { quizState } from '../recoil';
 import useRouter from './useRouter';
 
 const useQuiz = () => {
-  const quizzes = useRecoilValue(quizState);
   const quizMode = useRecoilValue(quizModeState);
+  const quizzes =
+    quizMode === 'GUEST'
+      ? useRecoilValue(quizState).map((quiz, index) => ({
+          ...quiz,
+          id: index,
+        }))
+      : useRecoilValue(quizState);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [prevQuizId, setPrevQuizId] = useState<number | null>(null);
   const { routeQuizResult, routeMain, routePrevPage } = useRouter();

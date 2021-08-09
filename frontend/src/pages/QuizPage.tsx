@@ -26,6 +26,15 @@ const cardSlideInfo = {
   pointOfChange: 0,
 };
 
+const isMobile = () => {
+  const PC_DEVICE = ['win16', 'win32', 'win64', 'mac', 'macintel'];
+  const platform = navigator.platform;
+
+  if (!platform) return false;
+
+  return !PC_DEVICE.includes(platform.toLocaleLowerCase());
+};
+
 const QuizPage = () => {
   const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
     useQuiz();
@@ -120,7 +129,7 @@ const QuizPage = () => {
           )}
         </QuizWrapper>
         <PageNation>
-          {currentQuizIndex === 0 && (
+          {currentQuizIndex === 0 && isMobile() && (
             <SlideTooltip>카드를 좌우로 넘겨보세요</SlideTooltip>
           )}
           <ArrowButton onClick={showPrevQuiz}>

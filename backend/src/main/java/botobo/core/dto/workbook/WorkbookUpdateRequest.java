@@ -34,7 +34,10 @@ public class WorkbookUpdateRequest {
     @PositiveOrZero(message = "카드 개수는 0이상 입니다.")
     private int cardCount;
 
-    @NotNull(message = "문제집를 수정하려면 태그가 필요합니다.")
+    @PositiveOrZero(message = "하트 수는 0이상 입니다.")
+    private int heartCount;
+
+    @NotNull(message = "문제집을 수정하려면 태그가 필요합니다.")
     @Valid
     private List<TagRequest> tags;
 

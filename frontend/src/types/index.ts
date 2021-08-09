@@ -18,6 +18,7 @@ export interface WorkbookResponse {
 export interface PublicWorkbookResponse
   extends Omit<WorkbookResponse, 'opened'> {
   author: string;
+  heart: number;
 }
 
 export interface QuizResponse {
@@ -45,8 +46,15 @@ export interface CardsResponse {
 }
 
 export interface PublicCardsResponse extends CardsResponse {
+  heart: boolean;
+  heartCount: number;
   cardCount: number;
   tags: TagResponse[];
+}
+
+export interface SearchKeywordResponse {
+  id: number;
+  name: string;
 }
 
 export interface UserInfoResponse {

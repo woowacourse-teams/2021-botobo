@@ -15,7 +15,7 @@ const MainPage = () => {
   const userInfo = useRecoilValue(userState);
   const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
     useWorkbook();
-  const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
+  const { routeWorkbookAdd, routeCards, routePublicSearch } = useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const MainPage = () => {
       <MainHeader />
       <Container>
         {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
-        <Banner onClick={routePublicWorkbook}>
+        <Banner onClick={routePublicSearch}>
           <BannerText>다양한 문제집 보러 가기</BannerText>
           <StyledButton backgroundColor="white" color="gray_8" shape="circle">
             <ForwardIcon width="1rem" height="1rem" />

@@ -1,6 +1,8 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
+import botobo.core.domain.heart.Heart;
+import botobo.core.domain.heart.HeartRepository;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
@@ -35,6 +37,9 @@ public class WorkbookRepositoryTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private HeartRepository heartRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -292,6 +297,76 @@ public class WorkbookRepositoryTest {
         assertThat(workbookRepository.findAll()).isEmpty();
         assertThat(workbookTagRepository.findAll()).isEmpty();
         assertThat(tagRepository.findAll()).hasSize(2);
+    }
+
+    @DisplayName("Workbook이 Heart의 추가를 관리한다.")
+    @Test
+    void createHeartFromWorkbook() {
+        // given
+        User user = User.builder()
+                .githubId(1L)
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = workbookRepository.save(
+                Workbook.builder()
+                        .name("Java 문제집")
+                        .user(user)
+                        .build()
+        );
+
+        userRepository.save(user);
+        workbookRepository.save(workbook);
+
+        flushAndClear();
+
+        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
+
+        // when
+        Heart heart = Heart.builder().workbook(workbook).userId(user.getId()).build();
+        savedWorkbook.toggleHeart(heart);
+
+        // then
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
+    }
+
+    @DisplayName("Workbook이 Heart의 삭제를 관리한다.")
+    @Test
+    void deleteHeartFromWorkbook() {
+        // given
+        User user = User.builder()
+                .githubId(1L)
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = workbookRepository.save(
+                Workbook.builder()
+                        .name("Java 문제집")
+                        .user(user)
+                        .build()
+        );
+
+        userRepository.save(user);
+        workbookRepository.save(workbook);
+
+        Heart heart = Heart.builder().workbook(workbook).userId(user.getId()).build();
+        heartRepository.save(heart);
+
+        flushAndClear();
+
+        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
+
+        // when
+        savedWorkbook.toggleHeart(heart);
+
+        // then
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
     }
 
     private void flushAndClear() {

@@ -37,6 +37,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    // TODO bio 필드 추가
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
 
@@ -53,6 +55,10 @@ public class User extends BaseEntity {
             this.workbooks = workbooks;
         }
         this.socialType = socialType;
+    }
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
     }
 
     public AppUser toAppUser() {

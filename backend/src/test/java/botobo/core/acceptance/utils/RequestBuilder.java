@@ -39,6 +39,10 @@ public class RequestBuilder {
             return new Options(new PutRequest<>(path, body, params));
         }
 
+        public Options putWithoutBody(String path, Object... params) {
+            return new Options(new PutRequest<>(path, params));
+        }
+
         public Options delete(String path, Object... params) {
             return new Options(new DeleteRequest(path, params));
         }
@@ -177,6 +181,11 @@ public class RequestBuilder {
 
         @Override
         public ValidatableResponse action(RequestSpecification specification) {
+            if (Objects.isNull(body)) {
+                return specification
+                        .post(path, params)
+                        .then();
+            }
             return specification.body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .post(path, params)
@@ -189,6 +198,10 @@ public class RequestBuilder {
         private final T body;
         private final Object[] params;
 
+        public PutRequest(String path, Object[] params) {
+            this(path, null, params);
+        }
+
         public PutRequest(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
@@ -197,7 +210,10 @@ public class RequestBuilder {
 
         @Override
         public ValidatableResponse action(RequestSpecification specification) {
-            return specification.body(body)
+            if (Objects.nonNull(body)) {
+                specification.body(body);
+            }
+            return specification
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .put(path, params)
                     .then();
