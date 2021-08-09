@@ -12,7 +12,6 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.WorkbookController;
-import botobo.core.utils.DummyRequestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -252,7 +251,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/workbooks/{id}/hearts", DummyRequestBuilder.build(), 1L)
+                .putWithoutBody("/api/workbooks/{id}/hearts", 1L)
                 .auth(token)
                 .build()
                 .status(status().isOk())

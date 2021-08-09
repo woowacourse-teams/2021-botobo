@@ -12,7 +12,6 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.common.ErrorResponse;
-import botobo.core.utils.DummyRequestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -530,7 +529,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("문제집를 수정하려면 태그가 필요합니다");
+        assertThat(errorResponse.getMessage()).contains("문제집을 수정하려면 태그가 필요합니다");
     }
 
     @Test
@@ -943,7 +942,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
         return request()
-                .put("/api/workbooks/{workbookId}/hearts", DummyRequestBuilder.build(), workbookId)
+                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
                 .auth(accessToken)
                 .build();
     }
