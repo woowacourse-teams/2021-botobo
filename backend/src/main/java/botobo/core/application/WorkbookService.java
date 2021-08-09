@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
@@ -13,6 +14,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.domain.workbook.criteria.SearchKeyword;
 import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,12 +118,13 @@ public class WorkbookService extends AbstractUserService {
                 .orElseThrow(WorkbookNotFoundException::new);
     }
 
-    public WorkbookCardResponse findPublicWorkbookById(Long id) {
+    public WorkbookCardResponse findPublicWorkbookById(Long id, AppUser appUser) {
         Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
         if (!workbook.isOpened()) {
             throw new NotAuthorException();
         }
-        return WorkbookCardResponse.ofOpenedWorkbook(workbook);
+        boolean heartExists = workbook.existsHeartByAppUser(appUser);
+        return WorkbookCardResponse.ofOpenedWorkbook(workbook, heartExists);
     }
 
     private void validateAuthor(User user, Workbook workbook) {
@@ -157,5 +161,18 @@ public class WorkbookService extends AbstractUserService {
 
     private void addScrappedCardsToWorkbook(Workbook workbook, Cards scrappedCards) {
         workbook.addCards(scrappedCards);
+    }
+
+    @Transactional
+    public HeartResponse toggleHeart(Long workbookId, AppUser appUser) {
+        Long userId = appUser.getId();
+        Workbook workbook = findWorkbook(workbookId);
+        Heart heart = Heart.builder()
+                .workbook(workbook)
+                .userId(userId)
+                .build();
+        return HeartResponse.of(
+                workbook.toggleHeart(heart)
+        );
     }
 }

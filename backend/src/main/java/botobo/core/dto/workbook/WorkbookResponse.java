@@ -20,6 +20,7 @@ public class WorkbookResponse {
     private Long id;
     private String name;
     private int cardCount;
+    private int heartCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String author;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,6 +32,7 @@ public class WorkbookResponse {
                 .id(workbook.getId())
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
+                .heartCount(workbook.heartCount())
                 .author(workbook.author())
                 .opened(workbook.isOpened())
                 .tags(TagResponse.listOf(workbook.tags()))
@@ -54,6 +56,7 @@ public class WorkbookResponse {
                 .id(workbook.getId())
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
+                .heartCount(workbook.heartCount())
                 .opened(workbook.isOpened())
                 .tags(TagResponse.listOf(workbook.tags()))
                 .build();
@@ -70,6 +73,7 @@ public class WorkbookResponse {
                 .id(workbook.getId())
                 .name(workbook.getName())
                 .cardCount(workbook.cardCount())
+                .heartCount(workbook.heartCount())
                 .author(workbook.author())
                 .tags(TagResponse.listOf(workbook.tags()))
                 .build();
