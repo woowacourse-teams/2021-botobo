@@ -11,3 +11,4 @@ export { default as useWorkbook } from './useWorkbook';
 export { default as usePublicSearch } from './usePublicSearch';
 export { default as usePublicCard } from './usePublicCard';
 export { default as useModal } from './useModal';
+export { default as useInterval } from './useInterval';

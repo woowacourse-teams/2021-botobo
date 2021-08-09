@@ -44,7 +44,7 @@ const Container = styled.div<ContainerStyleProps>`
   width: 6rem;
   height: 6rem;
 
-  ${({ time, isShowTime }) =>
+  ${({ theme, time, isShowTime }) =>
     isShowTime &&
     css`
       &::after {
@@ -54,6 +54,7 @@ const Container = styled.div<ContainerStyleProps>`
         top: -1rem;
         left: 50%;
         transform: translateX(-50%);
+        font-size: ${theme.fontSize.small};
       }
     `}
 `;

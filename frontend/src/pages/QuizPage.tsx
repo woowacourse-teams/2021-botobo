@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil';
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
 import { Clock, MainHeader, Quiz } from '../components';
-import { useQuiz } from '../hooks';
+import { useInterval, useQuiz } from '../hooks';
 import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
 
@@ -52,6 +52,12 @@ const QuizPage = () => {
 
   const [quizTime, setQuizTime] = useRecoilState(quizTimeState);
 
+  useInterval(
+    () => setQuizTime((prevValue) => prevValue + 1),
+    1000,
+    hasQuizTime
+  );
+
   useEffect(() => {
     setXPosition(
       `-${cardSlideInfo.width * currentQuizIndex}px - ${
@@ -67,17 +73,6 @@ const QuizPage = () => {
 
     cardSlideInfo.width = quizListWidth;
     cardSlideInfo.pointOfChange = quizListWidth / 5;
-  }, []);
-
-  useEffect(() => {
-    if (!hasQuizTime) return;
-
-    const intervalId = window.setInterval(
-      () => setQuizTime((prevValue) => prevValue + 1),
-      1000
-    );
-
-    return () => window.clearInterval(intervalId);
   }, []);
 
   return (
