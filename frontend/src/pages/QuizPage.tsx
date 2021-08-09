@@ -27,12 +27,12 @@ const cardSlideInfo = {
 };
 
 const isMobile = () => {
-  const PC_DEVICE = 'win16|win32|win64|mac|macintel';
+  const PC_DEVICE = ['win16', 'win32', 'win64', 'mac', 'macintel'];
   const platform = navigator.platform;
 
   if (!platform) return false;
 
-  return PC_DEVICE.indexOf(platform.toLocaleLowerCase()) === -1;
+  return !PC_DEVICE.includes(platform.toLocaleLowerCase());
 };
 
 const QuizPage = () => {
@@ -116,7 +116,7 @@ const QuizPage = () => {
               }}
             >
               {quizzes.map(({ id, question, answer, workbookName }, index) => (
-                <QuizItem key={id === 0 ? index : id} quizIndex={index}>
+                <QuizItem key={id} quizIndex={index}>
                   <Quiz
                     question={question}
                     answer={answer}
