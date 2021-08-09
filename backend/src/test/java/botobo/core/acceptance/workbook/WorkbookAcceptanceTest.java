@@ -491,7 +491,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, heartCount가 음수")
     void updateWorkbookWhenHeartCountNegative() {
         // given
-        final String accessToken = 로그인되어_있음(userInfo);
+        final String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
         final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
@@ -923,11 +923,11 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 하트를 토글한다.")
     void toggleOnHeart() {
         // given
-        String accessToken = 로그인되어_있음(userInfo);
+        String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
         WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("자바 문제집", true, accessToken);
 
         Long workbookId = workbookResponse.getId();
-        String anotherToken = 로그인되어_있음(anotherUserInfo);
+        String anotherToken = 소셜_로그인되어_있음(anotherUserInfo, SocialType.GITHUB);
 
         // when, then
         HttpResponse httpResponse = 하트_토글_요청(workbookId, anotherToken);

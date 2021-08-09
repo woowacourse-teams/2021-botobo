@@ -304,7 +304,7 @@ public class WorkbookRepositoryTest {
     void createHeartFromWorkbook() {
         // given
         User user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("bear")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -338,7 +338,7 @@ public class WorkbookRepositoryTest {
     void deleteHeartFromWorkbook() {
         // given
         User user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("bear")
                 .profileUrl("github.io")
                 .role(Role.USER)

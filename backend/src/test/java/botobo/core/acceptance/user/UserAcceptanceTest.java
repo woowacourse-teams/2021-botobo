@@ -1,6 +1,5 @@
 package botobo.core.acceptance.user;
 
-import botobo.core.acceptance.AuthAcceptanceTest;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
@@ -67,13 +66,18 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("프로필 이미지를 수정한다. - 성공, multipartFile이 비어있는 경우 디폴트 유저 이미지로 대체")
     void updateWhenDefaultProfile() {
         //given
+        UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
+                .userName("socialUser")
+                .socialId("2")
+                .profileUrl("social.io")
+                .build();
         MockMultipartFile mockMultipartFile = null;
         String defaultUserImageUrl = String.format(cloudFrontUrlFormat, userDefaultImage);
 
         //when
         final HttpResponse response = request()
                 .post("/api/users/profile", mockMultipartFile)
-                .auth(로그인되어_있음().getAccessToken())
+                .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
                 .build();
 
         ProfileResponse profileResponse = response.convertBody(ProfileResponse.class);
