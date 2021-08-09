@@ -6,6 +6,7 @@ import botobo.core.domain.card.Cards;
 import botobo.core.domain.heart.Heart;
 import botobo.core.domain.heart.Hearts;
 import botobo.core.domain.tag.Tags;
+import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
@@ -195,8 +196,11 @@ public class Workbook extends BaseEntity {
         return hearts.toggleHeart(heart);
     }
 
-    public boolean existsHeartByUserId(Long userId) {
-        return hearts.contains(userId);
+    public boolean existsHeartByAppUser(AppUser appUser) {
+        if (appUser.isAnonymous()) {
+            return false;
+        }
+        return hearts.contains(appUser.getId());
     }
 
     public int heartCount() {
