@@ -54,20 +54,10 @@ const PublicCardsPage = () => {
       toggleHeart();
     }, 200);
 
-    if (heart) {
-      setHeartInfo((prevValue) => ({
-        ...prevValue,
-        heart: false,
-        heartCount: heartCount - 1,
-      }));
-
-      return;
-    }
-
     setHeartInfo((prevValue) => ({
       ...prevValue,
-      heart: true,
-      heartCount: heartCount + 1,
+      heart: !heart,
+      heartCount: heart ? heartCount - 1 : heartCount + 1,
     }));
   };
 
