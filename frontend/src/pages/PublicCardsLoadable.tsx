@@ -13,7 +13,6 @@ const PublicCardsLoadable = () => (
       <Heading />
       <CardSkeletonList count={6} />
       <BottomContent>
-        <CheckboxWrapper></CheckboxWrapper>
         <Button size="full" shape="rectangle" backgroundColor={'gray_4'}>
           {' '}
         </Button>
@@ -46,16 +45,6 @@ const BottomContent = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-`;
-
-const CheckboxWrapper = styled.div`
-  ${Flex({ justify: 'center', items: 'center' })};
-  width: 20%;
-  min-width: 6rem;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-  `};
 `;
 
 export default PublicCardsLoadable;
