@@ -54,6 +54,8 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
+processResources.dependsOn('copyDev')
+
 task copyDev(type: Copy) {
     from '../dev/application-prod.yml'
     into './src/main/resources'
@@ -86,6 +88,5 @@ task createDocument(type: Copy) {
 }
 
 build {
-    dependsOn copyDev
     dependsOn createDocument
 }
