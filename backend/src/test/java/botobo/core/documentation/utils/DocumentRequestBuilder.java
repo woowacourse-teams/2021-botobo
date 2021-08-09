@@ -13,6 +13,7 @@ import static botobo.core.documentation.utils.DocumentationUtils.getDocumentResp
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -40,6 +41,10 @@ public class DocumentRequestBuilder {
 
         public Options delete(String path, Object... params) {
             return new Options(new DeletePerform(path, params));
+        }
+
+        public <T> Options multipart(String path, String body, String fileName) {
+            return new Options(new Multipart<>(path, body, fileName));
         }
 
         public MockMvcFunction mockMvc(MockMvc mockMvc) {
@@ -117,6 +122,22 @@ public class DocumentRequestBuilder {
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(body));
+        }
+    }
+
+    private static class Multipart<T> implements HttpMethodRequest {
+        private final String path;
+        private final String body;
+        private final String fileName;
+
+        public Multipart(String path, String body, String fileName) {
+            this.path = path;
+            this.body = body;
+            this.fileName = fileName;
+        }
+
+        public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
+            return multipart(path).file(body, fileName.getBytes());
         }
     }
 

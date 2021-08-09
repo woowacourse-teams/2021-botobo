@@ -11,29 +11,26 @@ import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
-import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class AdminService {
+public class AdminService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
-    private final UserRepository userRepository;
 
     public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
+        super(userRepository);
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
-        this.userRepository = userRepository;
     }
 
     @Transactional
     public AdminWorkbookResponse createWorkbook(AdminWorkbookRequest adminWorkbookRequest, AppUser appUser) {
-        User user = userRepository.findById(appUser.getId())
-                .orElseThrow(UserNotFoundException::new);
+        User user = findUser(appUser);
         Workbook workbook = adminWorkbookRequest.toWorkbook(user);
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return AdminWorkbookResponse.of(savedWorkbook);

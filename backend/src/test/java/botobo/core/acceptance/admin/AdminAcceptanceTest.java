@@ -8,7 +8,7 @@ import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

@@ -8,7 +8,6 @@ public class Quiz {
     private final Cards cards;
     private final int targetCounts;
 
-
     public Quiz(List<Card> cards, int targetCounts) {
         this.cards = new Cards(cards);
         this.targetCounts = targetCounts;

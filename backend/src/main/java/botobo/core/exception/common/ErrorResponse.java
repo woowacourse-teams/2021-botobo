@@ -1,4 +1,4 @@
-package botobo.core.exception;
+package botobo.core.exception.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

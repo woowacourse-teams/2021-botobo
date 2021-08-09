@@ -1,6 +1,6 @@
 package botobo.core.exception.workbook;
 
-import botobo.core.exception.NotFoundException;
+import botobo.core.exception.common.NotFoundException;
 
 public class WorkbookNotFoundException extends NotFoundException {
     public WorkbookNotFoundException() {
