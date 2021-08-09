@@ -116,7 +116,7 @@ const QuizPage = () => {
               }}
             >
               {quizzes.map(({ id, question, answer, workbookName }, index) => (
-                <QuizItem key={id} quizIndex={index}>
+                <QuizItem key={id === 0 ? index : id} quizIndex={index}>
                   <Quiz
                     question={question}
                     answer={answer}
