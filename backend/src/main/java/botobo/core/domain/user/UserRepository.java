@@ -11,7 +11,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByGithubId(Long githubId);
 
-    @Query(value = "SELECT * FROM user u WHERE u.user_name LIKE %:keyword%", nativeQuery = true)
+    @Query(value = "SELECT * FROM user u WHERE u.user_name LIKE %:keyword% LIMIT 10", nativeQuery = true)
     List<User> findByKeyword(@Param("keyword") String keyword);
 
     boolean existsByIdAndRole(Long id, Role role);

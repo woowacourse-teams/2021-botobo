@@ -41,23 +41,13 @@ class SearchKeywordTest {
     }
 
     @Test
-    @DisplayName("중간에 연속된 공백이 있으면 하나로 변경하여 생성한다.")
-    void createWithMultipleSpace() {
-        // given
-        final SearchKeyword expected = SearchKeyword.of("j a v a");
-
-        // when, then
-        assertThat(SearchKeyword.of("  j   a    v    a  ")).isEqualTo(expected);
-    }
-
-    @Test
     @DisplayName("탭문자나 개행문자가 있으면 공백으로 변경하여 생성한다.")
     void createWithTabOrNewlineCharacter() {
         // given
-        final SearchKeyword expected = SearchKeyword.of("j a v a");
+        final SearchKeyword expected = SearchKeyword.of(" j a v   a  ");
 
         // when, then
-        assertThat(SearchKeyword.of("\tj \t a\nv\n\n\na\n\t")).isEqualTo(expected);
+        assertThat(SearchKeyword.of("\tj\ta\nv\n\n\na\n\t")).isEqualTo(expected);
     }
 
     @Test
