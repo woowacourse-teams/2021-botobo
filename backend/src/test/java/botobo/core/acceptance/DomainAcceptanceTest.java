@@ -174,7 +174,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
         return request()
-                .put("/api/workbooks/{workbookId}/hearts", DummyRequestBuilder.build(), workbookId)
+                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
                 .auth(accessToken)
                 .build();
     }
