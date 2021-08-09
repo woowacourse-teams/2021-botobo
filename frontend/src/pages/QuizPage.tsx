@@ -38,7 +38,7 @@ const QuizPage = () => {
         1.25 * currentQuizIndex
       }rem`
     );
-  }, [currentQuizIndex]);
+  }, [currentQuizIndex, cardSlideInfo.width]);
 
   useEffect(() => {
     const setInitialCardSlideInfo = () => {
@@ -54,6 +54,7 @@ const QuizPage = () => {
     };
 
     setInitialCardSlideInfo();
+
     window.addEventListener('resize', setInitialCardSlideInfo);
 
     return () => window.removeEventListener('resize', setInitialCardSlideInfo);
