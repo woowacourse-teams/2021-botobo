@@ -169,7 +169,6 @@ const PublicSearchPage = () => {
                   keyword: target.value,
                   type: currentFocusTab.type,
                 });
-                console.log(target.value);
                 searchForKeyword(target.value);
               }, 400);
             }}
