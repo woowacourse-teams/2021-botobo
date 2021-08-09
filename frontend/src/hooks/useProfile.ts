@@ -1,12 +1,12 @@
 import { useRecoilState } from 'recoil';
 
-import { putProfileAsync } from './../api/';
+import { postProfileImageAsync, putProfileAsync } from './../api';
 import { userState } from './../recoil';
 import { UserInfoResponse } from './../types';
 import useSnackbar from './useSnackbar';
 
 const useProfile = () => {
-  const [userInfo] = useRecoilState(userState);
+  const [userInfo, setUserInfo] = useRecoilState(userState);
 
   const showSnackbar = useSnackbar();
 
@@ -20,7 +20,25 @@ const useProfile = () => {
     }
   };
 
-  return { userInfo, editProfile };
+  const updateProfileUrl = async (file?: File) => {
+    const formData = new FormData();
+
+    if (file) {
+      formData.append('profile', file);
+    }
+
+    try {
+      const newImage = await postProfileImageAsync(formData);
+
+      if (!userInfo) return;
+
+      setUserInfo({ ...userInfo, profileUrl: newImage.profileUrl });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { userInfo, updateProfileUrl, editProfile };
 };
 
 export default useProfile;

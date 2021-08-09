@@ -10,7 +10,7 @@ import {
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
-import { useProfile } from '../hooks';
+import { useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
 
 interface ImageEditorStyleProp {
@@ -18,6 +18,14 @@ interface ImageEditorStyleProp {
 }
 
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
+
+const validateFileSize = (size: number) => {
+  const mb = 1024 * 1024;
+
+  if (size < 0 || size > 10 * mb) {
+    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
+  }
+};
 
 const validateUserName = (value: string) => {
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
@@ -32,8 +40,28 @@ const validateBio = (value: string) => {
 };
 
 const ProfilePage = () => {
-  const { userInfo, editProfile } = useProfile();
+  const { userInfo, updateProfileUrl, editProfile } = useProfile();
   const [isEditable, setIsEditable] = useState(false);
+
+  const showSnackbar = useSnackbar();
+
+  const uploadImage: React.ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    setIsEditable(false);
+    const file = target.files?.[0];
+
+    if (!file) return;
+
+    const size = file.size ?? 0;
+
+    try {
+      validateFileSize(size);
+      updateProfileUrl(file);
+    } catch (error) {
+      showSnackbar({ message: error.message });
+    }
+  };
 
   return (
     <>
@@ -51,8 +79,26 @@ const ProfilePage = () => {
             </ImageWrapper>
             {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
             <ImageEditor isEditable={isEditable}>
-              <button>이미지 업로드</button>
-              <button>이미지 제거</button>
+              <ImageUploader htmlFor="image-upload">
+                <input
+                  type="file"
+                  id="image-upload"
+                  name="image-upload"
+                  accept="image/png, image/jpg, image/jpeg, image/bmp"
+                  onChange={uploadImage}
+                />
+                <span>이미지 업로드</span>
+              </ImageUploader>
+              <button
+                type="button"
+                role="image-delete-button"
+                onClick={() => {
+                  updateProfileUrl();
+                  setIsEditable(false);
+                }}
+              >
+                이미지 제거
+              </button>
             </ImageEditor>
           </ImageContainer>
           <FormProvider
@@ -183,9 +229,14 @@ const ImageEditor = styled.div<ImageEditorStyleProp>`
     `}
   }
 
-  & > button {
-    display: block;
+  & > * {
     line-height: 1.5;
+  }
+`;
+
+const ImageUploader = styled.label`
+  & > input {
+    display: none;
   }
 `;
 
