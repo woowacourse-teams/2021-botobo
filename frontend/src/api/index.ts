@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-import { STORAGE_KEY } from '../constants';
+import {
+  SEARCH_CRITERIA,
+  SEARCH_ORDER,
+  SEARCH_TYPE,
+  STORAGE_KEY,
+} from '../constants';
 import {
   AccessTokenResponse,
   CardResponse,
@@ -8,10 +13,12 @@ import {
   PublicCardsResponse,
   PublicWorkbookResponse,
   QuizResponse,
+  SearchKeywordResponse,
   TagResponse,
   UserInfoResponse,
   WorkbookResponse,
 } from '../types';
+import { ValueOf } from '../types/utils';
 import { getLocalStorage } from '../utils';
 
 interface PostCardAsync {
@@ -24,6 +31,15 @@ interface PostWorkbookAsync {
   name: string;
   opened: boolean;
   tags: TagResponse[];
+}
+
+export interface PublicWorkbookAsync {
+  keyword: string;
+  criteria?: ValueOf<typeof SEARCH_CRITERIA>;
+  order?: ValueOf<typeof SEARCH_ORDER>;
+  type?: ValueOf<typeof SEARCH_TYPE>;
+  start?: number;
+  size?: number;
 }
 
 const request = axios.create({
@@ -118,9 +134,16 @@ export const deleteWorkbookAsync = async (id: number) => {
   await request.delete(`/workbooks/${id}`);
 };
 
-export const getPublicWorkbookAsync = async (keyword: string) => {
+export const getPublicWorkbookAsync = async ({
+  keyword,
+  criteria = 'date',
+  order = 'desc',
+  type = 'name',
+  start = 0,
+  size = 20,
+}: PublicWorkbookAsync) => {
   const { data } = await request.get<PublicWorkbookResponse[]>(
-    `/workbooks/public?search=${keyword}`
+    `/search/workbooks?type=${type}&criteria=${criteria}&order=${order}&keyword=${keyword}&start=${start}&size=${size}`
   );
 
   return data;
@@ -152,6 +175,22 @@ export const putNextQuizAsync = async (cardIds: number[]) => {
 
 export const putHeartAsync = async (id: number) => {
   const { data } = await request.put<boolean>(`workbooks/${id}/hearts`);
+
+  return data;
+};
+
+export const getUserKeywordAsync = async (keyword: string) => {
+  const { data } = await request.get<SearchKeywordResponse[]>(
+    `/search/users?keyword=${keyword}`
+  );
+
+  return data;
+};
+
+export const getTagKeywordAsync = async (keyword: string) => {
+  const { data } = await request.get<SearchKeywordResponse[]>(
+    `/search/tags?keyword=${keyword}`
+  );
 
   return data;
 };

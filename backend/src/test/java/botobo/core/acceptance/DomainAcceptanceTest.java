@@ -93,7 +93,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    // TODO 카드 문서화 테스트 추가 이슈에서 카드 테스트 리팩토링 전체까지 진행할 예정!
     public CardResponse 카드_등록되어_있음(String question, String answer, Long workbookId, Long userId) {
         CardRequest cardRequest = CardRequest.builder()
                 .question(question)

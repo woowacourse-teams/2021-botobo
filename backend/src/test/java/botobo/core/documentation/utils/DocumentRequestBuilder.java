@@ -8,11 +8,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Objects;
+
 import static botobo.core.documentation.utils.DocumentationUtils.getDocumentRequest;
 import static botobo.core.documentation.utils.DocumentationUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -34,12 +37,20 @@ public class DocumentRequestBuilder {
             return new Options(new PutPerform<>(path, body, params));
         }
 
+        public Options putWithoutBody(String path, Object... params) {
+            return new Options(new PutPerform<>(path, params));
+        }
+
         public Options get(String path, Object... params) {
             return new Options(new GetPerform(path, params));
         }
 
         public Options delete(String path, Object... params) {
             return new Options(new DeletePerform(path, params));
+        }
+
+        public <T> Options multipart(String path, String body, String fileName) {
+            return new Options(new Multipart<>(path, body, fileName));
         }
 
         public MockMvcFunction mockMvc(MockMvc mockMvc) {
@@ -120,10 +131,30 @@ public class DocumentRequestBuilder {
         }
     }
 
+    private static class Multipart<T> implements HttpMethodRequest {
+        private final String path;
+        private final String body;
+        private final String fileName;
+
+        public Multipart(String path, String body, String fileName) {
+            this.path = path;
+            this.body = body;
+            this.fileName = fileName;
+        }
+
+        public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
+            return multipart(path).file(body, fileName.getBytes());
+        }
+    }
+
     private static class PutPerform<T> implements HttpMethodRequest {
         private final String path;
         private final T body;
         private final Object[] params;
+
+        public PutPerform(String path, Object[] params) {
+            this(path, null, params);
+        }
 
         public PutPerform(String path, T body, Object[] params) {
             this.path = path;
@@ -132,10 +163,14 @@ public class DocumentRequestBuilder {
         }
 
         public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
-            return put(path, params)
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = put(path, params)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(body));
+                    .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+            if (Objects.nonNull(body)) {
+                mockHttpServletRequestBuilder.content(objectMapper.writeValueAsString(body));
+            }
+            return mockHttpServletRequestBuilder;
         }
     }
 
