@@ -1,11 +1,13 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { MainHeader, Quiz } from '../components';
+import { Clock, MainHeader, Quiz } from '../components';
 import { useQuiz } from '../hooks';
+import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
 
 interface TooltipProps {
@@ -36,11 +38,19 @@ const isMobile = () => {
 };
 
 const QuizPage = () => {
-  const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
-    useQuiz();
+  const {
+    quizzes,
+    hasQuizTime,
+    prevQuizId,
+    currentQuizIndex,
+    showNextQuiz,
+    showPrevQuiz,
+  } = useQuiz();
 
   const quizListRef = useRef<HTMLUListElement>(null);
   const [xPosition, setXPosition] = useState('0');
+
+  const [quizTime, setQuizTime] = useRecoilState(quizTimeState);
 
   useEffect(() => {
     setXPosition(
@@ -59,10 +69,26 @@ const QuizPage = () => {
     cardSlideInfo.pointOfChange = quizListWidth / 5;
   }, []);
 
+  useEffect(() => {
+    if (!hasQuizTime) return;
+
+    const intervalId = window.setInterval(
+      () => setQuizTime((prevValue) => prevValue + 1),
+      1000
+    );
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <>
       <MainHeader />
       <Container>
+        {hasQuizTime && (
+          <ClockWrapper>
+            <Clock time={quizTime} />
+          </ClockWrapper>
+        )}
         <QuizWrapper>
           <Tooltip isTooltipVisible={currentQuizIndex === 0}>
             카드를 클릭해 질문과 정답을 확인할 수 있어요.
@@ -130,7 +156,7 @@ const QuizPage = () => {
         </QuizWrapper>
         <PageNation>
           {currentQuizIndex === 0 && isMobile() && (
-            <SlideTooltip>카드를 좌우로 넘겨보세요</SlideTooltip>
+            <SlideTooltip>카드를 좌우로 넘겨보세요.</SlideTooltip>
           )}
           <ArrowButton onClick={showPrevQuiz}>
             <LeftArrowIcon width="1rem" height="1rem" />
@@ -159,26 +185,28 @@ const Container = styled.div`
     `}
 `;
 
+const ClockWrapper = styled.div`
+  position: absolute;
+  top: 15%;
+`;
+
 const QuizWrapper = styled.div`
   position: relative;
   width: 100%;
+  margin-top: 3rem;
 `;
 
 const Tooltip = styled.div<TooltipProps>`
   ${Flex({ justify: 'center', items: 'center' })};
   position: absolute;
   width: 100%;
-  height: 2.5rem;
-  top: -3rem;
-  margin-bottom: 0.5rem;
+  top: -1.5rem;
   transition: opacity 0.1s ease;
 
   ${({ theme, isTooltipVisible }) => css`
-    background-color: ${theme.color.blue};
     border-radius: ${theme.borderRadius.square};
     opacity: ${isTooltipVisible ? 1 : 0};
     font-size: ${theme.fontSize.small};
-    color: ${theme.color.white};
   `}
 `;
 
@@ -209,6 +237,7 @@ const SlideTooltip = styled.div`
 
   ${({ theme }) => css`
     color: ${theme.color.gray_7};
+    font-size: ${theme.fontSize.small};
   `}
 `;
 

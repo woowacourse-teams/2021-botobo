@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { QUIZ_MODE } from './../constants';
-import { quizModeState } from './../recoil/quizState';
+import { hasQuizTimeState, quizModeState } from './../recoil';
 import { quizState } from '../recoil';
 import useRouter from './useRouter';
 
 const useQuiz = () => {
   const quizMode = useRecoilValue(quizModeState);
+  const hasQuizTime = useRecoilValue(hasQuizTimeState);
   const quizzes =
     quizMode === 'GUEST'
       ? useRecoilValue(quizState).map((quiz, index) => ({
@@ -49,7 +50,14 @@ const useQuiz = () => {
     routeMain();
   }, []);
 
-  return { quizzes, currentQuizIndex, prevQuizId, showPrevQuiz, showNextQuiz };
+  return {
+    quizzes,
+    hasQuizTime,
+    currentQuizIndex,
+    prevQuizId,
+    showPrevQuiz,
+    showNextQuiz,
+  };
 };
 
 export default useQuiz;

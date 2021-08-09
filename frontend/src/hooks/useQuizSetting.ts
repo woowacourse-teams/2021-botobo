@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { QUIZ_MODE } from './../constants';
-import { quizState, workbookState } from './../recoil';
-import { hasQuizTime, quizModeState } from './../recoil/quizState';
+import { quizState, quizTimeState, workbookState } from './../recoil';
+import { hasQuizTimeState, quizModeState } from './../recoil';
 import { postQuizzesAsync } from '../api';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
@@ -25,7 +25,8 @@ const useQuizSetting = () => {
   );
   const setQuizzes = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
-  const setHasQuizTime = useSetRecoilState(hasQuizTime);
+  const setHasQuizTime = useSetRecoilState(hasQuizTimeState);
+  const resetQuizTime = useResetRecoilState(quizTimeState);
 
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
@@ -60,6 +61,7 @@ const useQuizSetting = () => {
       setQuizzes(quizzes);
       setQuizMode(QUIZ_MODE.DEFAULT);
       setHasQuizTime(isTimeChecked);
+      resetQuizTime();
       routeQuiz();
     } catch (error) {
       console.error(error);
