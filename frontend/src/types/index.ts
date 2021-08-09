@@ -46,6 +46,8 @@ export interface CardsResponse {
 }
 
 export interface PublicCardsResponse extends CardsResponse {
+  heart: boolean;
+  heartCount: number;
   cardCount: number;
   tags: TagResponse[];
 }
