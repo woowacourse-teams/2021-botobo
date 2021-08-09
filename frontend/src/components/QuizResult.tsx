@@ -2,29 +2,48 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import { Flex } from '../styles';
 import { QuizResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
-interface Props extends Omit<QuizResponse, 'id' | 'answer' | 'encounterCount'> {
+interface Props extends Omit<QuizResponse, 'id' | 'answer'> {
   isChecked: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const QuizResult = ({ question, workbookName, isChecked, onClick }: Props) => (
+const QuizResult = ({
+  question,
+  workbookName,
+  encounterCount,
+  isChecked,
+  onClick,
+}: Props) => (
   <CardTemplate isChecked={isChecked} onClick={onClick}>
-    <WorkbookName>{workbookName}</WorkbookName>
+    <TopContent>
+      <WorkbookName>{workbookName}</WorkbookName>
+      <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
+    </TopContent>
     <Question>Q. {question}</Question>
   </CardTemplate>
 );
 
-const WorkbookName = styled.div`
+const TopContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
   margin-bottom: 1rem;
+`;
 
+const WorkbookName = styled.span`
   ${({ theme }) => css`
     color: ${theme.color.pink};
-    font-size: ${theme.fontSize.small};
     font-weight: ${theme.fontWeight.bold};
   `};
+`;
+
+const EncounterCount = styled.span`
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
+  `}
 `;
 
 const Question = styled.div`

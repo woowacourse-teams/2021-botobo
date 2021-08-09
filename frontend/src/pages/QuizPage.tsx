@@ -106,16 +106,22 @@ const QuizPage = () => {
                 });
               }}
             >
-              {quizzes.map(({ id, question, answer, workbookName }, index) => (
-                <QuizItem key={id} quizIndex={index}>
-                  <Quiz
-                    question={question}
-                    answer={answer}
-                    workbookName={workbookName}
-                    isChanged={id === prevQuizId}
-                  />
-                </QuizItem>
-              ))}
+              {quizzes.map(
+                (
+                  { id, question, answer, workbookName, encounterCount },
+                  index
+                ) => (
+                  <QuizItem key={id} quizIndex={index}>
+                    <Quiz
+                      question={question}
+                      answer={answer}
+                      workbookName={workbookName}
+                      encounterCount={encounterCount}
+                      isChanged={id === prevQuizId}
+                    />
+                  </QuizItem>
+                )
+              )}
             </QuizList>
           )}
         </QuizWrapper>
