@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import { postUserNameCheckAsync } from '../api';
 import EditIcon from '../assets/pencil.svg';
 import { Button, InputField, MainHeader, TextAreaField } from '../components';
 import {
@@ -27,9 +28,14 @@ const validateFileSize = (size: number) => {
   }
 };
 
-const validateUserName = (value: string) => {
+const validateUserName = async (value: string) => {
+  await postUserNameCheckAsync(value);
+
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
     throw new Error(`닉네임은 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`);
+  }
+  if (/\s/.test(value)) {
+    throw new Error('닉네임에 공백은 허용할 수 없습니다.');
   }
 };
 
@@ -104,7 +110,13 @@ const ProfilePage = () => {
               userName: userInfo?.userName ?? 'Unknown User',
               bio: userInfo?.bio ?? '',
             }}
-            validators={{ userName: validateUserName, bio: validateBio }}
+            validators={{
+              userName: async (value) => {
+                if (value === userInfo?.userName) return;
+                await validateUserName(value);
+              },
+              bio: validateBio,
+            }}
             onSubmit={({ userName, bio }) => {
               if (!userInfo) return;
 

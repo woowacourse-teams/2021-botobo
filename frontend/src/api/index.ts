@@ -164,3 +164,7 @@ export const postProfileImageAsync = async (formData: FormData) => {
 
   return data;
 };
+
+export const postUserNameCheckAsync = async (userName: string) => {
+  await request.post('/users/name-check', userName);
+};
