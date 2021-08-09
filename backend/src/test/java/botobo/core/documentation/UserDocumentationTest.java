@@ -91,7 +91,7 @@ public class UserDocumentationTest extends DocumentationTest {
     void update() throws Exception {
         String token = "botobo.access.token";
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("수정된 이름")
+                .userName("수정된_이름")
                 .bio("수정된 바이오")
                 .profileUrl("profile.io")
                 .build();

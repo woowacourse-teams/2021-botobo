@@ -13,7 +13,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +31,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String profileUrl;
 
+    @Column(nullable = false)
     private String bio = "";
 
     @Enumerated(EnumType.STRING)
@@ -40,13 +40,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
-
-    @PrePersist
-    public void prePersist() {
-        if (Objects.isNull(bio)) {
-            this.bio = "";
-        }
-    }
 
     @Builder
     public User(Long id, Long githubId, String userName, String bio, String profileUrl, Role role, List<Workbook> workbooks) {

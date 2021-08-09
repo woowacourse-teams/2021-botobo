@@ -9,6 +9,8 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
@@ -215,7 +217,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     void updateFailedProfileUrlIsNull() {
         //given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("new 조앤")
+                .userName("new조앤")
                 .profileUrl(null)
                 .bio("new 소개글")
                 .build();
@@ -237,7 +239,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     void updateFailedProfileUrlIsEmpty() {
         //given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("new 조앤")
+                .userName("new조앤")
                 .profileUrl("")
                 .bio("new 소개글")
                 .build();
@@ -259,7 +261,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     void updateFailedBioIsNull() {
         //given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("new 조앤")
+                .userName("new조앤")
                 .profileUrl("github.io")
                 .bio(null)
                 .build();
@@ -281,7 +283,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     void updateFailedLongBio() {
         //given
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("new 조앤")
+                .userName("new조앤")
                 .profileUrl("github.io")
                 .bio(stringGenerator(256))
                 .build();
@@ -319,6 +321,29 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "카일 안녕", "나는 조앤 하이", "  ", "    ", "\t", "\n", "\r\n", "\r"})
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 회원명에는 공백이 포함될 수 없다.")
+    void updateFailedWhiteSpaceUserName(String name) {
+        //given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName(name)
+                .profileUrl("github.io")
+                .bio("안녕하세요~")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .auth(createToken(1L))
+                .build();
+
+        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
     }
 
     @Test
@@ -462,5 +487,27 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("이름은 최소 1자 이상, 최대 20자까지 입력 가능합니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "카일 안녕", "나는 조앤 하이", "  ", "    ", "\t", "\n", "\r\n", "\r"})
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, userName에는 공백이 포함될 수 없다.")
+    void updateFailedWithWhiteSpace(String name) {
+        //given
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName(name)
+                .build();
+        //when
+        final HttpResponse response = request()
+                .post("/api/users/name-check", userNameRequest)
+                .auth(createToken(1L))
+                .build();
+
+        //then
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
     }
 }
