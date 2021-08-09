@@ -20,7 +20,7 @@ const Clock = ({ time }: Props) => {
   return (
     <Container
       onClick={() => setIsShowTime((prevValue) => !prevValue)}
-      time={timeConverter(time).join(':')}
+      time={timeConverter(time)}
       isShowTime={isShowTime}
     >
       <ClockWrapper>
