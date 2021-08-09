@@ -19,6 +19,7 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
+import botobo.core.infrastructure.GoogleOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
 import botobo.core.infrastructure.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
@@ -37,6 +38,9 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     @MockBean
     protected GithubOauthManager githubOauthManager;
+
+    @MockBean
+    protected GoogleOauthManager googleOauthManager;
 
     protected GithubUserInfoResponse userInfo, anotherUserInfo;
 
@@ -188,8 +192,13 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     protected ExtractableResponse<Response> 소셜_로그인_요청(UserInfoResponse userInfo, SocialType socialType) {
         LoginRequest loginRequest = new LoginRequest("code");
 
-        given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(githubOauthManager);
-        given(githubOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
+        if (socialType == SocialType.GITHUB) {
+            given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(githubOauthManager);
+            given(githubOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
+        } else {
+            given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(googleOauthManager);
+            given(googleOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
+        }
 
         return request()
                 .post("/api/login/{socialType}", loginRequest, socialType)

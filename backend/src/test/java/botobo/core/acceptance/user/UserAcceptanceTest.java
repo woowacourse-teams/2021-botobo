@@ -1,8 +1,11 @@
 package botobo.core.acceptance.user;
 
 import botobo.core.acceptance.AuthAcceptanceTest;
+import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
+import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,15 +14,22 @@ import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserAcceptanceTest extends AuthAcceptanceTest {
+public class UserAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("로그인 한 유저의 정보를 가져온다. - 성공")
     void findByUserOfMine() {
+        // given
+        UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
+                .userName("socialUser")
+                .socialId("2")
+                .profileUrl("social.io")
+                .build();
+
         //when
         final HttpResponse response = request()
                 .get("/api/users/me")
-                .auth(소셜_로그인되어_있음(SocialType.GITHUB).getAccessToken())
+                .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);

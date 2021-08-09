@@ -22,7 +22,6 @@ public class GithubUserInfoResponse implements UserInfoResponse {
     @JsonProperty("avatar_url")
     private String profileUrl;
 
-    @Override
     public User toUser() {
         return User.builder()
                 .socialId(socialId)
