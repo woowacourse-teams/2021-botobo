@@ -69,14 +69,12 @@ const ProfilePage = () => {
       <Container>
         <Profile>
           <ImageContainer>
-            <ImageWrapper
-              onClick={() => setIsEditable((prevState) => !prevState)}
-            >
+            <div onClick={() => setIsEditable((prevState) => !prevState)}>
               <Avatar src={userInfo?.profileUrl ?? userSrc} />
               <EditIconWrapper>
                 <EditIcon width="1.3rem" height="1.3rem" />
               </EditIconWrapper>
-            </ImageWrapper>
+            </div>
             {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
             <ImageEditor isEditable={isEditable}>
               <ImageUploader htmlFor="image-upload">
@@ -159,9 +157,6 @@ const Profile = styled.div`
 
 const ImageContainer = styled.div`
   position: relative;
-`;
-
-const ImageWrapper = styled.div`
   cursor: pointer;
 `;
 
@@ -235,6 +230,8 @@ const ImageEditor = styled.div<ImageEditorStyleProp>`
 `;
 
 const ImageUploader = styled.label`
+  cursor: pointer;
+
   & > input {
     display: none;
   }

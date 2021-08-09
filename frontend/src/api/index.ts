@@ -159,12 +159,7 @@ export const putProfileAsync = async (userInfo: UserInfoResponse) => {
 export const postProfileImageAsync = async (formData: FormData) => {
   const { data } = await request.post<Pick<UserInfoResponse, 'profileUrl'>>(
     '/users/profile',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    formData
   );
 
   return data;
