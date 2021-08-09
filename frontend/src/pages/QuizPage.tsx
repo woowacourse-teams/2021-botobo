@@ -20,18 +20,17 @@ interface QuizItemProps {
   quizIndex: number;
 }
 
-const cardSlideInfo = {
-  xPosition: 0,
-  width: 0,
-  pointOfChange: 0,
-};
-
 const QuizPage = () => {
   const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
     useQuiz();
 
   const quizListRef = useRef<HTMLUListElement>(null);
   const [xPosition, setXPosition] = useState('0');
+  const [cardSlideInfo, setCardSlideInfo] = useState({
+    xPosition: 0,
+    width: 0,
+    pointOfChange: 0,
+  });
 
   useEffect(() => {
     setXPosition(
@@ -42,12 +41,22 @@ const QuizPage = () => {
   }, [currentQuizIndex]);
 
   useEffect(() => {
-    if (!quizListRef?.current) return;
+    const setInitialCardSlideInfo = () => {
+      if (!quizListRef?.current) return;
 
-    const quizListWidth = quizListRef.current.clientWidth;
+      const quizListWidth = quizListRef.current.clientWidth;
 
-    cardSlideInfo.width = quizListWidth;
-    cardSlideInfo.pointOfChange = quizListWidth / 5;
+      setCardSlideInfo((prevValue) => ({
+        ...prevValue,
+        width: quizListWidth,
+        pointOfChange: quizListWidth / 5,
+      }));
+    };
+
+    setInitialCardSlideInfo();
+    window.addEventListener('resize', setInitialCardSlideInfo);
+
+    return () => window.removeEventListener('resize', setInitialCardSlideInfo);
   }, []);
 
   return (
@@ -65,7 +74,10 @@ const QuizPage = () => {
               currentIndex={currentQuizIndex}
               style={{ transform: `translateX(calc(${xPosition}))` }}
               onTouchStart={(event) => {
-                cardSlideInfo.xPosition = event.touches[0].clientX;
+                setCardSlideInfo((prevValue) => ({
+                  ...prevValue,
+                  xPosition: event.touches[0].clientX,
+                }));
               }}
               onTouchMove={(event) => {
                 const targetStyle = event.currentTarget.style;
