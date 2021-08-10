@@ -12,9 +12,7 @@ interface ErrorMessages {
 interface Props {
   initialValues: Values;
   validators?: {
-    [key: string]:
-      | ((value: string) => never | void)
-      | ((value: string) => Promise<never | void>);
+    [key: string]: (value: string) => never | void | Promise<never | void>;
   };
   onSubmit: (values: Values) => void;
   children: React.ReactElement | React.ReactElement[];

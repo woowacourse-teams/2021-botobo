@@ -34,6 +34,7 @@ const validateUserName = async (value: string) => {
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
     throw new Error(`닉네임은 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`);
   }
+
   if (/\s/.test(value)) {
     throw new Error('닉네임에 공백은 허용할 수 없습니다.');
   }
@@ -97,8 +98,8 @@ const ProfilePage = () => {
                 type="button"
                 role="image-delete-button"
                 onClick={() => {
-                  updateProfileUrl();
                   setIsEditable(false);
+                  updateProfileUrl();
                 }}
               >
                 이미지 제거
@@ -113,6 +114,7 @@ const ProfilePage = () => {
             validators={{
               userName: async (value) => {
                 if (value === userInfo?.userName) return;
+
                 await validateUserName(value);
               },
               bio: validateBio,

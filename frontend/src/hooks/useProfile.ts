@@ -21,6 +21,7 @@ const useProfile = () => {
   };
 
   const updateProfileUrl = async (file?: File) => {
+    if (!userInfo) return;
     const formData = new FormData();
 
     if (file) {
@@ -29,8 +30,6 @@ const useProfile = () => {
 
     try {
       const newImage = await postProfileImageAsync(formData);
-
-      if (!userInfo) return;
 
       setUserInfo({ ...userInfo, profileUrl: newImage.profileUrl });
     } catch (error) {
