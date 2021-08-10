@@ -76,7 +76,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
 
@@ -92,7 +92,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -107,7 +107,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 최소 1글자, 최대 30글자만 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 30자 이하여야 합니다.");
     }
 
     @Test

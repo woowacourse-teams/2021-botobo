@@ -113,7 +113,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("이름은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -132,7 +132,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("이름은 최대 30자까지 입력 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 30자 이하여야 합니다.");
     }
 
     @Test
@@ -216,7 +216,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("태그는 최대 20자까지 입력 가능합니다");
+        assertThat(errorResponse.getMessage()).contains("태그는 20자 이하여야 합니다.");
     }
 
     @Test
@@ -416,7 +416,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("이름은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -439,7 +439,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("이름은 최대 30자까지 입력 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 30자 이하여야 합니다.");
     }
 
     @Test
@@ -449,7 +449,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         final String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
         final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
-                .name(stringGenerator(31))
+                .name(stringGenerator(30))
                 .cardCount(0)
                 .heartCount(0)
                 .tags(Collections.emptyList())
@@ -461,7 +461,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("문제집 공개여부는 필수 입력값입니다");
+        assertThat(errorResponse.getMessage()).contains("문제집의 공개 여부는 필수 입력값입니다.");
     }
 
     @Test
@@ -634,7 +634,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("태그는 최대 20자까지 입력 가능합니다");
+        assertThat(errorResponse.getMessage()).contains("태그는 20자 이하여야 합니다.");
     }
 
     @Test

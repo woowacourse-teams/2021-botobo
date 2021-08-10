@@ -246,8 +246,7 @@ class WorkbookServiceTest {
 
         // when
         assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
-                .isInstanceOf(WorkbookNotFoundException.class)
-                .hasMessage("해당 문제집을 찾을 수 없습니다.");
+                .isInstanceOf(WorkbookNotFoundException.class);
 
         // then
         then(workbookRepository).should(times(1))

@@ -1,6 +1,7 @@
 package botobo.core.domain.tag;
 
-import botobo.core.exception.tag.InvalidTagNameException;
+import botobo.core.exception.tag.TagNameLengthException;
+import botobo.core.exception.tag.TagNameNullException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,8 +41,7 @@ class TagNameTest {
     void createWithNull() {
         // when, then
         assertThatThrownBy(() -> TagName.of(null))
-                .isInstanceOf(InvalidTagNameException.class)
-                .hasMessageContaining("null이 될 수 없습니다");
+                .isInstanceOf(TagNameNullException.class);
     }
 
     @EmptySource
@@ -51,8 +51,7 @@ class TagNameTest {
     void createWithBlank(String value) {
         // when, then
         assertThatThrownBy(() -> TagName.of(value))
-                .isInstanceOf(InvalidTagNameException.class)
-                .hasMessageContaining("비어있거나 공백 문자열이 될 수 없습니다");
+                .isInstanceOf(TagNameNullException.class);
     }
 
     @Test
@@ -60,7 +59,6 @@ class TagNameTest {
     void createWithLongString() {
         // when, then
         assertThatThrownBy(() -> TagName.of(stringGenerator(21)))
-                .isInstanceOf(InvalidTagNameException.class)
-                .hasMessageContaining("20자 이하여야 합니다");
+                .isInstanceOf(TagNameLengthException.class);
     }
 }

@@ -5,6 +5,8 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
+import botobo.core.exception.workbook.WorkbookNameLengthException;
+import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +66,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(stringGenerator(31))
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameLengthException.class);
     }
 
     @NullAndEmptySource
@@ -76,7 +78,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(name)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameNullException.class);
     }
 
     @Test
@@ -111,9 +113,7 @@ class WorkbookTest {
                 .name("자바 문제집")
                 .tags(manyTags)
                 .build())
-                .isInstanceOf(WorkbookTagLimitException.class)
-                .hasMessageContaining("문제집이 가질 수 있는 태그수는 최대")
-                .hasMessageContaining("개 입니다.");
+                .isInstanceOf(WorkbookTagLimitException.class);
     }
 
     @Test
