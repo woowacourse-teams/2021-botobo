@@ -31,11 +31,13 @@ public class WorkbookUpdateRequest {
     @NotNull(message = "W009")
     private Boolean opened;
 
-    @PositiveOrZero(message = "W010")
-    private int cardCount;
-
+    @NotNull(message = "W010")
     @PositiveOrZero(message = "W011")
-    private int heartCount;
+    private Integer cardCount;
+
+    @NotNull(message = "W012")
+    @PositiveOrZero(message = "W013")
+    private Integer heartCount;
 
     @NotNull(message = "W008")
     @Valid

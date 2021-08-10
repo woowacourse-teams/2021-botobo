@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ScrapCardRequest {
 
-    @NotEmpty(message = "W015")
+    @NotEmpty(message = "W016")
     private List<Long> cardIds;
 
     public List<Long> distinctCardIds() {
