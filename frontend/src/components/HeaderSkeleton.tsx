@@ -2,11 +2,12 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import MenuIcon from '../assets/menu.svg';
 import { Flex } from '../styles';
 
 const HeaderSkeleton = () => (
   <Container>
-    <RightContent />
+    <StyleMenuIcon width="1.3rem" height="1.3rem" />
   </Container>
 );
 
@@ -20,13 +21,9 @@ const Container = styled.div`
   `};
 `;
 
-const RightContent = styled.div`
-  width: 2rem;
-  height: 2rem;
-
+const StyleMenuIcon = styled(MenuIcon)`
   ${({ theme }) => css`
-    border-radius: ${theme.borderRadius.circle};
-    background-color: ${theme.color.gray_1};
+    fill: ${theme.color.gray_5};
   `};
 `;
 
