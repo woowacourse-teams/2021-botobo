@@ -158,7 +158,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 null이 될 수 없습니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 필수 입력값입니다.");
     }
 
     @Test
@@ -313,7 +313,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("이미 존재하는 회원 이름입니다.");
     }
 
     @Test
@@ -441,7 +441,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("이미 존재하는 회원 이름입니다.");
     }
 
     @Test
@@ -462,7 +462,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 null이 될 수 없습니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 필수 입력값입니다.");
     }
 
     @Test

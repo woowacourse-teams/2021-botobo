@@ -15,7 +15,9 @@ import botobo.core.exception.tag.TagNameLengthException;
 import botobo.core.exception.tag.TagNameNullException;
 import botobo.core.exception.tag.TagNullException;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.SocialTypeNotFoundException;
+import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
@@ -42,6 +44,14 @@ public enum ErrorType {
     A007("A007", "존재하지 않는 소셜 로그인 방식입니다.", SocialTypeNotFoundException.class),
 
     U001("U001", "해당 유저를 찾을 수 없습니다.", UserNotFoundException.class),
+    U002("U002", "프로필 이미지 수정은 불가합니다.", ProfileUpdateNotAllowedException.class),
+    U003("U003", "이미 존재하는 회원 이름입니다.", UserNameDuplicatedException.class),
+    U004("U004", "회원명은 필수 입력값입니다.", RequestValidationFailrureException.class),
+    U005("U005", "이름은 최소 1자 이상, 최대 20자까지 입력 가능합니다.", RequestValidationFailrureException.class),
+    U006("U006", "회원명에 공백은 포함될 수 없습니다.", RequestValidationFailrureException.class),
+    U007("U007", "회원 정보를 수정하기 위해서는 프로필 사진이 필요합니다.", RequestValidationFailrureException.class),
+    U008("U008", "회원 정보를 수정하기 위해서는 소개글은 최소 0자 이상이 필요합니다.", RequestValidationFailrureException.class),
+    U009("U009", "소개글은 최대 255자까지 가능합니다.", RequestValidationFailrureException.class),
 
     W001("W001", "문제집 이름은 30자 이하여야 합니다.", WorkbookNameLengthException.class),
     W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameNullException.class),
