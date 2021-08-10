@@ -12,7 +12,7 @@ export { default as CardsLoadable } from './CardsLoadable';
 export { default as CardsPage } from './CardsPage';
 export { default as CardAddPage } from '../components/CardAddForm';
 export { default as CardEditPage } from '../components/CardEditForm';
-export { default as GithubCallbackPage } from './GithubCallbackPage';
+export { default as OAuthCallbackPage } from './OAuthCallbackPage';
 export { default as PublicCardsPage } from './PublicCardsPage';
 export { default as PublicCardsLoadable } from './PublicCardsLoadable';
 export { default as PublicSearchPage } from './PublicSearchPage';

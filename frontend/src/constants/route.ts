@@ -9,7 +9,7 @@ const ROUTE = {
   LOGOUT: {
     PATH: '/logout',
   },
-    PROFILE: {
+  PROFILE: {
     PATH: '/profile',
   },
   WORKBOOK_ADD: {
@@ -54,6 +54,9 @@ const ROUTE = {
   },
   GITHUB_CALLBACK: {
     PATH: '/github/callback',
+  },
+  GOOGLE_CALLBACK: {
+    PATH: '/google/callback',
   },
 } as const;
 
