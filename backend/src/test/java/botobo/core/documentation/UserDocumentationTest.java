@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,7 +99,8 @@ public class UserDocumentationTest extends DocumentationTest {
 
         UserResponse userResponse = UserResponse.builder()
                 .id(1L)
-                .userName("이름")
+                .userName("수정된_이름")
+                .bio("수정된 바이오")
                 .profileUrl("profile.io")
                 .build();
 
@@ -108,7 +110,7 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build();
 
         given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.update(1L, userUpdateRequest, appUser)).willReturn(userResponse);
+        given(userService.update(anyLong(), any(), any())).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)
