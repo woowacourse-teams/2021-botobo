@@ -10,7 +10,7 @@ const useProfile = () => {
 
   const showSnackbar = useSnackbar();
 
-  const editProfile = async (userInfo: UserInfoResponse) => {
+  const editProfile = async (userInfo: Omit<UserInfoResponse, 'id'>) => {
     try {
       await putProfileAsync(userInfo);
       showSnackbar({ message: '프로필이 수정되었어요.' });

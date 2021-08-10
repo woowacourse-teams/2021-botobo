@@ -173,10 +173,10 @@ export const putNextQuizAsync = async (cardIds: number[]) => {
   await request.put('/cards/next-quiz', { cardIds });
 };
 
-export const putProfileAsync = async (userInfo: UserInfoResponse) => {
-  const { id, ...params } = userInfo;
-
-  await request.put(`/users/me/${id}`, params);
+export const putProfileAsync = async (
+  userInfo: Omit<UserInfoResponse, 'id'>
+) => {
+  await request.put(`/users/me`, userInfo);
 };
 
 export const postProfileImageAsync = async (formData: FormData) => {

@@ -122,7 +122,7 @@ const ProfilePage = () => {
             onSubmit={({ userName, bio }) => {
               if (!userInfo) return;
 
-              editProfile({ ...userInfo, userName, bio });
+              editProfile({ userName, profileUrl: userInfo.profileUrl, bio });
             }}
           >
             <InputTitle>이름</InputTitle>
