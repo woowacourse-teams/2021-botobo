@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { Clock, MainHeader, Quiz } from '../components';
+import { MainHeader, Quiz, Timer } from '../components';
 import { useInterval, useQuiz } from '../hooks';
 import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
@@ -82,9 +82,9 @@ const QuizPage = () => {
       <MainHeader />
       <Container>
         {hasQuizTime && (
-          <ClockWrapper>
-            <Clock time={quizTime} />
-          </ClockWrapper>
+          <TimerWrapper>
+            <Timer time={quizTime} />
+          </TimerWrapper>
         )}
         <QuizWrapper>
           {currentQuizIndex === 0 && (
@@ -110,7 +110,6 @@ const QuizPage = () => {
             </QuizList>
           )}
         </QuizWrapper>
-
         {isMobile() ? (
           <MobilePageNation>
             <TouchBar
@@ -213,7 +212,7 @@ const Container = styled.div`
     `}
 `;
 
-const ClockWrapper = styled.div`
+const TimerWrapper = styled.div`
   position: absolute;
   top: 15%;
 `;

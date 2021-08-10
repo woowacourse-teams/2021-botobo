@@ -11,21 +11,21 @@ interface Props {
 
 interface ContainerStyleProps {
   time: string;
-  isShowTime: boolean;
+  isTimeVisible: boolean;
 }
 
-const Clock = ({ time }: Props) => {
-  const [isShowTime, setIsShowTime] = useState(false);
+const Timer = ({ time }: Props) => {
+  const [isTimeVisible, setIsTimeVisible] = useState(false);
 
   return (
     <Container
-      onClick={() => setIsShowTime((prevValue) => !prevValue)}
+      onClick={() => setIsTimeVisible((prevValue) => !prevValue)}
       time={timeConverter(time)}
-      isShowTime={isShowTime}
+      isTimeVisible={isTimeVisible}
     >
-      <ClockWrapper>
-        <ClockUI />
-      </ClockWrapper>
+      <TimerUIWrapper>
+        <TimerUI />
+      </TimerUIWrapper>
     </Container>
   );
 };
@@ -44,8 +44,8 @@ const Container = styled.div<ContainerStyleProps>`
   width: 6rem;
   height: 6rem;
 
-  ${({ theme, time, isShowTime }) =>
-    isShowTime &&
+  ${({ theme, time, isTimeVisible }) =>
+    isTimeVisible &&
     css`
       &::after {
         content: '${time}';
@@ -59,7 +59,7 @@ const Container = styled.div<ContainerStyleProps>`
     `}
 `;
 
-const ClockWrapper = styled.div`
+const TimerUIWrapper = styled.div`
   ${Flex({ justify: 'center', items: 'center' })};
   position: absolute;
   width: 100%;
@@ -79,7 +79,7 @@ const ClockWrapper = styled.div`
   }
 `;
 
-const ClockUI = styled.div`
+const TimerUI = styled.div`
   ${Flex({ justify: 'center' })};
 
   position: absolute;
@@ -117,4 +117,4 @@ const ClockUI = styled.div`
   `}
 `;
 
-export default Clock;
+export default Timer;
