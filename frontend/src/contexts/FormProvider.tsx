@@ -60,11 +60,15 @@ const FormProvider = ({
     }
   };
 
-  const onSubmitForm: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const onSubmitForm: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     try {
-      Object.keys(values).forEach((key) => validators?.[key](values[key]));
+      for (const key of Object.keys(values)) {
+        await validators?.[key](values[key]);
+      }
     } catch (error) {
       console.error(error);
 

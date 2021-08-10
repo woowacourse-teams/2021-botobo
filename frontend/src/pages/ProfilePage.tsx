@@ -29,14 +29,26 @@ const validateFileSize = (size: number) => {
 };
 
 const validateUserName = async (value: string) => {
-  await postUserNameCheckAsync(value);
+  try {
+    await postUserNameCheckAsync(value);
+  } catch (error) {
+    if (error.response.status === 409) {
+      throw new Error('중복된 이름입니다.');
+
+      return;
+    }
+
+    console.error(error);
+  }
 
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
-    throw new Error(`닉네임은 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`);
+    throw new Error(
+      `이름의 길이는 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`
+    );
   }
 
   if (/\s/.test(value)) {
-    throw new Error('닉네임에 공백은 허용할 수 없습니다.');
+    throw new Error('이름에 공백은 허용할 수 없습니다.');
   }
 };
 
