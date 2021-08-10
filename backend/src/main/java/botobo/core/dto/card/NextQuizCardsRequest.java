@@ -14,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class NextQuizCardsRequest {
 
-    @NotNull(message = "유효하지 않은 또 보기 카드 등록 요청입니다.")
+    @NotNull(message = "C012")
     private List<Long> cardIds;
 }

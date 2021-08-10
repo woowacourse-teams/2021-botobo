@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,15 +19,16 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CardRequest {
 
-    @NotBlank(message = "질문은 필수 입력값입니다.")
-    @Length(max = 2000, message = "질문은 최대 2000자까지 입력 가능합니다.")
+    @NotBlank(message = "C002")
+    @Length(max = 2000, message = "C003")
     private String question;
 
-    @NotBlank(message = "답변은 필수 입력값입니다.")
-    @Length(max = 2000, message = "답변은 최대 2000자까지 입력 가능합니다.")
+    @NotBlank(message = "C004")
+    @Length(max = 2000, message = "C005")
     private String answer;
 
-    @NotNull(message = "카드가 포함될 문제집 아이디는 필수 입력값입니다.")
+    @NotNull(message = "C006")
+    @Positive(message = "C007")
     private Long workbookId;
 
     public Card toCardWithWorkbook(Workbook workbook) {

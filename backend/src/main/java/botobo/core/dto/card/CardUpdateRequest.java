@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,25 +19,26 @@ import javax.validation.constraints.Positive;
 @Builder
 public class CardUpdateRequest {
 
-    @NotBlank(message = "카드를 업데이트하기 위해서는 질문이 필요합니다.")
-    @Length(max = 2000, message = "질문은 최대 2000자까지 입력 가능합니다.")
+    @NotBlank(message = "C002")
+    @Length(max = 2000, message = "C003")
     private String question;
 
-    @NotBlank(message = "카드를 업데이트하기 위해서는 답변이 필요합니다.")
-    @Length(max = 2000, message = "답변은 최대 2000자까지 입력 가능합니다.")
+    @NotBlank(message = "C004")
+    @Length(max = 2000, message = "C005")
     private String answer;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "C006")
+    @Positive(message = "C007")
     private Long workbookId;
 
-    @NotNull
+    @NotNull(message = "C008")
+    @PositiveOrZero(message = "C009")
     private Integer encounterCount;
 
-    @NotNull(message = "카드를 업데이트하기 위해서는 북마크 정보가 필요합니다.")
+    @NotNull(message = "C010")
     private Boolean bookmark;
 
-    @NotNull(message = "카드를 업데이트하기 위해서는 또 보기 정보가 필요합니다.")
+    @NotNull(message = "C011")
     private Boolean nextQuiz;
 
     public Card toCard() {
