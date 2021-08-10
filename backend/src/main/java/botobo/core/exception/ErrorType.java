@@ -5,9 +5,12 @@ import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.card.CardAnswerNullException;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.card.CardQuestionNullException;
+import botobo.core.exception.card.QuizEmptyException;
 import botobo.core.exception.tag.TagNameLengthException;
 import botobo.core.exception.tag.TagNameNullException;
 import botobo.core.exception.tag.TagNullException;
+import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
 import botobo.core.exception.workbook.WorkbookNameNullException;
@@ -24,6 +27,12 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public enum ErrorType {
+    A001("A001", "토큰이 유효하지 않습니다.", TokenNotValidException.class),
+    A002("A002", "만료된 토큰입니다.", TokenExpirationException.class),
+    A003("A003", "작성자가 아니므로 권한이 없습니다.", NotAuthorException.class),
+
+    U001("U001", "해당 유저를 찾을 수 없습니다.", UserNotFoundException.class),
+
     W001("W001", "문제집 이름은 30자 이하여야 합니다.", WorkbookNameLengthException.class),
     W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameNullException.class),
     W003("W003", "태그 아이디는 필수 입력값입니다.", RequestValidationFailrureException.class),
@@ -34,9 +43,9 @@ public enum ErrorType {
     W008("W008", "문제집을 수정하려면 태그가 필요합니다.", TagNullException.class),
     W009("W009", "문제집의 공개 여부는 필수 입력값입니다.", RequestValidationFailrureException.class),
     W010("W010", "카드 개수는 필수 입력값입니다..", RequestValidationFailrureException.class),
-    W011("W012", "카드 개수는 0이상 입니다.", RequestValidationFailrureException.class),
-    W012("W012", "하트 개수는 필수 입력값입니다.", RequestValidationFailrureException.class),
-    W013("W013", "하트 개수는 0이상 입니다.", RequestValidationFailrureException.class),
+    W011("W011", "카드 개수는 0이상 입니다.", RequestValidationFailrureException.class),
+    W012("W012", "좋아요 개수는 필수 입력값입니다.", RequestValidationFailrureException.class),
+    W013("W013", "좋아요 개수는 0이상 입니다.", RequestValidationFailrureException.class),
     W014("W014", "해당 문제집을 찾을 수 없습니다.", WorkbookNotFoundException.class),
     W015("W015", "공개 문제집이 아닙니다.", NotOpenedWorkbookException.class),
     W016("W016", "카드를 내 문제집으로 옮기려면 카드 아이디가 필요합니다.", RequestValidationFailrureException.class),
@@ -54,9 +63,9 @@ public enum ErrorType {
     C011("C011", "카드를 수정 위해서는 또 보기 정보가 필요합니다.", RequestValidationFailrureException.class),
     C012("C012", "유효하지 않은 또 보기 카드 등록 요청입니다.", RequestValidationFailrureException.class),
 
-    A001("A001", "토큰이 유효하지 않습니다.", TokenNotValidException.class),
-    A002("A002", "만료된 토큰입니다.", TokenExpirationException.class),
-    A003("A003", "작성자가 아니므로 권한이 없습니다.", CardNotFoundException.class),
+    Q001("Q001", "퀴즈를 진행하려면 문제집 아이디가 필요합니다.", RequestValidationFailrureException.class),
+    Q002("Q002", "퀴즈의 개수는 10 ~ 30 사이의 수만 가능합니다.", RequestValidationFailrureException.class),
+    Q003("Q003", "퀴즈에 문제가 존재하지 않습니다.", QuizEmptyException.class),
 
     X001("X001", "정의되지 않은 에러", UndefinedException.class);
 
