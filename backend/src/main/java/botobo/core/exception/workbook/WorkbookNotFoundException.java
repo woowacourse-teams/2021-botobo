@@ -1,6 +1,6 @@
 package botobo.core.exception.workbook;
 
-import botobo.core.exception.http.BotoboNotFoundException;
+import botobo.core.exception.http.NotFoundException;
 
-public class WorkbookNotFoundException extends BotoboNotFoundException {
+public class WorkbookNotFoundException extends NotFoundException {
 }

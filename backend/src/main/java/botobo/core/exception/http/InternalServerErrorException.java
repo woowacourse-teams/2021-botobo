@@ -5,11 +5,11 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class BotoboInternalServerErrorException extends BotoboException {
+public class InternalServerErrorException extends BotoboException {
 
     private final String serverMessage;
 
-    public BotoboInternalServerErrorException(String serverMessage) {
+    public InternalServerErrorException(String serverMessage) {
         super(HttpStatus.INTERNAL_SERVER_ERROR);
         this.serverMessage = serverMessage;
     }

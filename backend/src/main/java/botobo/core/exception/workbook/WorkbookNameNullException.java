@@ -1,6 +1,6 @@
 package botobo.core.exception.workbook;
 
-import botobo.core.exception.http.BotoboBadRequestException;
+import botobo.core.exception.http.BadRequestException;
 
-public class WorkbookNameNullException extends BotoboBadRequestException {
+public class WorkbookNameNullException extends BadRequestException {
 }

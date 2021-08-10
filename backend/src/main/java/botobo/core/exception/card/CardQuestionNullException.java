@@ -1,6 +1,6 @@
 package botobo.core.exception.card;
 
-import botobo.core.exception.http.BotoboBadRequestException;
+import botobo.core.exception.http.BadRequestException;
 
-public class CardQuestionNullException extends BotoboBadRequestException {
+public class CardQuestionNullException extends BadRequestException {
 }

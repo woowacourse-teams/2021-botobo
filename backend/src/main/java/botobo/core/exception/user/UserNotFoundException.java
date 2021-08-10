@@ -1,6 +1,6 @@
 package botobo.core.exception.user;
 
-import botobo.core.exception.http.BotoboNotFoundException;
+import botobo.core.exception.http.NotFoundException;
 
-public class UserNotFoundException extends BotoboNotFoundException {
+public class UserNotFoundException extends NotFoundException {
 }

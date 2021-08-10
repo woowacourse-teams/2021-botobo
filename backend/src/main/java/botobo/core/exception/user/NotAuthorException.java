@@ -1,6 +1,6 @@
 package botobo.core.exception.user;
 
-import botobo.core.exception.http.BotoboForbiddenException;
+import botobo.core.exception.http.ForbiddenException;
 
-public class NotAuthorException extends BotoboForbiddenException {
+public class NotAuthorException extends ForbiddenException {
 }

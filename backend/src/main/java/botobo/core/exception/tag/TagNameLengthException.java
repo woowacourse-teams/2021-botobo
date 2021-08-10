@@ -1,6 +1,6 @@
 package botobo.core.exception.tag;
 
-import botobo.core.exception.http.BotoboBadRequestException;
+import botobo.core.exception.http.BadRequestException;
 
-public class TagNameLengthException extends BotoboBadRequestException {
+public class TagNameLengthException extends BadRequestException {
 }
