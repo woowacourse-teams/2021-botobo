@@ -80,9 +80,13 @@ export const getQuizzesAsync = async (workbookId: number) => {
   return data;
 };
 
-export const postQuizzesAsync = async (workbookIds: number[]) => {
+export const postQuizzesAsync = async (
+  workbookIds: number[],
+  count: number
+) => {
   const { data } = await request.post<QuizResponse[]>('/quizzes', {
     workbookIds,
+    count,
   });
 
   return data;

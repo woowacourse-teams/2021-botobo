@@ -5,6 +5,7 @@ export { default as LogoutPage } from './LogoutPage';
 export { default as WorkbookAddPage } from './WorkbookAddPage';
 export { default as WorkbookEditPage } from './WorkbookEditPage';
 export { default as QuizSettingPage } from './QuizSettingPage';
+export { default as QuizSettingLoadable } from './QuizSettingLoadable';
 export { default as QuizPage } from './QuizPage';
 export { default as QuizResultPage } from './QuizResultPage';
 export { default as CardsLoadable } from './CardsLoadable';

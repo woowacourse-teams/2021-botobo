@@ -27,3 +27,4 @@ export { default as Hashtag } from './Hashtag';
 export { default as Toggle } from './Toggle';
 export { default as SelectBox } from './SelectBox';
 export { default as TextAreaField } from './TextAreaField';
+export { default as Timer } from './Timer';
