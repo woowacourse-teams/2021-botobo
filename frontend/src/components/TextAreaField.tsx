@@ -69,9 +69,11 @@ const TextArea = styled.textarea<TextAreaStyleProps>`
   overflow-y: auto;
 
   ${({ theme, focusColor }) => css`
-    border-color: ${focusColor === 'gray'
-      ? theme.color.gray_8
-      : theme.color.green};
+    &:focus {
+      border-color: ${focusColor === 'gray'
+        ? theme.color.gray_8
+        : theme.color.green};
+    }
   `}
 `;
 

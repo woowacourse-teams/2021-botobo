@@ -1,16 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { MainHeader, Quiz } from '../components';
-import { useQuiz } from '../hooks';
+import { MainHeader, Quiz, Timer } from '../components';
+import { useInterval, useQuiz } from '../hooks';
+import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
 
-interface TooltipProps {
-  isTooltipVisible: boolean;
-}
 interface QuizListProps {
   quizCount: number;
   currentIndex: number;
@@ -20,9 +19,29 @@ interface QuizItemProps {
   quizIndex: number;
 }
 
+interface QuizIndexButtonStyleProps {
+  isSelected: boolean;
+}
+
+const isMobile = () => {
+  const PC_DEVICE = ['win16', 'win32', 'win64', 'mac', 'macintel'];
+  const platform = navigator.platform;
+
+  if (!platform) return false;
+
+  return !PC_DEVICE.includes(platform.toLocaleLowerCase());
+};
+
 const QuizPage = () => {
-  const { quizzes, prevQuizId, currentQuizIndex, showNextQuiz, showPrevQuiz } =
-    useQuiz();
+  const {
+    quizzes,
+    hasQuizTime,
+    prevQuizId,
+    currentQuizIndex,
+    setCurrentQuizIndex,
+    showNextQuiz,
+    showPrevQuiz,
+  } = useQuiz();
 
   const quizListRef = useRef<HTMLUListElement>(null);
   const [xPosition, setXPosition] = useState('0');
@@ -31,6 +50,14 @@ const QuizPage = () => {
     width: 0,
     pointOfChange: 0,
   });
+
+  const [quizTime, setQuizTime] = useRecoilState(quizTimeState);
+
+  useInterval(
+    () => setQuizTime((prevValue) => prevValue + 1),
+    1000,
+    hasQuizTime
+  );
 
   useEffect(() => {
     setXPosition(
@@ -64,16 +91,44 @@ const QuizPage = () => {
     <>
       <MainHeader />
       <Container>
+        {hasQuizTime && (
+          <TimerWrapper>
+            <Timer time={quizTime} />
+          </TimerWrapper>
+        )}
         <QuizWrapper>
-          <Tooltip isTooltipVisible={currentQuizIndex === 0}>
-            카드를 클릭해 질문과 정답을 확인할 수 있어요.
-          </Tooltip>
+          {currentQuizIndex === 0 && (
+            <Tooltip>카드를 클릭해 질문과 정답을 확인할 수 있어요.</Tooltip>
+          )}
           {quizzes && (
             <QuizList
               ref={quizListRef}
               quizCount={quizzes.length}
               currentIndex={currentQuizIndex}
               style={{ transform: `translateX(calc(${xPosition}))` }}
+            >
+              {quizzes.map(
+                (
+                  { id, question, answer, workbookName, encounterCount },
+                  index
+                ) => (
+                  <QuizItem key={id} quizIndex={index}>
+                    <Quiz
+                      question={question}
+                      answer={answer}
+                      workbookName={workbookName}
+                      encounterCount={encounterCount}
+                      isChanged={id === prevQuizId}
+                    />
+                  </QuizItem>
+                )
+              )}
+            </QuizList>
+          )}
+        </QuizWrapper>
+        {isMobile() ? (
+          <MobilePageNation>
+            <TouchBar
               onTouchStart={(event) => {
                 setCardSlideInfo((prevValue) => ({
                   ...prevValue,
@@ -81,7 +136,9 @@ const QuizPage = () => {
                 }));
               }}
               onTouchMove={(event) => {
-                const targetStyle = event.currentTarget.style;
+                if (!quizListRef?.current) return;
+
+                const targetStyle = quizListRef.current.style;
                 const changedXPosition =
                   event.touches[0].clientX - cardSlideInfo.xPosition;
 
@@ -93,7 +150,9 @@ const QuizPage = () => {
                 });
               }}
               onTouchEnd={(event) => {
-                const targetStyle = event.currentTarget.style;
+                if (!quizListRef?.current) return;
+
+                const targetStyle = quizListRef?.current.style;
                 const changedXPosition =
                   event.changedTouches[0].clientX - cardSlideInfo.xPosition;
 
@@ -119,39 +178,42 @@ const QuizPage = () => {
                 });
               }}
             >
-              {quizzes.map(
-                (
-                  { id, question, answer, workbookName, encounterCount },
-                  index
-                ) => (
-                  <QuizItem key={id} quizIndex={index}>
-                    <Quiz
-                      question={question}
-                      answer={answer}
-                      workbookName={workbookName}
-                      encounterCount={encounterCount}
-                      isChanged={id === prevQuizId}
-                    />
-                  </QuizItem>
-                )
-              )}
-            </QuizList>
-          )}
-        </QuizWrapper>
-        <PageNation>
-          {currentQuizIndex === 0 && (
-            <SlideTooltip>카드를 좌우로 넘겨보세요</SlideTooltip>
-          )}
-          <ArrowButton onClick={showPrevQuiz}>
-            <LeftArrowIcon width="1rem" height="1rem" />
-          </ArrowButton>
-          <Page>
-            {currentQuizIndex + 1} / {quizzes.length}
-          </Page>
-          <ArrowButton onClick={showNextQuiz}>
-            <RightArrowIcon width="1rem" height="1rem" />
-          </ArrowButton>
-        </PageNation>
+              {[...Array(quizzes.length)].map((_, index) => (
+                <QuizIndexButton
+                  type="button"
+                  onClick={() => setCurrentQuizIndex(index)}
+                  key={index}
+                  isSelected={currentQuizIndex === index}
+                >
+                  {index + 1}
+                </QuizIndexButton>
+              ))}
+            </TouchBar>
+            {currentQuizIndex === 0 && (
+              <SlideTooltip>상단 바를 좌우로 밀어보세요!</SlideTooltip>
+            )}
+            {currentQuizIndex !== 0 && (
+              <PrevButton type="button" onClick={showPrevQuiz}>
+                이전
+              </PrevButton>
+            )}
+            <NextButton type="button" onClick={showNextQuiz}>
+              {currentQuizIndex === quizzes.length - 1 ? '결과확인' : '다음'}
+            </NextButton>
+          </MobilePageNation>
+        ) : (
+          <DesktopPageNation>
+            <ArrowButton type="button" onClick={showPrevQuiz}>
+              <LeftArrowIcon width="1rem" height="1rem" />
+            </ArrowButton>
+            <Page>
+              {currentQuizIndex + 1} / {quizzes.length}
+            </Page>
+            <ArrowButton type="button" onClick={showNextQuiz}>
+              <RightArrowIcon width="1rem" height="1rem" />
+            </ArrowButton>
+          </DesktopPageNation>
+        )}
       </Container>
     </>
   );
@@ -169,26 +231,25 @@ const Container = styled.div`
     `}
 `;
 
+const TimerWrapper = styled.div`
+  position: absolute;
+  top: 15%;
+`;
+
 const QuizWrapper = styled.div`
   position: relative;
   width: 100%;
 `;
 
-const Tooltip = styled.div<TooltipProps>`
+const Tooltip = styled.div`
   ${Flex({ justify: 'center', items: 'center' })};
   position: absolute;
   width: 100%;
-  height: 2.5rem;
-  top: -3rem;
-  margin-bottom: 0.5rem;
-  transition: opacity 0.1s ease;
+  top: -1.5rem;
 
-  ${({ theme, isTooltipVisible }) => css`
-    background-color: ${theme.color.blue};
+  ${({ theme }) => css`
     border-radius: ${theme.borderRadius.square};
-    opacity: ${isTooltipVisible ? 1 : 0};
     font-size: ${theme.fontSize.small};
-    color: ${theme.color.white};
   `}
 `;
 
@@ -203,11 +264,33 @@ const QuizItem = styled.li<QuizItemProps>`
   flex-shrink: 0;
 `;
 
-const PageNation = styled.div`
+const DesktopPageNation = styled.div`
   ${Flex({ items: 'center' })};
   position: relative;
   margin-top: 5rem;
   height: 1.25rem;
+`;
+
+const MobilePageNation = styled.div`
+  position: relative;
+  top: 2.5rem;
+  padding: 0 0.5rem;
+  width: 100%;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.white};
+    box-shadow: ${theme.boxShadow.header};
+  `}
+`;
+
+const TouchBar = styled.div`
+  display: grid;
+  grid-row-gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0;
+  grid-template-columns: repeat(10, 1fr);
+  justify-items: center;
+  justify-content: space-between;
 `;
 
 const SlideTooltip = styled.div`
@@ -215,10 +298,11 @@ const SlideTooltip = styled.div`
   width: max-content;
   transform: translateX(-50%);
   left: 50%;
-  top: -4.5rem;
+  bottom: -1.25rem;
 
   ${({ theme }) => css`
     color: ${theme.color.gray_7};
+    font-size: ${theme.fontSize.small};
   `}
 `;
 
@@ -229,6 +313,25 @@ const ArrowButton = styled.button`
     css`
       font-size: ${theme.fontSize.medium};
     `}
+`;
+
+const QuizIndexButton = styled.button<QuizIndexButtonStyleProps>`
+  ${({ theme, isSelected }) => css`
+    color: ${isSelected ? theme.color.gray_9 : theme.color.gray_4};
+  `}
+`;
+
+const MobileButtonStyle = styled.button`
+  position: absolute;
+  bottom: -2rem;
+`;
+
+const PrevButton = styled(MobileButtonStyle)`
+  left: 0;
+`;
+
+const NextButton = styled(MobileButtonStyle)`
+  right: 0;
 `;
 
 const Page = styled.span`

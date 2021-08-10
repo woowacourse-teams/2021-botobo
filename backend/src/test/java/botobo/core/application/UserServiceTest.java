@@ -4,7 +4,11 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
+import botobo.core.dto.user.UserUpdateRequest;
+import botobo.core.exception.user.ProfileUpdateNotAllowedException;
+import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.infrastructure.S3Uploader;
 import botobo.core.utils.FileFactory;
@@ -20,6 +24,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +56,7 @@ public class UserServiceTest {
         appUser = AppUser.user(1L);
         user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();
@@ -64,7 +69,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        UserResponse userResponse = userService.findById(user.getId());
+        UserResponse userResponse = userService.findById(appUser);
 
         // then
         assertThat(userResponse.getId()).isEqualTo(user.getId());
@@ -121,6 +126,7 @@ public class UserServiceTest {
     void updateProfileImageFailedWhenUserNotFound() throws IOException {
         // given
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
+
         given(userRepository.findById(anyLong())).willThrow(UserNotFoundException.class);
 
         // when
@@ -133,5 +139,162 @@ public class UserServiceTest {
         then(s3Uploader)
                 .should(never())
                 .upload(mockMultipartFile, user.getUserName());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 성공, 변경사항이 없어도 요청은 실패하지 않는다.")
+    void updateWithSameInfo() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("user")
+                .profileUrl("profile.io")
+                .bio("")
+                .build();
+
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.of(user));
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        UserResponse userResponse = userService.update(userUpdateRequest, appUser);
+
+        // then
+        assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
+        assertThat(userResponse.getUserName()).isEqualTo(userUpdateRequest.getUserName());
+        assertThat(userResponse.getBio()).isEqualTo(userUpdateRequest.getBio());
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 성공")
+    void update() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("profile.io")
+                .bio("수정된 bio")
+                .build();
+
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        UserResponse userResponse = userService.update(userUpdateRequest, appUser);
+
+        // then
+        assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
+        assertThat(userResponse.getUserName()).isEqualTo(userUpdateRequest.getUserName());
+        assertThat(userResponse.getBio()).isEqualTo(userUpdateRequest.getBio());
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 실패, profileUrl은 내 정보 수정에서 변경할 수 없다.")
+    void updateFailedWhenDifferentProfileUrl() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("수정된 user")
+                .profileUrl("수정된.profile.url")
+                .bio("수정된 bio")
+                .build();
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        // when
+        assertThatThrownBy(() -> userService.update(userUpdateRequest, appUser))
+                .isInstanceOf(ProfileUpdateNotAllowedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다. - 실패, userName은 중복될 수 없다.")
+    void updateFailedWhenDuplicatedUserName() {
+        // given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("이미_존재하는_이름")
+                .profileUrl("수정된.profile.url")
+                .bio("수정된 bio")
+                .build();
+
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
+
+        // when
+        assertThatThrownBy(() -> userService.update(userUpdateRequest, appUser))
+                .isInstanceOf(UserNameDuplicatedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userUpdateRequest.getUserName());
+        then(userRepository)
+                .should(never())
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공")
+    void checkSameUserNameAlreadyExist() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("날씨가덥다.")
+                .build();
+
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.empty());
+
+        assertThatCode(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
+                .doesNotThrowAnyException();
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 성공, 로그인 유저와 동일한 이름")
+    void checkSameUserNameAlreadyExistWithSameUser() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("user")
+                .build();
+
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.of(user));
+
+        assertThatCode(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
+                .doesNotThrowAnyException();
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
+    }
+
+    @Test
+    @DisplayName("회원명을 중복 조회한다. - 실패, 존재하는 이름")
+    void checkSameUserNameAlreadyExistFailed() {
+        UserNameRequest userNameRequest = UserNameRequest.builder()
+                .userName("이미_존재하는_이름")
+                .build();
+
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
+
+        assertThatThrownBy(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
+                .isInstanceOf(UserNameDuplicatedException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findByUserName(userNameRequest.getUserName());
     }
 }

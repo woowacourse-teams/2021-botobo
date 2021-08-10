@@ -25,6 +25,7 @@ import {
   PublicSearchResultPage,
   QuizPage,
   QuizResultPage,
+  QuizSettingLoadable,
   QuizSettingPage,
   WorkbookAddPage,
   WorkbookEditPage,
@@ -69,7 +70,7 @@ const routes = [
   {
     path: ROUTE.QUIZ_SETTING.PATH,
     component: (
-      <Suspense fallback={<div>loading</div>}>
+      <Suspense fallback={<QuizSettingLoadable />}>
         <QuizSettingPage />
       </Suspense>
     ),

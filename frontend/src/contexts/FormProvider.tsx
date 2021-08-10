@@ -12,7 +12,7 @@ interface ErrorMessages {
 interface Props {
   initialValues: Values;
   validators?: {
-    [key: string]: (value: string) => never | void;
+    [key: string]: (value: string) => never | void | Promise<never | void>;
   };
   onSubmit: (values: Values) => void;
   children: React.ReactElement | React.ReactElement[];
@@ -44,13 +44,15 @@ const FormProvider = ({
     setErrorMessages({ ...errorMessages, [key]: null });
   };
 
-  const onBlur: React.FocusEventHandler<HTMLInputElement> = ({ target }) => {
+  const onBlur: React.FocusEventHandler<HTMLInputElement> = async ({
+    target,
+  }) => {
     const key = target.name;
     const value = target.value;
     const validator = validators?.[key];
 
     try {
-      validator?.(value);
+      await validator?.(value);
       setErrorMessages({ ...errorMessages, [key]: null });
     } catch (error) {
       console.error(error);

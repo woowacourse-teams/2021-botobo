@@ -80,9 +80,13 @@ export const getQuizzesAsync = async (workbookId: number) => {
   return data;
 };
 
-export const postQuizzesAsync = async (workbookIds: number[]) => {
+export const postQuizzesAsync = async (
+  workbookIds: number[],
+  count: number
+) => {
   const { data } = await request.post<QuizResponse[]>('/quizzes', {
     workbookIds,
+    count,
   });
 
   return data;
@@ -170,7 +174,32 @@ export const postPublicCardsAsync = async (
 };
 
 export const putNextQuizAsync = async (cardIds: number[]) => {
-  await request.put(`/cards/next-quiz`, { cardIds });
+  await request.put('/cards/next-quiz', { cardIds });
+};
+
+export const putProfileAsync = async (userInfo: UserInfoResponse) => {
+  const { id, ...params } = userInfo;
+
+  await request.put(`/users/me/${id}`, params);
+};
+
+export const postProfileImageAsync = async (formData: FormData) => {
+  const { data } = await request.post<Pick<UserInfoResponse, 'profileUrl'>>(
+    '/users/profile',
+    formData
+  );
+
+  return data;
+};
+
+export const postUserNameCheckAsync = async (userName: string) => {
+  await request.post('/users/name-check', userName);
+};
+
+export const putHeartAsync = async (id: number) => {
+  const { data } = await request.put<boolean>(`workbooks/${id}/hearts`);
+
+  return data;
 };
 
 export const getUserKeywordAsync = async (keyword: string) => {
