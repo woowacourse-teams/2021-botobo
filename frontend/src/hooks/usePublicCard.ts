@@ -84,7 +84,6 @@ const usePublicCard = () => {
       });
 
       setHeartInfo({ heart, heartCount, serverHeart: heart });
-
       setIsLoading(false);
     } catch (error) {
       showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
