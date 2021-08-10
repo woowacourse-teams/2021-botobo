@@ -67,7 +67,7 @@ const PublicCardsPage = () => {
 
   return (
     <>
-      <MainHeader sticky={false} />
+      <MainHeader sticky={false} shadow={false} />
       <PageHeader
         title={ROUTE.PUBLIC_CARDS.TITLE}
         rightContent={
