@@ -74,6 +74,7 @@ const StyledHeader = styled.header<Required<Props>>`
   ${({ theme, sticky }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
+    z-index: 2;
 
     ${sticky
       ? css`
@@ -125,7 +126,6 @@ const Menu = styled.nav<MenuStyleProps>`
   width: 100%;
   height: 0;
   padding: 0 0.75rem;
-  z-index: 2;
   overflow: hidden;
 
   ${({ theme, isMenuVisible }) => css`
