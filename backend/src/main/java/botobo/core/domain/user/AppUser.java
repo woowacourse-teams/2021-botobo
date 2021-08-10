@@ -4,7 +4,6 @@ import botobo.core.exception.user.AnonymousHasNotIdException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 
 @NoArgsConstructor
 @AllArgsConstructor

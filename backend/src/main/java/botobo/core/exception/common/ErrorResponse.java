@@ -1,6 +1,5 @@
 package botobo.core.exception.common;
 
-import botobo.core.exception.ErrorType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

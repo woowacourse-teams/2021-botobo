@@ -1,5 +1,6 @@
-package botobo.core.exception;
+package botobo.core.exception.common;
 
+import botobo.core.exception.BotoboException;
 import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.TokenExpirationException;
