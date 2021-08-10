@@ -41,13 +41,12 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
-    // TODO bio 필드 추가
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
 
     @Builder
-    public User(Long id, String socialId, String userName, String profileUrl, Role role, List<Workbook> workbooks, SocialType socialType) {
+    public User(Long id, String socialId, String userName, String profileUrl, String bio,
+                Role role, List<Workbook> workbooks, SocialType socialType) {
         this.id = id;
         this.socialId = socialId;
         this.userName = userName;

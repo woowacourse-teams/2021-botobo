@@ -28,7 +28,7 @@ public class UserTest {
     void createUserWithoutBio() {
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();
@@ -40,10 +40,10 @@ public class UserTest {
     void createUserWithBio() {
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("user")
-                .bio("백엔드 개발자 유저입니다.")
                 .profileUrl("profile.io")
+                .bio("백엔드 개발자 유저입니다.")
                 .build();
         assertThat(user.getBio()).isEqualTo("백엔드 개발자 유저입니다.");
     }
@@ -53,9 +53,8 @@ public class UserTest {
     void update() {
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
-                .userName("조앤")
-                .bio("백엔드 개발자")
+                .socialId("1")
+                .userName("user")
                 .profileUrl("profile.io")
                 .build();
 
@@ -80,7 +79,7 @@ public class UserTest {
     void updateFailedWhenDifferentProfileUrl() {
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("조앤")
                 .bio("백엔드 개발자")
                 .profileUrl("profile.io")
