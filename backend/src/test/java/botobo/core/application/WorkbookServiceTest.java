@@ -149,7 +149,7 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("비회원이 문제집을 조회하면 비어있는 리스트를 반환한다.")
+    @DisplayName("비회원 문제집을 조회 - 성공, 비어있는 리스트 반환")
     void findWorkbooksByAnonymousUser() {
         // when
         List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(AppUser.anonymous());
@@ -737,7 +737,7 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("유저가 하트를 누른다.")
+    @DisplayName("좋아요 요청 - 성공")
     void toggleOnHeart() {
         // given
         Workbook workbook = Workbook.builder()
@@ -760,7 +760,7 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("유저가 하트를 취소한다.")
+    @DisplayName("좋아요 취소 - 성공")
     void toggleOffHeart() {
         // given
         Workbook workbook = Workbook.builder()

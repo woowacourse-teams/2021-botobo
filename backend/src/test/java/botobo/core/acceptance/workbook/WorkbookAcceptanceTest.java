@@ -76,7 +76,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("유저 문제집 추가시 opened와 tags는 필수가 아니다 - 기본값 (opened = false, tags = empty list)")
+    @DisplayName("문제집 추가 요청 - 성공, opened와 tags는 필수가 아니다 - 기본값 (opened = false, tags = empty list)")
     void createWorkbookByUserWithTags() {
         // given
         final String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
@@ -900,7 +900,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("유저가 하트를 토글한다.")
+    @DisplayName("유저가 하트를 토글 - 성공")
     void toggleOnHeart() {
         // given
         String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);

@@ -27,7 +27,7 @@ class TagNameTest {
 
     @ValueSource(strings = {"   java", "jAvA  ", "  JAVA   "})
     @ParameterizedTest
-    @DisplayName("TagName은 양 공백이 제거 후 소문자로 변경되어 생성된다.")
+    @DisplayName("Trimming 검증 - 성공, TagName은 양 공백이 제거 후 소문자로 변경되어 생성된다.")
     void createWithTrimming(String value) {
         // given
         TagName expected = TagName.of("java");

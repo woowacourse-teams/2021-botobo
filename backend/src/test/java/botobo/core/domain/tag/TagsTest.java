@@ -34,7 +34,7 @@ class TagsTest {
     }
 
     @Test
-    @DisplayName("두 Tags에서 같은 이름을 가지는 태그의 수를 구한다.")
+    @DisplayName("태그 이름의 교집합 검사 - 성공, 두 Tags에서 같은 이름을 가지는 태그의 수를 구한다.")
     void countSameTagName() {
         // given
         Tags tags = Tags.of(Arrays.asList(

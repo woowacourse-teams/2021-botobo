@@ -71,7 +71,7 @@ class HeartsTest {
     }
 
     @Test
-    @DisplayName("Hearts에 유저 아이디가 있는지 확인한다..")
+    @DisplayName("Hearts에 유저 아이디가 있는지 확인 - 성공")
     void contains() {
         // given
         Hearts hearts = Hearts.of(Arrays.asList(
@@ -85,7 +85,7 @@ class HeartsTest {
     }
 
     @Test
-    @DisplayName("하트를 누른다.")
+    @DisplayName("좋아요 누르기 - 성공")
     void toggleOnHeart() {
         // given
         Hearts hearts = Hearts.of(Arrays.asList(
@@ -107,7 +107,7 @@ class HeartsTest {
     }
 
     @Test
-    @DisplayName("하트를 취소한다.")
+    @DisplayName("좋아요 취소 - 성공")
     void toggleOffHeart() {
         // given
         Hearts hearts = Hearts.of(Arrays.asList(
