@@ -15,19 +15,20 @@ const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
 interface Props {
   sticky?: boolean;
+  shadow?: boolean;
 }
 
 interface MenuStyleProps {
   isMenuVisible: boolean;
 }
 
-const MainHeader = ({ sticky = true }: Props) => {
+const MainHeader = ({ sticky = true, shadow = true }: Props) => {
   const { routeMain, routeLogin, routeLogout, routeProfile } = useRouter();
   const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
-    <StyledHeader sticky={sticky}>
+    <StyledHeader sticky={sticky} shadow={shadow}>
       <h1>
         <Logo
           href="/"
@@ -71,9 +72,9 @@ const StyledHeader = styled.header<Required<Props>>`
   z-index: 1;
   position: relative;
 
-  ${({ theme, sticky }) => css`
+  ${({ theme, sticky, shadow }) => css`
     background-color: ${theme.color.white};
-    box-shadow: ${theme.boxShadow.header};
+    box-shadow: ${shadow ? theme.boxShadow.header : ''};
     z-index: 2;
 
     ${sticky

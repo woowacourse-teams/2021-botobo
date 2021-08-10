@@ -30,7 +30,7 @@ const WorkbookAddPage = () => {
 
   return (
     <>
-      <MainHeader sticky={false} />
+      <MainHeader sticky={false} shadow={false} />
       <FormProvider
         initialValues={{ name: '' }}
         validators={{ name: validateWorkbookName }}
