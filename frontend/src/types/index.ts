@@ -61,4 +61,5 @@ export interface UserInfoResponse {
   id: number;
   userName: string;
   profileUrl: string;
+  bio: string;
 }

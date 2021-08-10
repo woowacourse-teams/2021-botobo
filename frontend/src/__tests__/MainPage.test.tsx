@@ -10,7 +10,12 @@ describe('메인 페이지 테스트', () => {
     render(
       <RecoilRoot
         initializeState={(snap) =>
-          snap.set(userState, { userName: 'ditto', id: 1, profileUrl: '' })
+          snap.set(userState, {
+            userName: 'ditto',
+            id: 1,
+            profileUrl: '',
+            bio: '',
+          })
         }
       >
         <MainPage />

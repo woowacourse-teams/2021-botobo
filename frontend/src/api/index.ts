@@ -170,7 +170,26 @@ export const postPublicCardsAsync = async (
 };
 
 export const putNextQuizAsync = async (cardIds: number[]) => {
-  await request.put(`/cards/next-quiz`, { cardIds });
+  await request.put('/cards/next-quiz', { cardIds });
+};
+
+export const putProfileAsync = async (userInfo: UserInfoResponse) => {
+  const { id, ...params } = userInfo;
+
+  await request.put(`/users/me/${id}`, params);
+};
+
+export const postProfileImageAsync = async (formData: FormData) => {
+  const { data } = await request.post<Pick<UserInfoResponse, 'profileUrl'>>(
+    '/users/profile',
+    formData
+  );
+
+  return data;
+};
+
+export const postUserNameCheckAsync = async (userName: string) => {
+  await request.post('/users/name-check', userName);
 };
 
 export const putHeartAsync = async (id: number) => {
