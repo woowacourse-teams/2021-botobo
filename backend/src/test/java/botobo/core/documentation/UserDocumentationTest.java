@@ -110,11 +110,11 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build();
 
         given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.update(anyLong(), any(), any())).willReturn(userResponse);
+        given(userService.update(any(), any())).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(token)
                 .build()
                 .status(status().isOk())
@@ -138,7 +138,7 @@ public class UserDocumentationTest extends DocumentationTest {
         given(authService.findAppUserByToken(token)).willReturn(appUser);
         doNothing()
                 .when(userService)
-                .checkSameUserNameAlreadyExist(userNameRequest, appUser);
+                .checkDuplicatedUserName(userNameRequest, appUser);
 
         document()
                 .mockMvc(mockMvc)

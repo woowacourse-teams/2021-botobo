@@ -8,14 +8,12 @@ import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
-import botobo.core.exception.user.UserUpdateNotAllowedException;
 import botobo.core.infrastructure.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,24 +31,11 @@ public class UserService extends AbstractUserService {
     }
 
     @Transactional
-    public UserResponse update(Long id, UserUpdateRequest userUpdateRequest, AppUser appUser) {
+    public UserResponse update(UserUpdateRequest userUpdateRequest, AppUser appUser) {
+        validateDuplicatedUserName(userUpdateRequest.getUserName(), appUser);
         User user = findUser(appUser);
-        if (!user.isSameId(id)) {
-            throw new UserUpdateNotAllowedException();
-        }
-        validateDuplicatedUserName(userUpdateRequest.getUserName(), user);
         user.update(userUpdateRequest.toUser());
         return UserResponse.of(user);
-    }
-
-    private void validateDuplicatedUserName(String requestedName, User user) {
-        userRepository.findByUserName(requestedName).ifPresent(
-                findUser -> {
-                    if (!Objects.equals(user, findUser)) {
-                        throw new UserNameDuplicatedException(requestedName);
-                    }
-                }
-        );
     }
 
     @Transactional
@@ -63,7 +48,17 @@ public class UserService extends AbstractUserService {
                 .build();
     }
 
-    public void checkSameUserNameAlreadyExist(UserNameRequest userNameRequest, AppUser appUser) {
-        validateDuplicatedUserName(userNameRequest.getUserName(), findUser(appUser));
+    public void checkDuplicatedUserName(UserNameRequest userNameRequest, AppUser appUser) {
+        validateDuplicatedUserName(userNameRequest.getUserName(), appUser);
+    }
+
+    private void validateDuplicatedUserName(String requestedName, AppUser me) {
+        userRepository.findByUserName(requestedName).ifPresent(
+                findUser -> {
+                    if (!findUser.isSameId(me.getId())) {
+                        throw new UserNameDuplicatedException(requestedName);
+                    }
+                }
+        );
     }
 }

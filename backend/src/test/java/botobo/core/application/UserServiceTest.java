@@ -10,7 +10,6 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.exception.user.UserUpdateNotAllowedException;
 import botobo.core.infrastructure.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -156,7 +155,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        UserResponse userResponse = userService.update(1L, userUpdateRequest, appUser);
+        UserResponse userResponse = userService.update(userUpdateRequest, appUser);
 
         // then
         assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
@@ -185,7 +184,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        UserResponse userResponse = userService.update(1L, userUpdateRequest, appUser);
+        UserResponse userResponse = userService.update(userUpdateRequest, appUser);
 
         // then
         assertThat(userResponse.getProfileUrl()).isEqualTo("profile.io");
@@ -194,30 +193,6 @@ public class UserServiceTest {
 
         then(userRepository)
                 .should(times(1))
-                .findByUserName(userUpdateRequest.getUserName());
-        then(userRepository)
-                .should(times(1))
-                .findById(anyLong());
-    }
-
-    @DisplayName("유저의 정보를 변경한다. - 실패, pathVariable의 id와 로그인한 유저의 id가 다름.")
-    @Test
-    void updateFailedWhenDifferentIds() {
-        // given
-        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("수정된 user")
-                .profileUrl("profile.io")
-                .bio("수정된 bio")
-                .build();
-
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-
-        // when
-        assertThatThrownBy(() -> userService.update(2L, userUpdateRequest, appUser))
-                .isInstanceOf(UserUpdateNotAllowedException.class);
-
-        then(userRepository)
-                .should(never())
                 .findByUserName(userUpdateRequest.getUserName());
         then(userRepository)
                 .should(times(1))
@@ -237,7 +212,7 @@ public class UserServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // when
-        assertThatThrownBy(() -> userService.update(1L, userUpdateRequest, appUser))
+        assertThatThrownBy(() -> userService.update(userUpdateRequest, appUser))
                 .isInstanceOf(ProfileUpdateNotAllowedException.class);
 
         then(userRepository)
@@ -258,18 +233,17 @@ public class UserServiceTest {
                 .bio("수정된 bio")
                 .build();
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(userRepository.findByUserName(userUpdateRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
 
         // when
-        assertThatThrownBy(() -> userService.update(1L, userUpdateRequest, appUser))
+        assertThatThrownBy(() -> userService.update(userUpdateRequest, appUser))
                 .isInstanceOf(UserNameDuplicatedException.class);
 
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userUpdateRequest.getUserName());
         then(userRepository)
-                .should(times(1))
+                .should(never())
                 .findById(anyLong());
     }
 
@@ -280,18 +254,14 @@ public class UserServiceTest {
                 .userName("날씨가덥다.")
                 .build();
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.empty());
 
-        assertThatCode(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+        assertThatCode(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
                 .doesNotThrowAnyException();
 
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userNameRequest.getUserName());
-        then(userRepository)
-                .should(times(1))
-                .findById(anyLong());
     }
 
     @Test
@@ -301,18 +271,14 @@ public class UserServiceTest {
                 .userName("user")
                 .build();
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.of(user));
 
-        assertThatCode(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+        assertThatCode(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
                 .doesNotThrowAnyException();
 
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userNameRequest.getUserName());
-        then(userRepository)
-                .should(times(1))
-                .findById(anyLong());
     }
 
     @Test
@@ -322,17 +288,13 @@ public class UserServiceTest {
                 .userName("이미_존재하는_이름")
                 .build();
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(userRepository.findByUserName(userNameRequest.getUserName())).willThrow(UserNameDuplicatedException.class);
 
-        assertThatThrownBy(() -> userService.checkSameUserNameAlreadyExist(userNameRequest, appUser))
+        assertThatThrownBy(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
                 .isInstanceOf(UserNameDuplicatedException.class);
 
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userNameRequest.getUserName());
-        then(userRepository)
-                .should(times(1))
-                .findById(anyLong());
     }
 }

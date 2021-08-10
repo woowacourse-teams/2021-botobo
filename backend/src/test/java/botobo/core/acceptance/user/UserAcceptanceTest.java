@@ -104,7 +104,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -128,7 +128,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -137,28 +137,6 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(errorResponse.getMessage()).isEqualTo("프로필 이미지 수정은 불가합니다.");
-    }
-
-    @Test
-    @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, id와 AppUser의 id가 다름.")
-    void updateFailedDifferentId() {
-        //given
-        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("new조앤")
-                .profileUrl("github.io")
-                .bio("new 소개글")
-                .build();
-        //when
-        final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 2L)
-                .auth(createToken(1L))
-                .build();
-
-        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(errorResponse.getMessage()).isEqualTo("식별값이 다르므로 내 정보를 수정할 권한이 없습니다.");
     }
 
     @Test
@@ -172,7 +150,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -194,7 +172,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -216,7 +194,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -238,7 +216,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -260,7 +238,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -282,7 +260,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -304,7 +282,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -327,7 +305,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, id)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(id))
                 .build();
 
@@ -336,6 +314,31 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(errorResponse.getMessage()).isEqualTo("admin(은)는 이미 존재합니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 한 유저의 정보를 수정한다. - 성공, 요청으로 들어온 이름이 기존 이름인 경우에는 수정 가능")
+    void updateFailedDuplicateUserNameButItsMe() {
+        //given
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .userName("admin") // 기존에 존재하는 1번 유저가 이름 변경없이 admin 이름으로 변경한다.
+                .profileUrl("github.io")
+                .bio("안녕하세요~")
+                .build();
+        //when
+        final HttpResponse response = request()
+                .put("/api/users/me", userUpdateRequest)
+                .auth(createToken(1L))
+                .build();
+
+        // then
+        UserResponse userResponse = response.convertBody(UserResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(userResponse.getId()).isNotNull();
+        assertThat(userResponse.getUserName()).isEqualTo("admin");
+        assertThat(userResponse.getProfileUrl()).isEqualTo("github.io");
+        assertThat(userResponse.getBio()).isEqualTo("안녕하세요~");
     }
 
     @ParameterizedTest
@@ -350,7 +353,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -372,7 +375,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me/{id}", userUpdateRequest, 1L)
+                .put("/api/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 

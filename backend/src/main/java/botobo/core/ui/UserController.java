@@ -9,7 +9,6 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,18 +46,17 @@ public class UserController {
         return ResponseEntity.ok(profileResponse);
     }
 
-    @PutMapping("/me/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id,
-                                               @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest,
                                                @AuthenticationPrincipal AppUser appUser) {
-        UserResponse userResponse = userService.update(id, userUpdateRequest, appUser);
+        UserResponse userResponse = userService.update(userUpdateRequest, appUser);
         return ResponseEntity.ok(userResponse);
     }
 
     @PostMapping("/name-check")
     public ResponseEntity<Void> checkDuplicateUserName(@Valid @RequestBody UserNameRequest userNameRequest,
                                                        @AuthenticationPrincipal AppUser appUser) {
-        userService.checkSameUserNameAlreadyExist(userNameRequest, appUser);
+        userService.checkDuplicatedUserName(userNameRequest, appUser);
         return ResponseEntity.ok().build();
     }
 }
