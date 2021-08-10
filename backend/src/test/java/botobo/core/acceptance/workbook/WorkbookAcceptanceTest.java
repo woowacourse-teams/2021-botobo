@@ -319,26 +319,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("공유 문제집 검색 - 성공")
-    void findPublicWorkbooksBySearch() {
-        // given
-        final String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
-        유저_태그_포함_문제집_등록되어_있음("Java 문제집", true, accessToken);
-
-        // when
-        final HttpResponse response = request()
-                .get("/api/workbooks/public")
-                .queryParam("search", "Java")
-                .auth(accessToken)
-                .build();
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(1);
-    }
-
-    @Test
     @DisplayName("공유 문제집 조회 - 성공")
     void findPublicWorkbookById() {
         final String accessToken = 소셜_로그인되어_있음(userInfo, SocialType.GITHUB);
@@ -939,13 +919,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         heartResponse = httpResponse.convertBody(HeartResponse.class);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(heartResponse.isHeart()).isFalse();
-    }
-
-    private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
-        return request()
-                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
-                .auth(accessToken)
-                .build();
     }
 
     private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,

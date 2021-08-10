@@ -1,4 +1,4 @@
-package botobo.core.exception.workbook;
+package botobo.core.exception.search;
 
 import botobo.core.exception.common.BadRequestException;
 

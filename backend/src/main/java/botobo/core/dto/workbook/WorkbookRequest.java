@@ -26,6 +26,7 @@ public class WorkbookRequest {
 
     private boolean opened;
 
+    @Builder.Default
     @Valid
     private List<TagRequest> tags = new ArrayList<>();
 

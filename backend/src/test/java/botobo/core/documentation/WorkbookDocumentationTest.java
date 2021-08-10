@@ -12,6 +12,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.WorkbookController;
+import botobo.core.utils.DummyRequestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -159,23 +159,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-put-success");
-    }
-
-    @Test
-    @DisplayName("공유 문제집 검색 - 성공")
-    void findPublicWorkbooksBySearch() throws Exception {
-        // given
-        String token = obtainAuthenticatedToken();
-        given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicWorkbookResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/workbooks/public?search=Network")
-                .auth(token)
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-public-search-get-success");
     }
 
     @Test

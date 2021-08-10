@@ -36,12 +36,6 @@ include::{snippets}/workbooks-delete-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-delete-success/http-response.adoc[]
 
-=== 검색어를 이용하여 공유 문제집 검색
-==== 요청
-include::{snippets}/workbooks-public-search-get-success/http-request.adoc[]
-==== 응답
-include::{snippets}/workbooks-public-search-get-success/http-response.adoc[]
-
 === 공유 문제집 상세보기
 ==== 요청
 include::{snippets}/workbooks-public-get-success/http-request.adoc[]

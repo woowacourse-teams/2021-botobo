@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -54,13 +53,6 @@ public class WorkbookController {
                                                            @AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
                 workbookService.updateWorkbook(id, workbookUpdateRequest, appUser)
-        );
-    }
-
-    @GetMapping("/public")
-    public ResponseEntity<List<WorkbookResponse>> findPublicWorkbooksBySearch(@RequestParam String search) {
-        return ResponseEntity.ok(
-                workbookService.findPublicWorkbooksBySearch(search)
         );
     }
 

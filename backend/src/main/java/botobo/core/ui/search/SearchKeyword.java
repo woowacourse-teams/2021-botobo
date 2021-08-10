@@ -1,6 +1,6 @@
-package botobo.core.domain.workbook.criteria;
+package botobo.core.ui.search;
 
-import botobo.core.exception.workbook.SearchKeywordCreationFailureException;
+import botobo.core.exception.search.SearchKeywordCreationFailureException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -10,6 +10,7 @@ import java.util.Objects;
 @Getter
 public class SearchKeyword {
 
+    private static final int KEYWORD_MIN_LENGTH = 1;
     private static final int KEYWORD_MAX_LENGTH = 30;
 
     private final String value;
@@ -30,14 +31,18 @@ public class SearchKeyword {
 
     private String refineValue(String value) {
         return value.trim()
-                .replaceAll("(\\t|\r\n|\r|\n|\n\r)", " ")
-                .replaceAll("[ ]+", " ");
+                .replaceAll("(\\t|\r\n|\r|\n|\n\r)", " ");
     }
 
     private void validateLength(String value) {
         if (value.length() > KEYWORD_MAX_LENGTH) {
             throw new SearchKeywordCreationFailureException(
                     String.format("검색어는 %d자 이하여야 합니다.", KEYWORD_MAX_LENGTH)
+            );
+        }
+        if (value.length() < KEYWORD_MIN_LENGTH) {
+            throw new SearchKeywordCreationFailureException(
+                    String.format("검색어는 %d자 이상이어야 합니다.", KEYWORD_MIN_LENGTH)
             );
         }
     }
@@ -50,7 +55,11 @@ public class SearchKeyword {
         }
     }
 
-    public static SearchKeyword from(String value) {
+    public static SearchKeyword of(String value) {
         return new SearchKeyword(value);
+    }
+
+    public String toLowercase() {
+        return value.toLowerCase();
     }
 }
