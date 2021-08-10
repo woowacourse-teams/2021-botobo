@@ -23,12 +23,6 @@ interface QuizIndexButtonStyleProps {
   isSelected: boolean;
 }
 
-const cardSlideInfo = {
-  xPosition: 0,
-  width: 0,
-  pointOfChange: 0,
-};
-
 const isMobile = () => {
   const PC_DEVICE = ['win16', 'win32', 'win64', 'mac', 'macintel'];
   const platform = navigator.platform;
@@ -51,6 +45,11 @@ const QuizPage = () => {
 
   const quizListRef = useRef<HTMLUListElement>(null);
   const [xPosition, setXPosition] = useState('0');
+  const [cardSlideInfo, setCardSlideInfo] = useState({
+    xPosition: 0,
+    width: 0,
+    pointOfChange: 0,
+  });
 
   const [quizTime, setQuizTime] = useRecoilState(quizTimeState);
 
@@ -66,15 +65,26 @@ const QuizPage = () => {
         1.25 * currentQuizIndex
       }rem`
     );
-  }, [currentQuizIndex]);
+  }, [currentQuizIndex, cardSlideInfo.width]);
 
   useEffect(() => {
-    if (!quizListRef?.current) return;
+    const setInitialCardSlideInfo = () => {
+      if (!quizListRef?.current) return;
 
-    const quizListWidth = quizListRef.current.clientWidth;
+      const quizListWidth = quizListRef.current.clientWidth;
 
-    cardSlideInfo.width = quizListWidth;
-    cardSlideInfo.pointOfChange = quizListWidth / 5;
+      setCardSlideInfo((prevValue) => ({
+        ...prevValue,
+        width: quizListWidth,
+        pointOfChange: quizListWidth / 5,
+      }));
+    };
+
+    setInitialCardSlideInfo();
+
+    window.addEventListener('resize', setInitialCardSlideInfo);
+
+    return () => window.removeEventListener('resize', setInitialCardSlideInfo);
   }, []);
 
   return (
@@ -97,16 +107,22 @@ const QuizPage = () => {
               currentIndex={currentQuizIndex}
               style={{ transform: `translateX(calc(${xPosition}))` }}
             >
-              {quizzes.map(({ id, question, answer, workbookName }, index) => (
-                <QuizItem key={id} quizIndex={index}>
-                  <Quiz
-                    question={question}
-                    answer={answer}
-                    workbookName={workbookName}
-                    isChanged={id === prevQuizId}
-                  />
-                </QuizItem>
-              ))}
+              {quizzes.map(
+                (
+                  { id, question, answer, workbookName, encounterCount },
+                  index
+                ) => (
+                  <QuizItem key={id} quizIndex={index}>
+                    <Quiz
+                      question={question}
+                      answer={answer}
+                      workbookName={workbookName}
+                      encounterCount={encounterCount}
+                      isChanged={id === prevQuizId}
+                    />
+                  </QuizItem>
+                )
+              )}
             </QuizList>
           )}
         </QuizWrapper>
@@ -114,7 +130,10 @@ const QuizPage = () => {
           <MobilePageNation>
             <TouchBar
               onTouchStart={(event) => {
-                cardSlideInfo.xPosition = event.touches[0].clientX;
+                setCardSlideInfo((prevValue) => ({
+                  ...prevValue,
+                  xPosition: event.touches[0].clientX,
+                }));
               }}
               onTouchMove={(event) => {
                 if (!quizListRef?.current) return;

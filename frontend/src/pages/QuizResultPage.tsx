@@ -33,16 +33,19 @@ const QuizResultPage = () => {
         <br />
         <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
         <QuizResultList>
-          {quizResults.map(({ id, question, workbookName, isChecked }) => (
-            <li key={id}>
-              <QuizResult
-                question={question}
-                workbookName={workbookName}
-                isChecked={isChecked}
-                onClick={() => checkQuizResult(id)}
-              />
-            </li>
-          ))}
+          {quizResults.map(
+            ({ id, question, workbookName, encounterCount, isChecked }) => (
+              <li key={id}>
+                <QuizResult
+                  question={question}
+                  workbookName={workbookName}
+                  encounterCount={encounterCount}
+                  isChecked={isChecked}
+                  onClick={() => checkQuizResult(id)}
+                />
+              </li>
+            )
+          )}
         </QuizResultList>
         <ButtonWrapper>
           <Button
