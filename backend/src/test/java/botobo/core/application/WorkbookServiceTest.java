@@ -326,7 +326,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .build();
@@ -412,7 +412,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -485,7 +485,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .build();
