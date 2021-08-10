@@ -2,3 +2,33 @@
 GET /api/users/me HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: localhost:8080
+
+### 회원 이미지 수정 요청
+POST /api/users/profile HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: localhost:8080
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name='profile'; filename='botobo.png'
+
+#### 회원 정보 수정 요청
+PUT /api/users/me HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: localhost:8080
+
+{
+  "userName": "수정된_조앤",
+  "profileUrl": "유저의 기존 프로필 url",
+  "bio": "수정된 바이오"
+}
+
+#### 회원명 중복 조회
+POST /api/users/name-check HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: localhost:8080
+
+{
+  "userName": "중복_조회할_이름"
+}
+

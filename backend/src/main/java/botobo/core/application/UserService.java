@@ -4,8 +4,10 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
-import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.dto.user.UserUpdateRequest;
+import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.infrastructure.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,37 +17,48 @@ import java.io.IOException;
 
 @Service
 @Transactional(readOnly = true)
-public class UserService {
+public class UserService extends AbstractUserService {
 
-    private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
     public UserService(UserRepository userRepository, S3Uploader s3Uploader) {
-        this.userRepository = userRepository;
+        super(userRepository);
         this.s3Uploader = s3Uploader;
     }
 
-    public UserResponse findById(Long id) {
-        User user = findUserById(id);
-        return UserResponse.builder()
-                .id(user.getId())
-                .userName(user.getUserName())
-                .profileUrl(user.getProfileUrl())
-                .build();
+    public UserResponse findById(AppUser appUser) {
+        return UserResponse.of(findUser(appUser));
     }
 
-    private User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+    @Transactional
+    public UserResponse update(UserUpdateRequest userUpdateRequest, AppUser appUser) {
+        validateDuplicatedUserName(userUpdateRequest.getUserName(), appUser);
+        User user = findUser(appUser);
+        user.update(userUpdateRequest.toUser());
+        return UserResponse.of(user);
     }
 
     @Transactional
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
-        User user = findUserById(appUser.getId());
+        User user = findUser(appUser);
         String updateProfileUrl = s3Uploader.upload(multipartFile, user.getUserName());
         user.updateProfileUrl(updateProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(updateProfileUrl)
                 .build();
+    }
+
+    public void checkDuplicatedUserName(UserNameRequest userNameRequest, AppUser appUser) {
+        validateDuplicatedUserName(userNameRequest.getUserName(), appUser);
+    }
+
+    private void validateDuplicatedUserName(String requestedName, AppUser me) {
+        userRepository.findByUserName(requestedName).ifPresent(
+                findUser -> {
+                    if (!findUser.isSameId(me.getId())) {
+                        throw new UserNameDuplicatedException(requestedName);
+                    }
+                }
+        );
     }
 }
