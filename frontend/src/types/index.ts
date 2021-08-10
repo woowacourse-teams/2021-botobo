@@ -46,6 +46,8 @@ export interface CardsResponse {
 }
 
 export interface PublicCardsResponse extends CardsResponse {
+  heart: boolean;
+  heartCount: number;
   cardCount: number;
   tags: TagResponse[];
 }
@@ -59,4 +61,7 @@ export interface UserInfoResponse {
   id: number;
   userName: string;
   profileUrl: string;
+  bio: string;
 }
+
+export type AuthType = 'github' | 'google';

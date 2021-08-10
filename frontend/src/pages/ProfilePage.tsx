@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
 
+import { postUserNameCheckAsync } from '../api';
 import EditIcon from '../assets/pencil.svg';
 import { Button, InputField, MainHeader, TextAreaField } from '../components';
 import {
@@ -11,7 +11,7 @@ import {
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
-import { userState } from '../recoil';
+import { useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
 
 interface ImageEditorStyleProp {
@@ -20,9 +20,23 @@ interface ImageEditorStyleProp {
 
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-const validateUserName = (value: string) => {
+const validateFileSize = (size: number) => {
+  const mb = 1024 * 1024;
+
+  if (size < 0 || size > 10 * mb) {
+    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
+  }
+};
+
+const validateUserName = async (value: string) => {
+  await postUserNameCheckAsync(value);
+
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
     throw new Error(`닉네임은 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`);
+  }
+
+  if (/\s/.test(value)) {
+    throw new Error('닉네임에 공백은 허용할 수 없습니다.');
   }
 };
 
@@ -33,8 +47,28 @@ const validateBio = (value: string) => {
 };
 
 const ProfilePage = () => {
-  const [userInfo] = useRecoilState(userState);
+  const { userInfo, updateProfileUrl, editProfile } = useProfile();
   const [isEditable, setIsEditable] = useState(false);
+
+  const showSnackbar = useSnackbar();
+
+  const uploadImage: React.ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    setIsEditable(false);
+    const file = target.files?.[0];
+
+    if (!file) return;
+
+    const size = file.size ?? 0;
+
+    try {
+      validateFileSize(size);
+      updateProfileUrl(file);
+    } catch (error) {
+      showSnackbar({ message: error.message });
+    }
+  };
 
   return (
     <>
@@ -42,31 +76,58 @@ const ProfilePage = () => {
       <Container>
         <Profile>
           <ImageContainer>
-            <ImageWrapper
-              onClick={() => setIsEditable((prevState) => !prevState)}
-            >
+            <div onClick={() => setIsEditable((prevState) => !prevState)}>
               <Avatar src={userInfo?.profileUrl ?? userSrc} />
               <EditIconWrapper>
                 <EditIcon width="1.3rem" height="1.3rem" />
               </EditIconWrapper>
-            </ImageWrapper>
+            </div>
             {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
             <ImageEditor isEditable={isEditable}>
-              <button>이미지 업로드</button>
-              <button>이미지 제거</button>
+              <ImageUploader htmlFor="image-upload">
+                <input
+                  type="file"
+                  id="image-upload"
+                  name="image-upload"
+                  accept="image/png, image/jpg, image/jpeg, image/bmp"
+                  onChange={uploadImage}
+                />
+                <span>이미지 업로드</span>
+              </ImageUploader>
+              <button
+                type="button"
+                role="image-delete-button"
+                onClick={() => {
+                  setIsEditable(false);
+                  updateProfileUrl();
+                }}
+              >
+                이미지 제거
+              </button>
             </ImageEditor>
           </ImageContainer>
           <FormProvider
             initialValues={{
-              name: userInfo?.userName ?? 'Unknown User',
-              bio: '',
+              userName: userInfo?.userName ?? 'Unknown User',
+              bio: userInfo?.bio ?? '',
             }}
-            validators={{ name: validateUserName, bio: validateBio }}
-            onSubmit={({ name, bio }) => console.log(name, bio)}
+            validators={{
+              userName: async (value) => {
+                if (value === userInfo?.userName) return;
+
+                await validateUserName(value);
+              },
+              bio: validateBio,
+            }}
+            onSubmit={({ userName, bio }) => {
+              if (!userInfo) return;
+
+              editProfile({ userName, profileUrl: userInfo.profileUrl, bio });
+            }}
           >
             <InputTitle>이름</InputTitle>
             <NameInput
-              name="name"
+              name="userName"
               focusColor="gray"
               maxLength={USER_NAME_MAXIMUM_LENGTH}
             />
@@ -74,6 +135,7 @@ const ProfilePage = () => {
             <BioInput
               name="bio"
               focusColor="gray"
+              placeholder="소개글을 작성해주세요."
               maxLength={BIO_MAXIMUM_LENGTH}
             />
             <Button size="full">프로필 수정</Button>
@@ -109,9 +171,6 @@ const Profile = styled.div`
 
 const ImageContainer = styled.div`
   position: relative;
-`;
-
-const ImageWrapper = styled.div`
   cursor: pointer;
 `;
 
@@ -179,9 +238,16 @@ const ImageEditor = styled.div<ImageEditorStyleProp>`
     `}
   }
 
-  & > button {
-    display: block;
+  & > * {
     line-height: 1.5;
+  }
+`;
+
+const ImageUploader = styled.label`
+  cursor: pointer;
+
+  & > input {
+    display: none;
   }
 `;
 
@@ -214,10 +280,7 @@ const BioInput = styled(TextAreaField)`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
     border-radius: ${theme.borderRadius.square};
-
-    &:focus {
-      border: 1px solid ${theme.color.gray_8};
-    }
+    border: 1px solid ${theme.color.gray_4};
   `}
 `;
 

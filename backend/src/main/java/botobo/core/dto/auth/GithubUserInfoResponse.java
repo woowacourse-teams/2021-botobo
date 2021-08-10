@@ -1,6 +1,7 @@
 package botobo.core.dto.auth;
 
 import botobo.core.domain.user.Role;
+import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,22 +13,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GithubUserInfoResponse {
+public class GithubUserInfoResponse implements UserInfoResponse {
 
     @JsonProperty("login")
     private String userName;
     @JsonProperty("id")
-    private Long githubId;
+    private String socialId;
     @JsonProperty("avatar_url")
     private String profileUrl;
 
     public User toUser() {
         return User.builder()
-                .githubId(githubId)
+                .socialId(socialId)
                 .userName(userName)
                 .profileUrl(profileUrl)
                 .role(Role.USER)
+                .socialType(SocialType.GITHUB)
                 .build();
     }
-
 }

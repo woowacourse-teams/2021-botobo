@@ -2,6 +2,7 @@ package botobo.core.acceptance;
 
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.Role;
+import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.admin.AdminCardRequest;
@@ -9,6 +10,7 @@ import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.tag.TagRequest;
@@ -16,8 +18,9 @@ import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
+import botobo.core.infrastructure.GoogleOauthManager;
 import botobo.core.infrastructure.JwtTokenProvider;
-import botobo.core.utils.DummyRequestBuilder;
+import botobo.core.infrastructure.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,13 +38,22 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     protected GithubOauthManager githubOauthManager;
 
+    @MockBean
+    protected GoogleOauthManager googleOauthManager;
+
     protected GithubUserInfoResponse userInfo, anotherUserInfo;
 
     @Autowired
     protected UserRepository userRepository;
 
     @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
     protected JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private OauthManagerFactory oauthManagerFactory;
 
     protected User user;
 
@@ -50,7 +62,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     protected void setUp() {
         super.setUp();
         user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("admin")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
@@ -60,7 +72,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected User anyUser() {
         User anyUser = User.builder()
-                .githubId(1L)
+                .socialId("2")
                 .userName("joanne")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -179,18 +191,24 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .build();
     }
 
-    protected String 로그인되어_있음(GithubUserInfoResponse userInfo) {
-        ExtractableResponse<Response> response = 로그인_요청(userInfo);
+    protected String 소셜_로그인되어_있음(UserInfoResponse userInfo, SocialType socialType) {
+        ExtractableResponse<Response> response = 소셜_로그인_요청(userInfo, socialType);
         return response.as(TokenResponse.class).getAccessToken();
     }
 
-    protected ExtractableResponse<Response> 로그인_요청(GithubUserInfoResponse userInfo) {
-        LoginRequest loginRequest = new LoginRequest("githubCode");
+    protected ExtractableResponse<Response> 소셜_로그인_요청(UserInfoResponse userInfo, SocialType socialType) {
+        LoginRequest loginRequest = new LoginRequest("code");
 
-        given(githubOauthManager.getUserInfoFromGithub(any())).willReturn(userInfo);
+        if (socialType == SocialType.GITHUB) {
+            given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(githubOauthManager);
+            given(githubOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
+        } else {
+            given(oauthManagerFactory.findOauthMangerBySocialType(socialType)).willReturn(googleOauthManager);
+            given(googleOauthManager.getUserInfo(any())).willReturn(userInfo.toUser());
+        }
 
         return request()
-                .post("/api/login", loginRequest)
+                .post("/api/login/{socialType}", loginRequest, socialType)
                 .build()
                 .extract();
     }

@@ -21,10 +21,11 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .role(Role.USER)
+                .socialType(SocialType.GITHUB)
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class UserRepositoryTest {
         assertThat(savedUser).isSameAs(user);
         assertThat(savedUser.getCreatedAt()).isNotNull();
         assertThat(savedUser.getUpdatedAt()).isNotNull();
+        assertThat(savedUser.getBio()).isEqualTo("");
     }
 
     @Test
@@ -53,13 +55,24 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("User Github Id로 조회 - 성공")
+    @DisplayName("User Social Id와 Social Type 으로 조회 - 성공")
     void findByGithubId() {
         // given
         userRepository.save(user);
 
         // when, then
-        Optional<User> findUser = userRepository.findByGithubId(user.getGithubId());
+        Optional<User> findUser = userRepository.findBySocialIdAndSocialType(user.getSocialId(), SocialType.GITHUB);
+        assertThat(findUser).containsSame(user);
+    }
+
+    @Test
+    @DisplayName("UserName으로 조회 - 성공")
+    void findByUserName() {
+        // given
+        userRepository.save(user);
+
+        // when, then
+        Optional<User> findUser = userRepository.findByUserName(user.getUserName());
         assertThat(findUser).containsSame(user);
     }
 }

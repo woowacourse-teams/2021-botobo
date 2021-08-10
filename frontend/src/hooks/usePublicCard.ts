@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { getPublicCardsAsync, postPublicCardsAsync } from './../api';
+import {
+  getPublicCardsAsync,
+  postPublicCardsAsync,
+  putHeartAsync,
+} from './../api';
 import { shouldWorkbookUpdateState } from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
@@ -18,6 +22,8 @@ const cardsInitialState = {
 
 const publicCardsInitialState = {
   ...cardsInitialState,
+  heart: false,
+  heartCount: 0,
   cardCount: -1,
   tags: [],
 };
@@ -40,7 +46,21 @@ const usePublicCard = () => {
   const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
     publicCardsInitialState
   );
-  const { workbookId, workbookName, cards, cardCount, tags } = publicCardInfo;
+  const {
+    workbookId,
+    workbookName,
+    cards,
+    cardCount,
+    tags,
+    heart,
+    heartCount,
+  } = publicCardInfo;
+
+  const [heartInfo, setHeartInfo] = useState({
+    heart,
+    heartCount,
+    serverHeart: heart,
+  });
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
   const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
@@ -65,6 +85,16 @@ const usePublicCard = () => {
     } catch (error) {
       showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
       setIsLoading(false);
+    }
+  };
+
+  const toggleHeart = async () => {
+    try {
+      const isHeart = await putHeartAsync(workbookId);
+
+      setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: isHeart }));
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -132,12 +162,15 @@ const usePublicCard = () => {
     cards,
     cardCount,
     tags,
+    heartInfo,
+    setHeartInfo,
     isAllCardChecked,
     checkedCardCount,
     checkCard,
     checkAllCard,
     takeCardsToMyWorkbook,
     isLoading,
+    toggleHeart,
   };
 };
 

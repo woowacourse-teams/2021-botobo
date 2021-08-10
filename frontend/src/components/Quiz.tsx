@@ -2,10 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
-import { scrollBarStyle } from '../styles';
+import { Flex, scrollBarStyle } from '../styles';
 import { QuizResponse } from '../types';
 
-interface Props extends Omit<QuizResponse, 'id' | 'encounterCount'> {
+interface Props extends Omit<QuizResponse, 'id'> {
   isChanged: boolean;
 }
 
@@ -13,7 +13,13 @@ interface CardStyleProps {
   isFlipped: boolean;
 }
 
-const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
+const Quiz = ({
+  question,
+  answer,
+  workbookName,
+  encounterCount,
+  isChanged,
+}: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
@@ -24,13 +30,18 @@ const Quiz = ({ question, answer, workbookName, isChanged }: Props) => {
     <Container onClick={() => setIsFlipped((prevValue) => !prevValue)}>
       <Card isFlipped={isFlipped}>
         <Question>
-          <WorkbookName>{workbookName}</WorkbookName>
+          <TopContent>
+            <WorkbookName>{workbookName}</WorkbookName>
+            <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
+          </TopContent>
           <Text>
             <span>Q. {question}</span>
           </Text>
         </Question>
         <Answer>
-          <WorkbookName>{workbookName}</WorkbookName>
+          <TopContent>
+            <WorkbookName>{workbookName}</WorkbookName>
+          </TopContent>
           <Text>
             <span>A. {answer}</span>
           </Text>
@@ -66,7 +77,6 @@ const Card = styled.div<CardStyleProps>`
     padding-top: 2.5rem;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
     ${({ theme }) =>
@@ -77,17 +87,27 @@ const Card = styled.div<CardStyleProps>`
   }
 `;
 
-const WorkbookName = styled.span`
+const TopContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
   position: absolute;
+  width: 100%;
   top: 1rem;
-  left: 1rem;
-  -webkit-backface-visibility: hidden;
+  left: 0;
+  padding: 0 1rem;
   backface-visibility: hidden;
+`;
 
+const WorkbookName = styled.span`
   ${({ theme }) => css`
     color: ${theme.color.pink};
-    font-size: ${theme.fontSize.default};
     font-weight: ${theme.fontWeight.bold};
+  `}
+`;
+
+const EncounterCount = styled.span`
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
   `}
 `;
 

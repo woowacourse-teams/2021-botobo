@@ -109,7 +109,7 @@ public class DataLoader implements CommandLineRunner {
     private User saveAdminUser() {
         User user = User.builder()
                 .userName("admin")
-                .githubId(88036280L)
+                .socialId("88036280")
                 .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
                 .role(Role.ADMIN)
                 .build();
@@ -119,7 +119,7 @@ public class DataLoader implements CommandLineRunner {
     private User saveNormalUser() {
         User user = User.builder()
                 .userName("user")
-                .githubId(88143445L)
+                .socialId("88143445")
                 .profileUrl("botobo.profile.url")
                 .role(Role.USER)
                 .build();

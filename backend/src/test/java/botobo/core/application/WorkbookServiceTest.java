@@ -166,11 +166,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(true)
@@ -200,11 +200,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(false)
@@ -309,7 +309,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .build();
@@ -395,7 +395,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -468,7 +468,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .build();

@@ -7,13 +7,14 @@ import { Flex, scrollBarStyle } from '../styles';
 
 interface OptionValue {
   id: number;
-  name: string;
+  name: string | number;
 }
 
 interface Props {
   title?: string;
   optionValues: OptionValue[];
   setSelectedId: (id: number) => void;
+  listHeight?: string;
   disabled?: boolean;
 }
 
@@ -22,10 +23,15 @@ interface CurrentStyleProps {
   disabled: boolean;
 }
 
+interface OptionListStyleProps {
+  listHeight: string;
+}
+
 const SelectBox = ({
   title,
   optionValues,
   setSelectedId,
+  listHeight = '10rem',
   disabled = false,
 }: Props) => {
   const [isFocus, setIsFocus] = useState(false);
@@ -66,7 +72,7 @@ const SelectBox = ({
         </ul>
         <StyledOpenIcon width="1.25rem" height="1.25rem" />
       </Current>
-      <OptionList>
+      <OptionList listHeight={listHeight}>
         {optionValues.map(({ id, name }) => (
           <li key={id}>
             <Name htmlFor={`radio-${id}`}>{name}</Name>
@@ -117,17 +123,18 @@ const HiddenInput = styled.input`
   }
 `;
 
-const OptionList = styled.ul`
+const OptionList = styled.ul<OptionListStyleProps>`
   position: absolute;
   width: 100%;
   display: none;
-  max-height: 10rem;
   overflow-y: auto;
   ${scrollBarStyle};
 
-  ${({ theme }) => css`
+  ${({ theme, listHeight }) => css`
     box-shadow: ${theme.boxShadow.button};
     border: 1px solid ${theme.color.gray_4};
+
+    max-height: ${listHeight};
 
     & > li {
       background-color: ${theme.color.white};

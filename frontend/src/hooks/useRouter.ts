@@ -39,7 +39,7 @@ const useRouter = () => {
   const routePublicSearchResult = () =>
     history.push(ROUTE.PUBLIC_SEARCH_RESULT.PATH);
   const routePublicCards = () => history.push(ROUTE.PUBLIC_CARDS.PATH);
-  const routeGithubCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
+  const routeOAuthCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
 
   const routePublicSearchQuery = ({
     type = 'name',
@@ -78,7 +78,7 @@ const useRouter = () => {
     routePublicSearch,
     routePublicSearchResult,
     routePublicCards,
-    routeGithubCallback,
+    routeOAuthCallback,
     routePublicSearchQuery,
     routePublicSearchResultQuery,
     routePrevPage,
