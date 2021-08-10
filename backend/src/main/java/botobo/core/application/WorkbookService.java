@@ -9,10 +9,7 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookFinder;
 import botobo.core.domain.workbook.WorkbookRepository;
-import botobo.core.domain.workbook.criteria.SearchKeyword;
-import botobo.core.domain.workbook.criteria.WorkbookCriteria;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
@@ -86,23 +83,6 @@ public class WorkbookService extends AbstractUserService {
         return WorkbookResponse.authorListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );
-    }
-
-    public List<WorkbookResponse> findPublicWorkbooksBySearch(String search) {
-        WorkbookCriteria workbookCriteria = WorkbookCriteria.builder()
-                .searchKeyword(SearchKeyword.from(search))
-                .build();
-
-        return findWorkbookByCriteria(workbookCriteria);
-    }
-
-    private List<WorkbookResponse> findWorkbookByCriteria(WorkbookCriteria workbookCriteria) {
-        List<Workbook> workbooks = WorkbookFinder.builder()
-                .workbooks(workbookRepository.findAll())
-                .build()
-                .apply(workbookCriteria);
-
-        return WorkbookResponse.openedListOf(workbooks);
     }
 
     public WorkbookCardResponse findWorkbookCardsById(Long id, AppUser appUser) {

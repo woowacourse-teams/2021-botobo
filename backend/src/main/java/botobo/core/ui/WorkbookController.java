@@ -57,13 +57,6 @@ public class WorkbookController {
         );
     }
 
-    @GetMapping("/public")
-    public ResponseEntity<List<WorkbookResponse>> findPublicWorkbooksBySearch(@RequestParam String search) {
-        return ResponseEntity.ok(
-                workbookService.findPublicWorkbooksBySearch(search)
-        );
-    }
-
     @GetMapping("/public/{id}")
     public ResponseEntity<WorkbookCardResponse> findPublicWorkbookById(@PathVariable Long id,
                                                                        @AuthenticationPrincipal AppUser appUser) {

@@ -162,23 +162,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("공유 문제집 검색 - 성공")
-    void findPublicWorkbooksBySearch() throws Exception {
-        // given
-        String token = obtainAuthenticatedToken();
-        given(workbookService.findPublicWorkbooksBySearch(anyString())).willReturn(generatePublicWorkbookResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/workbooks/public?search=Network")
-                .auth(token)
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-public-search-get-success");
-    }
-
-    @Test
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() throws Exception {
         // given
