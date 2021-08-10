@@ -5,12 +5,13 @@ import CardSkeleton from './CardSkeleton';
 
 interface Props {
   count: number;
+  className?: string;
 }
 
-const CardSkeletonList = ({ count }: Props) => (
+const CardSkeletonList = ({ count, className }: Props) => (
   <StyledUl>
     {[...Array(count)].map((_, index) => (
-      <CardSkeleton key={index} />
+      <CardSkeleton key={index} className={className} />
     ))}
   </StyledUl>
 );
