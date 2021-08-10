@@ -15,6 +15,7 @@ import { ROUTE } from './constants';
 import {
   CardsPage,
   GithubCallbackPage,
+  GoogleCallbackPage,
   LoginPage,
   LogoutPage,
   MainLoadable,
@@ -108,6 +109,11 @@ const routes = [
   {
     path: ROUTE.GITHUB_CALLBACK.PATH,
     component: <GithubCallbackPage />,
+    isPublic: true,
+  },
+  {
+    path: ROUTE.GOOGLE_CALLBACK.PATH,
+    component: <GoogleCallbackPage />,
     isPublic: true,
   },
 ];

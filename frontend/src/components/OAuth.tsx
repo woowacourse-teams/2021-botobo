@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import GithubIcon from '../assets/github-brands.svg';
+import GoogleIcon from '../assets/google-logo.svg';
 import { Flex } from '../styles';
 import { AuthType } from '../types';
 
@@ -24,6 +25,12 @@ const OAuth = ({ type, className }: Props) => (
         <span>Github으로 로그인</span>
       </>
     )}
+    {type === 'google' && (
+      <>
+        <GoogleIcon width="1.5rem" height="1.5rem" />
+        <span>Google로 로그인</span>
+      </>
+    )}
   </OAuthLink>
 );
 
@@ -34,6 +41,11 @@ const OAuthLink = styled.a`
 
   ${({ theme }) => css`
     border-radius: ${theme.borderRadius.square};
+    box-shadow: ${theme.boxShadow.button};
+
+    & > svg {
+      margin-right: 1rem;
+    }
   `}
 
   &:hover {

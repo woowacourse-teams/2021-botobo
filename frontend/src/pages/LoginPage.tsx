@@ -17,6 +17,7 @@ const LoginPage = () => (
       </LogoWrapper>
       <AuthWrapper>
         <GithubLogin type="github" />
+        <GoogleLogin type="google" />
       </AuthWrapper>
     </Container>
   </>
@@ -40,6 +41,10 @@ const LogoWrapper = styled.div`
 const AuthWrapper = styled.div`
   width: 100%;
   padding: 2rem;
+
+  & > a {
+    margin-top: 1rem;
+  }
 `;
 
 const GithubLogin = styled(OAuth)`
@@ -49,10 +54,12 @@ const GithubLogin = styled(OAuth)`
     & > * {
       color: ${theme.color.white};
     }
+  `}
+`;
 
-    & > svg {
-      margin-right: 1rem;
-    }
+const GoogleLogin = styled(OAuth)`
+  ${({ theme }) => css`
+    background-color: ${theme.color.white};
   `}
 `;
 

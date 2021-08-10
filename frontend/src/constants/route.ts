@@ -55,6 +55,9 @@ const ROUTE = {
   GITHUB_CALLBACK: {
     PATH: '/github/callback',
   },
+  GOOGLE_CALLBACK: {
+    PATH: '/google/callback',
+  },
 } as const;
 
 export default ROUTE;
