@@ -2,6 +2,8 @@ package botobo.core.domain.card;
 
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.exception.card.CardAnswerNullException;
+import botobo.core.exception.card.CardQuestionNullException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +50,7 @@ class CardTest {
                 .workbook(workbook)
                 .deleted(false)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Card의 question에는 null이 들어갈 수 없습니다.");
+                .isInstanceOf(CardQuestionNullException.class);
     }
 
     @Test
@@ -69,8 +70,7 @@ class CardTest {
                 .workbook(workbook)
                 .deleted(false)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Card의 answer에는 null이 들어갈 수 없습니다.");
+                .isInstanceOf(CardAnswerNullException.class);
     }
 
     @Test

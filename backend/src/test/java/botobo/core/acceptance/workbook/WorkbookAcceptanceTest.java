@@ -487,7 +487,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("하트 수는 0이상 입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("좋아요 개수는 0이상 입니다.");
     }
 
     @Test

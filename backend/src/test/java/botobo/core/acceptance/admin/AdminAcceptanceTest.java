@@ -213,7 +213,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 아이디는 필수 입력값입니다.");
     }
 
     @Test

@@ -213,8 +213,7 @@ class WorkbookServiceTest {
 
         // when
         assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
-                .isInstanceOf(NotAuthorException.class)
-                .hasMessage("작성자가 아니므로 권한이 없습니다.");
+                .isInstanceOf(NotAuthorException.class);
 
         // then
         then(workbookRepository).should(times(1))

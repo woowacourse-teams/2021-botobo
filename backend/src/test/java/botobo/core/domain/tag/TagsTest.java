@@ -30,9 +30,7 @@ class TagsTest {
     void createWithNull() {
         // when, then
         assertThatThrownBy(() -> Tags.of(null))
-                .isInstanceOf(TagsCreationFailureException.class)
-                .hasMessageContaining("Tags객체 생성에 실패했습니다")
-                .hasMessageContaining("tags는 null이 될 수 없습니다");
+                .isInstanceOf(TagsCreationFailureException.class);
     }
 
     @Test

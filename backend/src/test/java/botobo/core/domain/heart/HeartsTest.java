@@ -54,9 +54,7 @@ class HeartsTest {
                         Heart.builder().workbook(workbook).userId(2L).build(),
                         Heart.builder().workbook(differentWorkbook).userId(3L).build()
                 ))
-        ).isInstanceOf(HeartsCreationFailureException.class)
-                .hasMessageContaining("Hearts 생성에 실패했습니다.")
-                .hasMessageContaining("같은 문제집의 하트만 추가할 수 있습니다");
+        ).isInstanceOf(HeartsCreationFailureException.class);
     }
 
     @Test
@@ -69,9 +67,7 @@ class HeartsTest {
                         Heart.builder().workbook(workbook).userId(2L).build(),
                         Heart.builder().workbook(workbook).userId(1L).build()
                 ))
-        ).isInstanceOf(HeartsCreationFailureException.class)
-                .hasMessageContaining("Hearts 생성에 실패했습니다.")
-                .hasMessageContaining("하나의 유저 아이디를 여러번 추가할 수 없습니다");
+        ).isInstanceOf(HeartsCreationFailureException.class);
     }
 
     @Test
