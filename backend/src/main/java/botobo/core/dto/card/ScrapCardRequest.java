@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ScrapCardRequest {
 
-    @NotEmpty(message = "카드를 내 문제집으로 옮기려면 카드 아이디가 필요합니다.")
+    @NotEmpty(message = "W015")
     private List<Long> cardIds;
 
     public List<Long> distinctCardIds() {
