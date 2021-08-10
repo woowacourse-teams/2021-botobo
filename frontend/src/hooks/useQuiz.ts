@@ -54,6 +54,7 @@ const useQuiz = () => {
     quizzes,
     hasQuizTime,
     currentQuizIndex,
+    setCurrentQuizIndex,
     prevQuizId,
     showPrevQuiz,
     showNextQuiz,
