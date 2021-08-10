@@ -6,31 +6,46 @@ import { Button, MainHeader, QuizResult } from '../components';
 import { ROUTE } from '../constants';
 import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import { timeConverter } from '../utils';
 
 const QuizResultPage = () => {
-  const { quizResults, checkedCount, checkQuizResult, setNextQuiz } =
-    useQuizResult();
+  const {
+    quizResults,
+    quizTime,
+    hasQuizTime,
+    checkedCount,
+    checkQuizResult,
+    setNextQuiz,
+  } = useQuizResult();
   const { routeMain } = useRouter();
 
   return (
     <>
       <MainHeader />
       <Container>
-        <Title>{ROUTE.QUIZ_RESULT.TITLE}</Title>
+        <TopContent>
+          <h2>{ROUTE.QUIZ_RESULT.TITLE}</h2>
+          {hasQuizTime && (
+            <Time>{timeConverter(quizTime)} 동안 학습했어요.</Time>
+          )}
+        </TopContent>
         <span>총 {quizResults.length}문제를 푸셨네요!</span>
         <br />
         <span>다음에 또 보고 싶은 문제를 선택해 주세요.</span>
         <QuizResultList>
-          {quizResults.map(({ id, question, workbookName, isChecked }) => (
-            <li key={id}>
-              <QuizResult
-                question={question}
-                workbookName={workbookName}
-                isChecked={isChecked}
-                onClick={() => checkQuizResult(id)}
-              />
-            </li>
-          ))}
+          {quizResults.map(
+            ({ id, question, workbookName, encounterCount, isChecked }) => (
+              <li key={id}>
+                <QuizResult
+                  question={question}
+                  workbookName={workbookName}
+                  encounterCount={encounterCount}
+                  isChecked={isChecked}
+                  onClick={() => checkQuizResult(id)}
+                />
+              </li>
+            )
+          )}
         </QuizResultList>
         <ButtonWrapper>
           <Button
@@ -66,8 +81,15 @@ const Container = styled.div`
     `}
 `;
 
-const Title = styled.h2`
+const TopContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'flex-end' })};
   margin-bottom: 1rem;
+`;
+
+const Time = styled.span`
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.small};
+  `}
 `;
 
 const QuizResultList = styled.ul`

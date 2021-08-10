@@ -16,7 +16,8 @@ const LoginPage = () => (
         <img src={logoSrc} alt="로고 이미지" />
       </LogoWrapper>
       <AuthWrapper>
-        <OAuth />
+        <OAuth type="github" />
+        <OAuth type="google" />
       </AuthWrapper>
     </Container>
   </>
@@ -40,6 +41,10 @@ const LogoWrapper = styled.div`
 const AuthWrapper = styled.div`
   width: 100%;
   padding: 2rem;
+
+  & > a {
+    margin-top: 1rem;
+  }
 `;
 
 export default LoginPage;

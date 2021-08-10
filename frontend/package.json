@@ -39,6 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "babel-loader": "^8.2.2",
+    "compression-webpack-plugin": "^8.0.1",
     "copy-webpack-plugin": "^9.0.1",
     "core-js": "^3.15.2",
     "cross-env": "^7.0.3",

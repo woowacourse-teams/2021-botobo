@@ -24,7 +24,7 @@ public class AcceptanceTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         RestAssured.port = port;
         String defaultToken = jwtTokenProvider.createToken(100L);
         requestBuilder = new RequestBuilder(defaultToken);

@@ -63,3 +63,5 @@ export interface UserInfoResponse {
   profileUrl: string;
   bio: string;
 }
+
+export type AuthType = 'github' | 'google';

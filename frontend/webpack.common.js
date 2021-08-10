@@ -3,6 +3,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const path = require('path');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -23,6 +24,9 @@ module.exports = {
           },
         },
       ],
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
     }),
   ],
   module: {

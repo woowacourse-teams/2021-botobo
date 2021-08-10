@@ -921,13 +921,6 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(heartResponse.isHeart()).isFalse();
     }
 
-    private HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
-        return request()
-                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
-                .auth(accessToken)
-                .build();
-    }
-
     private HttpResponse 유저_문제집_수정_요청(WorkbookUpdateRequest workbookUpdateRequest,
                                       WorkbookResponse workbookResponse,
                                       String accessToken) {

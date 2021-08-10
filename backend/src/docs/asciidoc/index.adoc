@@ -11,6 +11,8 @@ include::cards.adoc[]
 
 include::quizzes.adoc[]
 
+include::search.adoc[]
+
 include::admin.adoc[]
 
 include::login.adoc[]

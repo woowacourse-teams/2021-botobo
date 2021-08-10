@@ -1,0 +1,9 @@
+### 문제집 검색
+### 컴색 타입 : 문제집 이름
+### 정렬 기준 : 날짜
+### 정렬 방법 : 내림차순
+### 키워드 : java
+### 시작 인덱스 : 0
+### 결과 가져올 수 : 10
+GET /api/search/workbooks?type=name&criteria=date&order=desc&keyword=java&start=0&size=10 HTTP/1.1
+Host: botobo.kro.kr

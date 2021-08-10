@@ -8,6 +8,7 @@ import {
 } from '../constants';
 import {
   AccessTokenResponse,
+  AuthType,
   CardResponse,
   CardsResponse,
   PublicCardsResponse,
@@ -50,10 +51,13 @@ const token = getLocalStorage(STORAGE_KEY.TOKEN);
 
 request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-export const getAccessTokenAsync = async (code: string) => {
+export const getAccessTokenAsync = async (
+  socialType: AuthType,
+  code: string
+) => {
   const {
     data: { accessToken },
-  } = await request.post<AccessTokenResponse>('/login', { code });
+  } = await request.post<AccessTokenResponse>(`/login/${socialType}`, { code });
 
   request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
@@ -80,9 +84,13 @@ export const getQuizzesAsync = async (workbookId: number) => {
   return data;
 };
 
-export const postQuizzesAsync = async (workbookIds: number[]) => {
+export const postQuizzesAsync = async (
+  workbookIds: number[],
+  count: number
+) => {
   const { data } = await request.post<QuizResponse[]>('/quizzes', {
     workbookIds,
+    count,
   });
 
   return data;
@@ -173,10 +181,10 @@ export const putNextQuizAsync = async (cardIds: number[]) => {
   await request.put('/cards/next-quiz', { cardIds });
 };
 
-export const putProfileAsync = async (userInfo: UserInfoResponse) => {
-  const { id, ...params } = userInfo;
-
-  await request.put(`/users/me/${id}`, params);
+export const putProfileAsync = async (
+  userInfo: Omit<UserInfoResponse, 'id'>
+) => {
+  await request.put(`/users/me`, userInfo);
 };
 
 export const postProfileImageAsync = async (formData: FormData) => {

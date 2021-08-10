@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { putNextQuizAsync } from './../api';
-import { quizState } from '../recoil';
+import { hasQuizTimeState, quizState, quizTimeState } from '../recoil';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useQuizResult = () => {
   const quizzes = useRecoilValue(quizState);
+  const quizTime = useRecoilValue(quizTimeState);
+  const hasQuizTime = useRecoilValue(hasQuizTimeState);
   const [quizResults, setQuizResults] = useState(
     quizzes.map((quiz) => ({ ...quiz, isChecked: false }))
   );
@@ -53,7 +55,14 @@ const useQuizResult = () => {
     routeMain();
   }, []);
 
-  return { quizResults, checkedCount, checkQuizResult, setNextQuiz };
+  return {
+    quizResults,
+    quizTime,
+    hasQuizTime,
+    checkedCount,
+    checkQuizResult,
+    setNextQuiz,
+  };
 };
 
 export default useQuizResult;
