@@ -1,11 +1,13 @@
 package botobo.core.exception.common;
 
+import botobo.core.exception.ExternalException;
 import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.http.InternalServerErrorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ErrorTypeTest {
 
@@ -20,13 +22,11 @@ class ErrorTypeTest {
     }
 
     @Test
-    @DisplayName("ErrorType에 존재하지 않는 클래스 타입으로 ErrorTye 생성 - 성공, ErrorType.X001")
+    @DisplayName("클래스 타입으로 ErrorType 생성 - 실패, ExternalException은 불가")
     void createWithNonExistentClassType() {
-        // given
-        ErrorType errorType = ErrorType.of(InternalServerErrorException.class);
-
         // when, then
-        assertThat(errorType).isEqualTo(ErrorType.X001);
+        assertThatThrownBy(() -> ErrorType.of(ExternalException.class))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
