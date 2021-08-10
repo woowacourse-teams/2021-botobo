@@ -75,4 +75,13 @@ public class User extends BaseEntity {
     public boolean isUser() {
         return role.isUser();
     }
+
+    public void changeUserName(String originalName) {
+        String suffix = userName.replace(originalName, "");
+        int suffixNumber = 0;
+        if (!suffix.isEmpty()) {
+            suffixNumber = Integer.parseInt(suffix);
+        }
+        this.userName = originalName + (suffixNumber + 1);
+    }
 }

@@ -41,8 +41,16 @@ public class AuthService {
         if (user.isPresent()) {
             return TokenResponse.of(jwtTokenProvider.createToken(user.get().getId()));
         }
+        validateUserName(userInfo);
         User savedUser = userRepository.save(userInfo);
         return TokenResponse.of(jwtTokenProvider.createToken(savedUser.getId()));
+    }
+
+    private void validateUserName(User userInfo) {
+        String originalName = userInfo.getUserName();
+        while (userRepository.existsByUserName(userInfo.getUserName())) {
+            userInfo.changeUserName(originalName);
+        }
     }
 
     public AppUser findAppUserByToken(String credentials) {
