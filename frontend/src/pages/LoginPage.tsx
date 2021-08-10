@@ -16,7 +16,7 @@ const LoginPage = () => (
         <img src={logoSrc} alt="로고 이미지" />
       </LogoWrapper>
       <AuthWrapper>
-        <OAuth />
+        <GithubLogin type="github" />
       </AuthWrapper>
     </Container>
   </>
@@ -40,6 +40,20 @@ const LogoWrapper = styled.div`
 const AuthWrapper = styled.div`
   width: 100%;
   padding: 2rem;
+`;
+
+const GithubLogin = styled(OAuth)`
+  ${({ theme }) => css`
+    background-color: ${theme.color.gray_8};
+
+    & > * {
+      color: ${theme.color.white};
+    }
+
+    & > svg {
+      margin-right: 1rem;
+    }
+  `}
 `;
 
 export default LoginPage;

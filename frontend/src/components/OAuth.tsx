@@ -4,19 +4,28 @@ import React from 'react';
 
 import GithubIcon from '../assets/github-brands.svg';
 import { Flex } from '../styles';
+import { AuthType } from '../types';
 
-const CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
-const REDIRECT_URI = process.env.REACT_APP_LOGIN_REDIRECT_URL;
-const URI = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
+interface Props {
+  type: AuthType;
+  className?: string;
+}
 
-const OAuth = () => {
-  return (
-    <OAuthLink href={URI}>
-      <GithubIcon width="1.5rem" height="1.5rem" />
-      <span>Github으로 로그인</span>
-    </OAuthLink>
-  );
+const codeRequestURI = {
+  github: `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_GITHUB_LOGIN_REDIRECT_URL}`,
+  google: `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_GOOGLE_LOGIN_REDIRECT_URL}&response_type=code&scope=profile`,
 };
+
+const OAuth = ({ type, className }: Props) => (
+  <OAuthLink href={codeRequestURI[type]} className={className}>
+    {type === 'github' && (
+      <>
+        <GithubIcon width="1.5rem" height="1.5rem" />
+        <span>Github으로 로그인</span>
+      </>
+    )}
+  </OAuthLink>
+);
 
 const OAuthLink = styled.a`
   ${Flex({ justify: 'center', items: 'center' })};
@@ -24,16 +33,7 @@ const OAuthLink = styled.a`
   padding: 0.7rem;
 
   ${({ theme }) => css`
-    background-color: ${theme.color.gray_8};
     border-radius: ${theme.borderRadius.square};
-
-    & > * {
-      color: ${theme.color.white};
-    }
-
-    & > svg {
-      margin-right: 1rem;
-    }
   `}
 
   &:hover {

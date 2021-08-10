@@ -8,6 +8,7 @@ import {
 } from '../constants';
 import {
   AccessTokenResponse,
+  AuthType,
   CardResponse,
   CardsResponse,
   PublicCardsResponse,
@@ -50,10 +51,13 @@ const token = getLocalStorage(STORAGE_KEY.TOKEN);
 
 request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-export const getAccessTokenAsync = async (code: string) => {
+export const getAccessTokenAsync = async (
+  socialType: AuthType,
+  code: string
+) => {
   const {
     data: { accessToken },
-  } = await request.post<AccessTokenResponse>('/login', { code });
+  } = await request.post<AccessTokenResponse>(`/login/${socialType}`, { code });
 
   request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 

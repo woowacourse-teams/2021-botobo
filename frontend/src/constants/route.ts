@@ -9,7 +9,7 @@ const ROUTE = {
   LOGOUT: {
     PATH: '/logout',
   },
-    PROFILE: {
+  PROFILE: {
     PATH: '/profile',
   },
   WORKBOOK_ADD: {

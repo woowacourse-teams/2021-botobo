@@ -15,7 +15,7 @@ const GithubCallbackPage = () => {
 
   const login = async () => {
     try {
-      const accessToken = await getAccessTokenAsync(code);
+      const accessToken = await getAccessTokenAsync('github', code);
 
       setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
 
