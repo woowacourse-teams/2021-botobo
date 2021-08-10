@@ -1,6 +1,5 @@
 package botobo.core.documentation;
 
-
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.ui.auth.AuthController;
@@ -20,15 +19,15 @@ public class LoginDocumentationTest extends DocumentationTest {
     @DisplayName("로그인 - 성공")
     void login() throws Exception {
         //given
-        LoginRequest loginRequest = new LoginRequest("githubCode");
-        given(authService.createToken(any())).willReturn(
+        LoginRequest loginRequest = new LoginRequest("authCode");
+        given(authService.createToken(any(), any())).willReturn(
                 TokenResponse.of("botobo.access.token")
         );
 
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/login", loginRequest)
+                .post("/api/login/github", loginRequest)
                 .build()
                 .status(status().isOk())
                 .identifier("login-success");

@@ -13,22 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GithubUserInfoResponse implements UserInfoResponse {
+public class GoogleUserInfoResponse implements UserInfoResponse {
 
-    @JsonProperty("login")
+    @JsonProperty("name")
     private String userName;
-    @JsonProperty("id")
+    @JsonProperty("sub")
     private String socialId;
-    @JsonProperty("avatar_url")
+    @JsonProperty("picture")
     private String profileUrl;
 
+    @Override
     public User toUser() {
         return User.builder()
                 .socialId(socialId)
                 .userName(userName)
                 .profileUrl(profileUrl)
                 .role(Role.USER)
-                .socialType(SocialType.GITHUB)
+                .socialType(SocialType.GOOGLE)
                 .build();
     }
 }

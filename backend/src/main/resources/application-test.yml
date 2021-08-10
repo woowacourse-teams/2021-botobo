@@ -13,14 +13,30 @@ spring:
   config:
     activate:
       on-profile: test
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
 
 github:
   client:
-    id: a
-    secret: a
+    id: githubId
+    secret: githubSecret
   url:
     access-token: https://github.com/login/oauth/access_token
     profile: https://api.github.com/user
+
+google:
+  client:
+    id: googleId
+    secret: googleSecret
+    redirect-uri: googleRedirectUri
+    grant-type: authorization_code
+  url:
+    access-token: https://oauth2.googleapis.com/token
+    profile: https://openidconnect.googleapis.com/v1/userinfo
 
 security:
   jwt:
