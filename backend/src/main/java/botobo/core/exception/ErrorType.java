@@ -1,15 +1,20 @@
 package botobo.core.exception;
 
+import botobo.core.exception.auth.NotAdminException;
+import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.TokenExpirationException;
 import botobo.core.exception.auth.TokenNotValidException;
+import botobo.core.exception.auth.UserProfileLoadFailedException;
 import botobo.core.exception.card.CardAnswerNullException;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.card.CardQuestionNullException;
 import botobo.core.exception.card.QuizEmptyException;
+import botobo.core.exception.request.RequestValidationFailrureException;
 import botobo.core.exception.tag.TagNameLengthException;
 import botobo.core.exception.tag.TagNameNullException;
 import botobo.core.exception.tag.TagNullException;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.SocialTypeNotFoundException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
@@ -30,6 +35,10 @@ public enum ErrorType {
     A001("A001", "토큰이 유효하지 않습니다.", TokenNotValidException.class),
     A002("A002", "만료된 토큰입니다.", TokenExpirationException.class),
     A003("A003", "작성자가 아니므로 권한이 없습니다.", NotAuthorException.class),
+    A004("A004", "AccessToken을 받아오는데 실패했습니다.", OauthApiFailedException.class),
+    A005("A005", "유저정보를 불러오는데 실패했습니다.", UserProfileLoadFailedException.class),
+    A006("A006", "Admin 권한이 아니기에 접근할 수 없습니다.", NotAdminException.class),
+    A007("A007", "존재하지 않는 소셜 로그인 방식입니다.", SocialTypeNotFoundException.class),
 
     U001("U001", "해당 유저를 찾을 수 없습니다.", UserNotFoundException.class),
 

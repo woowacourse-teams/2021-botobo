@@ -1,8 +1,10 @@
 package botobo.core.domain.user;
 
+import botobo.core.exception.user.AnonymousHasNotIdException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +39,7 @@ public class AppUser {
 
     public long getId() {
         if (isAnonymous()) {
-            throw new IllegalStateException("비회원의 ID는 조회할 수 없습니다.");
+            throw new AnonymousHasNotIdException("비회원의 ID는 조회할 수 없습니다.");
         }
         return id;
     }
