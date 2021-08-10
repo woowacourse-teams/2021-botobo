@@ -13,17 +13,17 @@ import java.util.function.Function;
 
 @Getter
 public enum SearchType {
-    NAME (
+    NAME(
             "name",
             root -> root.get("name"),
             keyword -> "%" + keyword.toLowerCase() + "%"
     ),
-    TAG (
+    TAG(
             "tag",
             root -> root.join("workbookTags").get("tag").get("tagName").get("value"),
             String::toLowerCase
     ),
-    USER (
+    USER(
             "user",
             root -> root.get("user").get("userName"),
             keyword -> keyword
@@ -54,5 +54,9 @@ public enum SearchType {
             return builder.lower(target.apply(root));
         }
         return target.apply(root);
+    }
+
+    public String toPattern(String value) {
+        return pattern.apply(value);
     }
 }

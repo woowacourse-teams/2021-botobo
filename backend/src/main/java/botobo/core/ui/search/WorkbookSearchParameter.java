@@ -87,8 +87,7 @@ public class WorkbookSearchParameter {
     }
 
     private String pattern() {
-        return searchType.getPattern()
-                .apply(searchKeyword.getValue());
+        return searchType.toPattern(searchKeyword.getValue());
     }
 
     private Specification<Workbook> orderByCriteria() {
