@@ -158,7 +158,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("회원 정보를 수정하기 위해서는 이름이 필요합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 null이 될 수 없습니다.");
     }
 
     @Test
@@ -462,7 +462,7 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).isEqualTo("회원명 중복 조회를 위해서는 이름이 필요합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("회원명은 null이 될 수 없습니다.");
     }
 
     @Test
