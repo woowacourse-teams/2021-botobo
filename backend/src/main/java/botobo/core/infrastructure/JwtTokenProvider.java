@@ -1,5 +1,6 @@
 package botobo.core.infrastructure;
 
+import botobo.core.exception.auth.TokenExpirationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -45,9 +46,16 @@ public class JwtTokenProvider {
                     .parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            validateExpiration(claims);
+            return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
+        }
+    }
+
+    private void validateExpiration(Jws<Claims> claims) {
+        if (claims.getBody().getExpiration().before(new Date())) {
+            throw new TokenExpirationException();
         }
     }
 }

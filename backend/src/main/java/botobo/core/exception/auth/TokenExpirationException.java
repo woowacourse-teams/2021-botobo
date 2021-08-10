@@ -2,5 +2,5 @@ package botobo.core.exception.auth;
 
 import botobo.core.exception.http.BotoboUnAuthorizedException;
 
-public class TokenNotValidException extends BotoboUnAuthorizedException {
+public class TokenExpirationException extends BotoboUnAuthorizedException {
 }
