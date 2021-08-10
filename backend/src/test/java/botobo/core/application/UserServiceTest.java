@@ -57,7 +57,7 @@ public class UserServiceTest {
         appUser = AppUser.user(1L);
         user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();

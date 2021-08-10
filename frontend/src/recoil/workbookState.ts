@@ -22,11 +22,6 @@ const workbookUpdateTrigger = atom({
   default: 0,
 });
 
-export const searchKeywordState = atom<string>({
-  key: 'searchKeywordState',
-  default: '',
-});
-
 export const workbookIdState = atom<number>({
   key: 'workbookIdState',
   default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,

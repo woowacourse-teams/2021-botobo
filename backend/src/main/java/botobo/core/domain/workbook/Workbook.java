@@ -3,7 +3,10 @@ package botobo.core.domain.workbook;
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
+import botobo.core.domain.heart.Hearts;
 import botobo.core.domain.tag.Tags;
+import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
@@ -53,6 +56,9 @@ public class Workbook extends BaseEntity {
 
     @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final List<WorkbookTag> workbookTags = new ArrayList<>();
+
+    @Embedded
+    private final Hearts hearts = new Hearts();
 
     @Builder
     public Workbook(Long id, String name, boolean opened, boolean deleted, Cards cards, User user, Tags tags) {
@@ -184,5 +190,20 @@ public class Workbook extends BaseEntity {
     public void addCard(Card card) {
         card.addWorkbook(this);
         cards.addCard(card);
+    }
+
+    public boolean toggleHeart(Heart heart) {
+        return hearts.toggleHeart(heart);
+    }
+
+    public boolean existsHeartByAppUser(AppUser appUser) {
+        if (appUser.isAnonymous()) {
+            return false;
+        }
+        return hearts.contains(appUser.getId());
+    }
+
+    public int heartCount() {
+        return hearts.size();
     }
 }

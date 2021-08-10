@@ -39,6 +39,7 @@ const CardTemplate = ({
 const Container = styled.div<ContainerStyleProps>`
   padding: 1rem;
   word-break: break-all;
+  white-space: pre-wrap;
 
   ${({ theme, isChecked, onClick }) => css`
     background-color: ${theme.color.white};

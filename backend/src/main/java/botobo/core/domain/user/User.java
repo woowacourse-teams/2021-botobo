@@ -23,7 +23,7 @@ import java.util.Objects;
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private Long githubId;
+    private String socialId;
 
     @Column(nullable = false)
     private String userName;
@@ -38,13 +38,18 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    // TODO bio 필드 추가
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workbook> workbooks = new ArrayList<>();
 
     @Builder
-    public User(Long id, Long githubId, String userName, String bio, String profileUrl, Role role, List<Workbook> workbooks) {
+    public User(Long id, String socialId, String userName, String profileUrl, Role role, List<Workbook> workbooks, SocialType socialType) {
         this.id = id;
-        this.githubId = githubId;
+        this.socialId = socialId;
         this.userName = userName;
         this.profileUrl = profileUrl;
         if (Objects.nonNull(bio)) {
@@ -56,6 +61,7 @@ public class User extends BaseEntity {
         if (Objects.nonNull(workbooks)) {
             this.workbooks = workbooks;
         }
+        this.socialType = socialType;
     }
 
     public AppUser toAppUser() {

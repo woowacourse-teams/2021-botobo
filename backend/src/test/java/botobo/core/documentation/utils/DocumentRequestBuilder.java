@@ -8,6 +8,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Objects;
+
 import static botobo.core.documentation.utils.DocumentationUtils.getDocumentRequest;
 import static botobo.core.documentation.utils.DocumentationUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -33,6 +35,10 @@ public class DocumentRequestBuilder {
 
         public <T> Options put(String path, T body, Object... params) {
             return new Options(new PutPerform<>(path, body, params));
+        }
+
+        public Options putWithoutBody(String path, Object... params) {
+            return new Options(new PutPerform<>(path, params));
         }
 
         public Options get(String path, Object... params) {
@@ -146,6 +152,10 @@ public class DocumentRequestBuilder {
         private final T body;
         private final Object[] params;
 
+        public PutPerform(String path, Object[] params) {
+            this(path, null, params);
+        }
+
         public PutPerform(String path, T body, Object[] params) {
             this.path = path;
             this.body = body;
@@ -153,10 +163,14 @@ public class DocumentRequestBuilder {
         }
 
         public MockHttpServletRequestBuilder doAction() throws JsonProcessingException {
-            return put(path, params)
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = put(path, params)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(body));
+                    .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+            if (Objects.nonNull(body)) {
+                mockHttpServletRequestBuilder.content(objectMapper.writeValueAsString(body));
+            }
+            return mockHttpServletRequestBuilder;
         }
     }
 

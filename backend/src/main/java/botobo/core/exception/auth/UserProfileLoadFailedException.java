@@ -5,6 +5,6 @@ import botobo.core.exception.common.UnAuthorizedException;
 public class UserProfileLoadFailedException extends UnAuthorizedException {
 
     public UserProfileLoadFailedException() {
-        super("Github에서 유저정보를 불러오는데 실패했습니다.");
+        super("유저정보를 불러오는데 실패했습니다.");
     }
 }

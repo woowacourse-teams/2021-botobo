@@ -39,7 +39,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUser() {
         admin = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("admin")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
@@ -131,7 +131,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     void createWorkbookWithNotAdmin() {
         //given
         User newUser = User.builder()
-                .githubId(2L)
+                .socialId("2")
                 .userName("user")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -224,7 +224,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         final Long workbookId = extractId(workbookResponse);
 
         User newUser = User.builder()
-                .githubId(2L)
+                .socialId("2")
                 .userName("user")
                 .profileUrl("github.io")
                 .role(Role.USER)
