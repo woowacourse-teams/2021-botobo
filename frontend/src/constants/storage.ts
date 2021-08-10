@@ -3,6 +3,7 @@ const STORAGE_KEY = {
   TOKEN: 'TK',
   PUBLIC_WORKBOOK_ID: 'publicWorkbookId',
   WORKBOOK_ID: 'workbookId',
+  SOCIAL_TYPE: 'socialType',
 };
 
 export default STORAGE_KEY;

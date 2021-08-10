@@ -4,9 +4,10 @@ import React from 'react';
 
 import GithubIcon from '../assets/github-brands.svg';
 import GoogleIcon from '../assets/google-logo.svg';
-import { theme } from '../constants';
+import { STORAGE_KEY, theme } from '../constants';
 import { Flex } from '../styles';
 import { AuthType } from '../types';
+import { setSessionStorage } from '../utils';
 
 interface Props {
   type: AuthType;
@@ -35,7 +36,11 @@ const oauthStyle = {
 };
 
 const OAuth = ({ type }: Props) => (
-  <OAuthLink href={codeRequestURI[type]} type={type}>
+  <OAuthLink
+    href={codeRequestURI[type]}
+    type={type}
+    onClick={() => setSessionStorage(STORAGE_KEY.SOCIAL_TYPE, type)}
+  >
     {type === 'github' && (
       <>
         <GithubIcon width="1.5rem" height="1.5rem" />
