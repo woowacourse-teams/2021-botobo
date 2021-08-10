@@ -47,9 +47,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     protected UserRepository userRepository;
 
     @Autowired
-    private CardRepository cardRepository;
-
-    @Autowired
     protected JwtTokenProvider jwtTokenProvider;
 
     @MockBean

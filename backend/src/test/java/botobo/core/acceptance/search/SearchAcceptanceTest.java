@@ -2,7 +2,9 @@ package botobo.core.acceptance.search;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
+import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.SimpleUserResponse;
@@ -38,21 +40,21 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void initializeUsers() {
-        GithubUserInfoResponse pk = GithubUserInfoResponse.builder()
+        UserInfoResponse pk = GithubUserInfoResponse.builder()
                 .userName("pk")
-                .githubId(10L)
+                .socialId("10")
                 .profileUrl("pk.profile")
                 .build();
 
 
-        GithubUserInfoResponse bear = GithubUserInfoResponse.builder()
+        UserInfoResponse bear = GithubUserInfoResponse.builder()
                 .userName("bear")
-                .githubId(20L)
+                .socialId("20")
                 .profileUrl("bear.profile")
                 .build();
 
-        pkToken = 로그인되어_있음(pk);
-        bearToken = 로그인되어_있음(bear);
+        pkToken = 소셜_로그인되어_있음(pk, SocialType.GITHUB);
+        bearToken = 소셜_로그인되어_있음(bear, SocialType.GITHUB);
     }
 
     private void initializeWorkbooks() {
