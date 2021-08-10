@@ -43,6 +43,10 @@ export interface PublicWorkbookAsync {
   size?: number;
 }
 
+interface PutHeartAsync {
+  heart: boolean;
+}
+
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
 });
@@ -201,7 +205,7 @@ export const postUserNameCheckAsync = async (userName: string) => {
 };
 
 export const putHeartAsync = async (id: number) => {
-  const { data } = await request.put<boolean>(`workbooks/${id}/hearts`);
+  const { data } = await request.put<PutHeartAsync>(`workbooks/${id}/hearts`);
 
   return data;
 };

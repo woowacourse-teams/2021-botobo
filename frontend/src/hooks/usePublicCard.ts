@@ -61,6 +61,7 @@ const usePublicCard = () => {
     heartCount,
     serverHeart: heart,
   });
+
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
   const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
@@ -72,6 +73,7 @@ const usePublicCard = () => {
     try {
       setIsLoading(true);
       const newPublicCardInfo = await getPublicCardsAsync(publicWorkbookId);
+      const { heart, heartCount } = newPublicCardInfo;
 
       setPublicCardInfo({
         ...newPublicCardInfo,
@@ -80,6 +82,8 @@ const usePublicCard = () => {
           isChecked: false,
         })),
       });
+
+      setHeartInfo({ heart, heartCount, serverHeart: heart });
 
       setIsLoading(false);
     } catch (error) {
@@ -90,9 +94,9 @@ const usePublicCard = () => {
 
   const toggleHeart = async () => {
     try {
-      const isHeart = await putHeartAsync(workbookId);
+      const { heart } = await putHeartAsync(workbookId);
 
-      setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: isHeart }));
+      setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
     } catch (error) {
       console.error(error);
     }
