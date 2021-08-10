@@ -7,15 +7,9 @@ const GlobalStyle = () => {
   return (
     <Global
       styles={css`
-        @font-face {
-          font-family: 'Pretendard-Regular';
-          src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
-            format('woff');
-        }
-
         * {
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-          font-family: 'Pretendard-Regular';
+          font-family: 'Pretendard';
           box-sizing: border-box;
           margin: 0;
           padding: 0;
