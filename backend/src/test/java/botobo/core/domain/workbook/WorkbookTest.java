@@ -103,7 +103,7 @@ class WorkbookTest {
     void createWithManyTag() {
         // given
         Tags manyTags = Tags.of(Arrays.asList(
-                Tag.of("자바"), Tag.of("java"), Tag.of("코딩"), Tag.of("언어")
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩"), Tag.of("언어"), Tag.of("학습"), Tag.of("프로그램")
         ));
 
         // when, then
