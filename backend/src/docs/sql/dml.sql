@@ -6,6 +6,8 @@ ALTER TABLE user AUTO_INCREMENT = 1;
 -- 어드민 생성
 INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (88036280, "1번 어드민", 'botobo.profile.url', 'ADMIN', now(), now());
 INSERT INTO user (github_id, user_name, profile_url, role, created_at, updated_at) VALUES (88143445, "일반 유저", 'botobo.profile.url', 'USER', now(), now());
+UPDATE user SET user_name = 'botobo-admin', profile_url = 'https://avatars.githubusercontent.com/u/88036280?v=4' where id = 1;
+UPDATE user SET user_name = 'botoboUser', profile_url = 'https://avatars.githubusercontent.com/u/88143445?v=4' where id = 2;
 
 -- 문제집 생성
 INSERT INTO workbook (name, user_id, opened, deleted, created_at, updated_at) VALUES ('데이터베이스', 1, true, false, now(), now());
