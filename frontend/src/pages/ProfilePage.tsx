@@ -162,7 +162,6 @@ const Container = styled.div`
   ${({ theme }) =>
     css`
       padding: ${theme.pageSize.padding};
-      height: ${theme.pageSize.height};
     `}
 `;
 
