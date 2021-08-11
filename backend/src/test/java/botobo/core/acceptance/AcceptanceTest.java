@@ -8,24 +8,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import static io.restassured.RestAssured.UNDEFINED_PORT;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class AcceptanceTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+
     private RequestBuilder requestBuilder;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    protected JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     protected void setUp() {
-        RestAssured.port = port;
+        if (RestAssured.port == UNDEFINED_PORT) {
+            RestAssured.port = port;
+            databaseCleaner.afterPropertiesSet();
+        }
+        databaseCleaner.execute();
         String defaultToken = jwtTokenProvider.createToken(100L);
         requestBuilder = new RequestBuilder(defaultToken);
     }
