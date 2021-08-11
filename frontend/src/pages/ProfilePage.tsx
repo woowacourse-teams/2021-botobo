@@ -34,8 +34,6 @@ const validateUserName = async (value: string) => {
   } catch (error) {
     if (error.response.status === 409) {
       throw new Error('중복된 이름입니다.');
-
-      return;
     }
 
     console.error(error);
