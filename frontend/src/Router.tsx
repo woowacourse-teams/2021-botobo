@@ -7,7 +7,6 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { ROUTE } from './constants';
@@ -30,7 +29,6 @@ import {
   WorkbookEditPage,
 } from './pages';
 import { userState } from './recoil';
-import { gTag } from './utils';
 
 const routes = [
   {
@@ -135,16 +133,6 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
   );
 };
 
-const RouteChangeTracker = withRouter(() => {
-  const code = process.env.REACT_APP_GA_CODE;
-
-  if (!code) return null;
-
-  gTag('config', code);
-
-  return null;
-});
-
 const Router = () => (
   <BrowserRouter>
     <Switch>
@@ -152,13 +140,11 @@ const Router = () => (
         isPublic ? (
           <Route key={index} exact path={path}>
             <ScrollToTop />
-            <RouteChangeTracker />
             {component}
           </Route>
         ) : (
           <PrivateRoute key={index} exact path={path}>
             <ScrollToTop />
-            <RouteChangeTracker />
             {component}
           </PrivateRoute>
         )
