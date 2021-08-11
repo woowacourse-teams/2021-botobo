@@ -18,8 +18,8 @@ const filters = [
 const PublicSearchResultPage = () => {
   const {
     workbookSearchResult,
-    isLoading,
-    setIsLoading,
+    isSearching,
+    setIsSearching,
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
@@ -32,11 +32,11 @@ const PublicSearchResultPage = () => {
   );
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsSearching(true);
     searchForPublicWorkbook({ keyword, type, criteria });
   }, []);
 
-  if (isLoading) {
+  if (isSearching) {
     return <PublicWorkbookLoadable />;
   }
 
@@ -77,7 +77,7 @@ const PublicSearchResultPage = () => {
 
                     setCurrentFilterId(id);
                     resetSearchResult();
-                    setIsLoading(true);
+                    setIsSearching(true);
                     routePublicSearchResultQuery(resetValue);
                     searchForPublicWorkbook(resetValue);
                   }}
