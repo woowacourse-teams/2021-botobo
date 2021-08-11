@@ -61,6 +61,7 @@ const usePublicCard = () => {
     heartCount,
     serverHeart: heart,
   });
+
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
   const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
@@ -72,6 +73,7 @@ const usePublicCard = () => {
     try {
       setIsLoading(true);
       const newPublicCardInfo = await getPublicCardsAsync(publicWorkbookId);
+      const { heart, heartCount } = newPublicCardInfo;
 
       setPublicCardInfo({
         ...newPublicCardInfo,
@@ -81,6 +83,7 @@ const usePublicCard = () => {
         })),
       });
 
+      setHeartInfo({ heart, heartCount, serverHeart: heart });
       setIsLoading(false);
     } catch (error) {
       showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
@@ -90,9 +93,9 @@ const usePublicCard = () => {
 
   const toggleHeart = async () => {
     try {
-      const isHeart = await putHeartAsync(workbookId);
+      const { heart } = await putHeartAsync(workbookId);
 
-      setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: isHeart }));
+      setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
     } catch (error) {
       console.error(error);
     }
