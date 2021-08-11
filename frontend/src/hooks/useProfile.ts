@@ -12,7 +12,9 @@ const useProfile = () => {
 
   const editProfile = async (userInfo: Omit<UserInfoResponse, 'id'>) => {
     try {
-      await putProfileAsync(userInfo);
+      const newUserInfo = await putProfileAsync(userInfo);
+
+      setUserInfo(newUserInfo);
       showSnackbar({ message: '프로필이 수정되었어요.' });
     } catch (error) {
       console.error(error);
