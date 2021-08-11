@@ -98,9 +98,39 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        html.enabled false
+        html.enabled true
         xml.enabled true
         csv.enabled false
+    }
+//    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+
+            excludes = [
+                    'botobo.core.infrastructure.**',
+                    'botobo.core.exception.**',
+                    'botobo.core.dto.**',
+                    'botobo.core.DataLoader',
+                    'botobo.core.BotoboApplication'
+            ]
+        }
     }
 }
 
