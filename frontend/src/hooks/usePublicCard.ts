@@ -11,6 +11,7 @@ import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
 import { getSessionStorage } from './../utils/storage';
 import { STORAGE_KEY } from '../constants';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -86,7 +87,7 @@ const usePublicCard = () => {
       setHeartInfo({ heart, heartCount, serverHeart: heart });
       setIsLoading(false);
     } catch (error) {
-      showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
+      useErrorHandler(error);
       setIsLoading(false);
     }
   };
@@ -97,7 +98,7 @@ const usePublicCard = () => {
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
     } catch (error) {
-      console.error(error);
+      useErrorHandler(error);
     }
   };
 
@@ -140,8 +141,7 @@ const usePublicCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '카드를 추가하지 못했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 

@@ -10,6 +10,7 @@ import {
 } from '../api';
 import { workbookIdState } from '../recoil';
 import { CardResponse, CardsResponse } from '../types';
+import useErrorHandler from './useErrorHandler';
 import useModal from './useModal';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
@@ -41,7 +42,7 @@ const useCard = () => {
       setCardInfo(newCardInfo);
       setIsLoading(false);
     } catch (error) {
-      showSnackbar({ message: '카드를 불러오지 못했어요.', type: 'error' });
+      useErrorHandler(error);
       setIsLoading(false);
     }
   };
@@ -55,8 +56,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '카드를 추가하지 못했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 
@@ -76,8 +76,7 @@ const useCard = () => {
       closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '카드를 수정하지 못했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 
@@ -93,8 +92,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '카드를 삭제하지 못했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 
@@ -102,7 +100,7 @@ const useCard = () => {
     try {
       await putCardAsync(info);
     } catch (error) {
-      console.error(error);
+      useErrorHandler(error);
     }
   };
 

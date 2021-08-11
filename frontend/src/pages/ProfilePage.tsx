@@ -11,7 +11,7 @@ import {
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
-import { useProfile, useSnackbar } from '../hooks';
+import { useErrorHandler, useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
 
 interface ImageEditorStyleProp {
@@ -32,11 +32,7 @@ const validateUserName = async (value: string) => {
   try {
     await postUserNameCheckAsync(value);
   } catch (error) {
-    if (error.response.status === 409) {
-      throw new Error('중복된 이름입니다.');
-    }
-
-    console.error(error);
+    useErrorHandler(error);
   }
 
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {

@@ -10,6 +10,7 @@ import {
   workbookState,
 } from './../recoil';
 import { postQuizzesAsync } from '../api';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -69,8 +70,7 @@ const useQuizSetting = () => {
       resetQuizTime();
       routeQuiz();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '퀴즈 생성에 실패했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 

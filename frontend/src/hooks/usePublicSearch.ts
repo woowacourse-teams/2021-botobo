@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { PublicWorkbookAsync, getPublicWorkbookAsync } from '../api';
 import { PublicWorkbookResponse } from '../types';
+import useErrorHandler from './useErrorHandler';
 
 const usePublicSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,7 @@ const usePublicSearch = () => {
       setStartIndex((prevState) => prevState + 1);
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      useErrorHandler(error);
       setIsLoading(false);
     }
   };

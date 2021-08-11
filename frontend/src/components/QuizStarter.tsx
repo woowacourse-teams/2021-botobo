@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getGuestQuizzesAsync } from '../api';
 import { CLOUD_FRONT_DOMAIN, QUIZ_MODE } from '../constants';
-import { useRouter, useSnackbar } from '../hooks';
+import { useErrorHandler, useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
 import { Flex } from '../styles';
@@ -45,7 +45,7 @@ const QuizStarter = ({ workbooks }: Props) => {
       setQuizMode(QUIZ_MODE.GUEST);
       routeQuiz();
     } catch (error) {
-      showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 

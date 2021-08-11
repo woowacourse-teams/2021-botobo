@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { putNextQuizAsync } from './../api';
 import { hasQuizTimeState, quizState, quizTimeState } from '../recoil';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -45,8 +46,7 @@ const useQuizResult = () => {
       showSnackbar({ message: '다음에 볼 카드가 설정되었어요.' });
       routeMain();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '퀴즈 설정에 실패했어요.', type: 'error' });
+      useErrorHandler(error);
     }
   };
 
