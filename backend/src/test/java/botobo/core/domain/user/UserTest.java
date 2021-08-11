@@ -1,8 +1,12 @@
 package botobo.core.domain.user;
 
+import botobo.core.domain.workbook.Workbook;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -32,7 +36,24 @@ public class UserTest {
                 .userName("user")
                 .profileUrl("profile.io")
                 .build();
-        assertThat(user.getBio()).isEqualTo("");
+        assertThat(user.getBio()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("문제집을 포함한 User 객체 생성 - 성공")
+    void createWithWorkbook() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .name("workbook")
+                .build();
+        assertThatCode(() -> User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("user")
+                .profileUrl("profile.io")
+                .workbooks(Collections.singletonList(workbook))
+                .build()
+        ).doesNotThrowAnyException();
     }
 
     @Test
@@ -46,6 +67,34 @@ public class UserTest {
                 .bio("백엔드 개발자 유저입니다.")
                 .build();
         assertThat(user.getBio()).isEqualTo("백엔드 개발자 유저입니다.");
+    }
+
+    @Test
+    @DisplayName("다른 유저와 이름 비교 - 성공")
+    void isSameName() {
+        User user = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("user")
+                .profileUrl("profile.io")
+                .bio("백엔드 개발자 유저입니다.")
+                .build();
+        User anotherUser = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("user")
+                .profileUrl("profile.io")
+                .bio("백엔드 개발자 유저입니다.")
+                .build();
+        User pk = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("pk")
+                .profileUrl("profile.io")
+                .bio("백엔드 개발자 유저입니다.")
+                .build();
+        assertThat(user.isSameName(anotherUser)).isTrue();
+        assertThat(user.isSameName(pk)).isFalse();
     }
 
     @Test
