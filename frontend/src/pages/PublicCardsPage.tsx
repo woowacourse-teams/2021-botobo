@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
 import EmptyHeartIcon from '../assets/heart-regular.svg';
@@ -16,7 +16,7 @@ import {
 } from '../components';
 import { QUIZ_MODE, ROUTE, theme } from '../constants';
 import { useModal, usePublicCard, useRouter, useWorkbook } from '../hooks';
-import { quizModeState, quizState } from '../recoil';
+import { quizModeState, quizState, userState } from '../recoil';
 import { Flex } from '../styles';
 import { debounce } from '../utils';
 import PublicCardsLoadable from './PublicCardsLoadable';
@@ -24,6 +24,8 @@ import PublicCardsLoadable from './PublicCardsLoadable';
 const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
+  const isLogin = useRecoilValue(userState) ? true : false;
+
   const { workbooks } = useWorkbook();
   const {
     workbookId,
@@ -40,6 +42,7 @@ const PublicCardsPage = () => {
     takeCardsToMyWorkbook,
     isLoading,
     toggleHeart,
+    showSnackbar,
   } = usePublicCard();
 
   const { openModal, closeModal } = useModal();
@@ -48,6 +51,12 @@ const PublicCardsPage = () => {
   const { heart, heartCount, serverHeart } = heartInfo;
 
   const onClickHeart = () => {
+    if (!isLogin) {
+      showSnackbar({ message: '로그인이 필요해요.' });
+
+      return;
+    }
+
     debounce(() => {
       if (serverHeart === !heart) return;
 
@@ -144,6 +153,12 @@ const PublicCardsPage = () => {
             disabled={checkedCardCount === 0}
             onClick={() => {
               if (checkedCardCount === 0) return;
+
+              if (!isLogin) {
+                showSnackbar({ message: '로그인이 필요해요.' });
+
+                return;
+              }
 
               openModal({
                 content: (

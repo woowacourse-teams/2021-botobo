@@ -174,6 +174,7 @@ const usePublicCard = () => {
     takeCardsToMyWorkbook,
     isLoading,
     toggleHeart,
+    showSnackbar,
   };
 };
 

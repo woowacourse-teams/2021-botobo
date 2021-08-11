@@ -30,7 +30,7 @@ const WorkbookEditPage = () => {
 
   return (
     <>
-      <MainHeader />
+      <MainHeader shadow={false} />
       <FormProvider
         initialValues={{ name: editedWorkbook.name }}
         validators={{ name: validateWorkbookName }}

@@ -92,17 +92,17 @@ const routes = [
   {
     path: ROUTE.PUBLIC_SEARCH.PATH,
     component: <PublicSearchPage />,
-    isPublic: false,
+    isPublic: true,
   },
   {
     path: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
     component: <PublicSearchResultPage />,
-    isPublic: false,
+    isPublic: true,
   },
   {
     path: ROUTE.PUBLIC_CARDS.PATH,
     component: <PublicCardsPage />,
-    isPublic: false,
+    isPublic: true,
   },
   {
     path: `(${ROUTE.GITHUB_CALLBACK.PATH}|${ROUTE.GOOGLE_CALLBACK.PATH})`,
