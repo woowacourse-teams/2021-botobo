@@ -11,7 +11,7 @@ interface Props {
   setHashtags: React.Dispatch<React.SetStateAction<TagResponse[]>>;
 }
 
-const MAX_HASHTAG_COUNT = 3;
+const MAX_HASHTAG_COUNT = 5;
 
 const Hashtag = ({ hashtags, setHashtags }: Props) => {
   const [value, setValue] = useState('');
