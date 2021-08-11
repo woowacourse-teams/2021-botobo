@@ -20,7 +20,7 @@ import {
   WorkbookResponse,
 } from '../types';
 import { ValueOf } from '../types/utils';
-import { getLocalStorage } from '../utils';
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from '../utils';
 
 interface PostCardAsync {
   question: string;
@@ -53,7 +53,9 @@ const request = axios.create({
 
 const token = getLocalStorage(STORAGE_KEY.TOKEN);
 
-request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+request.defaults.headers.common['Authorization'] = token
+  ? `Bearer ${token}`
+  : '';
 
 export const getAccessTokenAsync = async (
   socialType: AuthType,
@@ -63,9 +65,17 @@ export const getAccessTokenAsync = async (
     data: { accessToken },
   } = await request.post<AccessTokenResponse>(`/login/${socialType}`, { code });
 
+  setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
+
   request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
   return accessToken;
+};
+
+export const postLogoutAsync = async () => {
+  removeLocalStorage(STORAGE_KEY.TOKEN);
+
+  request.defaults.headers.common['Authorization'] = '';
 };
 
 export const getWorkbooksAsync = async () => {

@@ -3,7 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { getAccessTokenAsync } from '../api';
 import { ROUTE, STORAGE_KEY } from '../constants';
 import { AuthType } from '../types';
-import { getSessionStorage, setLocalStorage } from '../utils';
+import { getSessionStorage } from '../utils';
 
 const OAuthCallbackPage = () => {
   const { search } = useLocation();
@@ -15,9 +15,7 @@ const OAuthCallbackPage = () => {
 
   const login = async () => {
     try {
-      const accessToken = await getAccessTokenAsync(type, code);
-
-      setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
+      await getAccessTokenAsync(type, code);
 
       //TODO: 훅으로 빼는 방법 고민하기
       history.push(
