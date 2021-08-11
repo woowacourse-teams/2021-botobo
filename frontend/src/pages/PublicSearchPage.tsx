@@ -24,7 +24,8 @@ interface SearchBarStyleProps {
 }
 
 interface LoadImageStyleProps {
-  isLoading: boolean;
+  isSearching: boolean;
+  isFrogJumping: boolean;
 }
 
 const searchInfos = [
@@ -55,8 +56,8 @@ const PublicSearchPage = () => {
   const {
     workbookSearchResult,
     resetSearchResult,
-    isLoading,
-    setIsLoading,
+    isSearching,
+    setIsSearching,
     searchForPublicWorkbook,
   } = usePublicSearch();
   const { keyword, type } = usePublicSearchQuery();
@@ -75,9 +76,11 @@ const PublicSearchPage = () => {
     SearchKeywordResponse[]
   >([]);
 
+  const [isFrogJumping, setIsFrogJumping] = useState(false);
+
   const searchForKeyword = async (keyword: string) => {
     if (keyword === '') {
-      setIsLoading(false);
+      setIsSearching(false);
 
       return;
     }
@@ -89,10 +92,10 @@ const PublicSearchPage = () => {
       const data = await currentFocusTab.searchForKeyword(keyword);
 
       setKeywordSearchResult(data);
-      setIsLoading(false);
+      setIsSearching(false);
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
+      setIsSearching(false);
     }
   };
 
@@ -160,9 +163,11 @@ const PublicSearchPage = () => {
           <SearchInput
             autoFocus={true}
             value={inputValue}
+            onKeyDown={() => setIsFrogJumping(false)}
+            onKeyUp={() => setIsFrogJumping(true)}
             onChange={({ target }) => {
+              setIsSearching(true);
               setInputValue(target.value);
-              setIsLoading(true);
               resetSearch();
               debounce(() => {
                 routePublicSearchQuery({
@@ -200,23 +205,11 @@ const PublicSearchPage = () => {
                 type={currentFocusTab.type}
               />
             )}
-        <LoadImage isLoading={isLoading} />
+        <LoadImage isSearching={isSearching} isFrogJumping={isFrogJumping} />
       </Container>
     </>
   );
 };
-
-const jumpAnimation = keyframes`
-  0%{
-    transform: translateY(100%);
-  }
-  50%{
-    transform:translateY(0);
-  }
-  100%{
-    transform:translateY(100%);
-  }
-`;
 
 const Container = styled.div`
   ${({ theme }) =>
@@ -316,18 +309,33 @@ const SearchInput = styled.input`
   `}
 `;
 
+const jumpAnimation = keyframes`
+  0%{
+    transform: translateY(0);
+  }
+  50%{
+    transform:translateY(-100%);
+  }
+  100%{
+    transform:translateY(0);
+  }
+`;
+
 const LoadImage = styled.div<LoadImageStyleProps>`
   width: 3.75rem;
   height: 3.25rem;
   background-image: url(${loadSrc});
   background-repeat: no-repeat;
   background-size: contain;
-  animation: ${jumpAnimation} 1s infinite ease-in-out;
   margin: 0 auto;
-  margin-top: 1rem;
+  margin-top: 3.5rem;
 
-  ${({ isLoading }) => css`
-    display: ${isLoading ? 'block' : 'none'};
+  ${({ isSearching, isFrogJumping }) => css`
+    display: ${isSearching ? 'block' : 'none'};
+    ${isFrogJumping &&
+    css`
+      animation: ${jumpAnimation} 1s infinite ease-in-out;
+    `}
   `}
 `;
 
