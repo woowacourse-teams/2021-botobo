@@ -4,9 +4,9 @@
   "author": "Team Botobo",
   "license": "MIT",
   "scripts": {
-    "start": "cp ../dev/env/.env.local ./.env && cross-env NODE_ENV=development webpack serve --config webpack.dev.js",
-    "build:dev": "cp ../dev/env/.env.dev ./.env && cross-env NODE_ENV=production webpack --config webpack.prod.js",
-    "build:prod": "cp ../dev/env/.env.prod ./.env && cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "start": "cp ../dev/env/.env.local ./.env && webpack serve --node-env development --config webpack.dev.js",
+    "build:dev": "cp ../dev/env/.env.dev ./.env && webpack --node-env production --config webpack.prod.js",
+    "build:prod": "cp ../dev/env/.env.prod ./.env && webpack --node-env production --config webpack.prod.js",
     "test": "jest"
   },
   "dependencies": {
@@ -16,7 +16,6 @@
     "axios": "^0.21.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-ga": "^3.3.0",
     "react-router-dom": "^5.2.0",
     "recoil": "^0.3.1"
   },
@@ -39,10 +38,8 @@
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "babel-loader": "^8.2.2",
-    "compression-webpack-plugin": "^8.0.1",
     "copy-webpack-plugin": "^9.0.1",
     "core-js": "^3.15.2",
-    "cross-env": "^7.0.3",
     "dotenv-webpack": "^7.0.3",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
