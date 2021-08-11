@@ -23,7 +23,7 @@ const PublicSearchResultLoadable = () => (
           </Button>
         ))}
       </Filter>
-      <CardSkeletonList count={6} />
+      <StyleCardSkeletonList count={6} />
     </Container>
   </>
 );
@@ -39,6 +39,7 @@ const Container = styled.div`
 const Title = styled.div`
   width: 40%;
   height: 1.5rem;
+  margin: 0 auto;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 
@@ -56,6 +57,11 @@ const Filter = styled.div`
     width: 4rem;
     height: 2rem;
   }
+`;
+
+const StyleCardSkeletonList = styled(CardSkeletonList)`
+  ${Flex({ direction: 'column', items: 'center' })};
+  height: 6rem;
 `;
 
 export default PublicSearchResultLoadable;
