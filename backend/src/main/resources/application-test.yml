@@ -13,6 +13,9 @@ spring:
   config:
     activate:
       on-profile: test
+  flyway:
+    enabled: false
+
 logging:
   level:
     com:
