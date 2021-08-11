@@ -69,6 +69,15 @@ class SearchKeywordTest {
     }
 
     @Test
+    @DisplayName("SearchKeyword 객체 생성 - 실패, 짧은 문자열")
+    void createWithShortString() {
+        // when, then
+        assertThatThrownBy(() -> SearchKeyword.of(""))
+                .isInstanceOf(SearchKeywordCreationFailureException.class)
+                .hasMessageContaining("검색어는 1자 이상이어야 합니다.");
+    }
+
+    @Test
     @DisplayName("SearchKeyword 객체 생성 - 실패, 금지어 포함")
     void createWithForbiddenString() {
         // when, then

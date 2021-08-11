@@ -152,6 +152,36 @@ class WorkbookTest {
         assertThat(workbook.author()).isEqualTo("존재하지 않는 유저");
     }
 
+    @Test
+    @DisplayName("createBy를 하면 문제집의 author가 주어진 user로 바뀐다 - 성공")
+    void createByWithNewAuthor() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        User newUser = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("pk")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        Workbook workbook = Workbook.builder()
+                .name("단계별 자바 문제집")
+                .user(user)
+                .build();
+
+        // when
+        workbook.createBy(newUser);
+
+        // then
+        assertThat(workbook.author()).isEqualTo(newUser.getUserName());
+    }
+
     @ValueSource(strings = {"java", "Java", "JAVA", "JaVa"})
     @ParameterizedTest
     @DisplayName("문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")

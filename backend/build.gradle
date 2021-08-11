@@ -98,9 +98,39 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        html.enabled false
+        html.enabled true
         xml.enabled true
         csv.enabled false
+    }
+//    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+
+            excludes = [
+                    'botobo.core.infrastructure.**',
+                    'botobo.core.exception.**',
+                    'botobo.core.dto.**',
+                    'botobo.core.DataLoader',
+                    'botobo.core.BotoboApplication'
+            ]
+        }
     }
 }
 
@@ -125,6 +155,11 @@ sonarqube {
         property "sonar.junit.reportsPath", "$buildDir/test-reports"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.coverage.jacoco.reportPaths", "$buildDir/jacoco/jacoco.exec"
+        property "sonar.exclusions", "botobo/core/infrastructure/**, " +
+                "botobo/core/exception/**, " +
+                "botobo/core/dto/**, " +
+                "botobo/core/DataLoader.java, " +
+                "botobo/core/BotoboApplication.java"
     }
 }
 

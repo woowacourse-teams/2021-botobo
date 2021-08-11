@@ -193,6 +193,40 @@ class WorkbookServiceTest {
     }
 
     @Test
+    @DisplayName("비회원 공유 문제집 상세보기 - 성공")
+    void findPublicWorkbookByIdWithAnonymousAppUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("피케이의 공유 문제집")
+                .cards(new Cards(List.of(
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
+                        )
+                )
+                .opened(true)
+                .build();
+        Long userId = normalUser.getId();
+        Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
+        workbook.toggleHeart(heart);
+
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+
+        // when
+        WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, AppUser.anonymous());
+
+        // then
+        assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getHeart()).isFalse();
+
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
     @DisplayName("공유 문제집 상세보기 - 실패, 문제집이 공유 문제집이 아닌 경우")
     void findPublicWorkbookWithFalseOpenedById() {
         // given
