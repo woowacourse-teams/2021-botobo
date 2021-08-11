@@ -3,8 +3,6 @@ package botobo.core.acceptance.search;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
-import botobo.core.dto.auth.GithubUserInfoResponse;
-import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.SimpleUserResponse;
@@ -24,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static botobo.core.utils.Fixture.bear;
+import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,19 +40,6 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void initializeUsers() {
-        UserInfoResponse pk = GithubUserInfoResponse.builder()
-                .userName("pk")
-                .socialId("10")
-                .profileUrl("pk.profile")
-                .build();
-
-
-        UserInfoResponse bear = GithubUserInfoResponse.builder()
-                .userName("bear")
-                .socialId("20")
-                .profileUrl("bear.profile")
-                .build();
-
         pkToken = 소셜_로그인되어_있음(pk, SocialType.GITHUB);
         bearToken = 소셜_로그인되어_있음(bear, SocialType.GITHUB);
     }
@@ -123,7 +110,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     private void 카드도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken) {
         Long workbookId = workbookResponse.getId();
         IntStream.rangeClosed(1, cardCount)
-                .forEach(number -> 카드_등록되어_있음("질문", "정답", workbookId, accessToken));
+                .forEach(number -> 유저_카드_등록되어_있음("질문", "정답", workbookId, accessToken));
     }
 
     private void 좋아요도_함께_등록(WorkbookResponse workbookResponse, List<String> heartUserTokens) {
@@ -649,7 +636,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         return request()
                 .get("/api/search/workbooks")
                 .queryParams(parameters)
-                .auth(createToken(user.getId()))
+                .auth(createToken(admin.getId()))
                 .build();
     }
 
@@ -657,7 +644,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         return request()
                 .get("/api/search/tags")
                 .queryParam("keyword", keyword)
-                .auth(createToken(user.getId()))
+                .auth(createToken(admin.getId()))
                 .build();
     }
 
@@ -665,7 +652,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         return request()
                 .get("/api/search/users")
                 .queryParam("keyword", keyword)
-                .auth(createToken(user.getId()))
+                .auth(createToken(admin.getId()))
                 .build();
     }
 }

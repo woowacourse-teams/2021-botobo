@@ -1,6 +1,6 @@
 package botobo.core.acceptance.admin;
 
-import botobo.core.acceptance.AcceptanceTest;
+import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -12,7 +12,6 @@ import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends AcceptanceTest {
+public class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_WORKBOOK_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
@@ -34,25 +33,10 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private User admin;
-
-    @BeforeEach
-    void setUser() {
-        admin = User.builder()
-                .socialId("1")
-                .userName("admin")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
-        userRepository.save(admin);
-    }
-
-
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
     void createWorkbook() {
         // given
-
         final ExtractableResponse<Response> response = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
 
         // when
