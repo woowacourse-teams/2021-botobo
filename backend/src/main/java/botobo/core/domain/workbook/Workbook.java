@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class Workbook extends BaseEntity {
 
     private static final int MAX_NAME_LENGTH = 30;
-    private static final int MAX_TAG_SIZE = 3;
+    private static final int MAX_TAG_SIZE = 5;
 
     @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String name;
