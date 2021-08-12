@@ -51,6 +51,12 @@ const FormProvider = ({
     const value = target.value;
     const validator = validators?.[key];
 
+    if (value.length === 0) {
+      setErrorMessages({ ...errorMessages, [key]: '내용을 입력해 주세요.' });
+
+      return;
+    }
+
     try {
       await validator?.(value);
       setErrorMessages({ ...errorMessages, [key]: null });
@@ -64,16 +70,6 @@ const FormProvider = ({
     event
   ) => {
     event.preventDefault();
-
-    try {
-      for (const key of Object.keys(values)) {
-        await validators?.[key](values[key]);
-      }
-    } catch (error) {
-      console.error(error);
-
-      return;
-    }
 
     const emptyInput = Object.keys(values).find((key) => values[key] === '');
 
@@ -89,6 +85,16 @@ const FormProvider = ({
 
     if (invalidInput) {
       event.currentTarget[invalidInput].focus();
+
+      return;
+    }
+
+    try {
+      for (const key of Object.keys(values)) {
+        await validators?.[key](values[key]);
+      }
+    } catch (error) {
+      console.error(error);
 
       return;
     }

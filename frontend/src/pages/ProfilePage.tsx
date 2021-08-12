@@ -33,7 +33,7 @@ const validateUserName = async (value: string) => {
     await postUserNameCheckAsync(value);
   } catch (error) {
     if (error.response.status === 409) {
-      throw new Error('중복된 이름입니다.');
+      throw new Error('이미 존재하는 이름이에요.');
     }
 
     console.error(error);
@@ -41,18 +41,18 @@ const validateUserName = async (value: string) => {
 
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
     throw new Error(
-      `이름의 길이는 ${USER_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`
+      `이름의 길이는 ${USER_NAME_MAXIMUM_LENGTH}자를 넘길 수 없어요.`
     );
   }
 
   if (/\s/.test(value)) {
-    throw new Error('이름에 공백은 허용할 수 없습니다.');
+    throw new Error('공백은 포함할 수 없어요.');
   }
 };
 
 const validateBio = (value: string) => {
   if (value.length > BIO_MAXIMUM_LENGTH) {
-    throw new Error(`소개글은 ${BIO_MAXIMUM_LENGTH}자 이하여야 합니다.`);
+    throw new Error(`소개글은 ${BIO_MAXIMUM_LENGTH}자를 넘길 수 없어요.`);
   }
 };
 
