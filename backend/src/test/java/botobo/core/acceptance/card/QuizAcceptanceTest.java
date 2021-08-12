@@ -26,7 +26,6 @@ import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_OF_30_CARDS;
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @DisplayName("Quiz 인수 테스트")
 public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
@@ -331,7 +330,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/api/cards/next-quiz", request)
-                .auth(createToken(user.getId()))
+                .auth(createToken(admin.getId()))
                 .build()
                 .extract();
     }

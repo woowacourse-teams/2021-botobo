@@ -2,6 +2,7 @@ package botobo.core.acceptance.card;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
+import botobo.core.domain.user.SocialType;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.CardUpdateRequest;
@@ -18,18 +19,23 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
+import static botobo.core.utils.Fixture.ditto;
+import static botobo.core.utils.Fixture.joanne;
+import static botobo.core.utils.Fixture.kyle;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
 public class CardAcceptanceTest extends DomainAcceptanceTest {
 
+    private String joanneToken;
+
+    private Long workbookId;
+
     @BeforeEach
     void setFixture() {
-        문제집_생성_요청(WORKBOOK_REQUEST_1);
-        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK);
+        joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GOOGLE);
+        workbookId = 유저_태그_포함_문제집_등록되어_있음("문제집", true, joanneToken).getId();
     }
 
     @Test
@@ -39,14 +45,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         CardResponse cardResponse = response.convertBody(CardResponse.class);
@@ -65,14 +68,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question(question)
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -87,14 +87,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question(stringGenerator(2001))
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -111,14 +108,12 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
+
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -132,14 +127,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer(stringGenerator(2001))
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -158,10 +150,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -182,10 +171,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -200,7 +186,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
 
         // when
@@ -222,14 +208,12 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .build();
+        final String anotherToken = 소셜_로그인되어_있음(kyle, SocialType.GOOGLE);
 
         // when
-        final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(anyUser().getId()))
-                .build();
+        final HttpResponse response = 유저_카드_생성_요청(cardRequest, anotherToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -241,20 +225,19 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 성공")
     void updateCard() {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
 
         // then
         CardUpdateResponse cardUpdateResponse = response.convertBody(CardUpdateResponse.class);
@@ -273,20 +256,19 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 유효하지 않은 question")
     void updateCardWithInvalidQuestion(String question) {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(question)
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -298,20 +280,19 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 2000자를 넘긴 question")
     void updateCardWithLongQuestion() {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(stringGenerator(2001))
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -325,20 +306,19 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 유효하지 않은 answer")
     void updateCardWithInvalidAnswer(String answer) {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -350,20 +330,20 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 2000자를 넘긴 answer")
     void updateCardWithLongAnswer() {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(stringGenerator(2001))
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
+
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -375,10 +355,12 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 존재하지 않는 유저")
     void updateCardWithNotExistUser() {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -386,8 +368,8 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .failAuth()
+                .put("/api/cards/{id}", cardUpdateRequest, cardResponse.getId())
+                .failAuth() // 100L
                 .build();
 
         // then
@@ -400,20 +382,21 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 작성자가 아닌 유저")
     void updateCardWithNotAuthor() {
         // given
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(1L)
+                .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
 
+        final String anotherToken = 소셜_로그인되어_있음(ditto, SocialType.GOOGLE);
+
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/1", cardUpdateRequest)
-                .auth(createToken(anyUser().getId()))
-                .build();
+        final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, anotherToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -425,13 +408,10 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() {
         // given
-        long cardId = 1L;
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
 
         // when
-        final HttpResponse response = request()
-                .delete("/api/cards/" + cardId)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 유저_카드_삭제_요청(cardResponse, joanneToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -441,11 +421,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 실패, 존재하지 않는 유저")
     void deleteCardWithNotExistUser() {
         // given
-        long cardId = 1L;
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
 
         // when
         final HttpResponse response = request()
-                .delete("/api/cards/" + cardId)
+                .delete("/api/cards/" + cardResponse.getId())
                 .failAuth()
                 .build();
 
@@ -459,13 +439,11 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 실패, 작성자가 아닌 유저")
     void deleteCardWithNotAuthor() {
         // given
-        long cardId = 1L;
+        final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
+        final String anotherToken = 소셜_로그인되어_있음(ditto, SocialType.GOOGLE);
 
         // when
-        final HttpResponse response = request()
-                .delete("/api/cards/" + cardId)
-                .auth(createToken(anyUser().getId()))
-                .build();
+        final HttpResponse response = 유저_카드_삭제_요청(cardResponse, anotherToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -477,15 +455,17 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given
+        final Long card1 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card2 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card3 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
-                .cardIds(List.of(1L, 2L, 3L))
+                .cardIds(List.of(card1, card2, card3))
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/next-quiz", request)
-                .auth(createToken(1L))
-                .build();
+        final HttpResponse response = 카드_또_보기_요청(request, joanneToken);
+        ;
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -515,8 +495,12 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, 로그인하지 않은 경우")
     void selectNextQuizCardsWhenUserNotLogin() {
         // given
+        final Long card1 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card2 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card3 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
-                .cardIds(List.of(1L, 2L, 3L))
+                .cardIds(List.of(card1, card2, card3))
                 .build();
 
         // when
@@ -534,8 +518,12 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, 유저가 존재하지 않는 경우")
     void selectNextQuizCardsWhenUserNotFound() {
         // given
+        final Long card1 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card2 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card3 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
-                .cardIds(List.of(1L, 2L, 3L))
+                .cardIds(List.of(card1, card2, card3))
                 .build();
 
         // when
@@ -554,19 +542,45 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, author가 아닌 경우")
     void selectNextQuizCardsWhenUserIsNotAuthor() {
         // given
+        final Long card1 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card2 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+        final Long card3 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
+
+        final String anotherToken = 소셜_로그인되어_있음(kyle, SocialType.GOOGLE);
+
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
-                .cardIds(List.of(1L, 2L, 3L))
+                .cardIds(List.of(card1, card2, card3))
                 .build();
 
         // when
-        final HttpResponse response = request()
-                .put("/api/cards/next-quiz", request)
-                .auth(createToken(anyUser().getId()))
-                .build();
+        final HttpResponse response = 카드_또_보기_요청(request, anotherToken);
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
+    private HttpResponse 유저_카드_수정_요청(CardUpdateRequest cardUpdateRequest,
+                                     CardResponse cardResponse,
+                                     String accessToken) {
+        return request()
+                .put("/api/cards/{id}", cardUpdateRequest, cardResponse.getId())
+                .auth(accessToken)
+                .build();
+    }
+
+    private HttpResponse 유저_카드_삭제_요청(CardResponse cardResponse, String accessToken) {
+        return request()
+                .delete("/api/cards/{id}", cardResponse.getId())
+                .auth(accessToken)
+                .build();
+    }
+
+    private HttpResponse 카드_또_보기_요청(NextQuizCardsRequest request, String accessToken) {
+        return request()
+                .put("/api/cards/next-quiz", request)
+                .auth(accessToken)
+                .build();
     }
 }

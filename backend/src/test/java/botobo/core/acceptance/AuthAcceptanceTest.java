@@ -2,14 +2,14 @@ package botobo.core.acceptance;
 
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.domain.user.SocialType;
-import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
-import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static botobo.core.utils.Fixture.oz;
+import static botobo.core.utils.Fixture.pk;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
@@ -22,15 +22,8 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("깃헙 로그인을 한다 - 성공")
     void loginWithGithub() {
-        // given
-        UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
-                .userName("socialUser")
-                .socialId("2")
-                .profileUrl("social.io")
-                .build();
-
-        // when
-        final String accessToken = 소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB);
+        // given, when
+        final String accessToken = 소셜_로그인되어_있음(pk, SocialType.GITHUB);
 
         // then
         assertThat(accessToken).isNotNull();
@@ -45,15 +38,8 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("구글 로그인을 한다 - 성공")
     void loginWithGoogle() {
-        // given
-        UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
-                .userName("socialUser")
-                .socialId("2")
-                .profileUrl("social.io")
-                .build();
-
-        // when
-        final String accessToken = 소셜_로그인되어_있음(userInfoResponse, SocialType.GOOGLE);
+        // given, when
+        final String accessToken = 소셜_로그인되어_있음(oz, SocialType.GOOGLE);
 
         // then
         assertThat(accessToken).isNotNull();
