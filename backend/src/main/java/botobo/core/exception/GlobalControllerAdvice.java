@@ -32,9 +32,8 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<ErrorResponse> handleInternalServerErrorException(InternalServerErrorException e) {
-        log.info(String.format("InternalServerErrorException %s", e.getMessage()), e);
-        ErrorType errorType = ErrorType.of(e.getClass());
-        return ResponseEntity.status(e.getHttpStatus()).body(ErrorResponse.of(errorType));
+        log.info(String.format("InternalServerErrorException %s", e.getServerMessage()), e);
+        return ResponseEntity.status(e.getHttpStatus()).body(ErrorResponse.of(e.getErrorType()));
     }
 
     @ExceptionHandler(BotoboException.class)
