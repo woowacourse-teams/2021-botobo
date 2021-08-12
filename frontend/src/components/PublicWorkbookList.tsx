@@ -6,9 +6,11 @@ import { STORAGE_KEY } from '../constants';
 import { usePublicSearchQuery, useRouter } from '../hooks';
 import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
+import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
+  isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
   searchForPublicWorkbook: ({
     keyword,
@@ -16,9 +18,8 @@ interface Props {
   }: PublicWorkbookAsync) => Promise<void>;
 }
 
-const loadItemCount = 20;
-
 const PublicWorkbookList = ({
+  isLoading,
   publicWorkbooks,
   searchForPublicWorkbook,
 }: Props) => {
@@ -26,8 +27,6 @@ const PublicWorkbookList = ({
   const { routePublicCards } = useRouter();
 
   const scrollTarget = useRef<HTMLLIElement>(null);
-
-  const isLastItem = publicWorkbooks.length % loadItemCount !== 0;
 
   useEffect(() => {
     if (!scrollTarget.current) return;
@@ -39,7 +38,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        searchForPublicWorkbook({ keyword, type });
+        await searchForPublicWorkbook({ keyword, type });
       },
       {
         threshold: 0.1,
@@ -48,17 +47,13 @@ const PublicWorkbookList = ({
 
     scrollObserver.observe(scrollTarget.current);
 
-    if (isLastItem) {
-      scrollObserver.disconnect();
-    }
-
     return () => scrollObserver.disconnect();
-  }, [scrollTarget.current, isLastItem]);
+  }, [scrollTarget.current]);
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }, index) => (
-        <li ref={scrollTarget} key={index}>
+      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
+        <li ref={scrollTarget} key={id}>
           <PublicWorkbook
             name={name}
             cardCount={cardCount}
@@ -70,14 +65,30 @@ const PublicWorkbookList = ({
           />
         </li>
       ))}
+      {isLoading && (
+        <LoadingSpinnerWrapper>
+          <LoadingSpinner />
+        </LoadingSpinnerWrapper>
+      )}
     </StyledUl>
   );
 };
 
 const StyledUl = styled.ul`
+  position: relative;
   display: grid;
   grid-template-columns: repeat(1);
   gap: 1rem;
+
+  & > li:last-of-type {
+    margin-bottom: 1rem;
+  }
+`;
+
+const LoadingSpinnerWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: -2.2rem;
 `;
 
 export default PublicWorkbookList;

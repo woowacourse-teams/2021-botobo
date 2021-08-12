@@ -13,7 +13,10 @@ module.exports = {
   },
   plugins: [
     new Dotenv(),
-    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      favicon: './public/favicon.png',
+    }),
     new CopyPlugin({
       patterns: [
         {

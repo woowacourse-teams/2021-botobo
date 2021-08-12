@@ -52,7 +52,6 @@ public class QuizService extends AbstractUserService {
     }
 
     private void validateWorkbooks(List<Long> workbookIds, User user) {
-        // Opinion: id를 예외에 넘겨서 로그에 남겨도 좋을 것 같음.
         for (Long id : workbookIds) {
             validateAuthor(findWorkbookById(id), user);
         }

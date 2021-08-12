@@ -19,7 +19,8 @@ const PublicSearchResultPage = () => {
   const {
     workbookSearchResult,
     isLoading,
-    setIsLoading,
+    isSearching,
+    setIsSearching,
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
@@ -32,11 +33,11 @@ const PublicSearchResultPage = () => {
   );
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsSearching(true);
     searchForPublicWorkbook({ keyword, type, criteria });
   }, []);
 
-  if (isLoading) {
+  if (isSearching) {
     return <PublicWorkbookLoadable />;
   }
 
@@ -77,7 +78,7 @@ const PublicSearchResultPage = () => {
 
                     setCurrentFilterId(id);
                     resetSearchResult();
-                    setIsLoading(true);
+                    setIsSearching(true);
                     routePublicSearchResultQuery(resetValue);
                     searchForPublicWorkbook(resetValue);
                   }}
@@ -87,6 +88,7 @@ const PublicSearchResultPage = () => {
               ))}
             </Filter>
             <PublicWorkbookList
+              isLoading={isLoading}
               publicWorkbooks={workbookSearchResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
@@ -123,6 +125,7 @@ const Title = styled.h2`
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   text-align: center;
+  word-break: break-all;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};

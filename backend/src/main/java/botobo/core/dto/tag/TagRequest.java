@@ -18,11 +18,11 @@ import javax.validation.constraints.PositiveOrZero;
 @Builder
 public class TagRequest {
 
-    @NotNull(message = "태그 아이디는 필수 입력값입니다.")
-    @PositiveOrZero(message = "태그 아이디는 0이상의 숫자입니다.")
+    @NotNull(message = "W003")
+    @PositiveOrZero(message = "W004")
     private Long id;
 
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Length(max = 20, message = "태그는 최대 20자까지 입력 가능합니다.")
+    @NotBlank(message = "W005")
+    @Length(max = 20, message = "W006")
     private String name;
 }

@@ -45,9 +45,7 @@ class HeartTest {
                 () -> Heart.builder()
                         .userId(userId)
                         .build()
-        ).isInstanceOf(HeartCreationFailureException.class)
-                .hasMessageContaining("Heart 생성에 실패했습니다")
-                .hasMessageContaining("문제집 필요");
+        ).isInstanceOf(HeartCreationFailureException.class);
     }
 
     @Test
@@ -58,8 +56,6 @@ class HeartTest {
                 () -> Heart.builder()
                         .workbook(workbook)
                         .build()
-        ).isInstanceOf(HeartCreationFailureException.class)
-                .hasMessageContaining("Heart 생성에 실패했습니다")
-                .hasMessageContaining("유저 아이디 필요");
+        ).isInstanceOf(HeartCreationFailureException.class);
     }
 }

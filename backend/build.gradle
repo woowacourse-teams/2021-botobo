@@ -158,11 +158,10 @@ sonarqube {
         property "sonar.junit.reportsPath", "$buildDir/test-reports"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.coverage.jacoco.reportPaths", "$buildDir/jacoco/jacoco.exec"
-        property "sonar.exclusions", "botobo/core/infrastructure/**, " +
-                "botobo/core/exception/**, " +
-                "botobo/core/dto/**, " +
-                "botobo/core/DataLoader.java, " +
-                "botobo/core/BotoboApplication.java"
+        property "sonar.exclusions", "**/exception/**, " +
+                "**/dto/**, " +
+                "**/DataLoader.java, " +
+                "**/BotoboApplication.java"
     }
 }
 

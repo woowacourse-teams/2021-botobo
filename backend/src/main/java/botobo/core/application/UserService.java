@@ -56,7 +56,7 @@ public class UserService extends AbstractUserService {
         userRepository.findByUserName(requestedName).ifPresent(
                 findUser -> {
                     if (!findUser.isSameId(me.getId())) {
-                        throw new UserNameDuplicatedException(requestedName);
+                        throw new UserNameDuplicatedException();
                     }
                 }
         );

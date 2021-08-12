@@ -30,13 +30,11 @@ class TagsTest {
     void createWithNull() {
         // when, then
         assertThatThrownBy(() -> Tags.of(null))
-                .isInstanceOf(TagsCreationFailureException.class)
-                .hasMessageContaining("Tags객체 생성에 실패했습니다")
-                .hasMessageContaining("tags는 null이 될 수 없습니다");
+                .isInstanceOf(TagsCreationFailureException.class);
     }
 
     @Test
-    @DisplayName("두 Tags에서 같은 이름을 가지는 태그의 수를 구한다.")
+    @DisplayName("태그 이름의 교집합 검사 - 성공, 두 Tags에서 같은 이름을 가지는 태그의 수를 구한다.")
     void countSameTagName() {
         // given
         Tags tags = Tags.of(Arrays.asList(

@@ -2,7 +2,7 @@ package botobo.core.domain.tag;
 
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.workbooktag.WorkbookTag;
-import botobo.core.exception.tag.TagCreationFailureException;
+import botobo.core.exception.tag.TagNullException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ public class Tag extends BaseEntity {
 
     private void validateNotNull(TagName tagName) {
         if (Objects.isNull(tagName)) {
-            throw new TagCreationFailureException("tagName은 null이 될 수 없습니다.");
+            throw new TagNullException();
         }
     }
 

@@ -1,6 +1,7 @@
 package botobo.core.ui.search;
 
-import botobo.core.exception.search.InvalidPageableException;
+import botobo.core.exception.search.InvalidPageSizeException;
+import botobo.core.exception.search.InvalidPageStartException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,8 +39,7 @@ class WorkbookSearchParameterTest {
                 .start("-1")
                 .size("10")
                 .build()
-        ).isInstanceOf(InvalidPageableException.class)
-                .hasMessage("페이지의 시작 값은 음수가 될 수 없습니다.");
+        ).isInstanceOf(InvalidPageStartException.class);
     }
 
     @ParameterizedTest
@@ -55,7 +55,6 @@ class WorkbookSearchParameterTest {
                 .start("0")
                 .size(size)
                 .build()
-        ).isInstanceOf(InvalidPageableException.class)
-                .hasMessage("유효하지 않은 페이지 크기입니다. 유효한 크기 : 1 ~ 100");
+        ).isInstanceOf(InvalidPageSizeException.class);
     }
 }

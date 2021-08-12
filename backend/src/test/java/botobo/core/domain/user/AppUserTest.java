@@ -1,5 +1,6 @@
 package botobo.core.domain.user;
 
+import botobo.core.exception.user.AnonymousHasNotIdException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class AppUserTest {
         AppUser anonymous = AppUser.anonymous();
 
         // when, then
-        assertThatThrownBy(anonymous::getId).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(anonymous::getId).isInstanceOf(AnonymousHasNotIdException.class);
     }
 
     @Test

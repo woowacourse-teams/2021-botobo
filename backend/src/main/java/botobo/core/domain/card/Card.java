@@ -3,6 +3,8 @@ package botobo.core.domain.card;
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.exception.card.CardAnswerNullException;
+import botobo.core.exception.card.CardQuestionNullException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,10 +65,10 @@ public class Card extends BaseEntity {
 
     private void validateNull(String question, String answer) {
         if (Objects.isNull(question)) {
-            throw new IllegalArgumentException("Card의 question에는 null이 들어갈 수 없습니다.");
+            throw new CardQuestionNullException();
         }
         if (Objects.isNull(answer)) {
-            throw new IllegalArgumentException("Card의 answer에는 null이 들어갈 수 없습니다.");
+            throw new CardAnswerNullException();
         }
     }
 

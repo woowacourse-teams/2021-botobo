@@ -39,8 +39,7 @@ class WorkbookTagTest {
     void createWithNullWorkbook() {
         // when, then
         assertThatThrownBy(() -> WorkbookTag.of(null, tag))
-                .isInstanceOf(WorkbookTagCreationFailureException.class)
-                .hasMessageContaining("WorkbookTag 생성시 Workbook은 null이 될 수 없습니다");
+                .isInstanceOf(WorkbookTagCreationFailureException.class);
     }
 
     @Test
@@ -48,7 +47,6 @@ class WorkbookTagTest {
     void createWithNullTag() {
         // when, then
         assertThatThrownBy(() -> WorkbookTag.of(workbook, null))
-                .isInstanceOf(WorkbookTagCreationFailureException.class)
-                .hasMessageContaining("WorkbookTag 생성시 Tag는 null이 될 수 없습니다");
+                .isInstanceOf(WorkbookTagCreationFailureException.class);
     }
 }
