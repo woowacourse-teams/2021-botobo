@@ -22,7 +22,9 @@ const PublicCardsSelectBox = ({
   closeModal,
 }: Props) => {
   const [selectedId, setSelectedId] = useState(workbooks[0]?.id || -1);
-  const [isDefaultSelected, setIsDefaultSelected] = useState(false);
+  const [isDefaultSelected, setIsDefaultSelected] = useState(
+    workbooks.length === 0 ? true : false
+  );
 
   return (
     <Container>
