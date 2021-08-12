@@ -252,6 +252,8 @@ const QuizList = styled.ul<QuizListProps>`
   ${Flex()};
   transition: transform 0.1s ease-out;
   column-gap: 1.25rem;
+  white-space: pre-wrap;
+  word-break: break-all;
 `;
 
 const QuizItem = styled.li<QuizItemProps>`

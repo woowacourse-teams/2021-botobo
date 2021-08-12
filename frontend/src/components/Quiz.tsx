@@ -118,6 +118,8 @@ const EncounterCount = styled.span`
 `;
 
 const Question = styled.div`
+  overflow-y: auto;
+
   ${({ theme }) => css`
     background-color: ${theme.color.white};
   `}
@@ -125,6 +127,7 @@ const Question = styled.div`
 
 const Answer = styled.div`
   transform: rotateX(180deg);
+  overflow-y: auto;
 
   ${({ theme }) => css`
     background-color: ${theme.color.white};
