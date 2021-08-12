@@ -80,6 +80,12 @@ const PublicSearchPage = () => {
 
   const [isFrogJumping, setIsFrogJumping] = useState(false);
 
+  const hasNoSearchResult =
+    inputValue &&
+    !isSearching &&
+    workbookSearchResult.length === 0 &&
+    keywordSearchResult.length === 0;
+
   const searchForKeyword = async (keyword: string) => {
     if (keyword === '') {
       setIsSearching(false);
@@ -208,6 +214,9 @@ const PublicSearchPage = () => {
                 type={currentFocusTab.type}
               />
             )}
+        {hasNoSearchResult && (
+          <NoSearchResult>검색 결과가 없어요.</NoSearchResult>
+        )}
         <LoadImage isSearching={isSearching} isFrogJumping={isFrogJumping} />
       </StyledPageTemplate>
     </>
@@ -337,6 +346,10 @@ const LoadImage = styled.div<LoadImageStyleProps>`
       animation: ${jumpAnimation} 1s infinite ease-in-out;
     `}
   `}
+`;
+
+const NoSearchResult = styled.div`
+  text-align: center;
 `;
 
 export default PublicSearchPage;

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 
 import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { useForm } from '../hooks';
@@ -16,10 +16,25 @@ interface ContainerStyleProps {
   errorMessage: string | null;
 }
 
+interface TextStyleProps {
+  windowHeight: number;
+}
+
 const CardTextArea = forwardRef<HTMLTextAreaElement, Props>(
   ({ title, inputName, ...props }: Props, ref) => {
     const { values, errorMessages, onChange, onBlur } = useForm();
     const [isFocus, setIsFocus] = useState(false);
+    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+    useEffect(() => {
+      const onResize = () => {
+        setWindowHeight(window.innerHeight);
+      };
+
+      window.addEventListener('resize', onResize);
+
+      return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     return (
       <Container errorMessage={errorMessages[inputName]}>
@@ -46,6 +61,7 @@ const CardTextArea = forwardRef<HTMLTextAreaElement, Props>(
               onBlur(event);
               setIsFocus(false);
             }}
+            windowHeight={windowHeight}
             {...props}
           />
         </CardTemplate>
@@ -87,16 +103,16 @@ const Limiter = styled.span`
   `}
 `;
 
-const Text = styled.textarea`
+const Text = styled.textarea<TextStyleProps>`
   width: 100%;
   border: none;
   outline: none;
   resize: none;
-  height: 12rem;
   overflow-y: auto;
 
-  ${({ theme }) => css`
+  ${({ theme, windowHeight }) => css`
     font-size: ${theme.fontSize.default};
+    height: ${(windowHeight - 360) * 0.5}px;
   `}
 `;
 

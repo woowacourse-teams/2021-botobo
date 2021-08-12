@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import LogoutIcon from '../assets/logout.svg';
 import MenuIcon from '../assets/menu.svg';
-import { CLOUD_FRONT_DOMAIN } from '../constants';
+import { CLOUD_FRONT_DOMAIN, DEVICE } from '../constants';
 import { useRouter } from '../hooks';
 import { userState } from '../recoil';
 import { Flex } from '../styles';
@@ -43,11 +43,19 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
         </h1>
         <RightContent>
           {userInfo ? (
-            <MenuIcon
-              width="1.3rem"
-              height="1.3rem"
-              onClick={() => setIsMenuVisible((prevState) => !prevState)}
-            />
+            <Navigation>
+              <MenuIcon
+                width="1.3rem"
+                height="1.3rem"
+                onClick={() => setIsMenuVisible((prevState) => !prevState)}
+              />
+              <button role="profile-link" onClick={routeProfile}>
+                <Avatar src={userInfo?.profileUrl ?? userSrc} />
+              </button>
+              <button type="button" role="logout-button" onClick={routeLogout}>
+                <div>로그아웃</div>
+              </button>
+            </Navigation>
           ) : (
             <button onClick={routeLogin}>로그인</button>
           )}
@@ -128,6 +136,25 @@ const RightContent = styled.div`
   & > svg {
     margin-left: 0.7rem;
     cursor: pointer;
+  }
+`;
+
+const Navigation = styled.div`
+  & > button {
+    display: none;
+  }
+
+  @media ${DEVICE.TABLET} {
+    ${Flex({ items: 'center' })};
+
+    & > svg {
+      display: none;
+    }
+
+    & > button {
+      ${Flex({ items: 'center' })};
+      margin-left: 0.5rem;
+    }
   }
 `;
 

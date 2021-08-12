@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
+import { DEVICE } from '../constants';
 import { loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
@@ -12,7 +13,7 @@ const QuizSettingLoadable = () => (
       <Title />
       <Description />
       <CardSkeletonWrapper>
-        <CardSkeletonList count={2} />
+        <StyledCardSkeletonList count={4} />
       </CardSkeletonWrapper>
       <Description />
       <SelectBoxSkeleton />
@@ -51,6 +52,12 @@ const SelectBoxSkeleton = styled.div`
 const CardSkeletonWrapper = styled.div`
   margin-top: 1rem;
   margin-bottom: 2.5rem;
+`;
+
+const StyledCardSkeletonList = styled(CardSkeletonList)`
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const StyleButton = styled(Button)`
