@@ -16,6 +16,7 @@ import static org.mockito.BDDMockito.given;
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
 public class DocumentationTest {
+
     private DocumentRequestBuilder documentRequestBuilder;
 
     @Autowired
@@ -24,17 +25,17 @@ public class DocumentationTest {
     @MockBean
     protected AuthService authService;
 
+    private final AppUser authenticatedUser = AppUser.user(1L);
     private final String authenticatedToken = "botobo.access.token";
 
     @BeforeEach
     void setUp() {
         documentRequestBuilder = new DocumentRequestBuilder();
-        AppUser authenticatedUser = AppUser.user(2L);
         given(authService.findAppUserByToken(null)).willReturn(AppUser.anonymous());
         given(authService.findAppUserByToken(authenticatedToken)).willReturn(authenticatedUser);
     }
 
-    protected String obtainAuthenticatedToken() {
+    protected String authenticatedToken() {
         return this.authenticatedToken;
     }
 

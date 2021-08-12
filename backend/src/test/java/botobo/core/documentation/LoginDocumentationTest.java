@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,8 +21,8 @@ public class LoginDocumentationTest extends DocumentationTest {
     void login() throws Exception {
         //given
         LoginRequest loginRequest = new LoginRequest("authCode");
-        given(authService.createToken(any(), any())).willReturn(
-                TokenResponse.of("botobo.access.token")
+        given(authService.createToken(anyString(), any(LoginRequest.class))).willReturn(
+                TokenResponse.of(authenticatedToken())
         );
 
         // when, then

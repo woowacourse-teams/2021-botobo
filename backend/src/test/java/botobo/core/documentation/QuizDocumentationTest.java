@@ -1,10 +1,9 @@
 package botobo.core.documentation;
 
 import botobo.core.application.QuizService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
-import botobo.core.exception.card.QuizEmptyException;
-import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.ui.QuizController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -31,61 +29,22 @@ public class QuizDocumentationTest extends DocumentationTest {
     void createQuiz() throws Exception {
         // given
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L), 10);
-        String token = "botobo.access.token";
-        given(quizService.createQuiz(any(QuizRequest.class), any())).willReturn(generateQuizResponses());
+        given(quizService.createQuiz(any(QuizRequest.class), any(AppUser.class))).willReturn(generateQuizResponses());
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .post("/api/quizzes", quizRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("quizzes-post-success");
-    }
-
-    // 실패 케이스는 삭제했었는데, 이후 DocumentTest 리팩토링 시 한번에 지운다고 하여 우선 남겨둠!
-    @Test
-    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집이 존재하지 않음")
-    void createQuizWithInvalidWorkbookId() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 1000L), 10);
-        given(quizService.createQuiz(any(QuizRequest.class), any())).willThrow(new WorkbookNotFoundException());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .post("/api/quizzes", quizRequest)
-                .auth(token)
-                .build()
-                .status(status().isNotFound())
-                .identifier("quizzes-post-fail-invalid-workbook-id");
-    }
-
-    @Test
-    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
-    void createQuizWithEmptyCards() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        QuizRequest quizRequest = new QuizRequest(Collections.singletonList(100L), 10);
-        given(quizService.createQuiz(any(QuizRequest.class), any())).willThrow(new QuizEmptyException());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .post("/api/quizzes", quizRequest)
-                .auth(token)
-                .build()
-                .status(status().isBadRequest())
-                .identifier("quizzes-post-fail-empty-cards");
     }
 
     @Test
     @DisplayName("문제집에서 바로 풀기 - 성공")
     void createQuizFromWorkbook() throws Exception {
         // given
-        String token = "botobo.access.token";
         Long workbookId = 1L;
         given(quizService.createQuizFromWorkbook(workbookId)).willReturn(generateQuizResponses());
 
@@ -93,7 +52,7 @@ public class QuizDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .get("/api/quizzes/{workbookId}", workbookId)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("quizzes-from-workbook-get-success");
