@@ -9,16 +9,16 @@ interface Props {
 }
 
 const CardSkeletonList = ({ count, className }: Props) => (
-  <StyledUl>
+  <StyledUl className={className}>
     {[...Array(count)].map((_, index) => (
-      <CardSkeleton key={index} className={className} />
+      <CardSkeleton key={index} />
     ))}
   </StyledUl>
 );
 
 const StyledUl = styled.ul`
   display: grid;
-  grid-template-columns: repeat(1);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
   margin: 1rem 0;
 `;

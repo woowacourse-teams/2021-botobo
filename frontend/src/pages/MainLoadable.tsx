@@ -1,23 +1,25 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
 import { CardSkeleton, CardSkeletonList, HeaderSkeleton } from '../components';
+import { DEVICE } from '../constants';
 import { Flex, loadContent } from '../styles';
+import PageTemplate from './PageTemplate';
 
 const MainLoadable = () => (
   <>
     <HeaderSkeleton />
-    <Container>
+    <PageTemplate isScroll={true}>
       <Greeting />
+      <Banner />
       <QuizStarterSkeleton />
       <section>
         <WorkbookHeader>
           <WorkbookTitle />
         </WorkbookHeader>
-        <CardSkeletonList count={6} />
+        <StyledCardSkeletonList count={8} />
       </section>
-    </Container>
+    </PageTemplate>
   </>
 );
 
@@ -29,11 +31,11 @@ const Greeting = styled.div`
   ${loadContent}
 `;
 
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
+const Banner = styled.div`
+  height: 2.5rem;
+  margin-bottom: 1rem;
+
+  ${loadContent}
 `;
 
 const QuizStarterSkeleton = styled(CardSkeleton)`
@@ -50,6 +52,12 @@ const WorkbookTitle = styled.div`
   width: 50%;
 
   ${loadContent}
+`;
+
+const StyledCardSkeletonList = styled(CardSkeletonList)`
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export default MainLoadable;

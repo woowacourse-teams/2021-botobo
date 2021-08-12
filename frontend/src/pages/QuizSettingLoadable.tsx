@@ -1,14 +1,14 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
 import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
 import { loadContent } from '../styles';
+import PageTemplate from './PageTemplate';
 
 const QuizSettingLoadable = () => (
   <>
     <HeaderSkeleton />
-    <Container>
+    <PageTemplate isScroll={true}>
       <Title />
       <Description />
       <CardSkeletonWrapper>
@@ -20,16 +20,9 @@ const QuizSettingLoadable = () => (
       <StyleButton size="full" shape="rectangle" backgroundColor={'gray_4'}>
         {' '}
       </StyleButton>
-    </Container>
+    </PageTemplate>
   </>
 );
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const Title = styled.div`
   height: 2rem;

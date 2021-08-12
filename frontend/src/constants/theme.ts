@@ -53,9 +53,8 @@ const theme: Theme = {
     semiBold: '500',
     bold: '700',
   },
-  pageSize: {
-    padding: '3rem 1.25rem',
-    height: 'calc(100vh - 3.75rem)',
+  responsive: {
+    maxWidth: '768px',
   },
 };
 

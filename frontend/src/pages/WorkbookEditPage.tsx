@@ -14,6 +14,7 @@ import { FormProvider } from '../contexts';
 import { useWorkbook } from '../hooks';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
+import PageTemplate from './PageTemplate';
 
 const validateWorkbookName = (value: string) => {
   if (value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) {
@@ -47,7 +48,7 @@ const WorkbookEditPage = () => {
           title={ROUTE.WORKBOOK_EDIT.TITLE}
           rightContent={<button>확인</button>}
         />
-        <Container>
+        <PageTemplate isScroll={true}>
           <ToggleWrapper>
             <Toggle
               labelText={'전체 공개'}
@@ -63,18 +64,11 @@ const WorkbookEditPage = () => {
             maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
           />
           <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
-        </Container>
+        </PageTemplate>
       </FormProvider>
     </>
   );
 };
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const ToggleWrapper = styled.div`
   ${Flex({ justify: 'flex-end', items: 'center' })};

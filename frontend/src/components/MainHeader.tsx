@@ -29,44 +29,45 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
 
   return (
     <StyledHeader sticky={sticky} shadow={shadow}>
-      <h1>
-        <Logo
-          href="/"
-          onClick={(event) => {
-            event.preventDefault();
-            routeMain();
-          }}
-        >
-          <span>보고 또 보고</span>
-        </Logo>
-      </h1>
-      <RightContent>
-        {userInfo ? (
-          <MenuIcon
-            width="1.3rem"
-            height="1.3rem"
-            onClick={() => setIsMenuVisible((prevState) => !prevState)}
-          />
-        ) : (
-          <button onClick={routeLogin}>로그인</button>
-        )}
-      </RightContent>
-      <Menu isMenuVisible={isMenuVisible}>
-        <button role="profile-link" onClick={routeProfile}>
-          <Avatar src={userInfo?.profileUrl ?? userSrc} />
-          <div>{userInfo?.userName ?? 'Unknown User'}</div>
-        </button>
-        <button type="button" role="logout-button" onClick={routeLogout}>
-          <StyledLogoutIcon width={'1rem'} height={'1rem'} />
-          <div>로그아웃</div>
-        </button>
-      </Menu>
+      <InnerContent>
+        <h1>
+          <Logo
+            href="/"
+            onClick={(event) => {
+              event.preventDefault();
+              routeMain();
+            }}
+          >
+            <span>보고 또 보고</span>
+          </Logo>
+        </h1>
+        <RightContent>
+          {userInfo ? (
+            <MenuIcon
+              width="1.3rem"
+              height="1.3rem"
+              onClick={() => setIsMenuVisible((prevState) => !prevState)}
+            />
+          ) : (
+            <button onClick={routeLogin}>로그인</button>
+          )}
+        </RightContent>
+        <Menu isMenuVisible={isMenuVisible}>
+          <button role="profile-link" onClick={routeProfile}>
+            <Avatar src={userInfo?.profileUrl ?? userSrc} />
+            <div>{userInfo?.userName ?? 'Unknown User'}</div>
+          </button>
+          <button type="button" role="logout-button" onClick={routeLogout}>
+            <StyledLogoutIcon width={'1rem'} height={'1rem'} />
+            <div>로그아웃</div>
+          </button>
+        </Menu>
+      </InnerContent>
     </StyledHeader>
   );
 };
 
 const StyledHeader = styled.header<Required<Props>>`
-  ${Flex({ justify: 'space-between', items: 'center' })};
   height: 3.75rem;
   padding: 0 0.75rem;
   z-index: 1;
@@ -84,6 +85,16 @@ const StyledHeader = styled.header<Required<Props>>`
         `
       : ''}
   `};
+`;
+
+const InnerContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
+  height: 100%;
+  margin: 0 auto;
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
 const Logo = styled.a`

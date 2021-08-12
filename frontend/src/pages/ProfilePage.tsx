@@ -14,6 +14,7 @@ import {
 import { FormProvider } from '../contexts';
 import { useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
+import PageTemplate from './PageTemplate';
 
 interface ImageEditorStyleProp {
   isEditable: boolean;
@@ -84,7 +85,7 @@ const ProfilePage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         <Profile>
           <ImageContainer>
             <div onClick={() => setIsEditable((prevState) => !prevState)}>
@@ -152,18 +153,13 @@ const ProfilePage = () => {
             <Button size="full">프로필 수정</Button>
           </FormProvider>
         </Profile>
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   ${Flex({ justify: 'center', items: 'center' })};
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
 `;
 
 const Profile = styled.div`
