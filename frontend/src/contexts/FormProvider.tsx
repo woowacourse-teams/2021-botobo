@@ -95,6 +95,8 @@ const FormProvider = ({
       }
     } catch (error) {
       console.error(error);
+
+      return;
     }
 
     onSubmit(values);
