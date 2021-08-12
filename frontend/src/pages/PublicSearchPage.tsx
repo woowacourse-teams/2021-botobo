@@ -10,7 +10,7 @@ import {
   PublicSearchList,
   PublicWorkbookList,
 } from '../components';
-import { CLOUD_FRONT_DOMAIN, SEARCH_TYPE } from '../constants';
+import { CLOUD_FRONT_DOMAIN, DEVICE, SEARCH_TYPE } from '../constants';
 import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
@@ -113,8 +113,12 @@ const PublicSearchPage = () => {
   };
 
   useEffect(() => {
+    if (!keyword) return;
+
     routePublicSearchQuery({ keyword, type });
     searchForKeyword(keyword);
+    setIsSearching(true);
+    setIsFrogJumping(true);
   }, []);
 
   useEffect(() => {
@@ -261,11 +265,13 @@ const SearchHr = styled.hr`
   position: absolute;
   width: 100%;
   height: 1px;
-  left: 0;
+  left: 50%;
   border: none;
+  transform: translateX(-50%);
 
   ${({ theme }) => css`
     background-color: ${theme.color.gray_4};
+    max-width: calc(${theme.responsive.maxWidth} - 2.5rem);
   `}
 `;
 
@@ -293,6 +299,11 @@ const SearchBar = styled.div<SearchBarStyleProps>`
       border: none;
       border-bottom: 1px solid
         ${isFocus ? theme.color.green : theme.color.gray_3};
+
+      @media ${DEVICE.TABLET} {
+        border-left: 1px solid ${theme.color.gray_3};
+        border-right: 1px solid ${theme.color.gray_3};
+      }
     `}
 
     & > svg {

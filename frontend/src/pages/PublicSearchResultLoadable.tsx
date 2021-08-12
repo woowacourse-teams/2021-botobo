@@ -1,12 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import {
-  Button,
-  CardSkeleton,
-  CardSkeletonList,
-  HeaderSkeleton,
-} from '../components';
+import { Button, CardSkeleton, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
