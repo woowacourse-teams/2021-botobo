@@ -4,8 +4,6 @@ import botobo.core.exception.search.SearchKeywordCreationFailureException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,17 +25,6 @@ class SearchKeywordTest {
         assertThat(searchKeyword).isEqualTo(
                 SearchKeyword.of(keyword)
         );
-    }
-
-    @ValueSource(strings = {"   java", "java  ", "  java   "})
-    @ParameterizedTest
-    @DisplayName("SearchKeyword는 양 공백이 제거되어 생성된다.")
-    void createWithTrimming(String value) {
-        // given
-        SearchKeyword expected = SearchKeyword.of("java");
-
-        // when, then
-        assertThat(SearchKeyword.of(value)).isEqualTo(expected);
     }
 
     @Test
