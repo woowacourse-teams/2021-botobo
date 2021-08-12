@@ -20,9 +20,14 @@ import java.util.Objects;
 public class FileFactory {
 
     private static final ClassLoader classLoader = FileFactory.class.getClassLoader();
+    private static final String PREFIX = "images/";
 
     public static MockMultipartFile testFile(String extension) {
-        return createMockMultipartFile("botobo." + extension);
+        return createMockMultipartFile(PREFIX + "botobo." + extension);
+    }
+
+    public static MockMultipartFile emptyFile() {
+        return createMockMultipartFile(PREFIX + "empty.jpeg");
     }
 
     private static MockMultipartFile createMockMultipartFile(String fileName) {

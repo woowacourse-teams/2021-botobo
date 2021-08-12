@@ -41,7 +41,7 @@ public class UserService extends AbstractUserService {
     @Transactional
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
         User user = findUser(appUser);
-        String updateProfileUrl = s3Uploader.upload(multipartFile, user.getUserName());
+        String updateProfileUrl = s3Uploader.upload(multipartFile, user);
         user.updateProfileUrl(updateProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(updateProfileUrl)

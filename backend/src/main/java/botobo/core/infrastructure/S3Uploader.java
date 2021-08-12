@@ -1,7 +1,9 @@
 package botobo.core.infrastructure;
 
+import botobo.core.domain.user.User;
 import botobo.core.exception.user.s3.FileConvertFailedException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,23 +25,50 @@ public class S3Uploader {
     private final FileNameGenerator fileNameGenerator;
 
     @Value("${aws.cloudfront.url-format}")
-    private String cloudFrontUrlFormat;
+    private String cloudfrontUrlFormat;
 
     @Value("${aws.s3.bucket}")
     private String bucket;
 
     @Value("${aws.user-default-image}")
-    private String userDefaultImage;
+    private String userDefaultImageName;
 
-    public String upload(MultipartFile multipartFile, String userName) throws IOException {
+    public String upload(MultipartFile multipartFile, User user) throws IOException {
+        final String oldImageUrl = user.getProfileUrl();
+        final String userName = user.getUserName();
+
         if (isEmpty(multipartFile)) {
-            return makeCloudFrontUrl(userDefaultImage);
+            deletePreviousImageFromS3(oldImageUrl);
+            return makeCloudFrontUrl(userDefaultImageName);
         }
-        final String newlyCreatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
-        File uploadImageFile = convert(multipartFile)
+
+        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
+        uploadImageToS3(
+                makeUploadImageFile(multipartFile),
+                generatedFileName
+        );
+
+        deletePreviousImageFromS3(oldImageUrl);
+        return makeCloudFrontUrl(generatedFileName);
+    }
+
+    private File makeUploadImageFile(MultipartFile multipartFile) throws IOException {
+        return convert(multipartFile)
                 .orElseThrow(FileConvertFailedException::new);
-        uploadImageToS3(uploadImageFile, newlyCreatedFileName);
-        return makeCloudFrontUrl(newlyCreatedFileName);
+    }
+
+    private void deletePreviousImageFromS3(String oldImageUrl) {
+        String oldImageName = oldImageUrl.replace(
+                cloudfrontUrl(),
+                ""
+        );
+        if (!Objects.equals(oldImageName, userDefaultImageName) && amazonS3Client.doesObjectExist(bucket, oldImageName)) {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, oldImageName));
+        }
+    }
+
+    private String cloudfrontUrl() {
+        return cloudfrontUrlFormat.replace("%s", "");
     }
 
     private boolean isEmpty(MultipartFile multipartFile) {
@@ -47,7 +76,7 @@ public class S3Uploader {
     }
 
     private String makeCloudFrontUrl(String uploadImageUrl) {
-        return String.format(cloudFrontUrlFormat, uploadImageUrl);
+        return String.format(cloudfrontUrlFormat, uploadImageUrl);
     }
 
     private Optional<File> convert(MultipartFile multipartFile) throws IOException {

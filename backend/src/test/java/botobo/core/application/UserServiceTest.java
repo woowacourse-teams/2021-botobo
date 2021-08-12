@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 public class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
-    private static final String USER_DEFAULT_IMAGE = "botobo-default-profile.png";
+    private static final String USER_DEFAULT_IMAGE = "imagesForS3Test/botobo-default-profile.png";
 
     @Mock
     private UserRepository userRepository;
@@ -88,7 +88,7 @@ public class UserServiceTest {
         String profileUrl = "https://botobo.com/users/user/botobo.png";
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(profileUrl);
+        given(s3Uploader.upload(mockMultipartFile, user)).willReturn(profileUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -101,7 +101,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(times(1))
-                .upload(mockMultipartFile, user.getUserName());
+                .upload(mockMultipartFile, user);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class UserServiceTest {
         MockMultipartFile mockMultipartFile = null;
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(defaultImageUrl);
+        given(s3Uploader.upload(mockMultipartFile, user)).willReturn(defaultImageUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -138,7 +138,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(never())
-                .upload(mockMultipartFile, user.getUserName());
+                .upload(mockMultipartFile, user);
     }
 
     @Test
