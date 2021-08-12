@@ -18,6 +18,7 @@ const filters = [
 const PublicSearchResultPage = () => {
   const {
     workbookSearchResult,
+    isLoading,
     isSearching,
     setIsSearching,
     searchForPublicWorkbook,
@@ -87,6 +88,7 @@ const PublicSearchResultPage = () => {
               ))}
             </Filter>
             <PublicWorkbookList
+              isLoading={isLoading}
               publicWorkbooks={workbookSearchResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
