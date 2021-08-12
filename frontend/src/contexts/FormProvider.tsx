@@ -51,7 +51,7 @@ const FormProvider = ({
     const value = target.value;
     const validator = validators?.[key];
 
-    if (validator && value.length === 0) {
+    if (value.length === 0) {
       setErrorMessages({ ...errorMessages, [key]: '내용을 입력해 주세요.' });
 
       return;
