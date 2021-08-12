@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
@@ -88,7 +89,7 @@ public class UserServiceTest {
         String profileUrl = "https://botobo.com/users/user/botobo.png";
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user)).willReturn(profileUrl);
+        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(profileUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -101,7 +102,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(times(1))
-                .upload(mockMultipartFile, user);
+                .upload(mockMultipartFile, user.getUserName());
     }
 
     @Test
@@ -112,7 +113,7 @@ public class UserServiceTest {
         MockMultipartFile mockMultipartFile = null;
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user)).willReturn(defaultImageUrl);
+        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(defaultImageUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -138,7 +139,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(never())
-                .upload(mockMultipartFile, user);
+                .upload(mockMultipartFile, user.getUserName());
     }
 
     @Test

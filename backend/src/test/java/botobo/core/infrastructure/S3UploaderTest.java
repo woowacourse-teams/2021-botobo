@@ -1,8 +1,6 @@
 package botobo.core.infrastructure;
 
 import botobo.core.config.LocalStackS3Config;
-import botobo.core.domain.user.Role;
-import botobo.core.domain.user.User;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,6 @@ class S3UploaderTest {
     public static final String FILE_PATH = "/src/test/resources/";
     public static final String UPLOAD_IMAGE_NAME = "imagesForS3Test/botobo-upload-profile.png";
     private static final String USER_DEFAULT_IMAGE_NAME = "imagesForS3Test/botobo-default-profile.png";
-    private static final String PREVIOUS_PROFILE_IMAGE_NAME = "imagesForS3Test/botobo-previous-profile.png";
     private static final String EMPTY_IMAGE_NAME = "imagesForS3Test/botobo-empty-image.png";
 
     @Value("${aws.s3.bucket}")
@@ -38,15 +35,13 @@ class S3UploaderTest {
     private String cloudfrontUrlFormat;
 
     @Value("${aws.user-default-image}")
-    private String userDefaultImage;
+    private String userDefaultImageName;
 
     @Autowired
     private AmazonS3 amazonS3;
 
     @Autowired
     private S3Uploader s3Uploader;
-
-    private User joanne;
 
     @BeforeEach
     void setUp() {
@@ -55,11 +50,6 @@ class S3UploaderTest {
                 "botobo-default-profile.png",
                 new File(new File("").getAbsolutePath() + FILE_PATH + USER_DEFAULT_IMAGE_NAME)
         );
-        joanne = User.builder()
-                .userName("조앤")
-                .profileUrl(String.format(cloudfrontUrlFormat, userDefaultImage))
-                .role(Role.USER)
-                .build();
     }
 
     @Test
@@ -67,7 +57,7 @@ class S3UploaderTest {
     void upload() throws IOException {
         MultipartFile multipartFile = getMultipartFile(UPLOAD_IMAGE_NAME);
 
-        String uploadUrl = s3Uploader.upload(multipartFile, joanne);
+        String uploadUrl = s3Uploader.upload(multipartFile, "user");
         String uploadImageName = uploadUrl.replace(cloudfrontUrl(), "");
 
         assertAll(
@@ -77,23 +67,18 @@ class S3UploaderTest {
     }
 
     @Test
-    @DisplayName("이미지를 S3에 업로드 후 이전 이미지는 제거한다. - 성공, 이전 이미지가 기본 이미지가 아닌 경우")
+    @DisplayName("이미지를 제거한다. - 성공, 기본 이미지가 아닌 경우")
     void deletePreviousFile() throws IOException {
         // given
-        MultipartFile previousMultipartFile = getMultipartFile(PREVIOUS_PROFILE_IMAGE_NAME);
-        String previousImageUrl = s3Uploader.upload(previousMultipartFile, joanne);
-        String previousImageName = previousImageUrl.replace(cloudfrontUrl(), "");
-        joanne.updateProfileUrl(previousImageUrl);
+        String imageUrl = s3Uploader.upload(getMultipartFile(UPLOAD_IMAGE_NAME), "user");
+        String imageName = imageUrl.replace(cloudfrontUrl(), "");
 
         // when
-        String uploadUrl = s3Uploader.upload(getMultipartFile(UPLOAD_IMAGE_NAME), joanne);
-        String uploadImageName = uploadUrl.replace(cloudfrontUrl(), "");
+        s3Uploader.deleteFromS3(imageUrl);
 
         // then
         assertAll(
-                () -> assertThat(previousImageUrl).isNotNull(),
-                () -> assertThat(amazonS3.doesObjectExist(bucket, previousImageName)).isFalse(),
-                () -> assertThat(amazonS3.doesObjectExist(bucket, uploadImageName)).isTrue()
+                () -> assertThat(amazonS3.doesObjectExist(bucket, imageName)).isFalse()
         );
     }
 
@@ -107,22 +92,14 @@ class S3UploaderTest {
     }
 
     @Test
-    @DisplayName("이미지를 S3에 업로드 후 이전 이미지가 기본 이미지일 경우 제거하지 않는다. - 성공")
+    @DisplayName("이미지를 제거한다. - 실패, 기본 이미지인 경우")
     void deleteWhenPreviousFileIsDefault() throws IOException {
-        // given
-        String previousImageUrl = "https://d1mlkr1uzdb8as.cloudfront.net/botobo-default-profile.png";
-        String previousImageName = previousImageUrl.replace(cloudfrontUrl(), "");
-        joanne.updateProfileUrl(previousImageUrl);
-
-        // when
-        String uploadUrl = s3Uploader.upload(getMultipartFile(UPLOAD_IMAGE_NAME), joanne);
-        String uploadImageName = uploadUrl.replace(cloudfrontUrl(), "");
+        // given - when
+        s3Uploader.deleteFromS3(String.format(cloudfrontUrlFormat, userDefaultImageName));
 
         // then
         assertAll(
-                () -> assertThat(previousImageUrl).isNotNull(),
-                () -> assertThat(amazonS3.doesObjectExist(bucket, previousImageName)).isTrue(),
-                () -> assertThat(amazonS3.doesObjectExist(bucket, uploadImageName)).isTrue()
+                () -> assertThat(amazonS3.doesObjectExist(bucket, userDefaultImageName)).isTrue()
         );
     }
 
@@ -130,12 +107,12 @@ class S3UploaderTest {
     @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 null인 경우에는 디폴트 이미지로 대체")
     void uploadWithNull() throws IOException {
         MultipartFile multipartFile = null;
-        String uploadUrl = s3Uploader.upload(multipartFile, joanne);
+        String uploadUrl = s3Uploader.upload(multipartFile, "user");
         String cloudfrontUrl = cloudfrontUrl();
         String defaultImageName = uploadUrl.replace(cloudfrontUrl, "");
 
         assertAll(
-                () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImage)),
+                () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImageName)),
                 () -> assertThat(uploadUrl).isNotNull(),
                 () -> assertThat(amazonS3.doesObjectExist(bucket, defaultImageName)).isTrue()
         );
@@ -145,12 +122,12 @@ class S3UploaderTest {
     @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 empty인 경우에는 디폴트 이미지로 대체")
     void uploadWithEmpty() throws IOException {
         MultipartFile multipartFile = getMultipartFile(EMPTY_IMAGE_NAME);
-        String uploadUrl = s3Uploader.upload(multipartFile, joanne);
+        String uploadUrl = s3Uploader.upload(multipartFile, "user");
         String cloudfrontUrl = cloudfrontUrl();
         String defaultImageName = uploadUrl.replace(cloudfrontUrl, "");
 
         assertAll(
-                () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImage)),
+                () -> assertThat(uploadUrl).isEqualTo(String.format(cloudfrontUrlFormat, userDefaultImageName)),
                 () -> assertThat(uploadUrl).isNotNull(),
                 () -> assertThat(amazonS3.doesObjectExist(bucket, defaultImageName)).isTrue()
         );

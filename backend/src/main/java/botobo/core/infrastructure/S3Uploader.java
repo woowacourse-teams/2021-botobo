@@ -1,6 +1,5 @@
 package botobo.core.infrastructure;
 
-import botobo.core.domain.user.User;
 import botobo.core.exception.user.s3.FileConvertFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -33,12 +32,8 @@ public class S3Uploader {
     @Value("${aws.user-default-image}")
     private String userDefaultImageName;
 
-    public String upload(MultipartFile multipartFile, User user) throws IOException {
-        final String oldImageUrl = user.getProfileUrl();
-        final String userName = user.getUserName();
-
+    public String upload(MultipartFile multipartFile, String userName) throws IOException {
         if (isEmpty(multipartFile)) {
-            deletePreviousImageFromS3(oldImageUrl);
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
@@ -48,7 +43,6 @@ public class S3Uploader {
                 generatedFileName
         );
 
-        deletePreviousImageFromS3(oldImageUrl);
         return makeCloudFrontUrl(generatedFileName);
     }
 
@@ -57,12 +51,13 @@ public class S3Uploader {
                 .orElseThrow(FileConvertFailedException::new);
     }
 
-    private void deletePreviousImageFromS3(String oldImageUrl) {
+    public void deleteFromS3(String oldImageUrl) {
         String oldImageName = oldImageUrl.replace(
                 cloudfrontUrl(),
                 ""
         );
         if (!Objects.equals(oldImageName, userDefaultImageName) && amazonS3Client.doesObjectExist(bucket, oldImageName)) {
+            log.info(String.format("S3Uploader, S3에서 이미지(이미지명: %s)를 삭제했습니다.", oldImageName));
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, oldImageName));
         }
     }

@@ -3,6 +3,8 @@ package botobo.core.acceptance.user;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
+import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
