@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import DeleteIcon from '../assets/cross-mark.svg';
+import { useSnackbar } from '../hooks';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
 
@@ -12,9 +13,11 @@ interface Props {
 }
 
 const MAX_HASHTAG_COUNT = 5;
+const MAX_HASHTAG_LENGTH = 20;
 
 const Hashtag = ({ hashtags, setHashtags }: Props) => {
   const [value, setValue] = useState('');
+  const showSnackbar = useSnackbar();
 
   const submitHashtag: React.KeyboardEventHandler<HTMLInputElement> = (
     event
@@ -22,6 +25,13 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
     if (event.key !== 'Enter' || value === '') return;
 
     event.preventDefault();
+
+    if (value.length > MAX_HASHTAG_LENGTH) {
+      showSnackbar({ message: '해시태그는 20자 이하로 입력해주세요.' });
+
+      return;
+    }
+
     setValue('');
 
     if (hashtags.map(({ name }) => name).includes(value)) return;
