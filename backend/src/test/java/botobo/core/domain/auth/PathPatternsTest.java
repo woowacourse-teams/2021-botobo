@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PathPatternsTest {
 
     @Test
-    @DisplayName("제외되거나 추가되지 않은 경로는 true, 추가된 경로는 false를 반환한다.")
+    @DisplayName("경로 검사 - 성공, 제외되거나 추가되지 않은 경로는 true, 추가된 경로는 false를 반환한다.")
     void isExcludedPath() {
         // given
         PathPatterns pathPatterns = new PathPatterns();
@@ -24,7 +24,7 @@ public class PathPatternsTest {
     }
 
     @Test
-    @DisplayName("추가된 경로의 PathMethod가 ANY면 항상 false를 반환한다.")
+    @DisplayName("PathMethod.ANY 검사 - 성공, 추가된 경로의 PathMethod가 ANY면 항상 false를 반환한다.")
     void isExcludedPathWithPathMethodAny() {
         // given
         PathPatterns pathPatterns = new PathPatterns();

@@ -12,10 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class QuizRequest {
 
-    @NotEmpty(message = "퀴즈를 진행하려면 문제집 아이디가 필요합니다.")
+    @NotEmpty(message = "Q001")
     private List<Long> workbookIds;
 
-    @Range(min = 10, max = 30, message = "퀴즈의 개수는 10 ~ 30 사이의 수만 가능합니다.")
+    @Range(min = 10, max = 30, message = "Q002")
     private int count;
 
     @Builder

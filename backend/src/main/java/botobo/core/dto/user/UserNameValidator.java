@@ -11,15 +11,15 @@ public class UserNameValidator implements ConstraintValidator<ValidUserName, Str
     @Override
     public boolean isValid(String userName, ConstraintValidatorContext context) {
         if (isNull(userName)) {
-            addConstraintViolation(context, "회원명은 null이 될 수 없습니다.");
+            addConstraintViolation(context, "U004");
             return false;
         }
         if (!hasProperLength(userName)) {
-            addConstraintViolation(context, String.format("이름은 최소 %d자 이상, 최대 %d자까지 입력 가능합니다.", MIN_LENGTH, MAX_LENGTH));
+            addConstraintViolation(context, String.format("U005", MIN_LENGTH, MAX_LENGTH));
             return false;
         }
         if (hasWhiteSpace(userName)) {
-            addConstraintViolation(context, "회원명에 공백은 포함될 수 없습니다.");
+            addConstraintViolation(context, "U006");
             return false;
         }
         return true;
@@ -31,7 +31,7 @@ public class UserNameValidator implements ConstraintValidator<ValidUserName, Str
 
     private boolean hasProperLength(String userName) {
         int length = userName.length();
-        return length >= 1 && length <= 20;
+        return length >= MIN_LENGTH && length <= MAX_LENGTH;
     }
 
     private boolean isNull(String userName) {

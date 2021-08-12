@@ -5,6 +5,8 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
+import botobo.core.exception.workbook.WorkbookNameLengthException;
+import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +66,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(stringGenerator(31))
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameLengthException.class);
     }
 
     @NullAndEmptySource
@@ -76,7 +78,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(name)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameNullException.class);
     }
 
     @Test
@@ -111,9 +113,7 @@ class WorkbookTest {
                 .name("자바 문제집")
                 .tags(manyTags)
                 .build())
-                .isInstanceOf(WorkbookTagLimitException.class)
-                .hasMessageContaining("문제집이 가질 수 있는 태그수는 최대")
-                .hasMessageContaining("개 입니다.");
+                .isInstanceOf(WorkbookTagLimitException.class);
     }
 
     @Test
@@ -140,7 +140,7 @@ class WorkbookTest {
     }
 
     @Test
-    @DisplayName("문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
+    @DisplayName("존재하는 유저 조회 - 성공, 문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
     void authorWithNullUser() {
         // given
         Workbook workbook = Workbook.builder()
@@ -184,7 +184,7 @@ class WorkbookTest {
 
     @ValueSource(strings = {"java", "Java", "JAVA", "JaVa"})
     @ParameterizedTest
-    @DisplayName("문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")
+    @DisplayName("단어 포함 검사 - 성공, 문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")
     void containsWord(String word) {
         // given
         Workbook workbook = Workbook.builder()

@@ -18,6 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TagServiceTest {
@@ -28,13 +29,8 @@ class TagServiceTest {
     @Autowired
     private TagService tagService;
 
-    @AfterEach
-    void tearDown() {
-        tagRepository.deleteAll();
-    }
-
     @Test
-    @DisplayName("DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")
+    @DisplayName("태그 변환 - 성공, DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")
     void convertTags() {
         // given
         Tag java = tagRepository.save(Tag.of("java"));
@@ -63,7 +59,7 @@ class TagServiceTest {
     }
 
     @Test
-    @DisplayName("입력에 같은 이름의 태그가 존재하면 중복을 제거하며 태그를 생성한다.")
+    @DisplayName("태그 중복 제거 - 성공, 입력에 같은 이름의 태그가 존재하면 중복을 제거하며 태그를 생성한다.")
     void convertTagsWithDistinction() {
         // given
         Tag java = tagRepository.save(Tag.of("java"));

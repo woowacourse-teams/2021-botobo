@@ -1,7 +1,8 @@
 package botobo.core.ui.search;
 
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.exception.search.InvalidPageableException;
+import botobo.core.exception.search.InvalidPageSizeException;
+import botobo.core.exception.search.InvalidPageStartException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class WorkbookSearchParameter {
         try {
             int value = Integer.parseInt(start);
             if (value < MINIMUM_START_PAGE) {
-                throw new InvalidPageableException("페이지의 시작 값은 음수가 될 수 없습니다.");
+                throw new InvalidPageStartException();
             }
             return value;
         } catch (NumberFormatException e) {
@@ -61,7 +62,7 @@ public class WorkbookSearchParameter {
         try {
             int value = Integer.parseInt(size);
             if (value < MINIMUM_PAGE_SIZE || value > MAXIMUM_PAGE_SIZE) {
-                throw new InvalidPageableException("유효하지 않은 페이지 크기입니다. 유효한 크기 : 1 ~ 100");
+                throw new InvalidPageSizeException();
             }
             return value;
         } catch (NumberFormatException e) {

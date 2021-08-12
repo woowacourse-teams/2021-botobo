@@ -10,13 +10,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class AdminCardRequest {
 
-    @NotBlank(message = "질문은 필수 입력값입니다.")
+    @NotBlank(message = "C002")
     private String question;
 
-    @NotBlank(message = "답변은 필수 입력값입니다.")
+    @NotBlank(message = "C004")
     private String answer;
 
-    @NotNull(message = "카드가 포함될 문제집 아이디는 필수 입력값입니다.")
+    @NotNull(message = "C006")
     private Long workbookId;
 
 
