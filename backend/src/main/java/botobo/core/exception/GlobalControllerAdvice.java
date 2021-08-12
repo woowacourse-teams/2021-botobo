@@ -38,7 +38,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(BotoboException.class)
     public ResponseEntity<ErrorResponse> handleBotoboException(BotoboException e) {
-        log.info(String.format("%s %s", e.getClass().getName(), e.getMessage()), e);
+        log.info(String.format("%s %s", e.getClass().getName(), e.getErrorType().getMessage()), e);
         return ResponseEntity.status(e.getHttpStatus()).body(ErrorResponse.of(e.getErrorType()));
     }
 
