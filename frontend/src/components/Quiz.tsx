@@ -1,7 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
+import { QUIZ_MODE } from '../constants';
+import { quizModeState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { QuizResponse } from '../types';
 
@@ -20,6 +23,7 @@ const Quiz = ({
   encounterCount,
   isChanged,
 }: Props) => {
+  const quizMode = useRecoilValue(quizModeState);
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
@@ -32,7 +36,9 @@ const Quiz = ({
         <Question>
           <TopContent>
             <WorkbookName>{workbookName}</WorkbookName>
-            <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
+            {quizMode === QUIZ_MODE.DEFAULT && (
+              <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
+            )}
           </TopContent>
           <Text>
             <span>Q. {question}</span>
