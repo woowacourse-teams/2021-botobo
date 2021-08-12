@@ -45,6 +45,8 @@ const PublicCardsPage = () => {
     showSnackbar,
   } = usePublicCard();
 
+  const { routePublicSearchQuery } = useRouter();
+
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
 
@@ -97,33 +99,42 @@ const PublicCardsPage = () => {
         }
       />
       <Container>
+        <Heart>
+          <button type="button" onClick={onClickHeart}>
+            {heart ? (
+              <FillHeartIcon
+                width="1.5rem"
+                height="1.5rem"
+                fill={theme.color.red}
+              />
+            ) : (
+              <EmptyHeartIcon width="1.5rem" height="1.5rem" />
+            )}
+          </button>
+          <div>{heartCount}</div>
+        </Heart>
         <TopContent>
           <WorkbookName>{workbookName}</WorkbookName>
           <CardCount>{cardCount}개의 카드</CardCount>
-          <TagList>
+          <ul>
             {tags.map(({ id, name }) => (
-              <li key={id}>
-                <Tag>
+              <TagWrapper key={id}>
+                <Tag
+                  type="button"
+                  onClick={() =>
+                    routePublicSearchQuery({
+                      keyword: name,
+                      type: 'tag',
+                      method: 'push',
+                    })
+                  }
+                >
                   <span>#</span>
                   {name}
                 </Tag>
-              </li>
+              </TagWrapper>
             ))}
-          </TagList>
-          <Heart>
-            <button type="button" onClick={onClickHeart}>
-              {heart ? (
-                <FillHeartIcon
-                  width="1.5rem"
-                  height="1.5rem"
-                  fill={theme.color.red}
-                />
-              ) : (
-                <EmptyHeartIcon width="1.5rem" height="1.5rem" />
-              )}
-            </button>
-            <div>{heartCount}</div>
-          </Heart>
+          </ul>
         </TopContent>
         <ul>
           {cards.map(({ id, question, answer, isChecked }) => (
@@ -192,6 +203,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Container = styled.div`
+  position: relative;
   margin-bottom: 3rem;
 
   ${({ theme }) =>
@@ -201,8 +213,15 @@ const Container = styled.div`
     `}
 `;
 
+const Heart = styled.div`
+  ${Flex({ direction: 'column', items: 'center' })};
+  position: absolute;
+  top: 2rem;
+  right: 1.25rem;
+`;
+
 const TopContent = styled.div`
-  position: relative;
+  width: calc(100% - 2rem);
 `;
 
 const WorkbookName = styled.h2`
@@ -217,20 +236,14 @@ const CardCount = styled.div`
   `};
 `;
 
-const Heart = styled.div`
-  ${Flex({ direction: 'column', items: 'center' })};
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0.5rem;
-`;
-
-const TagList = styled.ul`
-  ${Flex({ items: 'center' })};
+const TagWrapper = styled.li`
+  display: inline-block;
+  word-break: break-all;
 `;
 
 const Tag = styled.button`
   margin-right: 0.5rem;
+  text-align: left;
 
   ${({ theme }) => css`
     color: ${theme.color.blue};
