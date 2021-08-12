@@ -8,6 +8,7 @@ import {
 } from '../api';
 import { editedWorkbookState, workbookIdState, workbookState } from '../recoil';
 import { TagResponse, WorkbookResponse } from '../types';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -19,6 +20,7 @@ const useWorkbook = () => {
 
   const { routePrevPage } = useRouter();
   const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const createWorkbook = async (
     name: string,
@@ -31,8 +33,7 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 추가되었어요.' });
       routePrevPage();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '문제집을 추가하지 못했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 
@@ -43,8 +44,7 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 수정되었어요.' });
       routePrevPage();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '문제집을 수정하지 못했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 
@@ -54,8 +54,7 @@ const useWorkbook = () => {
       updateWorkbooks();
       showSnackbar({ message: '문제집이 삭제되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '문제집을 삭제하지 못했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 

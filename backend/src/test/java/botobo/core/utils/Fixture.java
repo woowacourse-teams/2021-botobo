@@ -2,11 +2,51 @@ package botobo.core.utils;
 
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminWorkbookRequest;
+import botobo.core.dto.auth.GithubUserInfoResponse;
+import botobo.core.dto.auth.GoogleUserInfoResponse;
+import botobo.core.dto.auth.UserInfoResponse;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Fixture {
+
+    public static UserInfoResponse pk = GithubUserInfoResponse.builder()
+            .userName("pk")
+            .socialId("10")
+            .profileUrl("pk.profile")
+            .build();
+
+    public static UserInfoResponse bear = GithubUserInfoResponse.builder()
+            .userName("bear")
+            .socialId("20")
+            .profileUrl("bear.profile")
+            .build();
+
+    public static UserInfoResponse oz = GithubUserInfoResponse.builder()
+            .userName("oz")
+            .socialId("30")
+            .profileUrl("oz.profile")
+            .build();
+
+    public static UserInfoResponse joanne = GoogleUserInfoResponse.builder()
+            .userName("joanne")
+            .socialId("40")
+            .profileUrl("joanne.profile")
+            .build();
+
+    public static UserInfoResponse kyle = GoogleUserInfoResponse.builder()
+            .userName("kyle")
+            .socialId("50")
+            .profileUrl("kyle.profile")
+            .build();
+
+
+    public static UserInfoResponse ditto = GoogleUserInfoResponse.builder()
+            .userName("ditto")
+            .socialId("60")
+            .profileUrl("ditto.profile")
+            .build();
 
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_1 = new AdminWorkbookRequest("1");
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_2 = new AdminWorkbookRequest("2");

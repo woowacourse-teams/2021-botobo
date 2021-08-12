@@ -10,6 +10,7 @@ import {
   workbookState,
 } from './../recoil';
 import { postQuizzesAsync } from '../api';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
@@ -35,6 +36,7 @@ const useQuizSetting = () => {
 
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const checkWorkbook = (id: number) => {
     const newWorkbooks = workbooks.map((workbook) => {
@@ -69,8 +71,7 @@ const useQuizSetting = () => {
       resetQuizTime();
       routeQuiz();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '퀴즈 생성에 실패했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 

@@ -7,7 +7,6 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminWorkbookRequest;
-import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
@@ -19,7 +18,6 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.GithubOauthManager;
 import botobo.core.infrastructure.GoogleOauthManager;
-import botobo.core.infrastructure.JwtTokenProvider;
 import botobo.core.infrastructure.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -41,30 +39,25 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     protected GoogleOauthManager googleOauthManager;
 
-    protected GithubUserInfoResponse userInfo, anotherUserInfo;
-
     @Autowired
     protected UserRepository userRepository;
-
-    @Autowired
-    protected JwtTokenProvider jwtTokenProvider;
 
     @MockBean
     private OauthManagerFactory oauthManagerFactory;
 
-    protected User user;
+    protected User admin;
 
     @Override
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        user = User.builder()
+        admin = User.builder()
                 .socialId("1")
                 .userName("admin")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
-        userRepository.save(user);
+        userRepository.save(admin);
     }
 
     protected User anyUser() {
@@ -80,7 +73,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return request()
                 .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth(jwtTokenProvider.createToken(user.getId()))
+                .auth(jwtTokenProvider.createToken(admin.getId()))
                 .build()
                 .extract();
     }
@@ -95,47 +88,26 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         for (AdminCardRequest adminCardRequest : adminCardRequests) {
             request()
                     .post("/api/admin/cards", adminCardRequest)
-                    .auth(jwtTokenProvider.createToken(user.getId()))
+                    .auth(jwtTokenProvider.createToken(admin.getId()))
                     .build()
                     .extract();
         }
     }
 
-    public CardResponse 카드_등록되어_있음(String question, String answer, Long workbookId, Long userId) {
+    public CardResponse 유저_카드_등록되어_있음(String question, String answer, Long workbookId, String accessToken) {
         CardRequest cardRequest = CardRequest.builder()
                 .question(question)
                 .answer(answer)
                 .workbookId(workbookId)
                 .build();
-        return 카드_등록되어_있음(cardRequest, userId);
+        return 유저_카드_등록되어_있음(cardRequest, accessToken);
     }
 
-    private CardResponse 카드_등록되어_있음(CardRequest cardRequest, Long userId) {
-        return 카드_생성_요청(cardRequest, userId).convertBody(CardResponse.class);
+    private CardResponse 유저_카드_등록되어_있음(CardRequest cardRequest, String accessToken) {
+        return 유저_카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
     }
 
-    private HttpResponse 카드_생성_요청(CardRequest cardRequest, Long userId) {
-        return request()
-                .post("/api/cards", cardRequest)
-                .auth(createToken(userId))
-                .build();
-    }
-
-    public CardResponse 카드_등록되어_있음(String question, String answer, Long workbookId, String accessToken) {
-        CardRequest cardRequest = CardRequest.builder()
-                .question(question)
-                .answer(answer)
-                .workbookId(workbookId)
-                .build();
-        return 카드_등록되어_있음(cardRequest, accessToken);
-    }
-
-    private CardResponse 카드_등록되어_있음(CardRequest cardRequest, String accessToken) {
-        return 카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
-    }
-
-
-    private HttpResponse 카드_생성_요청(CardRequest cardRequest, String accessToken) {
+    public HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
         return request()
                 .post("/api/cards", cardRequest)
                 .auth(accessToken)

@@ -3,8 +3,6 @@ package botobo.core.acceptance.user;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
-import botobo.core.dto.auth.GithubUserInfoResponse;
-import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
@@ -18,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
+import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,25 +31,18 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("로그인 한 유저의 정보를 가져온다. - 성공")
     void findByUserOfMine() {
-        // given
-        UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
-                .userName("socialUser")
-                .socialId("2")
-                .profileUrl("social.io")
-                .build();
-
-        //when
+        // given, when
         final HttpResponse response = request()
                 .get("/api/users/me")
-                .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
+                .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
 
         //then
         assertThat(userResponse.getId()).isNotNull();
-        assertThat(userResponse.getUserName()).isEqualTo("socialUser");
-        assertThat(userResponse.getProfileUrl()).isEqualTo("social.io");
+        assertThat(userResponse.getUserName()).isEqualTo("pk");
+        assertThat(userResponse.getProfileUrl()).isEqualTo("pk.profile");
         assertThat(userResponse.getBio()).isEqualTo("");
     }
 
