@@ -47,12 +47,12 @@ const modalStyle = {
   `,
   bottom: css`
     bottom: 0;
-    width: 100%;
+    width: 101%;
     border-top-left-radius: ${theme.borderRadius.square_6};
     border-top-right-radius: ${theme.borderRadius.square_6};
   `,
   full: css`
-    width: 100%;
+    width: 101%;
     height: 100%;
     overflow-y: auto;
   `,
