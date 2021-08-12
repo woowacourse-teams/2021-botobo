@@ -27,7 +27,7 @@ const Hashtag = ({ hashtags, setHashtags }: Props) => {
     event.preventDefault();
 
     if (value.length > MAX_HASHTAG_LENGTH) {
-      showSnackbar({ message: '해시태그는 20자 이하로 입력해주세요.' });
+      showSnackbar({ message: '해시태그는 20자를 넘길 수 없어요.' });
 
       return;
     }
