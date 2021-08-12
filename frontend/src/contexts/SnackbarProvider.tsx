@@ -93,6 +93,7 @@ const StyledCloseIcon = styled(CloseIcon)`
   height: 1rem;
   vertical-align: middle;
   margin-left: 1rem;
+  cursor: pointer;
 
   ${({ theme }) =>
     css`

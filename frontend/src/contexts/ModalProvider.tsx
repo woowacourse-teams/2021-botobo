@@ -47,10 +47,12 @@ const modalStyle = {
   `,
   bottom: css`
     bottom: 0;
+    width: 100%;
     border-top-left-radius: ${theme.borderRadius.square_6};
     border-top-right-radius: ${theme.borderRadius.square_6};
   `,
   full: css`
+    width: 100%;
     height: 100%;
     overflow-y: auto;
   `,
@@ -206,11 +208,8 @@ const Container = styled.div<Pick<BottomSheetProps, 'type' | 'isOpened'>>`
   position: fixed;
   z-index: 4;
   padding: 1rem;
-
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-
   transition: visibility 0.2s;
 
   ${({ theme, type, isOpened }) => css`
