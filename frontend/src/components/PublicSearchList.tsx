@@ -41,7 +41,7 @@ const PublicSearchList = ({ searchItems, type }: Props) => {
 
 const StyledUl = styled.ul`
   display: grid;
-  grid-template-columns: repeat(1);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 `;
 

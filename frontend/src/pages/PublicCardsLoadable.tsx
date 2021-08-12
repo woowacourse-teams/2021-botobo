@@ -4,11 +4,12 @@ import React from 'react';
 
 import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
+import PageTemplate from './PageTemplate';
 
 const PublicCardsLoadable = () => (
   <>
     <HeaderSkeleton />
-    <Container>
+    <StyledPageTemplate isScroll={true}>
       <Heading />
       <Heading />
       <CardSkeletonList count={6} />
@@ -17,18 +18,13 @@ const PublicCardsLoadable = () => (
           {' '}
         </Button>
       </BottomContent>
-    </Container>
+    </StyledPageTemplate>
   </>
 );
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   margin-bottom: 3rem;
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      padding-top: 1.5rem;
-    `}
+  padding-top: 1.5rem;
 `;
 
 const Heading = styled.div`
@@ -42,9 +38,14 @@ const Heading = styled.div`
 const BottomContent = styled.div`
   ${Flex()};
   position: fixed;
-  bottom: 0;
-  left: 0;
   width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
 export default PublicCardsLoadable;

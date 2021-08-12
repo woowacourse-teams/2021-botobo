@@ -7,6 +7,7 @@ import { ROUTE } from '../constants';
 import { useQuizResult, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { timeConverter } from '../utils';
+import PageTemplate from './PageTemplate';
 
 const QuizResultPage = () => {
   const {
@@ -22,7 +23,7 @@ const QuizResultPage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         <TopContent>
           <h2>{ROUTE.QUIZ_RESULT.TITLE}</h2>
           {hasQuizTime && (
@@ -67,18 +68,13 @@ const QuizResultPage = () => {
             다음에 또 보기
           </Button>
         </ButtonWrapper>
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   margin-bottom: 3rem;
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
 `;
 
 const TopContent = styled.div`
@@ -104,8 +100,13 @@ const ButtonWrapper = styled.div`
   ${Flex()};
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
 export default QuizResultPage;

@@ -11,13 +11,14 @@ interface Props {
 
 const PageHeader = ({ title, rightContent }: Props) => (
   <StyledHeader>
-    <Title>{title}</Title>
-    {rightContent}
+    <InnerContent>
+      <Title>{title}</Title>
+      {rightContent}
+    </InnerContent>
   </StyledHeader>
 );
 
 const StyledHeader = styled.header`
-  ${Flex({ items: 'center', justify: 'space-between' })};
   position: sticky;
   top: 0;
   height: 3rem;
@@ -28,6 +29,16 @@ const StyledHeader = styled.header`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
   `};
+`;
+
+const InnerContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
+  height: 100%;
+  margin: 0 auto;
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
 const Title = styled.h2`

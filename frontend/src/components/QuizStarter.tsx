@@ -67,7 +67,7 @@ const QuizStarter = ({ workbooks }: Props) => {
 };
 
 const Container = styled(CardTemplate)`
-  ${Flex({ items: 'center' })};
+  ${Flex({ justify: 'space-between', items: 'center' })};
   height: 10rem;
 `;
 

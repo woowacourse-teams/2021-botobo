@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { STORAGE_KEY } from '../constants';
+import { DEVICE, STORAGE_KEY } from '../constants';
 import { useModal, useRouter } from '../hooks';
 import { workbookIdState } from '../recoil';
 import { WorkbookResponse } from '../types';
@@ -69,9 +69,13 @@ const WorkbookList = ({
 
 const StyledUl = styled.ul`
   display: grid;
-  grid-template-columns: repeat(1);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
   margin: 1rem 0;
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export default WorkbookList;

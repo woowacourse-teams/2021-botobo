@@ -10,6 +10,7 @@ import { useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
+import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
@@ -27,7 +28,7 @@ const MainPage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <PageTemplate isScroll={true}>
         {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
         <Banner onClick={routePublicSearch}>
           <BannerText>다양한 문제집 보러 가기</BannerText>
@@ -58,17 +59,10 @@ const MainPage = () => {
             />
           )}
         </section>
-      </Container>
+      </PageTemplate>
     </>
   );
 };
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const Greeting = styled.div`
   margin-bottom: 1rem;

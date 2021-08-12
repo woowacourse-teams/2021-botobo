@@ -1,14 +1,14 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
 import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
 import { loadContent } from '../styles';
+import PageTemplate from './PageTemplate';
 
 const CardsLoadable = () => (
   <>
     <HeaderSkeleton />
-    <Container>
+    <PageTemplate isScroll={true}>
       <WorkbookName />
       <Description />
       <Filter>
@@ -28,16 +28,9 @@ const CardsLoadable = () => (
         {''}
       </Button>
       <CardSkeletonList count={6} />
-    </Container>
+    </PageTemplate>
   </>
 );
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const WorkbookName = styled.div`
   width: 40%;
