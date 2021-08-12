@@ -49,6 +49,7 @@ public class AuthService {
         if (credentials == null) {
             return AppUser.anonymous();
         }
+        validateToken(credentials);
         Long userId = jwtTokenProvider.getIdFromPayLoad(credentials);
         if (userRepository.existsByIdAndRole(userId, Role.ADMIN)) {
             return AppUser.admin(userId);
