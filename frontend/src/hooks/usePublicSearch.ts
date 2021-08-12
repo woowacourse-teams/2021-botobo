@@ -10,7 +10,6 @@ const usePublicSearch = () => {
   const [workbookSearchResult, setWorkbookSearchResult] = useState<
     PublicWorkbookResponse[]
   >([]);
-
   const searchForPublicWorkbook = async ({
     keyword,
     start,
