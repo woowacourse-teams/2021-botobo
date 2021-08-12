@@ -22,6 +22,7 @@ import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -247,7 +248,7 @@ class WorkbookServiceTest {
 
         // when
         assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
-                .isInstanceOf(NotAuthorException.class);
+                .isInstanceOf(NotOpenedWorkbookException.class);
 
         // then
         then(workbookRepository).should(times(1))
