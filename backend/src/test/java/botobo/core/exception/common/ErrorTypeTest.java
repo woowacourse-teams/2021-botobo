@@ -2,7 +2,6 @@ package botobo.core.exception.common;
 
 import botobo.core.exception.ExternalException;
 import botobo.core.exception.auth.TokenNotValidException;
-import botobo.core.exception.http.InternalServerErrorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
