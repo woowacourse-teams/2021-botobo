@@ -1,9 +1,6 @@
 package botobo.core.exception.user.s3;
 
-import botobo.core.exception.http.InternalServerErrorException;
+import botobo.core.exception.http.BadRequestException;
 
-public class ImageExtensionNotAllowedException extends InternalServerErrorException {
-    public ImageExtensionNotAllowedException() {
-        super("허용되지 않는 파일 확장자입니다.");
-    }
+public class ImageExtensionNotAllowedException extends BadRequestException {
 }
