@@ -18,6 +18,7 @@ import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,7 +101,7 @@ public class WorkbookService extends AbstractUserService {
     public WorkbookCardResponse findPublicWorkbookById(Long id, AppUser appUser) {
         Workbook workbook = findWorkbookByIdAndOrderCardByNew(id);
         if (!workbook.isOpened()) {
-            throw new NotAuthorException();
+            throw new NotOpenedWorkbookException();
         }
         boolean heartExists = workbook.existsHeartByAppUser(appUser);
         return WorkbookCardResponse.ofOpenedWorkbook(workbook, heartExists);

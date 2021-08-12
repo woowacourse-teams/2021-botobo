@@ -66,7 +66,7 @@ public class UserDocumentationTest extends DocumentationTest {
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
-                .identifier("users-update-profile-get-success");
+                .identifier("users-update-profile-post-success");
     }
 
     @Test

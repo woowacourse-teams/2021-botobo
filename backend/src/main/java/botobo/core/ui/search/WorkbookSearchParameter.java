@@ -72,6 +72,7 @@ public class WorkbookSearchParameter {
 
     public Specification<Workbook> toSpecification() {
         return Specification.where(matchesKeyword())
+                .and(isOpened())
                 .and(orderByCriteria())
                 .and(containsAtLeastOneCard());
     }
@@ -83,12 +84,8 @@ public class WorkbookSearchParameter {
         );
     }
 
-    private Expression<String> expression(Root<Workbook> root, CriteriaBuilder builder) {
-        return searchType.toExpression(root, builder);
-    }
-
-    private String pattern() {
-        return searchType.toPattern(searchKeyword.getValue());
+    private Specification<Workbook> isOpened() {
+        return (root, query, builder) -> builder.isTrue(root.get("opened"));
     }
 
     private Specification<Workbook> orderByCriteria() {
@@ -97,6 +94,14 @@ public class WorkbookSearchParameter {
             query.orderBy(order);
             return null;
         };
+    }
+
+    private Expression<String> expression(Root<Workbook> root, CriteriaBuilder builder) {
+        return searchType.toExpression(root, builder);
+    }
+
+    private String pattern() {
+        return searchType.toPattern(searchKeyword.getValue());
     }
 
     private Specification<Workbook> containsAtLeastOneCard() {
