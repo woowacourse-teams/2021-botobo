@@ -6,6 +6,7 @@ import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
 import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
 const filters = [
@@ -44,7 +45,7 @@ const PublicSearchResultPage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         {workbookSearchResult.length === 0 ? (
           <NoSearchResult>
             <div>검색 결과가 없어요.</div>
@@ -94,17 +95,13 @@ const PublicSearchResultPage = () => {
             />
           </>
         )}
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      padding-top: 1rem;
-    `}
+const StyledPageTemplate = styled(PageTemplate)`
+  padding-top: 1rem;
 `;
 
 const NoSearchResult = styled.div`

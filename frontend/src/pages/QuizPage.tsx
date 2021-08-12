@@ -9,6 +9,7 @@ import { MainHeader, Quiz, Timer } from '../components';
 import { useInterval, useQuiz } from '../hooks';
 import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
+import PageTemplate from './PageTemplate';
 
 interface QuizListProps {
   quizCount: number;
@@ -90,7 +91,7 @@ const QuizPage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <StyledPageTemplate isScroll={false}>
         {hasQuizTime && (
           <TimerWrapper>
             <Timer time={quizTime} />
@@ -214,21 +215,15 @@ const QuizPage = () => {
             </ArrowButton>
           </DesktopPageNation>
         )}
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   ${Flex({ justify: 'center', items: 'center', direction: 'column' })};
   width: 100%;
   overflow: hidden;
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      height: ${theme.pageSize.height};
-    `}
 `;
 
 const TimerWrapper = styled.div`

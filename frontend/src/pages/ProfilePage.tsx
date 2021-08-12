@@ -8,11 +8,13 @@ import { Button, InputField, MainHeader, TextAreaField } from '../components';
 import {
   BIO_MAXIMUM_LENGTH,
   CLOUD_FRONT_DOMAIN,
+  ERROR_MESSAGE,
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
 import { useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
+import PageTemplate from './PageTemplate';
 
 interface ImageEditorStyleProp {
   isEditable: boolean;
@@ -20,20 +22,12 @@ interface ImageEditorStyleProp {
 
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-const validateFileSize = (size: number) => {
-  const mb = 1024 * 1024;
-
-  if (size < 0 || size > 10 * mb) {
-    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
-  }
-};
-
 const validateUserName = async (value: string) => {
   try {
     await postUserNameCheckAsync(value);
   } catch (error) {
-    if (error.response.status === 409) {
-      throw new Error('이미 존재하는 이름이에요.');
+    if (error.response.data.code === 'U003') {
+      throw new Error(ERROR_MESSAGE.U003);
     }
 
     console.error(error);
@@ -47,6 +41,14 @@ const validateUserName = async (value: string) => {
 
   if (/\s/.test(value)) {
     throw new Error('공백은 포함할 수 없어요.');
+  }
+};
+
+const validateFileSize = (size: number) => {
+  const mb = 1024 * 1024;
+
+  if (size < 0 || size > 10 * mb) {
+    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
   }
 };
 
@@ -83,7 +85,7 @@ const ProfilePage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         <Profile>
           <ImageContainer>
             <div onClick={() => setIsEditable((prevState) => !prevState)}>
@@ -151,18 +153,13 @@ const ProfilePage = () => {
             <Button size="full">프로필 수정</Button>
           </FormProvider>
         </Profile>
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   ${Flex({ justify: 'center', items: 'center' })};
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
 `;
 
 const Profile = styled.div`

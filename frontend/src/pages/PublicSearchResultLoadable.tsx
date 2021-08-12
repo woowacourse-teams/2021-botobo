@@ -1,14 +1,19 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
+import {
+  Button,
+  CardSkeleton,
+  CardSkeletonList,
+  HeaderSkeleton,
+} from '../components';
 import { Flex, loadContent } from '../styles';
+import PageTemplate from './PageTemplate';
 
 const PublicSearchResultLoadable = () => (
   <>
     <HeaderSkeleton />
-    <Container>
+    <StyledPageTemplate isScroll={true}>
       <Title />
       <Filter>
         {[...Array(4)].map((_, index) => (
@@ -23,17 +28,18 @@ const PublicSearchResultLoadable = () => (
           </Button>
         ))}
       </Filter>
-      <StyleCardSkeletonList count={6} />
-    </Container>
+
+      <StyledUl>
+        {[...Array(8)].map((_, index) => (
+          <StyledCardSkeleton key={index} />
+        ))}
+      </StyledUl>
+    </StyledPageTemplate>
   </>
 );
 
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      padding-top: 1rem;
-    `}
+const StyledPageTemplate = styled(PageTemplate)`
+  padding-top: 1rem;
 `;
 
 const Title = styled.div`
@@ -59,7 +65,14 @@ const Filter = styled.div`
   }
 `;
 
-const StyleCardSkeletonList = styled(CardSkeletonList)`
+const StyledUl = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+`;
+
+const StyledCardSkeleton = styled(CardSkeleton)`
   ${Flex({ direction: 'column', items: 'center' })};
   height: 6rem;
 `;

@@ -19,3 +19,4 @@ export { default as PublicSearchPage } from './PublicSearchPage';
 export { default as PublicSearchResultPage } from './PublicSearchResultPage';
 export { default as PublicSearchResultLoadable } from './PublicSearchResultLoadable';
 export { default as ProfilePage } from './ProfilePage';
+export { default as PageTemplate } from './PageTemplate';

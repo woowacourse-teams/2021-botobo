@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 public class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
-    private static final String USER_DEFAULT_IMAGE = "botobo-default-profile.png";
+    private static final String USER_DEFAULT_IMAGE = "imagesForS3Test/botobo-default-profile.png";
 
     @Mock
     private UserRepository userRepository;

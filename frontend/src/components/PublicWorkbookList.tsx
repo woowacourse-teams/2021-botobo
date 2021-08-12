@@ -77,7 +77,7 @@ const PublicWorkbookList = ({
 const StyledUl = styled.ul`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(1);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 
   & > li:last-of-type {

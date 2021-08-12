@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
@@ -6,6 +5,7 @@ import { Button, CardAddForm, MainHeader, QnACard } from '../components';
 import { useCard } from '../hooks';
 import { CardResponse } from '../types';
 import CardsLoadable from './CardsLoadable';
+import PageTemplate from './PageTemplate';
 
 interface Filter {
   [key: number]: (cards: CardResponse[]) => CardResponse[];
@@ -49,7 +49,7 @@ const CardsPage = () => {
   return (
     <>
       <MainHeader />
-      <Container>
+      <PageTemplate isScroll={true}>
         <WorkbookName>{workbookName}</WorkbookName>
         <span>{cards.length}개의 카드를 학습 중이에요.</span>
         <Filter>
@@ -97,17 +97,10 @@ const CardsPage = () => {
             </li>
           ))}
         </CardList>
-      </Container>
+      </PageTemplate>
     </>
   );
 };
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const WorkbookName = styled.h2`
   word-break: break-all;
@@ -125,7 +118,7 @@ const Filter = styled.div`
 
 const CardList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(1);
+  grid-template-columns: repeat(1, 1fr);
   gap: 2rem;
   margin-top: 2rem;
 `;

@@ -19,6 +19,7 @@ import { useModal, usePublicCard, useRouter, useWorkbook } from '../hooks';
 import { quizModeState, quizState, userState } from '../recoil';
 import { Flex } from '../styles';
 import { debounce } from '../utils';
+import PageTemplate from './PageTemplate';
 import PublicCardsLoadable from './PublicCardsLoadable';
 
 const PublicCardsPage = () => {
@@ -98,7 +99,7 @@ const PublicCardsPage = () => {
           </StyledButton>
         }
       />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         <Heart>
           <button type="button" onClick={onClickHeart}>
             {heart ? (
@@ -187,7 +188,7 @@ const PublicCardsPage = () => {
             <span>문제집으로 가져가기 ({checkedCardCount})</span>
           </Button>
         </BottomContent>
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
@@ -202,15 +203,10 @@ const StyledButton = styled(Button)`
     `}
 `;
 
-const Container = styled.div`
+const StyledPageTemplate = styled(PageTemplate)`
   position: relative;
   margin-bottom: 3rem;
-
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      padding-top: 1.5rem;
-    `}
+  padding-top: 1.5rem;
 `;
 
 const Heart = styled.div`
@@ -267,8 +263,13 @@ const BottomContent = styled.div`
   ${Flex()};
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
 const CheckboxWrapper = styled.div`

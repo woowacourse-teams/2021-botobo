@@ -7,7 +7,7 @@ declare module '@emotion/react' {
     borderRadius: Readonly<BorderRadius>;
     fontSize: Readonly<FontSize>;
     fontWeight: Readonly<FontWeight>;
-    pageSize: Readonly<PageSize>;
+    responsive: Readonly<Responsive>;
   }
 
   interface Color {
@@ -66,8 +66,7 @@ declare module '@emotion/react' {
     bold: string;
   }
 
-  interface PageSize {
-    padding: string;
-    height: string;
+  interface Responsive {
+    maxWidth: string;
   }
 }

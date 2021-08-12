@@ -41,23 +41,18 @@ interface ModalContextType {
 const modalStyle = {
   center: css`
     padding: 1rem;
-    left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     border-radius: ${theme.borderRadius.square_1};
   `,
   bottom: css`
     bottom: 0;
-    left: 0;
-    right: 0;
     border-top-left-radius: ${theme.borderRadius.square_6};
     border-top-right-radius: ${theme.borderRadius.square_6};
   `,
   full: css`
     height: 100%;
     overflow-y: auto;
-    left: 0;
-    right: 0;
   `,
 };
 
@@ -156,19 +151,19 @@ const Modal = ({
 
 const fadeInAnimation = (type: ModalType) => keyframes`
   from { 
-    ${type === 'center' ? 'opacity: 0;' : 'transform: translateY(100%);'} 
+    ${type === 'center' ? 'opacity: 0;' : 'transform: translate(-50%, 100%);'} 
   } 
   to { 
-    ${type === 'center' ? 'opacity: 1;' : 'transform: translateY(0);'} 
+    ${type === 'center' ? 'opacity: 1;' : 'transform: translate(-50%, 0);'} 
   }
 `;
 
 const fadeOutAnimation = (type: ModalType) => keyframes`
   from { 
-    ${type === 'center' ? 'opacity: 1;' : 'transform: translateY(0);'}   
+    ${type === 'center' ? 'opacity: 1;' : 'transform: translate(-50%, 0);'}   
   } 
   to { 
-    ${type === 'center' ? 'opacity: 0;' : 'transform: translateY(100%);'} 
+    ${type === 'center' ? 'opacity: 0;' : 'transform: translate(-50%, 100%);'} 
   }
 `;
 
@@ -212,14 +207,19 @@ const Container = styled.div<Pick<BottomSheetProps, 'type' | 'isOpened'>>`
   z-index: 4;
   padding: 1rem;
 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+
   transition: visibility 0.2s;
 
   ${({ theme, type, isOpened }) => css`
     background-color: ${theme.color.white};
     animation: ${isOpened ? fadeInAnimation(type) : fadeOutAnimation(type)} 0.2s;
     visibility: ${isOpened ? 'visible' : 'hidden'};
+    max-width: ${theme.responsive.maxWidth};
 
-    ${modalStyle[type]}
+    ${modalStyle[type]};
   `}
 `;
 

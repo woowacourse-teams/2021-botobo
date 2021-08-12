@@ -15,6 +15,7 @@ import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import { debounce } from '../utils';
+import PageTemplate from './PageTemplate';
 
 const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
 
@@ -134,7 +135,7 @@ const PublicSearchPage = () => {
   return (
     <>
       <MainHeader sticky={false} />
-      <Container>
+      <StyledPageTemplate isScroll={true}>
         <SearchTabWrapper>
           <SearchInfo>
             {searchInfos.map(({ id, name, type }) => (
@@ -208,17 +209,13 @@ const PublicSearchPage = () => {
               />
             )}
         <LoadImage isSearching={isSearching} isFrogJumping={isFrogJumping} />
-      </Container>
+      </StyledPageTemplate>
     </>
   );
 };
 
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-      padding-top: 1rem;
-    `}
+const StyledPageTemplate = styled(PageTemplate)`
+  padding-top: 1rem;
 `;
 
 const SearchTabWrapper = styled.nav`

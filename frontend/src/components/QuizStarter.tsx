@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getGuestQuizzesAsync } from '../api';
 import { CLOUD_FRONT_DOMAIN, QUIZ_MODE } from '../constants';
-import { useRouter, useSnackbar } from '../hooks';
+import { useErrorHandler, useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';
 import { Flex } from '../styles';
@@ -24,6 +24,7 @@ const QuizStarter = ({ workbooks }: Props) => {
   const setQuizMode = useSetRecoilState(quizModeState);
   const showSnackbar = useSnackbar();
   const { routeQuizSetting, routeQuiz } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const startQuiz = () => {
     if (workbooks.find((workbook) => workbook.cardCount > 0)) {
@@ -45,7 +46,7 @@ const QuizStarter = ({ workbooks }: Props) => {
       setQuizMode(QUIZ_MODE.GUEST);
       routeQuiz();
     } catch (error) {
-      showSnackbar({ message: '퀴즈 생성에 실패했습니다.', type: 'error' });
+      errorHandler(error);
     }
   };
 
@@ -66,7 +67,7 @@ const QuizStarter = ({ workbooks }: Props) => {
 };
 
 const Container = styled(CardTemplate)`
-  ${Flex({ items: 'center' })};
+  ${Flex({ justify: 'space-between', items: 'center' })};
   height: 10rem;
 `;
 

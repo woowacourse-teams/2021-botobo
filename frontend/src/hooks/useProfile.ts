@@ -3,12 +3,14 @@ import { useRecoilState } from 'recoil';
 import { postProfileImageAsync, putProfileAsync } from './../api';
 import { userState } from './../recoil';
 import { UserInfoResponse } from './../types';
+import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
 
 const useProfile = () => {
   const [userInfo, setUserInfo] = useRecoilState(userState);
 
   const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const editProfile = async (userInfo: Omit<UserInfoResponse, 'id'>) => {
     try {
@@ -17,8 +19,7 @@ const useProfile = () => {
       setUserInfo(newUserInfo);
       showSnackbar({ message: '프로필이 수정되었어요.' });
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '프로필을 수정하지 못했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 
@@ -35,7 +36,7 @@ const useProfile = () => {
 
       setUserInfo({ ...userInfo, profileUrl: newImage.profileUrl });
     } catch (error) {
-      console.error(error);
+      errorHandler(error);
     }
   };
 
