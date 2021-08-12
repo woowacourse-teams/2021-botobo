@@ -16,10 +16,15 @@ interface ContainerStyleProps {
   errorMessage: string | null;
 }
 
+interface TextStyleProps {
+  textAreaHeight: number;
+}
+
 const CardTextArea = forwardRef<HTMLTextAreaElement, Props>(
   ({ title, inputName, ...props }: Props, ref) => {
     const { values, errorMessages, onChange, onBlur } = useForm();
     const [isFocus, setIsFocus] = useState(false);
+    const [textAreaHeight] = useState((window.innerHeight - 360) * 0.5);
 
     return (
       <Container errorMessage={errorMessages[inputName]}>
@@ -46,6 +51,7 @@ const CardTextArea = forwardRef<HTMLTextAreaElement, Props>(
               onBlur(event);
               setIsFocus(false);
             }}
+            textAreaHeight={textAreaHeight}
             {...props}
           />
         </CardTemplate>
@@ -87,16 +93,16 @@ const Limiter = styled.span`
   `}
 `;
 
-const Text = styled.textarea`
+const Text = styled.textarea<TextStyleProps>`
   width: 100%;
   border: none;
   outline: none;
   resize: none;
   overflow-y: auto;
 
-  ${({ theme }) => css`
+  ${({ theme, textAreaHeight }) => css`
     font-size: ${theme.fontSize.default};
-    height: ${(window.innerHeight - 360) * 0.5}px;
+    height: ${textAreaHeight}px;
   `}
 `;
 
