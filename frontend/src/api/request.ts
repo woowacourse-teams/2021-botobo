@@ -1,35 +1,14 @@
-interface HttpRequest {
-  method: 'GET' | 'POST' | 'DELETE' | 'PATCH';
-  path: string;
-  data?: {
-    [key: string]: unknown;
-  };
-}
+import axios from 'axios';
 
-const request = async ({ method, path, data }: HttpRequest) => {
-  const response = await fetch(`${process.env.REACT_APP_SERVER_URL}${path}`, {
-    method,
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: data && JSON.stringify(data),
-  });
+import { STORAGE_KEY } from '../constants';
+import { getLocalStorage } from '../utils';
 
-  if (!response.ok) {
-    const { message } = await response.json();
+export const request = axios.create({
+  baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
+});
 
-    throw new Error(message); //TODO: type 처리
-  }
+const token = getLocalStorage(STORAGE_KEY.TOKEN);
 
-  return await response.json();
-};
-
-export const REQUEST = {
-  GET: async <T>({ path }: Pick<HttpRequest, 'path'>): Promise<T> =>
-    await request({ method: 'GET', path }),
-  POST: async <T>({
-    path,
-    data,
-  }: Pick<HttpRequest, 'path' | 'data'>): Promise<T> =>
-    await request({ method: 'POST', path, data }),
-};
+request.defaults.headers.common['Authorization'] = token
+  ? `Bearer ${token}`
+  : '';
