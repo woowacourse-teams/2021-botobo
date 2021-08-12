@@ -41,7 +41,7 @@ const PublicCardsSelectBox = ({
         )}
         <CheckBoxWrapper>
           <Checkbox
-            labelText={`[공유] ${publicWorkbookName}로 추가하기`}
+            labelText={`[공유] ${publicWorkbookName}(으)로 추가하기`}
             name="defaultAdd"
             checked={isDefaultSelected}
             onChange={({ target }) => setIsDefaultSelected(target.checked)}
