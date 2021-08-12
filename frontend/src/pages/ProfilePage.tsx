@@ -65,10 +65,10 @@ const ProfilePage = () => {
   const showSnackbar = useSnackbar();
 
   const uploadImage: React.ChangeEventHandler<HTMLInputElement> = ({
-    target,
+    currentTarget,
   }) => {
     setIsEditable(false);
-    const file = target.files?.[0];
+    const file = currentTarget.files?.[0];
 
     if (!file) return;
 
@@ -77,6 +77,7 @@ const ProfilePage = () => {
     try {
       validateFileSize(size);
       updateProfileUrl(file);
+      currentTarget.value = '';
     } catch (error) {
       showSnackbar({ message: error.message });
     }
