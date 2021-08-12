@@ -18,7 +18,7 @@ import { TagResponse } from '../types';
 const validateWorkbookName = (value: string) => {
   if (value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) {
     throw new Error(
-      `문제집 이름은 ${WORKBOOK_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`
+      `문제집 이름은 ${WORKBOOK_NAME_MAXIMUM_LENGTH}자를 넘길 수 없어요.`
     );
   }
 };
