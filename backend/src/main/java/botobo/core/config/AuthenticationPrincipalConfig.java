@@ -55,11 +55,11 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**", PathMethod.ANY)
                 .excludePathPatterns("/api/**", PathMethod.OPTIONS)
                 .excludePathPatterns("/api/workbooks", PathMethod.GET)
-                .excludePathPatterns("/api/quizzes/guest", PathMethod.GET)
+                .excludePathPatterns("/api/quizzes/**", PathMethod.GET)
                 .excludePathPatterns("/api/login/**", PathMethod.POST)
-                .excludePathPatterns("/api/docs/**", PathMethod.ANY)
+                .excludePathPatterns("/api/docs/**", PathMethod.GET)
                 .excludePathPatterns("/api/workbooks/public/**", PathMethod.GET)
-                .excludePathPatterns("/api/search/**", PathMethod.ANY);
+                .excludePathPatterns("/api/search/**", PathMethod.GET);
     }
 
     @Bean
