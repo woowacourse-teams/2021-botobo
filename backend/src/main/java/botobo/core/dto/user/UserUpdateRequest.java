@@ -20,11 +20,11 @@ public class UserUpdateRequest {
     @ValidUserName
     private String userName;
 
-    @NotBlank(message = "회원 정보를 수정하기 위해서는 프로필 사진이 필요합니다.")
+    @NotBlank(message = "U007")
     private String profileUrl;
 
-    @NotNull(message = "회원 정보를 수정하기 위해서는 소개글은 최소 0자 이상이 필요합니다.")
-    @Length(max = 255, message = "소개글은 최대 255자까지 가능합니다.")
+    @NotNull(message = "U008")
+    @Length(max = 255, message = "U009")
     private String bio;
 
     public User toUser() {

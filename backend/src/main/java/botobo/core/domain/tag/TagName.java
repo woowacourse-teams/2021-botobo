@@ -1,7 +1,8 @@
 package botobo.core.domain.tag;
 
 
-import botobo.core.exception.tag.InvalidTagNameException;
+import botobo.core.exception.tag.TagNameLengthException;
+import botobo.core.exception.tag.TagNameNullException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,21 +36,19 @@ public class TagName {
 
     private void validateNotNull(String value) {
         if (Objects.isNull(value)) {
-            throw new InvalidTagNameException("null이 될 수 없습니다");
+            throw new TagNameNullException();
         }
     }
 
     private void validateNotBlank(String value) {
         if (value.isBlank()) {
-            throw new InvalidTagNameException("비어있거나 공백 문자열이 될 수 없습니다");
+            throw new TagNameNullException();
         }
     }
 
     private void validateLength(String value) {
         if (value.length() > MAX_LENGTH) {
-            throw new InvalidTagNameException(
-                    String.format("%s자 이하여야 합니다", MAX_LENGTH)
-            );
+            throw new TagNameLengthException();
         }
     }
 }

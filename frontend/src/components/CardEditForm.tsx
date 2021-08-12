@@ -15,7 +15,7 @@ interface Props {
 
 const validateCardText = (value: string) => {
   if (value.length > CARD_TEXT_MAX_LENGTH) {
-    throw new Error(`본문 내용은 ${CARD_TEXT_MAX_LENGTH}자 이하여야 합니다.`);
+    throw new Error(`본문 내용은 ${CARD_TEXT_MAX_LENGTH}자를 넘길 수 없어요.`);
   }
 };
 

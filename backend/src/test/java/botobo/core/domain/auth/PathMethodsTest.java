@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PathMethodsTest {
 
     @Test
-    @DisplayName("PathMethod가 PathMethods에 존재할 때 true, 아닐 때는 false를 반환한다.")
+    @DisplayName("PathMethods 검사 - 성공, PathMethod가 PathMethods에 존재할 때 true, 아닐 때는 false를 반환한다.")
     void contains() {
         // given
         PathMethods pathMethods = new PathMethods(Set.of(PathMethod.GET, PathMethod.POST));
@@ -24,7 +24,7 @@ public class PathMethodsTest {
     }
 
     @Test
-    @DisplayName("PathMethod가 ANY일 때는 어떤 method가 와도 true를 반환한다.")
+    @DisplayName("PathMethods 검사 - 성공, PathMethod가 ANY일 때는 어떤 method가 와도 true를 반환한다.")
     void containsWithAny() {
         // given
         PathMethods pathMethods = new PathMethods(Set.of(PathMethod.ANY));

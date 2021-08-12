@@ -110,6 +110,7 @@ const Container = styled.div`
 `;
 
 const WorkbookName = styled.h2`
+  word-break: break-all;
   margin-bottom: 1rem;
 `;
 

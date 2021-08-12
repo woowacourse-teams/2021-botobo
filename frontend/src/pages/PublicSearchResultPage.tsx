@@ -18,6 +18,7 @@ const filters = [
 const PublicSearchResultPage = () => {
   const {
     workbookSearchResult,
+    isLoading,
     isSearching,
     setIsSearching,
     searchForPublicWorkbook,
@@ -87,6 +88,7 @@ const PublicSearchResultPage = () => {
               ))}
             </Filter>
             <PublicWorkbookList
+              isLoading={isLoading}
               publicWorkbooks={workbookSearchResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
@@ -123,6 +125,7 @@ const Title = styled.h2`
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   text-align: center;
+  word-break: break-all;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};

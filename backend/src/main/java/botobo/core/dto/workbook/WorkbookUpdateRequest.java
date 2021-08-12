@@ -24,20 +24,22 @@ import java.util.List;
 @Builder
 public class WorkbookUpdateRequest {
 
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Length(max = 30, message = "이름은 최대 30자까지 입력 가능합니다.")
+    @NotBlank(message = "W002")
+    @Length(max = 30, message = "W001")
     private String name;
 
-    @NotNull(message = "문제집 공개여부는 필수 입력값입니다.")
+    @NotNull(message = "W009")
     private Boolean opened;
 
-    @PositiveOrZero(message = "카드 개수는 0이상 입니다.")
-    private int cardCount;
+    @NotNull(message = "W010")
+    @PositiveOrZero(message = "W011")
+    private Integer cardCount;
 
-    @PositiveOrZero(message = "하트 수는 0이상 입니다.")
-    private int heartCount;
+    @NotNull(message = "W012")
+    @PositiveOrZero(message = "W013")
+    private Integer heartCount;
 
-    @NotNull(message = "문제집을 수정하려면 태그가 필요합니다.")
+    @NotNull(message = "W008")
     @Valid
     private List<TagRequest> tags;
 

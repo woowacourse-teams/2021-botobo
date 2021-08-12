@@ -1,7 +1,7 @@
 package botobo.core.domain.tag;
 
-import botobo.core.exception.tag.InvalidTagNameException;
-import botobo.core.exception.tag.TagCreationFailureException;
+import botobo.core.exception.tag.TagNameNullException;
+import botobo.core.exception.tag.TagNullException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,21 +21,18 @@ class TagTest {
     }
 
     @Test
-    @DisplayName("Tag 객체 생성 - 실패, TagName null 입력")
+    @DisplayName("Tag 객체 생성 - 실패, null 입력")
     void createWithNullTagName() {
         // when, then
         assertThatThrownBy(() -> Tag.of((TagName) null))
-                .isInstanceOf(TagCreationFailureException.class)
-                .hasMessageContaining("Tag객체 생성에 실패했습니다")
-                .hasMessageContaining("tagName은 null이 될 수 없습니다");
+                .isInstanceOf(TagNullException.class);
     }
 
     @Test
-    @DisplayName("Tag 객체 생성 - 실패, TagNameValue null 입력")
+    @DisplayName("Tag 객체 생성 - 실패, TagName null 입력")
     void createWithNullTagNameValue() {
         // when, then
         assertThatThrownBy(() -> Tag.of((String) null))
-                .isInstanceOf(InvalidTagNameException.class)
-                .hasMessageContaining("null이 될 수 없습니다");
+                .isInstanceOf(TagNameNullException.class);
     }
 }

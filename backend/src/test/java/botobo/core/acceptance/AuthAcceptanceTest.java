@@ -81,5 +81,4 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(errorResponse.getMessage()).isEqualTo("존재하지 않는 소셜 로그인 방식입니다.");
     }
-
 }

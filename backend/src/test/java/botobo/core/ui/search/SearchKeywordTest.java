@@ -1,6 +1,9 @@
 package botobo.core.ui.search;
 
-import botobo.core.exception.search.SearchKeywordCreationFailureException;
+import botobo.core.exception.search.ForbiddenSearchKeywordException;
+import botobo.core.exception.search.LongSearchKeywordException;
+import botobo.core.exception.search.SearchKeywordNullException;
+import botobo.core.exception.search.ShortSearchKeywordException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +45,7 @@ class SearchKeywordTest {
     void createWithNoKeyword() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.of(null))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
-                .hasMessageContaining("검색어는 null일 수 없습니다.");
+                .isInstanceOf(SearchKeywordNullException.class);
     }
 
     @Test
@@ -51,8 +53,7 @@ class SearchKeywordTest {
     void createWithLongString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.of(TestUtils.stringGenerator(31)))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
-                .hasMessageContaining("검색어는 30자 이하여야 합니다.");
+                .isInstanceOf(LongSearchKeywordException.class);
     }
 
     @Test
@@ -60,8 +61,7 @@ class SearchKeywordTest {
     void createWithShortString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.of(""))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
-                .hasMessageContaining("검색어는 1자 이상이어야 합니다.");
+                .isInstanceOf(ShortSearchKeywordException.class);
     }
 
     @Test
@@ -69,7 +69,6 @@ class SearchKeywordTest {
     void createWithForbiddenString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.of("바보"))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
-                .hasMessageContaining("금지어를 입력했습니다");
+                .isInstanceOf(ForbiddenSearchKeywordException.class);
     }
 }

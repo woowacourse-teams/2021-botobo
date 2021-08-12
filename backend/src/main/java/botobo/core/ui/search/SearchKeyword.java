@@ -1,6 +1,9 @@
 package botobo.core.ui.search;
 
-import botobo.core.exception.search.SearchKeywordCreationFailureException;
+import botobo.core.exception.search.ForbiddenSearchKeywordException;
+import botobo.core.exception.search.LongSearchKeywordException;
+import botobo.core.exception.search.SearchKeywordNullException;
+import botobo.core.exception.search.ShortSearchKeywordException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -25,7 +28,7 @@ public class SearchKeyword {
 
     private void validateNonNull(String value) {
         if (Objects.isNull(value)) {
-            throw new SearchKeywordCreationFailureException("검색어는 null일 수 없습니다.");
+            throw new SearchKeywordNullException();
         }
     }
 
@@ -35,22 +38,16 @@ public class SearchKeyword {
 
     private void validateLength(String value) {
         if (value.length() > KEYWORD_MAX_LENGTH) {
-            throw new SearchKeywordCreationFailureException(
-                    String.format("검색어는 %d자 이하여야 합니다.", KEYWORD_MAX_LENGTH)
-            );
+            throw new LongSearchKeywordException();
         }
         if (value.length() < KEYWORD_MIN_LENGTH) {
-            throw new SearchKeywordCreationFailureException(
-                    String.format("검색어는 %d자 이상이어야 합니다.", KEYWORD_MIN_LENGTH)
-            );
+            throw new ShortSearchKeywordException();
         }
     }
 
     private void validateNotForbidden(String value) {
         if (value.contains("바보")) {
-            throw new SearchKeywordCreationFailureException(
-                    String.format("금지어를 입력했습니다. (%s)", value)
-            );
+            throw new ForbiddenSearchKeywordException();
         }
     }
 

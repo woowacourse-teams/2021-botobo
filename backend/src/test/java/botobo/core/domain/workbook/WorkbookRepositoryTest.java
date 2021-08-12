@@ -248,7 +248,7 @@ public class WorkbookRepositoryTest {
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);
     }
 
-    @DisplayName("Tags와 함께 Workbook 저장시 WorkbookTag와 Tag도 함께 저장된다.")
+    @DisplayName("Cascade 검사 - 성공, Tags와 함께 Workbook 저장시 WorkbookTag와 Tag도 함께 저장된다.")
     @Test
     void saveWorkbookWithTags() {
         // given
@@ -275,7 +275,7 @@ public class WorkbookRepositoryTest {
         assertThat(dbTags).hasSize(2);
     }
 
-    @DisplayName("Workbook 삭제시 WorkbookTag는 함께 삭제되고, Tag는 삭제되지 않는다. ")
+    @DisplayName("Cascade 검사 - 성공, Workbook 삭제시 WorkbookTag는 함께 삭제되고, Tag는 삭제되지 않는다. ")
     @Test
     void deleteWorkbookWithOrphanWorkbookTags() {
         // given
@@ -335,7 +335,7 @@ public class WorkbookRepositoryTest {
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
     }
 
-    @DisplayName("Workbook이 Heart의 삭제를 관리한다.")
+    @DisplayName("orphanRemoval 검사 - 성공, Workbook이 Heart의 삭제를 관리한다.")
     @Test
     void deleteHeartFromWorkbook() {
         // given

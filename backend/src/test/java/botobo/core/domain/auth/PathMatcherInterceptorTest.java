@@ -29,7 +29,7 @@ public class PathMatcherInterceptorTest {
     private PathMatcherInterceptor pathMatcherInterceptor;
 
     @Test
-    @DisplayName("동일한 api와 PathMethod를 추가시키면 preHandle은 다음 인터셉터의 preHandle을 반환한다.")
+    @DisplayName("preHandle 검사 - 동일한 api와 PathMethod를 추가시키면 preHandle은 다음 인터셉터의 preHandle을 반환한다.")
     void preHandle() throws Exception {
         // given
         given(httpServletRequest.getRequestURI())
@@ -47,7 +47,7 @@ public class PathMatcherInterceptorTest {
     }
 
     @Test
-    @DisplayName("모든 api 요청에서 OPTIONS일 때를 제외시키면 preHandle에서 true를 반환한다.")
+    @DisplayName("Options 검사 - 성공, 모든 api 요청에서 OPTIONS일 때를 제외시키면 preHandle에서 true를 반환한다.")
     void preHandleWithOptions() throws Exception {
         // given
         given(httpServletRequest.getRequestURI())

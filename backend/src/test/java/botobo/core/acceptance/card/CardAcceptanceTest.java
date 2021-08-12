@@ -166,7 +166,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse).extracting("message").isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
+        assertThat(errorResponse).extracting("message").isEqualTo("문제집 아이디는 필수 입력값입니다.");
 
     }
 
@@ -291,7 +291,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 질문이 필요합니다.");
+        assertThat(errorResponse).extracting("message").isEqualTo("질문은 필수 입력값입니다.");
     }
 
     @Test
@@ -343,7 +343,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse).extracting("message").isEqualTo("카드를 업데이트하기 위해서는 답변이 필요합니다.");
+        assertThat(errorResponse).extracting("message").isEqualTo("답변은 필수 입력값입니다.");
     }
 
     @Test
