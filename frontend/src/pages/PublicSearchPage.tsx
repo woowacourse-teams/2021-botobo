@@ -57,6 +57,7 @@ const PublicSearchPage = () => {
     workbookSearchResult,
     resetSearchResult,
     isSearching,
+    isLoading,
     setIsSearching,
     searchForPublicWorkbook,
   } = usePublicSearch();
@@ -195,6 +196,7 @@ const PublicSearchPage = () => {
         {currentFocusTab.type === 'name'
           ? workbookSearchResult.length > 0 && (
               <PublicWorkbookList
+                isLoading={isLoading}
                 publicWorkbooks={workbookSearchResult}
                 searchForPublicWorkbook={searchForPublicWorkbook}
               />
@@ -278,6 +280,7 @@ const SearchBar = styled.div<SearchBarStyleProps>`
     ${isSticky &&
     css`
       position: sticky;
+      z-index: 1;
       top: 0;
       transform: translateX(-1.25rem);
       width: calc(100% + 2.5rem);
