@@ -328,7 +328,7 @@ const LoadImage = styled.div<LoadImageStyleProps>`
   background-repeat: no-repeat;
   background-size: contain;
   margin: 0 auto;
-  margin-top: 3.5rem;
+  margin-top: 6rem;
 
   ${({ isSearching, isFrogJumping }) => css`
     display: ${isSearching ? 'block' : 'none'};

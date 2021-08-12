@@ -17,6 +17,7 @@ interface PublicSearchQuery {
   keyword?: string;
   size?: number;
   start?: number;
+  method?: 'push' | 'replace';
 }
 
 const useRouter = () => {
@@ -45,8 +46,9 @@ const useRouter = () => {
     type = 'name',
     keyword = '',
     size = 20,
+    method = 'replace',
   }: PublicSearchQuery = {}) =>
-    history.replace({
+    history[method]({
       pathname: ROUTE.PUBLIC_SEARCH.PATH,
       search: `?type=${type}&keyword=${keyword}&size=${size}`,
     });
