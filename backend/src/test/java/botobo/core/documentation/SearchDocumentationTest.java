@@ -5,6 +5,8 @@ import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchController;
+import botobo.core.ui.search.SearchKeyword;
+import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,7 +51,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         ))
                         .build()
         );
-        given(searchService.searchWorkbooks(any())).willReturn(workbookResponses);
+        given(searchService.searchWorkbooks(any(WorkbookSearchParameter.class))).willReturn(workbookResponses);
 
         // when, then
         document()
@@ -74,7 +76,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .name("javascript")
                         .build()
         );
-        given(searchService.searchTags(any())).willReturn(tagResponses);
+        given(searchService.searchTags(any(SearchKeyword.class))).willReturn(tagResponses);
 
         // when, then
         document()
@@ -99,7 +101,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .name("seozalue")
                         .build()
         );
-        given(searchService.searchUsers(any())).willReturn(userResponses);
+        given(searchService.searchUsers(any(SearchKeyword.class))).willReturn(userResponses);
 
         // when, then
         document()

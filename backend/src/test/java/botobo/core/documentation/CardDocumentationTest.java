@@ -1,6 +1,7 @@
 package botobo.core.documentation;
 
 import botobo.core.application.CardService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.CardUpdateRequest;
@@ -44,14 +45,14 @@ public class CardDocumentationTest extends DocumentationTest {
                 .bookmark(false)
                 .nextQuiz(false)
                 .build();
-        String token = "botobo.access.token";
-        given(cardService.createCard(any(), any())).willReturn(response);
+
+        given(cardService.createCard(any(CardRequest.class), any(AppUser.class))).willReturn(response);
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .post("/api/cards", request)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isCreated())
                 .identifier("cards-post-success");
@@ -78,14 +79,14 @@ public class CardDocumentationTest extends DocumentationTest {
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
-        String token = "botobo.access.token";
-        given(cardService.updateCard(anyLong(), any(), any())).willReturn(response);
+
+        given(cardService.updateCard(anyLong(), any(CardUpdateRequest.class), any(AppUser.class))).willReturn(response);
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .put("/api/cards/1", request)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("cards-put-success");
@@ -94,14 +95,11 @@ public class CardDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() throws Exception {
-        // given
-        String token = "botobo.access.token";
-
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .delete("/api/cards/1")
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
                 .identifier("cards-delete-success");
@@ -114,13 +112,12 @@ public class CardDocumentationTest extends DocumentationTest {
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(1L, 2L, 3L))
                 .build();
-        String token = "botobo.access.token";
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .put("/api/cards/next-quiz", request)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
                 .identifier("cards-next-quiz-put-success");

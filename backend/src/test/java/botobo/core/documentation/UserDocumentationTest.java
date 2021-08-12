@@ -31,24 +31,19 @@ public class UserDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("현재 로그인 한 유저 조회 - 성공")
     void findUserOfMine() throws Exception {
-        String token = "botobo.access.token";
         UserResponse userResponse = UserResponse.builder()
                 .id(1L)
                 .userName("user")
                 .profileUrl("profile.io")
-                .build();
-        AppUser appUser = AppUser.builder()
-                .id(1L)
-                .role(Role.USER)
+                .bio("user 소개")
                 .build();
 
-        given(authService.findAppUserByToken(token)).willReturn(appUser);
         given(userService.findById(any(AppUser.class))).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)
                 .get("/api/users/me")
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("users-find-me-get-success");
@@ -57,30 +52,18 @@ public class UserDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("유저의 프로필 이미지 수정 - 성공")
     void updateProfile() throws Exception {
-        String token = "botobo.access.token";
-        UserResponse userResponse = UserResponse.builder()
-                .id(1L)
-                .userName("user")
-                .profileUrl("profile.io")
-                .build();
-        AppUser appUser = AppUser.builder()
-                .id(1L)
-                .role(Role.USER)
-                .build();
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
 
         ProfileResponse profileResponse = ProfileResponse.builder()
                 .profileUrl("https://cloudfront.com/users/user/aaabbbccc_210807.png")
                 .build();
 
-        given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.updateProfile(mockMultipartFile, appUser)).willReturn(profileResponse);
-
+        given(userService.updateProfile(any(), any(AppUser.class))).willReturn(profileResponse);
 
         document()
                 .mockMvc(mockMvc)
                 .multipart("/api/users/profile", "botobo", "profile")
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("users-update-profile-get-success");
@@ -89,7 +72,6 @@ public class UserDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("회원 정보 수정 - 성공")
     void update() throws Exception {
-        String token = "botobo.access.token";
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
                 .userName("수정된_이름")
                 .bio("수정된 바이오")
@@ -103,18 +85,12 @@ public class UserDocumentationTest extends DocumentationTest {
                 .profileUrl("profile.io")
                 .build();
 
-        AppUser appUser = AppUser.builder()
-                .id(1L)
-                .role(Role.USER)
-                .build();
-
-        given(authService.findAppUserByToken(token)).willReturn(appUser);
-        given(userService.update(any(), any())).willReturn(userResponse);
+        given(userService.update(any(UserUpdateRequest.class), any(AppUser.class))).willReturn(userResponse);
 
         document()
                 .mockMvc(mockMvc)
                 .put("/api/users/me", userUpdateRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("users-update-put-success");
@@ -123,8 +99,6 @@ public class UserDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("회원명 중복 조회 - 성공")
     void checkSameUserNameAlreadyExist() throws Exception {
-        String token = "botobo.access.token";
-
         UserNameRequest userNameRequest = UserNameRequest.builder()
                 .userName("중복되지_않는_이름")
                 .build();
@@ -134,7 +108,6 @@ public class UserDocumentationTest extends DocumentationTest {
                 .role(Role.USER)
                 .build();
 
-        given(authService.findAppUserByToken(token)).willReturn(appUser);
         doNothing()
                 .when(userService)
                 .checkDuplicatedUserName(userNameRequest, appUser);
@@ -142,7 +115,7 @@ public class UserDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .post("/api/users/name-check", userNameRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("users-name-check-post-success");

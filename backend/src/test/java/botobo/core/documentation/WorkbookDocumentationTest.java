@@ -37,7 +37,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 추가 - 성공")
     void createWorkbookByUser() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name("Java 문제집")
                 .opened(true)
@@ -64,7 +63,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .post("/api/workbooks", workbookRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isCreated())
                 .identifier("workbooks-post-success");
@@ -74,14 +73,13 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저 문제집 전체 조회 - 성공")
     void findWorkbooksByUser() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .get("/api/workbooks")
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-success");
@@ -106,14 +104,13 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("문제집의 카드 모아보기 - 성공")
     void findWorkbookCardsById() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         given(workbookService.findWorkbookCardsById(anyLong(), any(AppUser.class))).willReturn(generatePersonalWorkbookCardsResponse());
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .get("/api/workbooks/{id}/cards", 1)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-cards-get-success");
@@ -123,7 +120,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 수정 - 성공")
     void updateWorkbook() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 수정")
                 .opened(true)
@@ -154,7 +150,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-put-success");
@@ -164,14 +160,13 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         given(workbookService.findPublicWorkbookById(anyLong(), any(AppUser.class))).willReturn(generatePublicWorkbookCardsResponse());
 
         // when, then
         document()
                 .mockMvc(mockMvc)
                 .get("/api/workbooks/public/{id}", 1)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-public-get-success");
@@ -181,7 +176,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
                 .id(1L)
                 .name("Java 문제집 수정")
@@ -194,7 +188,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .delete("/api/workbooks/{id}", workbookResponse.getId())
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
                 .identifier("workbooks-delete-success");
@@ -204,7 +198,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("문제집으로 카드 가져오기 - 성공")
     void scrapSelectedCardsToWorkbook() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         long workbookId = 1L;
         ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(10L, 11L, 12L))
@@ -214,7 +207,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(token)
+                .auth(authenticatedToken())
                 .locationHeader("/api/workbooks/1/cards")
                 .build()
                 .status(status().isCreated())
@@ -225,7 +218,6 @@ public class WorkbookDocumentationTest extends DocumentationTest {
     @DisplayName("유저가 하트 토글 - 성공")
     void toggleHeart() throws Exception {
         // given
-        String token = obtainAuthenticatedToken();
         HeartResponse heartResponse = HeartResponse.of(true);
 
         given(workbookService.toggleHeart(anyLong(), any(AppUser.class))).willReturn(heartResponse);
@@ -234,7 +226,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .putWithoutBody("/api/workbooks/{id}/hearts", 1L)
-                .auth(token)
+                .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-toggle-hearts-success");
