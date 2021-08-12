@@ -3,6 +3,7 @@ package botobo.core.ui.search;
 import botobo.core.exception.search.ForbiddenSearchKeywordException;
 import botobo.core.exception.search.LongSearchKeywordException;
 import botobo.core.exception.search.SearchKeywordNullException;
+import botobo.core.exception.search.ShortSearchKeywordException;
 import botobo.core.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,8 +61,7 @@ class SearchKeywordTest {
     void createWithShortString() {
         // when, then
         assertThatThrownBy(() -> SearchKeyword.of(""))
-                .isInstanceOf(SearchKeywordCreationFailureException.class)
-                .hasMessageContaining("검색어는 1자 이상이어야 합니다.");
+                .isInstanceOf(ShortSearchKeywordException.class);
     }
 
     @Test
