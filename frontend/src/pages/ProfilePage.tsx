@@ -8,10 +8,11 @@ import { Button, InputField, MainHeader, TextAreaField } from '../components';
 import {
   BIO_MAXIMUM_LENGTH,
   CLOUD_FRONT_DOMAIN,
+  ERROR_MESSAGE,
   USER_NAME_MAXIMUM_LENGTH,
 } from '../constants';
 import { FormProvider } from '../contexts';
-import { useErrorHandler, useProfile, useSnackbar } from '../hooks';
+import { useProfile, useSnackbar } from '../hooks';
 import { Flex } from '../styles';
 
 interface ImageEditorStyleProp {
@@ -20,19 +21,15 @@ interface ImageEditorStyleProp {
 
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-const validateFileSize = (size: number) => {
-  const mb = 1024 * 1024;
-
-  if (size < 0 || size > 10 * mb) {
-    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
-  }
-};
-
 const validateUserName = async (value: string) => {
   try {
     await postUserNameCheckAsync(value);
   } catch (error) {
-    useErrorHandler(error);
+    if (error.response.data.code === 'U003') {
+      throw new Error(ERROR_MESSAGE.U003);
+    }
+
+    console.error(error);
   }
 
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
@@ -43,6 +40,14 @@ const validateUserName = async (value: string) => {
 
   if (/\s/.test(value)) {
     throw new Error('공백은 포함할 수 없어요.');
+  }
+};
+
+const validateFileSize = (size: number) => {
+  const mb = 1024 * 1024;
+
+  if (size < 0 || size > 10 * mb) {
+    throw new Error('파일 크기는 10MB를 초과할 수 없어요.');
   }
 };
 

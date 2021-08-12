@@ -20,6 +20,7 @@ const useWorkbook = () => {
 
   const { routePrevPage } = useRouter();
   const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const createWorkbook = async (
     name: string,
@@ -32,7 +33,7 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 추가되었어요.' });
       routePrevPage();
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -43,7 +44,7 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 수정되었어요.' });
       routePrevPage();
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -53,7 +54,7 @@ const useWorkbook = () => {
       updateWorkbooks();
       showSnackbar({ message: '문제집이 삭제되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

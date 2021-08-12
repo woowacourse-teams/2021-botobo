@@ -20,6 +20,7 @@ const useQuizResult = () => {
 
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const checkQuizResult = (id: number) => {
     const newQuizResults = quizResults.map((quizResult) => {
@@ -46,7 +47,7 @@ const useQuizResult = () => {
       showSnackbar({ message: '다음에 볼 카드가 설정되었어요.' });
       routeMain();
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

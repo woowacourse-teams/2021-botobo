@@ -24,6 +24,7 @@ const QuizStarter = ({ workbooks }: Props) => {
   const setQuizMode = useSetRecoilState(quizModeState);
   const showSnackbar = useSnackbar();
   const { routeQuizSetting, routeQuiz } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const startQuiz = () => {
     if (workbooks.find((workbook) => workbook.cardCount > 0)) {
@@ -45,7 +46,7 @@ const QuizStarter = ({ workbooks }: Props) => {
       setQuizMode(QUIZ_MODE.GUEST);
       routeQuiz();
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

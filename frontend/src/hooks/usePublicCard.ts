@@ -69,6 +69,7 @@ const usePublicCard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const getPublicCards = async () => {
     try {
@@ -87,7 +88,7 @@ const usePublicCard = () => {
       setHeartInfo({ heart, heartCount, serverHeart: heart });
       setIsLoading(false);
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
       setIsLoading(false);
     }
   };
@@ -98,7 +99,7 @@ const usePublicCard = () => {
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -141,7 +142,7 @@ const usePublicCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

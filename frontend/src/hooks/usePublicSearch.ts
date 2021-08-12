@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { PublicWorkbookAsync, getPublicWorkbookAsync } from '../api';
 import { PublicWorkbookResponse } from '../types';
-import useErrorHandler from './useErrorHandler';
 
 const usePublicSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -11,7 +10,6 @@ const usePublicSearch = () => {
   const [workbookSearchResult, setWorkbookSearchResult] = useState<
     PublicWorkbookResponse[]
   >([]);
-
   const searchForPublicWorkbook = async ({
     keyword,
     start,
@@ -36,7 +34,8 @@ const usePublicSearch = () => {
       setIsSearching(false);
       setIsLoading(false);
     } catch (error) {
-      useErrorHandler(error);
+      console.error(error);
+      setIsSearching(false);
       setIsLoading(false);
     }
   };

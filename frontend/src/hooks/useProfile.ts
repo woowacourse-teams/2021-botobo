@@ -10,6 +10,7 @@ const useProfile = () => {
   const [userInfo, setUserInfo] = useRecoilState(userState);
 
   const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const editProfile = async (userInfo: Omit<UserInfoResponse, 'id'>) => {
     try {
@@ -18,7 +19,7 @@ const useProfile = () => {
       setUserInfo(newUserInfo);
       showSnackbar({ message: '프로필이 수정되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -35,7 +36,7 @@ const useProfile = () => {
 
       setUserInfo({ ...userInfo, profileUrl: newImage.profileUrl });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

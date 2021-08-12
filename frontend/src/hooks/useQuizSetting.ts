@@ -36,6 +36,7 @@ const useQuizSetting = () => {
 
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const checkWorkbook = (id: number) => {
     const newWorkbooks = workbooks.map((workbook) => {
@@ -70,7 +71,7 @@ const useQuizSetting = () => {
       resetQuizTime();
       routeQuiz();
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 

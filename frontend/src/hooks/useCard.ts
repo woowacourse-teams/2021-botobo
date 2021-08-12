@@ -34,6 +34,7 @@ const useCard = () => {
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
   const { openModal, closeModal } = useModal();
+  const errorHandler = useErrorHandler();
 
   const getCards = async () => {
     try {
@@ -42,7 +43,7 @@ const useCard = () => {
       setCardInfo(newCardInfo);
       setIsLoading(false);
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
       setIsLoading(false);
     }
   };
@@ -56,7 +57,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -76,7 +77,7 @@ const useCard = () => {
       closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -92,7 +93,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
@@ -100,7 +101,7 @@ const useCard = () => {
     try {
       await putCardAsync(info);
     } catch (error) {
-      useErrorHandler(error);
+      errorHandler(error);
     }
   };
 
