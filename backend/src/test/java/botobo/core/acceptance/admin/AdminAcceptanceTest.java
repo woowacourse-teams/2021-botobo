@@ -1,6 +1,6 @@
 package botobo.core.acceptance.admin;
 
-import botobo.core.acceptance.AcceptanceTest;
+import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -8,11 +8,10 @@ import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends AcceptanceTest {
+public class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_WORKBOOK_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
@@ -34,25 +33,10 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private User admin;
-
-    @BeforeEach
-    void setUser() {
-        admin = User.builder()
-                .githubId(1L)
-                .userName("admin")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
-        userRepository.save(admin);
-    }
-
-
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
     void createWorkbook() {
         // given
-
         final ExtractableResponse<Response> response = 문제집_생성_요청(ADMIN_WORKBOOK_REQUEST, admin);
 
         // when
@@ -76,7 +60,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
 
@@ -92,7 +76,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -107,7 +91,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -123,7 +107,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("문제집명은 최소 1글자, 최대 30글자만 가능합니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 이름은 30자 이하여야 합니다.");
     }
 
     @Test
@@ -131,7 +115,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
     void createWorkbookWithNotAdmin() {
         //given
         User newUser = User.builder()
-                .githubId(2L)
+                .socialId("2")
                 .userName("user")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -213,7 +197,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(errorResponse.getMessage()).isEqualTo("카드가 포함될 문제집 아이디는 필수 입력값입니다.");
+        assertThat(errorResponse.getMessage()).isEqualTo("문제집 아이디는 필수 입력값입니다.");
     }
 
     @Test
@@ -224,7 +208,7 @@ public class AdminAcceptanceTest extends AcceptanceTest {
         final Long workbookId = extractId(workbookResponse);
 
         User newUser = User.builder()
-                .githubId(2L)
+                .socialId("2")
                 .userName("user")
                 .profileUrl("github.io")
                 .role(Role.USER)

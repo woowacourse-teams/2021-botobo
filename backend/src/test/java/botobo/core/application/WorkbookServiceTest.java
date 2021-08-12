@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
@@ -12,12 +13,14 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
+import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.card.CardNotFoundException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,30 +149,13 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("비회원이 문제집을 조회하면 비어있는 리스트를 반환한다.")
+    @DisplayName("비회원 문제집을 조회 - 성공, 비어있는 리스트 반환")
     void findWorkbooksByAnonymousUser() {
         // when
         List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(AppUser.anonymous());
 
         // then
         assertThat(workbooks).isEmpty();
-    }
-
-    @Test
-    @DisplayName("검색어를 이용하여 공유 문제집을 조회한다.")
-    void findPublicWorkbooksBySearch() {
-        // given
-        given(workbookRepository.findAll()).willReturn(workbooks);
-
-        // when
-        List<WorkbookResponse> workbooks = workbookService.findPublicWorkbooksBySearch("자바");
-
-        // then
-        assertThat(workbooks).extracting("name")
-                .containsExactlyInAnyOrder("자바", "자바스크립트");
-
-        then(workbookRepository).should(times(1))
-                .findAll();
     }
 
     @Test
@@ -189,13 +175,53 @@ class WorkbookServiceTest {
                 )
                 .opened(true)
                 .build();
+        Long userId = normalUser.getId();
+        Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
+        workbook.toggleHeart(heart);
+
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
 
         // when
-        assertThatCode(() -> workbookService.findPublicWorkbookById(1L))
-                .doesNotThrowAnyException();
+        WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, normalUser.toAppUser());
 
         // then
+        assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getHeart()).isTrue();
+
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("비회원 공유 문제집 상세보기 - 성공")
+    void findPublicWorkbookByIdWithAnonymousAppUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("피케이의 공유 문제집")
+                .cards(new Cards(List.of(
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
+                        )
+                )
+                .opened(true)
+                .build();
+        Long userId = normalUser.getId();
+        Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
+        workbook.toggleHeart(heart);
+
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+
+        // when
+        WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, AppUser.anonymous());
+
+        // then
+        assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getHeart()).isFalse();
+
         then(workbookRepository).should(times(1))
                 .findByIdAndOrderCardByNew(anyLong());
     }
@@ -220,9 +246,8 @@ class WorkbookServiceTest {
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
 
         // when
-        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
-                .isInstanceOf(NotAuthorException.class)
-                .hasMessage("작성자가 아니므로 권한이 없습니다.");
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
+                .isInstanceOf(NotAuthorException.class);
 
         // then
         then(workbookRepository).should(times(1))
@@ -236,11 +261,102 @@ class WorkbookServiceTest {
         given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L))
-                .isInstanceOf(WorkbookNotFoundException.class)
-                .hasMessage("해당 문제집을 찾을 수 없습니다.");
+        assertThatThrownBy(() -> workbookService.findPublicWorkbookById(1L, normalUser.toAppUser()))
+                .isInstanceOf(WorkbookNotFoundException.class);
 
         // then
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 카드 모아보기 - 성공")
+    void findWorkbookCardsById() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        Card card2 = Card.builder()
+                .id(2L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(normalUser));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
+
+        // when
+        WorkbookCardResponse workbookCardResponse = workbookService.findWorkbookCardsById(workbook.getId(),
+                normalUser.toAppUser());
+
+        // then
+        assertThat(workbookCardResponse.getWorkbookId()).isEqualTo(workbook.getId());
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbook.getName());
+        assertThat(workbookCardResponse.getCards()).hasSize(2);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
+        then(workbookRepository).should(times(1))
+                .findByIdAndOrderCardByNew(anyLong());
+    }
+
+    @Test
+    @DisplayName("유저가 문제집 카드 모아보기 - 실패, 자신의 문제집이 아닌 경우")
+    void findWorkbookCardsByIdWithOtherUser() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("오즈의 Java")
+                .opened(true)
+                .deleted(false)
+                .user(normalUser)
+                .build();
+
+        Card card1 = Card.builder()
+                .id(1L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        Card card2 = Card.builder()
+                .id(2L)
+                .question("question")
+                .answer("answer")
+                .workbook(workbook)
+                .build();
+
+        User otherUser = User.builder()
+                .id(3L)
+                .socialId("7")
+                .userName("pk")
+                .profileUrl("github.io")
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(otherUser));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
+
+        // when, then
+        assertThatThrownBy(
+                () -> workbookService.findWorkbookCardsById(workbook.getId(),
+                        normalUser.toAppUser()))
+                .isInstanceOf(NotAuthorException.class);
+
+        then(userRepository).should(times(1))
+                .findById(anyLong());
         then(workbookRepository).should(times(1))
                 .findByIdAndOrderCardByNew(anyLong());
     }
@@ -311,7 +427,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -384,7 +500,7 @@ class WorkbookServiceTest {
 
         User otherUser = User.builder()
                 .id(3L)
-                .githubId(7L)
+                .socialId("7")
                 .userName("pk")
                 .profileUrl("github.io")
                 .build();
@@ -652,5 +768,53 @@ class WorkbookServiceTest {
                 .findById(anyLong());
         then(cardRepository).should(never())
                 .findByIdIn(Mockito.anyList());
+    }
+
+    @Test
+    @DisplayName("좋아요 요청 - 성공")
+    void toggleOnHeart() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("문제집")
+                .user(adminUser)
+                .build();
+        AppUser appUser = normalUser.toAppUser();
+
+        given(workbookRepository.findById(workbook.getId())).willReturn(Optional.of(workbook));
+
+        // when
+        HeartResponse heartResponse = workbookService.toggleHeart(workbook.getId(), appUser);
+
+        // then
+        assertThat(workbook.getHearts().getHearts()).hasSize(1);
+        assertThat(heartResponse.isHeart()).isTrue();
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("좋아요 취소 - 성공")
+    void toggleOffHeart() {
+        // given
+        Workbook workbook = Workbook.builder()
+                .id(1L)
+                .name("문제집")
+                .user(adminUser)
+                .build();
+        AppUser appUser = normalUser.toAppUser();
+        Heart heart = Heart.builder().workbook(workbook).userId(appUser.getId()).build();
+        workbook.toggleHeart(heart);
+
+        given(workbookRepository.findById(workbook.getId())).willReturn(Optional.of(workbook));
+
+        // when
+        HeartResponse heartResponse = workbookService.toggleHeart(workbook.getId(), appUser);
+
+        // then
+        assertThat(workbook.getHearts().getHearts()).hasSize(0);
+        assertThat(heartResponse.isHeart()).isFalse();
+        then(workbookRepository).should(times(1))
+                .findById(anyLong());
     }
 }

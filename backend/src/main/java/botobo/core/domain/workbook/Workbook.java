@@ -3,9 +3,14 @@ package botobo.core.domain.workbook;
 import botobo.core.domain.BaseEntity;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
+import botobo.core.domain.heart.Heart;
+import botobo.core.domain.heart.Hearts;
 import botobo.core.domain.tag.Tags;
+import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbooktag.WorkbookTag;
+import botobo.core.exception.workbook.WorkbookNameLengthException;
+import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +38,7 @@ import java.util.stream.Collectors;
 public class Workbook extends BaseEntity {
 
     private static final int MAX_NAME_LENGTH = 30;
-    private static final int MAX_TAG_SIZE = 3;
+    private static final int MAX_TAG_SIZE = 5;
 
     @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String name;
@@ -54,6 +59,9 @@ public class Workbook extends BaseEntity {
     @OneToMany(mappedBy = "workbook", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final List<WorkbookTag> workbookTags = new ArrayList<>();
 
+    @Embedded
+    private final Hearts hearts = new Hearts();
+
     @Builder
     public Workbook(Long id, String name, boolean opened, boolean deleted, Cards cards, User user, Tags tags) {
         validateName(name);
@@ -72,15 +80,13 @@ public class Workbook extends BaseEntity {
 
     private void validateName(String name) {
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException("Workbook의 Name에는 null이 들어갈 수 없습니다.");
+            throw new WorkbookNameNullException();
         }
         if (name.isBlank()) {
-            throw new IllegalArgumentException("Workbook의 Name에는 비어있거나 공백 문자열이 들어갈 수 없습니다.");
+            throw new WorkbookNameNullException();
         }
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException(
-                    String.format("Workbook의 Name %d자 이하여야 합니다.", MAX_NAME_LENGTH)
-            );
+            throw new WorkbookNameLengthException();
         }
     }
 
@@ -97,7 +103,7 @@ public class Workbook extends BaseEntity {
         final int notHasTagsCount = tags.size() - alreadyHasTagsSize;
 
         if (currentTags.size() + notHasTagsCount > MAX_TAG_SIZE) {
-            throw new WorkbookTagLimitException(MAX_TAG_SIZE);
+            throw new WorkbookTagLimitException();
         }
     }
 
@@ -184,5 +190,20 @@ public class Workbook extends BaseEntity {
     public void addCard(Card card) {
         card.addWorkbook(this);
         cards.addCard(card);
+    }
+
+    public boolean toggleHeart(Heart heart) {
+        return hearts.toggleHeart(heart);
+    }
+
+    public boolean existsHeartByAppUser(AppUser appUser) {
+        if (appUser.isAnonymous()) {
+            return false;
+        }
+        return hearts.contains(appUser.getId());
+    }
+
+    public int heartCount() {
+        return hearts.size();
     }
 }

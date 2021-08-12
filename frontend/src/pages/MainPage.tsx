@@ -1,27 +1,36 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
 import { STORAGE_KEY } from '../constants';
 import { useRouter, useWorkbook } from '../hooks';
-import { userState } from '../recoil';
+import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
 import { setSessionStorage } from '../utils';
+import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, setWorkbookId, deleteWorkbook } = useWorkbook();
-  const { routeWorkbookAdd, routeCards, routePublicWorkbook } = useRouter();
+  const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
+    useWorkbook();
+  const { routeWorkbookAdd, routeCards, routePublicSearch } = useRouter();
+  const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
+
+  useEffect(() => {
+    if (!shouldWorkbookUpdate) return;
+
+    updateWorkbooks();
+  }, []);
 
   return (
     <>
       <MainHeader />
-      <Container>
+      <PageTemplate isScroll={true}>
         {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
-        <Banner onClick={routePublicWorkbook}>
+        <Banner onClick={routePublicSearch}>
           <BannerText>다양한 문제집 보러 가기</BannerText>
           <StyledButton backgroundColor="white" color="gray_8" shape="circle">
             <ForwardIcon width="1rem" height="1rem" />
@@ -50,17 +59,10 @@ const MainPage = () => {
             />
           )}
         </section>
-      </Container>
+      </PageTemplate>
     </>
   );
 };
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const Greeting = styled.div`
   margin-bottom: 1rem;

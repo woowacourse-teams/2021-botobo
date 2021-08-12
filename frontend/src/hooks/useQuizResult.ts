@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { putNextQuizAsync } from './../api';
-import { quizState } from '../recoil';
+import { hasQuizTimeState, quizState, quizTimeState } from '../recoil';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useQuizResult = () => {
   const quizzes = useRecoilValue(quizState);
+  const quizTime = useRecoilValue(quizTimeState);
+  const hasQuizTime = useRecoilValue(hasQuizTimeState);
   const [quizResults, setQuizResults] = useState(
     quizzes.map((quiz) => ({ ...quiz, isChecked: false }))
   );
@@ -17,6 +20,7 @@ const useQuizResult = () => {
 
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const checkQuizResult = (id: number) => {
     const newQuizResults = quizResults.map((quizResult) => {
@@ -43,8 +47,7 @@ const useQuizResult = () => {
       showSnackbar({ message: '다음에 볼 카드가 설정되었어요.' });
       routeMain();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '퀴즈 설정에 실패했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 
@@ -53,7 +56,14 @@ const useQuizResult = () => {
     routeMain();
   }, []);
 
-  return { quizResults, checkedCount, checkQuizResult, setNextQuiz };
+  return {
+    quizResults,
+    quizTime,
+    hasQuizTime,
+    checkedCount,
+    checkQuizResult,
+    setNextQuiz,
+  };
 };
 
 export default useQuizResult;

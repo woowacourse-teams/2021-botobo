@@ -5,6 +5,8 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
+import botobo.core.exception.workbook.WorkbookNameLengthException;
+import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +66,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(stringGenerator(31))
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameLengthException.class);
     }
 
     @NullAndEmptySource
@@ -76,7 +78,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(name)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WorkbookNameNullException.class);
     }
 
     @Test
@@ -103,7 +105,7 @@ class WorkbookTest {
     void createWithManyTag() {
         // given
         Tags manyTags = Tags.of(Arrays.asList(
-                Tag.of("자바"), Tag.of("java"), Tag.of("코딩"), Tag.of("언어")
+                Tag.of("자바"), Tag.of("java"), Tag.of("코딩"), Tag.of("언어"), Tag.of("학습"), Tag.of("프로그램")
         ));
 
         // when, then
@@ -111,9 +113,7 @@ class WorkbookTest {
                 .name("자바 문제집")
                 .tags(manyTags)
                 .build())
-                .isInstanceOf(WorkbookTagLimitException.class)
-                .hasMessageContaining("문제집이 가질 수 있는 태그수는 최대")
-                .hasMessageContaining("개 입니다.");
+                .isInstanceOf(WorkbookTagLimitException.class);
     }
 
     @Test
@@ -140,7 +140,7 @@ class WorkbookTest {
     }
 
     @Test
-    @DisplayName("문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
+    @DisplayName("존재하는 유저 조회 - 성공, 문제집의 User 필드가 null이면 author는 '존재하지 않는 유저' 이다.")
     void authorWithNullUser() {
         // given
         Workbook workbook = Workbook.builder()
@@ -152,9 +152,39 @@ class WorkbookTest {
         assertThat(workbook.author()).isEqualTo("존재하지 않는 유저");
     }
 
+    @Test
+    @DisplayName("createBy를 하면 문제집의 author가 주어진 user로 바뀐다 - 성공")
+    void createByWithNewAuthor() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("oz")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        User newUser = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("pk")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        Workbook workbook = Workbook.builder()
+                .name("단계별 자바 문제집")
+                .user(user)
+                .build();
+
+        // when
+        workbook.createBy(newUser);
+
+        // then
+        assertThat(workbook.author()).isEqualTo(newUser.getUserName());
+    }
+
     @ValueSource(strings = {"java", "Java", "JAVA", "JaVa"})
     @ParameterizedTest
-    @DisplayName("문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")
+    @DisplayName("단어 포함 검사 - 성공, 문제집의 이름에 해당 단어가 포함되어 있는지 검사한다.(영어는 소문자로 변환하여 검사)")
     void containsWord(String word) {
         // given
         Workbook workbook = Workbook.builder()
@@ -206,7 +236,7 @@ class WorkbookTest {
         // given
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -240,7 +270,7 @@ class WorkbookTest {
         // given
         User user = User.builder()
                 .id(1L)
-                .githubId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)

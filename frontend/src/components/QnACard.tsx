@@ -1,12 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
 
 import EmptyStarIcon from '../assets/star-empty.svg';
 import FillStarIcon from '../assets/star-fill.svg';
 import { useModal } from '../hooks';
-import { cardIdState } from '../recoil';
+import { Flex } from '../styles';
 import { CardResponse } from '../types';
 import { debounce } from '../utils';
 import CardEditForm from './CardEditForm';
@@ -29,7 +28,6 @@ const QnACard = ({
   toggleBookmark,
 }: Props) => {
   const { openModal } = useModal();
-  const setCardId = useSetRecoilState(cardIdState);
   const [isBookmark, setIsBookmark] = useState(cardInfo.bookmark);
 
   const onClickBookmark = () => {
@@ -41,7 +39,6 @@ const QnACard = ({
     <CardTemplate
       editable={true}
       onClickEditButton={async () => {
-        await setCardId(cardInfo.id);
         openModal({
           content: <CardEditForm cardInfo={cardInfo} onSubmit={editCard} />,
           title: workbookName,
@@ -61,6 +58,7 @@ const QnACard = ({
       }}
     >
       <Header>
+        <div>풀어본 횟수: {cardInfo.encounterCount}</div>
         <BookmarkButton onClick={onClickBookmark}>
           {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
         </BookmarkButton>
@@ -72,9 +70,15 @@ const QnACard = ({
 };
 
 const Header = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
   text-align: right;
   height: 1.5rem;
   margin-bottom: 1rem;
+
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
+  `}
 `;
 
 const BookmarkButton = styled.button`

@@ -1,6 +1,8 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.domain.card.Card;
+import botobo.core.domain.heart.Heart;
+import botobo.core.domain.heart.HeartRepository;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
+@ActiveProfiles("test")
 public class WorkbookRepositoryTest {
 
     @Autowired
@@ -35,6 +39,9 @@ public class WorkbookRepositoryTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private HeartRepository heartRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -130,7 +137,7 @@ public class WorkbookRepositoryTest {
     void findAllByUserId() {
         // given
         User user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -170,7 +177,7 @@ public class WorkbookRepositoryTest {
     void updateWorkbook() {
         // given
         User user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -218,7 +225,7 @@ public class WorkbookRepositoryTest {
     void deleteWorkbook() {
         // given
         User user = User.builder()
-                .githubId(1L)
+                .socialId("1")
                 .userName("oz")
                 .profileUrl("github.io")
                 .role(Role.USER)
@@ -241,7 +248,7 @@ public class WorkbookRepositoryTest {
         assertThat(workbookRepository.findAllByUserId(user.getId())).hasSize(0);
     }
 
-    @DisplayName("Tags와 함께 Workbook 저장시 WorkbookTag와 Tag도 함께 저장된다.")
+    @DisplayName("Cascade 검사 - 성공, Tags와 함께 Workbook 저장시 WorkbookTag와 Tag도 함께 저장된다.")
     @Test
     void saveWorkbookWithTags() {
         // given
@@ -268,7 +275,7 @@ public class WorkbookRepositoryTest {
         assertThat(dbTags).hasSize(2);
     }
 
-    @DisplayName("Workbook 삭제시 WorkbookTag는 함께 삭제되고, Tag는 삭제되지 않는다. ")
+    @DisplayName("Cascade 검사 - 성공, Workbook 삭제시 WorkbookTag는 함께 삭제되고, Tag는 삭제되지 않는다. ")
     @Test
     void deleteWorkbookWithOrphanWorkbookTags() {
         // given
@@ -292,6 +299,76 @@ public class WorkbookRepositoryTest {
         assertThat(workbookRepository.findAll()).isEmpty();
         assertThat(workbookTagRepository.findAll()).isEmpty();
         assertThat(tagRepository.findAll()).hasSize(2);
+    }
+
+    @DisplayName("Workbook이 Heart의 추가를 관리한다.")
+    @Test
+    void createHeartFromWorkbook() {
+        // given
+        User user = User.builder()
+                .socialId("1")
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = workbookRepository.save(
+                Workbook.builder()
+                        .name("Java 문제집")
+                        .user(user)
+                        .build()
+        );
+
+        userRepository.save(user);
+        workbookRepository.save(workbook);
+
+        flushAndClear();
+
+        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
+
+        // when
+        Heart heart = Heart.builder().workbook(workbook).userId(user.getId()).build();
+        savedWorkbook.toggleHeart(heart);
+
+        // then
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
+    }
+
+    @DisplayName("orphanRemoval 검사 - 성공, Workbook이 Heart의 삭제를 관리한다.")
+    @Test
+    void deleteHeartFromWorkbook() {
+        // given
+        User user = User.builder()
+                .socialId("1")
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+
+        Workbook workbook = workbookRepository.save(
+                Workbook.builder()
+                        .name("Java 문제집")
+                        .user(user)
+                        .build()
+        );
+
+        userRepository.save(user);
+        workbookRepository.save(workbook);
+
+        Heart heart = Heart.builder().workbook(workbook).userId(user.getId()).build();
+        heartRepository.save(heart);
+
+        flushAndClear();
+
+        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
+
+        // when
+        savedWorkbook.toggleHeart(heart);
+
+        // then
+        assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
     }
 
     private void flushAndClear() {

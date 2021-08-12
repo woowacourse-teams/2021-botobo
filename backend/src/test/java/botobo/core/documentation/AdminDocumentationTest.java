@@ -1,11 +1,11 @@
 package botobo.core.documentation;
 
 import botobo.core.application.AdminService;
+import botobo.core.domain.user.AppUser;
 import botobo.core.dto.admin.AdminCardRequest;
 import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
-import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.ui.AdminController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,10 @@ public class AdminDocumentationTest extends DocumentationTest {
 
     @Test
     @DisplayName("관리자 문제집 생성 - 성공")
-    void createCategory() throws Exception {
+    void createWorkbook() throws Exception {
         // given
-        String token = "botobo.access.token";
         AdminWorkbookRequest adminWorkbookRequest = new AdminWorkbookRequest("JAVA");
-        given(adminService.createWorkbook(any(), any())).willReturn(
+        given(adminService.createWorkbook(any(AdminWorkbookRequest.class), any(AppUser.class))).willReturn(
                 AdminWorkbookResponse.builder()
                         .id(1L)
                         .name("JAVA")
@@ -39,7 +38,7 @@ public class AdminDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .locationHeader("/api/admin/workbooks/1")
                 .build()
                 .status(status().isCreated())
@@ -50,9 +49,8 @@ public class AdminDocumentationTest extends DocumentationTest {
     @DisplayName("관리자 카드 생성 - 성공")
     void createCard() throws Exception {
         // given
-        String token = "botobo.access.token";
         AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1L);
-        given(adminService.createCard(any())).willReturn(
+        given(adminService.createCard(any(AdminCardRequest.class))).willReturn(
                 AdminCardResponse.builder()
                         .id(1L)
                         .question("질문1")
@@ -64,29 +62,10 @@ public class AdminDocumentationTest extends DocumentationTest {
         document()
                 .mockMvc(mockMvc)
                 .post("/api/admin/cards", adminCardRequest)
-                .auth(token)
+                .auth(authenticatedToken())
                 .locationHeader("/api/admin/cards/1")
                 .build()
                 .status(status().isCreated())
                 .identifier("admin-cards-post-success");
-    }
-
-    @Test
-    @DisplayName("관리자 카드 생성 - 실패, 문제집 존재하지 않음")
-    void createCardWithInvalidCategory() throws Exception {
-        // given
-        String token = "botobo.access.token";
-        AdminCardRequest adminCardRequest = new AdminCardRequest("질문1", "답변1", 1000L);
-        given(adminService.createCard(any())).willThrow(new WorkbookNotFoundException());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .post("/api/admin/cards", adminCardRequest)
-                .auth(token)
-                .build()
-                .status(status().isNotFound())
-                .identifier("admin-cards-post-fail-invalid-workbook");
-
     }
 }

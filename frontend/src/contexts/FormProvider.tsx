@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import React, { createContext, useState } from 'react';
 
 interface Values {
@@ -11,7 +12,7 @@ interface ErrorMessages {
 interface Props {
   initialValues: Values;
   validators?: {
-    [key: string]: (value: string) => never | void;
+    [key: string]: (value: string) => never | void | Promise<never | void>;
   };
   onSubmit: (values: Values) => void;
   children: React.ReactElement | React.ReactElement[];
@@ -43,13 +44,21 @@ const FormProvider = ({
     setErrorMessages({ ...errorMessages, [key]: null });
   };
 
-  const onBlur: React.FocusEventHandler<HTMLInputElement> = ({ target }) => {
+  const onBlur: React.FocusEventHandler<HTMLInputElement> = async ({
+    target,
+  }) => {
     const key = target.name;
     const value = target.value;
     const validator = validators?.[key];
 
+    if (value.length === 0) {
+      setErrorMessages({ ...errorMessages, [key]: '내용을 입력해 주세요.' });
+
+      return;
+    }
+
     try {
-      validator?.(value);
+      await validator?.(value);
       setErrorMessages({ ...errorMessages, [key]: null });
     } catch (error) {
       console.error(error);
@@ -57,16 +66,10 @@ const FormProvider = ({
     }
   };
 
-  const onSubmitForm: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const onSubmitForm: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
-
-    try {
-      Object.keys(values).forEach((key) => validators?.[key](values[key]));
-    } catch (error) {
-      console.error(error);
-
-      return;
-    }
 
     const emptyInput = Object.keys(values).find((key) => values[key] === '');
 
@@ -86,15 +89,28 @@ const FormProvider = ({
       return;
     }
 
+    try {
+      for (const key of Object.keys(values)) {
+        await validators?.[key](values[key]);
+      }
+    } catch (error) {
+      console.error(error);
+
+      return;
+    }
+
     onSubmit(values);
-    setValues(initialValues);
   };
 
   return (
     <FormContext.Provider value={{ values, errorMessages, onChange, onBlur }}>
-      <form onSubmit={onSubmitForm}>{children}</form>
+      <Form onSubmit={onSubmitForm}>{children}</Form>
     </FormContext.Provider>
   );
 };
+
+const Form = styled.form`
+  width: 100%;
+`;
 
 export default FormProvider;

@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 
-import { QUIZ_MODE } from './../constants/index';
-import { quizState, workbookState } from './../recoil';
-import { quizModeState } from './../recoil/quizState';
+import { QUIZ_MODE } from './../constants';
+import {
+  hasQuizTimeState,
+  quizModeState,
+  quizState,
+  quizTimeState,
+  workbookState,
+} from './../recoil';
 import { postQuizzesAsync } from '../api';
+import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
+
+interface StartQuiz {
+  count: number;
+  isTimeChecked: boolean;
+}
 
 const useQuizSetting = () => {
   const { data, errorMessage } = useRecoilValue(workbookState);
@@ -20,9 +31,12 @@ const useQuizSetting = () => {
   );
   const setQuizzes = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
+  const setHasQuizTime = useSetRecoilState(hasQuizTimeState);
+  const resetQuizTime = useResetRecoilState(quizTimeState);
 
   const showSnackbar = useSnackbar();
   const { routeQuiz } = useRouter();
+  const errorHandler = useErrorHandler();
 
   const checkWorkbook = (id: number) => {
     const newWorkbooks = workbooks.map((workbook) => {
@@ -37,26 +51,27 @@ const useQuizSetting = () => {
     setWorkbooks(newWorkbooks);
   };
 
-  const startQuiz = async () => {
+  const startQuiz = async ({ count, isTimeChecked }: StartQuiz) => {
     const workbookIds = workbooks
       .filter(({ isChecked }) => isChecked)
       .map((workbook) => workbook.id);
 
     if (workbookIds.length === 0) {
-      alert('카테고리를 선택해주세요!');
+      showSnackbar({ message: '카테고리를 선택해주세요.' });
 
       return;
     }
 
     try {
-      const quizzes = await postQuizzesAsync(workbookIds);
+      const quizzes = await postQuizzesAsync(workbookIds, count);
 
       setQuizzes(quizzes);
       setQuizMode(QUIZ_MODE.DEFAULT);
+      setHasQuizTime(isTimeChecked);
+      resetQuizTime();
       routeQuiz();
     } catch (error) {
-      console.error(error);
-      showSnackbar({ message: '퀴즈 생성에 실패했어요.', type: 'error' });
+      errorHandler(error);
     }
   };
 

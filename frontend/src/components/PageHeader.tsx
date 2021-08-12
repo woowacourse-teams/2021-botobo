@@ -2,63 +2,46 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import BackIcon from '../assets/chevron-left-solid.svg';
-import { useRouter } from '../hooks';
 import { Flex } from '../styles';
 
 interface Props {
   title: string;
   rightContent?: React.ReactElement;
-  sticky?: boolean;
 }
 
-interface StyledHeaderProps {
-  sticky: boolean;
-}
-
-const PageHeader = ({ title, rightContent, sticky = false }: Props) => {
-  const { routePrevPage } = useRouter();
-
-  return (
-    <StyledHeader sticky={sticky}>
-      <LeftContent>
-        <PageBackButton type="button" onClick={routePrevPage}>
-          <BackIcon width="1.5rem" height="1.5rem" />
-        </PageBackButton>
-        <Title>{title}</Title>
-      </LeftContent>
+const PageHeader = ({ title, rightContent }: Props) => (
+  <StyledHeader>
+    <InnerContent>
+      <Title>{title}</Title>
       {rightContent}
-    </StyledHeader>
-  );
-};
+    </InnerContent>
+  </StyledHeader>
+);
 
-const StyledHeader = styled.header<StyledHeaderProps>`
-  ${Flex({ items: 'center', justify: 'space-between' })};
-  height: 3.75rem;
+const StyledHeader = styled.header`
+  position: sticky;
+  top: 0;
+  height: 3rem;
   padding: 0 0.75rem;
-  gap: 1rem;
+  z-index: 1;
 
-  ${({ theme, sticky }) => css`
+  ${({ theme }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
-
-    ${sticky &&
-    css`
-      position: sticky;
-      top: 0;
-    `}
   `};
 `;
 
-const LeftContent = styled.div`
-  ${Flex({ items: 'center' })};
+const InnerContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'center' })};
+  height: 100%;
+  margin: 0 auto;
+
+  ${({ theme }) => css`
+    max-width: ${theme.responsive.maxWidth};
+  `}
 `;
 
-const PageBackButton = styled.button`
-  margin-right: 1rem;
-`;
-
-const Title = styled.h1`
+const Title = styled.h2`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
   `}

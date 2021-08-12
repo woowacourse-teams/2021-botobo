@@ -1,7 +1,9 @@
 plugins {
     id "org.asciidoctor.convert" version "1.5.9.2"
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'jacoco'
     id 'java'
 }
 
@@ -47,12 +49,29 @@ dependencies {
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // bind
     implementation 'javax.xml.bind:jaxb-api:2.1'
+
+    // aws s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //test containers
+    implementation("com.amazonaws:aws-java-sdk-s3")
+    testImplementation "org.testcontainers:localstack:1.15.3"
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
+    // FileNameUtils
+    implementation 'org.apache.tika:tika-core:2.0.0'
+
+    // Flyway
+    implementation('org.flywaydb:flyway-core:6.4.2')
 }
 
 ext {
     snippetsDir = file('build/generated-snippets')
 }
+
+processResources.dependsOn('copyDev')
 
 task copyDev(type: Copy) {
     from '../dev/application-prod.yml'
@@ -63,10 +82,59 @@ task copyDev(type: Copy) {
 
     from '../dev/application-local.yml'
     into './src/main/resources'
+
+    from '../dev/aws-s3.yml'
+    into './src/main/resources'
 }
 
 test {
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            excludes = [
+                    'botobo.core.infrastructure.**',
+                    'botobo.core.exception.**',
+                    'botobo.core.dto.**',
+                    'botobo.core.DataLoader',
+                    'botobo.core.BotoboApplication'
+            ]
+        }
+    }
 }
 
 asciidoctor.doFirst {
@@ -78,6 +146,25 @@ asciidoctor {
     dependsOn test
 }
 
+sonarqube {
+    properties {
+        property "sonar.projectKey", "botobo-develop"
+        property "sonar.host.url", System.getenv('SONAR_URL')
+        property "sonar.login", System.getenv('SONAR_LOGIN')
+        property "sonar.language", "java"
+        property "sonar.binaries", "$buildDir/classes"
+        property "sonar.sources", "src/main"
+        property "sonar.tests", "src/test/java"
+        property "sonar.junit.reportsPath", "$buildDir/test-reports"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.reportPaths", "$buildDir/jacoco/jacoco.exec"
+        property "sonar.exclusions", "**/exception/**, " +
+                "**/dto/**, " +
+                "**/DataLoader.java, " +
+                "**/BotoboApplication.java"
+    }
+}
+
 task createDocument(type: Copy) {
     dependsOn asciidoctor
 
@@ -86,6 +173,5 @@ task createDocument(type: Copy) {
 }
 
 build {
-    dependsOn copyDev
     dependsOn createDocument
 }

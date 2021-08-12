@@ -2,17 +2,24 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import { Hashtag, InputField, PageHeader, Toggle } from '../components';
+import {
+  Hashtag,
+  InputField,
+  MainHeader,
+  PageHeader,
+  Toggle,
+} from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
 import { useWorkbook } from '../hooks';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
+import PageTemplate from './PageTemplate';
 
 const validateWorkbookName = (value: string) => {
   if (value.length > WORKBOOK_NAME_MAXIMUM_LENGTH) {
     throw new Error(
-      `문제집 이름은 ${WORKBOOK_NAME_MAXIMUM_LENGTH}자 이하여야 합니다.`
+      `문제집 이름은 ${WORKBOOK_NAME_MAXIMUM_LENGTH}자를 넘길 수 없어요.`
     );
   }
 };
@@ -23,46 +30,38 @@ const WorkbookAddPage = () => {
   const { createWorkbook } = useWorkbook();
 
   return (
-    <FormProvider
-      initialValues={{ name: '' }}
-      validators={{ name: validateWorkbookName }}
-      onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
-    >
-      <PageHeader
-        title={ROUTE.WORKBOOK_ADD.TITLE}
-        rightContent={<SubmitButton>확인</SubmitButton>}
-      />
-      <Container>
-        <ToggleWrapper>
-          <Toggle
-            labelText={'전체 공개'}
-            isChecked={isPublic}
-            onChange={({ target }) => setIsPublic(target.checked)}
-          />
-        </ToggleWrapper>
-        <Input
-          name="name"
-          placeholder="문제집 이름"
-          focusColor="gray"
-          autoFocus={true}
-          maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+    <>
+      <MainHeader sticky={false} shadow={false} />
+      <FormProvider
+        initialValues={{ name: '' }}
+        validators={{ name: validateWorkbookName }}
+        onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
+      >
+        <PageHeader
+          title={ROUTE.WORKBOOK_ADD.TITLE}
+          rightContent={<button>확인</button>}
         />
-        <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
-      </Container>
-    </FormProvider>
+        <PageTemplate isScroll={true}>
+          <ToggleWrapper>
+            <Toggle
+              labelText={'전체 공개'}
+              isChecked={isPublic}
+              onChange={({ target }) => setIsPublic(target.checked)}
+            />
+          </ToggleWrapper>
+          <Input
+            name="name"
+            placeholder="문제집 이름"
+            focusColor="gray"
+            autoFocus={true}
+            maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+          />
+          <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
+        </PageTemplate>
+      </FormProvider>
+    </>
   );
 };
-
-const SubmitButton = styled.button`
-  margin-right: 1rem;
-`;
-
-const Container = styled.div`
-  ${({ theme }) =>
-    css`
-      padding: ${theme.pageSize.padding};
-    `}
-`;
 
 const ToggleWrapper = styled.div`
   ${Flex({ justify: 'flex-end', items: 'center' })};

@@ -52,8 +52,9 @@ public class CardController {
     }
 
     @PutMapping("/next-quiz")
-    public ResponseEntity<Void> selectNextQuizCards(@Valid @RequestBody NextQuizCardsRequest nextQuizCardsRequest) {
-        cardService.selectNextQuizCards(nextQuizCardsRequest);
+    public ResponseEntity<Void> selectNextQuizCards(@Valid @RequestBody NextQuizCardsRequest nextQuizCardsRequest,
+                                                    @AuthenticationPrincipal AppUser appUser) {
+        cardService.selectNextQuizCards(nextQuizCardsRequest, appUser);
         return ResponseEntity.noContent().build();
     }
 }

@@ -75,6 +75,7 @@ const Container = styled.div<ContainerStyleProps>`
   height: 2.5rem;
   padding: 1.5rem;
   transition: transform 300ms linear;
+  max-width: 30rem;
 
   ${({ theme, isVisible, type }) => css`
     color: ${theme.color.white};
@@ -92,6 +93,7 @@ const StyledCloseIcon = styled(CloseIcon)`
   height: 1rem;
   vertical-align: middle;
   margin-left: 1rem;
+  cursor: pointer;
 
   ${({ theme }) =>
     css`

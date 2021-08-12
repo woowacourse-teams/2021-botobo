@@ -13,17 +13,50 @@ spring:
   config:
     activate:
       on-profile: test
+  flyway:
+    enabled: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
 
 github:
   client:
-    id: a
-    secret: a
+    id: githubId
+    secret: githubSecret
   url:
     access-token: https://github.com/login/oauth/access_token
     profile: https://api.github.com/user
+
+google:
+  client:
+    id: googleId
+    secret: googleSecret
+    redirect-uri: googleRedirectUri
+    grant-type: authorization_code
+  url:
+    access-token: https://oauth2.googleapis.com/token
+    profile: https://openidconnect.googleapis.com/v1/userinfo
 
 security:
   jwt:
     token:
       secret-key: testsecretkey
       expire-length: 3600000
+
+aws:
+  cloudfront:
+    url-format: https://d1mlkr1uzdb8as.cloudfront.net/%s
+  s3:
+    bucket: s3-botobo-storage
+  user-default-image: botobo-default-profile.png
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

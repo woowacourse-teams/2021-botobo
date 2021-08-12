@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { QUIZ_MODE } from './../constants/index';
-import { quizModeState } from './../recoil/quizState';
+import { QUIZ_MODE } from './../constants';
+import { hasQuizTimeState, quizModeState } from './../recoil';
 import { quizState } from '../recoil';
 import useRouter from './useRouter';
 
 const useQuiz = () => {
-  const quizzes = useRecoilValue(quizState);
   const quizMode = useRecoilValue(quizModeState);
+  const hasQuizTime = useRecoilValue(hasQuizTimeState);
+  const quizzes =
+    quizMode === 'GUEST'
+      ? useRecoilValue(quizState).map((quiz, index) => ({
+          ...quiz,
+          id: index,
+        }))
+      : useRecoilValue(quizState);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [prevQuizId, setPrevQuizId] = useState<number | null>(null);
-  const { routeQuizResult, routeMain, routePublicCards } = useRouter();
+  const { routeQuizResult, routeMain, routePrevPage } = useRouter();
 
   const showPrevQuiz = () => {
     if (currentQuizIndex === 0) return;
@@ -24,7 +31,7 @@ const useQuiz = () => {
     const routeByQuizMode = {
       [QUIZ_MODE.DEFAULT]: routeQuizResult,
       [QUIZ_MODE.GUEST]: routeMain,
-      [QUIZ_MODE.OTHERS]: () => routePublicCards(),
+      [QUIZ_MODE.OTHERS]: routePrevPage,
     };
 
     if (currentQuizIndex === quizzes.length - 1) {
@@ -43,7 +50,15 @@ const useQuiz = () => {
     routeMain();
   }, []);
 
-  return { quizzes, currentQuizIndex, prevQuizId, showPrevQuiz, showNextQuiz };
+  return {
+    quizzes,
+    hasQuizTime,
+    currentQuizIndex,
+    setCurrentQuizIndex,
+    prevQuizId,
+    showPrevQuiz,
+    showNextQuiz,
+  };
 };
 
 export default useQuiz;

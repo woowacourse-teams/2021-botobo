@@ -12,9 +12,8 @@ import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
-import botobo.core.exception.NotAuthorException;
 import botobo.core.exception.card.CardNotFoundException;
-import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +22,15 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class CardService {
+public class CardService extends AbstractUserService {
 
     private final CardRepository cardRepository;
     private final WorkbookRepository workbookRepository;
-    private final UserRepository userRepository;
 
     public CardService(CardRepository cardRepository, WorkbookRepository workbookRepository, UserRepository userRepository) {
+        super(userRepository);
         this.cardRepository = cardRepository;
         this.workbookRepository = workbookRepository;
-        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -41,10 +39,6 @@ public class CardService {
         Card card = convertToCard(cardRequest, author);
         cardRepository.save(card);
         return CardResponse.of(card);
-    }
-
-    private User findUser(AppUser appUser) {
-        return userRepository.findById(appUser.getId()).orElseThrow(UserNotFoundException::new);
     }
 
     private Card convertToCard(CardRequest cardRequest, User author) {
@@ -85,10 +79,17 @@ public class CardService {
         card.delete();
     }
 
-    // TODO nextQuizCard도 Interceptor 타도록 변경
     @Transactional
-    public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest) {
+    public void selectNextQuizCards(NextQuizCardsRequest nextQuizCardsRequest, AppUser appUser) {
+        User user = findUser(appUser);
         List<Card> cards = cardRepository.findByIdIn(nextQuizCardsRequest.getCardIds());
+        if (!isAuthorOfCards(user, cards)) {
+            throw new NotAuthorException();
+        }
         cards.forEach(Card::makeNextQuiz);
+    }
+
+    private boolean isAuthorOfCards(User user, List<Card> cards) {
+        return cards.stream().allMatch(card -> card.isAuthorOf(user));
     }
 }

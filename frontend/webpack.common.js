@@ -8,12 +8,15 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main-020.js',
+    filename: 'main-100.js',
     publicPath: '/',
   },
   plugins: [
     new Dotenv(),
-    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      favicon: './public/favicon.png',
+    }),
     new CopyPlugin({
       patterns: [
         {

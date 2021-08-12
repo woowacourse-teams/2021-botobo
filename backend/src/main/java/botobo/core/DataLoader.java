@@ -2,6 +2,7 @@ package botobo.core;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +31,7 @@ import java.util.Objects;
 @Component
 @Slf4j
 @Profile("local")
+@Transactional
 public class DataLoader implements CommandLineRunner {
 
     @Value("${dummy.file-path}")
@@ -58,13 +61,15 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
         this.adminUser = saveAdminUser();
         this.normalUser = saveNormalUser();
-        this.adminWorkbookCount = 3;
+        this.adminWorkbookCount = 11;
         String targetPath = filePath;
         if (isBootrun(bootrunFilePath)) {
             targetPath = bootrunFilePath;
         }
         for (String workbook : workbooks) {
-            readFile(targetPath + workbook);
+            for (int i = 0; i < 10; i++) {
+                readFile(targetPath + workbook, i);
+            }
         }
     }
 
@@ -72,11 +77,11 @@ public class DataLoader implements CommandLineRunner {
         return new File(filePath).exists();
     }
 
-    public void readFile(String filePath) {
+    public void readFile(String filePath, int i) {
         try {
             File file = new File(filePath);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            saveData(bufferedReader);
+            saveData(bufferedReader, i);
             bufferedReader.close();
         } catch (FileNotFoundException e) {
             log.info("Dummy Data 파일 경로를 찾지 못했습니다.");
@@ -85,12 +90,12 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    private void saveData(BufferedReader bufferedReader) throws IOException {
+    private void saveData(BufferedReader bufferedReader, int i) throws IOException {
         String workbookName = bufferedReader.readLine();
         if (Objects.isNull(workbookName)) {
             return;
         }
-        Workbook workbook = saveWorkbook(workbookName);
+        Workbook workbook = saveWorkbook(workbookName + i);
         String question = bufferedReader.readLine();
         String answer = bufferedReader.readLine();
 
@@ -103,8 +108,8 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveAdminUser() {
         User user = User.builder()
-                .userName("1번 어드민")
-                .githubId(88036280L)
+                .userName("admin")
+                .socialId("88036280")
                 .profileUrl("https://avatars.githubusercontent.com/u/88036280?v=4")
                 .role(Role.ADMIN)
                 .build();
@@ -113,8 +118,8 @@ public class DataLoader implements CommandLineRunner {
 
     private User saveNormalUser() {
         User user = User.builder()
-                .userName("일반 유저")
-                .githubId(88143445L)
+                .userName("user")
+                .socialId("88143445")
                 .profileUrl("botobo.profile.url")
                 .role(Role.USER)
                 .build();
@@ -122,9 +127,9 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private Workbook saveWorkbook(String workbookName) {
-        User author = this.normalUser;
+        User author = normalUser;
         if (adminWorkbookCount > 0) {
-            author = this.adminUser;
+            author = adminUser;
             adminWorkbookCount--;
         }
         Workbook workbook = Workbook.builder()
@@ -133,6 +138,22 @@ public class DataLoader implements CommandLineRunner {
                 .opened(true)
                 .tags(Tags.of(Collections.singletonList(Tag.of(workbookName))))
                 .build();
+        Heart heart1 = Heart.builder()
+                .workbook(workbook)
+                .userId(adminUser.getId())
+                .build();
+        Heart heart2 = Heart.builder()
+                .workbook(workbook)
+                .userId(normalUser.getId())
+                .build();
+        if (author.equals(adminUser)) {
+            workbook.toggleHeart(heart1);
+        }
+        if (author.equals(normalUser)) {
+
+            workbook.toggleHeart(heart1);
+            workbook.toggleHeart(heart2);
+        }
         return workbookRepository.save(workbook);
     }
 

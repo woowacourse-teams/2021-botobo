@@ -12,24 +12,19 @@ interface WorkbookState {
   errorMessage: string | null;
 }
 
+export const shouldWorkbookUpdateState = atom({
+  key: 'shouldWorkbookUpdateState',
+  default: false,
+});
+
 const workbookUpdateTrigger = atom({
   key: 'workbookUpdateTrigger',
   default: 0,
 });
 
-export const searchKeywordState = atom<string>({
-  key: 'searchKeywordState',
-  default: '',
-});
-
 export const workbookIdState = atom<number>({
   key: 'workbookIdState',
   default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,
-});
-
-export const publicWorkbookIdState = atom<number>({
-  key: 'publicWorkbookIdState',
-  default: getSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID) ?? -1,
 });
 
 export const workbookState = selector<WorkbookState>({
@@ -52,6 +47,7 @@ export const workbookState = selector<WorkbookState>({
   set: ({ set }, value) => {
     if (value instanceof DefaultValue) {
       set(workbookUpdateTrigger, (prevState) => prevState + 1);
+      set(shouldWorkbookUpdateState, false);
     }
   },
 });

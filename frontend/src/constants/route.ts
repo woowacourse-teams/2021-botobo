@@ -6,6 +6,12 @@ const ROUTE = {
     PATH: '/login',
     TITLE: '로그인',
   },
+  LOGOUT: {
+    PATH: '/logout',
+  },
+  PROFILE: {
+    PATH: '/profile',
+  },
   WORKBOOK_ADD: {
     PATH: '/workbookAdd',
     TITLE: '문제집 추가',
@@ -34,9 +40,13 @@ const ROUTE = {
     PATH: '/cardEdit',
     TITLE: '카드 수정',
   },
-  PUBLIC_WORKBOOK: {
-    PATH: '/publicWorkbook',
-    TITLE: '공유 문제집',
+  PUBLIC_SEARCH: {
+    PATH: '/publicSearch',
+    TITLE: '문제집 검색',
+  },
+  PUBLIC_SEARCH_RESULT: {
+    PATH: '/publicSearchResult',
+    TITLE: '검색 결과',
   },
   PUBLIC_CARDS: {
     PATH: '/publicCards',
@@ -44,6 +54,9 @@ const ROUTE = {
   },
   GITHUB_CALLBACK: {
     PATH: '/github/callback',
+  },
+  GOOGLE_CALLBACK: {
+    PATH: '/google/callback',
   },
 } as const;
 

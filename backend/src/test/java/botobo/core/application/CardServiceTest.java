@@ -10,7 +10,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.NextQuizCardsRequest;
-import botobo.core.exception.NotAuthorException;
+import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -308,14 +308,62 @@ class CardServiceTest {
         // given
         NextQuizCardsRequest requestWithThreeIds = nextQuizCardsRequestWithThreeIds();
         List<Card> threeCards = listOfThreeCards();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(cardRepository.findByIdIn(requestWithThreeIds.getCardIds())).willReturn(threeCards);
 
         // when
-        cardService.selectNextQuizCards(requestWithThreeIds);
+        cardService.selectNextQuizCards(requestWithThreeIds, appUser);
 
         // then
         assertThat(threeCards).extracting("nextQuiz")
                 .containsExactly(true, true, true);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+        then(cardRepository)
+                .should(times(1))
+                .findByIdIn(anyList());
+    }
+
+    @Test
+    @DisplayName("다음에 또 보는 카드 선택 - 실패, 존재하지 않는 유저")
+    void selectNextQuizCardsWhenUserNotFound() {
+        // given
+        NextQuizCardsRequest requestWithThreeIds = nextQuizCardsRequestWithThreeIds();
+        List<Card> threeCards = listOfThreeCards();
+
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when - then
+        assertThatThrownBy(() -> cardService.selectNextQuizCards(requestWithThreeIds, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+        then(cardRepository)
+                .should(never())
+                .findByIdIn(anyList());
+    }
+
+    @Test
+    @DisplayName("다음에 또 보는 카드 선택 - 실패, author가 아닌 유저")
+    void selectNextQuizCardsWhenUserNotAuthor() {
+        // given
+        NextQuizCardsRequest requestWithThreeIds = nextQuizCardsRequestWithThreeIds();
+        List<Card> threeCards = listOfThreeCards();
+
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(anotherUser));
+        given(cardRepository.findByIdIn(requestWithThreeIds.getCardIds())).willReturn(threeCards);
+
+        // when - then
+        assertThatThrownBy(() -> cardService.selectNextQuizCards(requestWithThreeIds, appUser))
+                .isInstanceOf(NotAuthorException.class);
+
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(cardRepository)
                 .should(times(1))
                 .findByIdIn(anyList());

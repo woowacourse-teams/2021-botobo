@@ -1,35 +1,57 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import OpenIcon from '../assets/chevron-down-solid.svg';
 import { Flex, scrollBarStyle } from '../styles';
 
-interface OptionValues {
+interface OptionValue {
   id: number;
-  name: string;
+  name: string | number;
 }
 
 interface Props {
   title?: string;
-  optionValues: OptionValues[];
+  optionValues: OptionValue[];
   setSelectedId: (id: number) => void;
+  listHeight?: string;
+  disabled?: boolean;
 }
 
 interface CurrentStyleProps {
   isFocus: boolean;
+  disabled: boolean;
 }
 
-const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
+interface OptionListStyleProps {
+  listHeight: string;
+}
+
+const SelectBox = ({
+  title,
+  optionValues,
+  setSelectedId,
+  listHeight = '10rem',
+  disabled = false,
+}: Props) => {
   const [isFocus, setIsFocus] = useState(false);
   const [currentId, setCurrentId] = useState(optionValues[0].id);
+
+  useEffect(() => {
+    setCurrentId(optionValues[0].id);
+  }, [disabled]);
 
   return (
     <Container tabIndex={1} onBlur={() => setIsFocus(false)}>
       {title && <Title>{title}</Title>}
       <Current
-        onClick={() => setIsFocus((prevState) => !prevState)}
+        onClick={() => {
+          if (disabled) return;
+
+          setIsFocus((prevState) => !prevState);
+        }}
         isFocus={isFocus}
+        disabled={disabled}
       >
         <ul>
           {optionValues.map(({ id, name }) => (
@@ -50,7 +72,7 @@ const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
         </ul>
         <StyledOpenIcon width="1.25rem" height="1.25rem" />
       </Current>
-      <OptionList>
+      <OptionList listHeight={listHeight}>
         {optionValues.map(({ id, name }) => (
           <li key={id}>
             <Name htmlFor={`radio-${id}`}>{name}</Name>
@@ -63,6 +85,7 @@ const SelectBox = ({ title, optionValues, setSelectedId }: Props) => {
 
 const Container = styled.div`
   position: relative;
+  z-index: 1;
   width: 100%;
   margin: 0 auto;
 `;
@@ -100,17 +123,22 @@ const HiddenInput = styled.input`
   }
 `;
 
-const OptionList = styled.ul`
+const OptionList = styled.ul<OptionListStyleProps>`
   position: absolute;
   width: 100%;
   display: none;
-  max-height: 10rem;
   overflow-y: auto;
   ${scrollBarStyle};
 
-  ${({ theme }) => css`
+  ${({ theme, listHeight }) => css`
     box-shadow: ${theme.boxShadow.button};
     border: 1px solid ${theme.color.gray_4};
+
+    max-height: ${listHeight};
+
+    & > li {
+      background-color: ${theme.color.white};
+    }
   `}
 `;
 
@@ -131,9 +159,10 @@ const Current = styled.div<CurrentStyleProps>`
   cursor: pointer;
   outline: none;
 
-  ${({ theme, isFocus }) => css`
+  ${({ theme, isFocus, disabled }) => css`
     border: 1px solid ${theme.color.gray_4};
     box-shadow: ${theme.boxShadow.button};
+    background-color: ${disabled ? theme.color.gray_3 : ''};
 
     ${isFocus &&
     css`

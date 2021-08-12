@@ -20,12 +20,13 @@ import java.util.List;
 @Builder
 public class WorkbookRequest {
 
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Length(max = 30, message = "이름은 최대 30자까지 입력 가능합니다.")
+    @NotBlank(message = "W002")
+    @Length(max = 30, message = "W001")
     private String name;
 
     private boolean opened;
 
+    @Builder.Default
     @Valid
     private List<TagRequest> tags = new ArrayList<>();
 

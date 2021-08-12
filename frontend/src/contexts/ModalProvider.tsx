@@ -20,6 +20,7 @@ interface BottomSheetProps {
   children: React.ReactNode;
   type: ModalType;
   isOpened: boolean;
+  deleteContent: () => void;
 }
 
 interface HeaderStyleProps {
@@ -40,23 +41,20 @@ interface ModalContextType {
 const modalStyle = {
   center: css`
     padding: 1rem;
-    left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     border-radius: ${theme.borderRadius.square_1};
   `,
   bottom: css`
     bottom: 0;
-    left: 0;
-    right: 0;
+    width: 101%;
     border-top-left-radius: ${theme.borderRadius.square_6};
     border-top-right-radius: ${theme.borderRadius.square_6};
   `,
   full: css`
+    width: 101%;
     height: 100%;
     overflow-y: auto;
-    left: 0;
-    right: 0;
   `,
 };
 
@@ -83,6 +81,10 @@ const ModalProvider = ({ children }: Props) => {
     setIsOpened(false);
   };
 
+  const deleteContent = () => {
+    setModalContent(null);
+  };
+
   const closeWithDimmed: React.MouseEventHandler<HTMLDivElement> = ({
     target,
     currentTarget,
@@ -94,8 +96,8 @@ const ModalProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const reset = () => {
-      setModalContent(null);
       closeModal();
+      deleteContent();
     };
 
     window.addEventListener('popstate', reset);
@@ -106,53 +108,64 @@ const ModalProvider = ({ children }: Props) => {
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {isOpened && <Dimmed onClick={closeWithDimmed} />}
-      {modalContent && (
-        <Modal isOpened={isOpened} type={type}>
-          {(closeIcon || title) && (
-            <Header closeIcon={closeIcon}>
-              <button type="button" onClick={closeModal}>
-                {closeIcon === 'back' && (
-                  <BackIcon width="1.2rem" height="1.2rem" />
-                )}
-                {closeIcon === 'crossMark' && (
-                  <CloseButtonIcon width="0.8rem" height="0.8rem" />
-                )}
-                {closeIcon === 'down' && (
-                  <DownIcon width="1.2rem" height="1.2rem" />
-                )}
-              </button>
-              <h2>{title}</h2>
-            </Header>
-          )}
-          {modalContent}
-        </Modal>
-      )}
+      <Modal isOpened={isOpened} type={type} deleteContent={deleteContent}>
+        {(closeIcon || title) && (
+          <Header closeIcon={closeIcon}>
+            <button type="button" onClick={closeModal}>
+              {closeIcon === 'back' && (
+                <BackIcon width="1.2rem" height="1.2rem" />
+              )}
+              {closeIcon === 'crossMark' && (
+                <CloseButtonIcon width="0.8rem" height="0.8rem" />
+              )}
+              {closeIcon === 'down' && (
+                <DownIcon width="1.2rem" height="1.2rem" />
+              )}
+            </button>
+            <h2>{title}</h2>
+          </Header>
+        )}
+        {modalContent}
+      </Modal>
       {children}
     </ModalContext.Provider>
   );
 };
 
-const Modal = ({ children, type, isOpened }: BottomSheetProps) => (
-  <Container isOpened={isOpened} type={type}>
+const Modal = ({
+  children,
+  type,
+  isOpened,
+  deleteContent,
+}: BottomSheetProps) => (
+  <Container
+    isOpened={isOpened}
+    type={type}
+    onAnimationEnd={() => {
+      if (isOpened) return;
+
+      deleteContent();
+    }}
+  >
     {children}
   </Container>
 );
 
 const fadeInAnimation = (type: ModalType) => keyframes`
   from { 
-    ${type === 'center' ? 'opacity: 0;' : 'transform: translateY(100%);'} 
+    ${type === 'center' ? 'opacity: 0;' : 'transform: translate(-50%, 100%);'} 
   } 
   to { 
-    ${type === 'center' ? 'opacity: 1;' : 'transform: translateY(0);'} 
+    ${type === 'center' ? 'opacity: 1;' : 'transform: translate(-50%, 0);'} 
   }
 `;
 
 const fadeOutAnimation = (type: ModalType) => keyframes`
   from { 
-    ${type === 'center' ? 'opacity: 1;' : 'transform: translateY(0);'}   
+    ${type === 'center' ? 'opacity: 1;' : 'transform: translate(-50%, 0);'}   
   } 
   to { 
-    ${type === 'center' ? 'opacity: 0;' : 'transform: translateY(100%);'} 
+    ${type === 'center' ? 'opacity: 0;' : 'transform: translate(-50%, 100%);'} 
   }
 `;
 
@@ -162,7 +175,7 @@ const Dimmed = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1;
+  z-index: 3;
 
   ${({ theme }) => css`
     background-color: ${`${theme.color.black}80`};
@@ -193,17 +206,19 @@ const Header = styled.div<HeaderStyleProps>`
 
 const Container = styled.div<Pick<BottomSheetProps, 'type' | 'isOpened'>>`
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   padding: 1rem;
-
+  left: 50%;
+  transform: translateX(-50%);
   transition: visibility 0.2s;
 
   ${({ theme, type, isOpened }) => css`
     background-color: ${theme.color.white};
     animation: ${isOpened ? fadeInAnimation(type) : fadeOutAnimation(type)} 0.2s;
     visibility: ${isOpened ? 'visible' : 'hidden'};
+    max-width: ${theme.responsive.maxWidth};
 
-    ${modalStyle[type]}
+    ${modalStyle[type]};
   `}
 `;
 

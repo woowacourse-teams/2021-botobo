@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect } from 'react';
-import ReactGA from 'react-ga';
 import {
   BrowserRouter,
   Redirect,
@@ -8,22 +7,23 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { ROUTE } from './constants';
 import {
-  CardsLoadable,
   CardsPage,
-  GithubCallbackPage,
   LoginPage,
+  LogoutPage,
   MainLoadable,
   MainPage,
-  PublicCardsLoadable,
+  OAuthCallbackPage,
+  ProfilePage,
   PublicCardsPage,
-  PublicWorkbookPage,
+  PublicSearchPage,
+  PublicSearchResultPage,
   QuizPage,
   QuizResultPage,
+  QuizSettingLoadable,
   QuizSettingPage,
   WorkbookAddPage,
   WorkbookEditPage,
@@ -41,9 +41,19 @@ const routes = [
     isPublic: true,
   },
   {
+    path: ROUTE.PROFILE.PATH,
+    component: <ProfilePage />,
+    isPublic: false,
+  },
+  {
     path: ROUTE.LOGIN.PATH,
     component: <LoginPage />,
     isPublic: true,
+  },
+  {
+    path: ROUTE.LOGOUT.PATH,
+    component: <LogoutPage />,
+    isPublic: false,
   },
   {
     path: ROUTE.WORKBOOK_ADD.PATH,
@@ -58,7 +68,7 @@ const routes = [
   {
     path: ROUTE.QUIZ_SETTING.PATH,
     component: (
-      <Suspense fallback={<div>loading</div>}>
+      <Suspense fallback={<QuizSettingLoadable />}>
         <QuizSettingPage />
       </Suspense>
     ),
@@ -76,30 +86,27 @@ const routes = [
   },
   {
     path: ROUTE.CARDS.PATH,
-    component: (
-      <Suspense fallback={<CardsLoadable />}>
-        <CardsPage />
-      </Suspense>
-    ),
+    component: <CardsPage />,
     isPublic: false,
   },
   {
-    path: ROUTE.PUBLIC_WORKBOOK.PATH,
-    component: <PublicWorkbookPage />,
-    isPublic: false,
+    path: ROUTE.PUBLIC_SEARCH.PATH,
+    component: <PublicSearchPage />,
+    isPublic: true,
+  },
+  {
+    path: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
+    component: <PublicSearchResultPage />,
+    isPublic: true,
   },
   {
     path: ROUTE.PUBLIC_CARDS.PATH,
-    component: (
-      <Suspense fallback={<PublicCardsLoadable />}>
-        <PublicCardsPage />
-      </Suspense>
-    ),
-    isPublic: false,
+    component: <PublicCardsPage />,
+    isPublic: true,
   },
   {
-    path: ROUTE.GITHUB_CALLBACK.PATH,
-    component: <GithubCallbackPage />,
+    path: `(${ROUTE.GITHUB_CALLBACK.PATH}|${ROUTE.GOOGLE_CALLBACK.PATH})`,
+    component: <OAuthCallbackPage />,
     isPublic: true,
   },
 ];
@@ -126,15 +133,6 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
   );
 };
 
-const RouteChangeTracker = withRouter(({ history }) => {
-  history.listen((location) => {
-    ReactGA.set({ page: location.pathname + location.search });
-    ReactGA.pageview(location.pathname + location.search);
-  });
-
-  return null;
-});
-
 const Router = () => (
   <BrowserRouter>
     <Switch>
@@ -142,13 +140,11 @@ const Router = () => (
         isPublic ? (
           <Route key={index} exact path={path}>
             <ScrollToTop />
-            <RouteChangeTracker />
             {component}
           </Route>
         ) : (
           <PrivateRoute key={index} exact path={path}>
             <ScrollToTop />
-            <RouteChangeTracker />
             {component}
           </PrivateRoute>
         )

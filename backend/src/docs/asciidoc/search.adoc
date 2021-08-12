@@ -1,0 +1,99 @@
+== 검색 API
+
+=== 문제집 검색
+==== 요청
+include::{snippets}/search-workbooks-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/search-workbooks-get-success/http-response.adoc[]
+
+.URI 파라미터
+|===
+|파라미터 이름 |값 |필수 여부 |기본 값 |설명
+
+|type
+|name, tag, user
+|false
+|name
+|검색 타입
+
+|criteria
+|date, name, count, heart
+|false
+|date
+|정렬 기준
+
+|order
+|desc, asc
+|false
+|desc
+|정렬 방법
+
+|keyword
+|-
+|true
+|-
+|검색어
+
+|start
+|-
+|false
+|0
+|페이징 시작 인덱스
+
+|size
+|-
+|false
+|20
+|가져올 수
+|===
+
+.파라미터 값 설명
+|===
+|값 |설명
+
+|name
+|문제집 이름 (대소문자 구별하지 않음)
+
+|tag
+|태그 이름 (대소문자 구별하지 않음)
+
+|user
+|유저 이름 (대소문자 구별 함)
+
+|date
+|문제집 생성 날짜
+
+|count
+|문제집에 포함된 카드 수
+
+|heart
+|좋아요 수
+
+|asc
+|오름차순
+
+|desc
+|내림차순
+|===
+
+=== 태그 자동완성
+==== 요청
+include::{snippets}/search-tags-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/search-tags-get-success/http-response.adoc[]
+
+.URI 파라미터
+|===
+|keyword |태그에 포함될 키워드 (대소문자 구별하지 않음)
+|===
+
+=== 유저 자동완성
+==== 요청
+include::{snippets}/search-users-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/search-users-get-success/http-response.adoc[]
+
+.URI 파라미터
+|===
+|keyword |유저 이름에 포함될 키워드 (대소문자 구별함)
+|===

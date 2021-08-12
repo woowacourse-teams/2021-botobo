@@ -1,9 +1,6 @@
 package botobo.core.exception.auth;
 
-import botobo.core.exception.UnauthorizedException;
+import botobo.core.exception.http.UnAuthorizedException;
 
-public class TokenNotValidException extends UnauthorizedException {
-    public TokenNotValidException() {
-        super("토큰이 유효하지 않습니다.");
-    }
+public class TokenNotValidException extends UnAuthorizedException {
 }

@@ -2,15 +2,19 @@ package botobo.core.acceptance.card;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
+import botobo.core.domain.user.User;
+import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
-import botobo.core.exception.ErrorResponse;
+import botobo.core.exception.common.ErrorResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
@@ -18,52 +22,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.utils.Fixture.CARD_REQUEST_1;
-import static botobo.core.utils.Fixture.CARD_REQUEST_10;
-import static botobo.core.utils.Fixture.CARD_REQUEST_11;
-import static botobo.core.utils.Fixture.CARD_REQUEST_12;
-import static botobo.core.utils.Fixture.CARD_REQUEST_13;
-import static botobo.core.utils.Fixture.CARD_REQUEST_14;
-import static botobo.core.utils.Fixture.CARD_REQUEST_15;
-import static botobo.core.utils.Fixture.CARD_REQUEST_2;
-import static botobo.core.utils.Fixture.CARD_REQUEST_3;
-import static botobo.core.utils.Fixture.CARD_REQUEST_4;
-import static botobo.core.utils.Fixture.CARD_REQUEST_5;
-import static botobo.core.utils.Fixture.CARD_REQUEST_6;
-import static botobo.core.utils.Fixture.CARD_REQUEST_7;
-import static botobo.core.utils.Fixture.CARD_REQUEST_8;
-import static botobo.core.utils.Fixture.CARD_REQUEST_9;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_1;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_2;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_3;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_4;
-import static botobo.core.utils.Fixture.WORKBOOK_REQUEST_5;
+import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_OF_30_CARDS;
+import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @DisplayName("Quiz 인수 테스트")
 public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3,
-                WORKBOOK_REQUEST_4, WORKBOOK_REQUEST_5));
-        여러개_카드_생성_요청(Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
-                CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
-                CARD_REQUEST_11, CARD_REQUEST_12, CARD_REQUEST_13, CARD_REQUEST_14, CARD_REQUEST_15));
+        여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS);
+        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_OF_30_CARDS);
     }
 
     @Test
-    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 성공")
+    @DisplayName("퀴즈 생성 - 성공")
     void createQuiz() {
         // given
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
-        QuizRequest quizRequest =
-                new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when
@@ -75,16 +59,161 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("퀴즈 생성 - 실패, 비로그인은 회원용 퀴즈 생성을 이용할 수 없다.")
+    void createQuizWhenGuest() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .build();
+
+        // when
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(errorResponse.getMessage()).isEqualTo("토큰이 유효하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("퀴즈 생성 - 실패, 회원을 찾을 수 없음.")
+    void createQuizWhenUserNotFound() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(100L))
+                .build();
+
+        // when
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(errorResponse.getMessage()).isEqualTo("해당 유저를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("퀴즈 생성 - 실패, 내 문제집이 아님.")
+    void createQuizWhenNotAuthor() {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
+
+        User anyUser = anyUser();
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(anyUser.getId()))
+                .build();
+
+        // when
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponse.getMessage()).isEqualTo("작성자가 아니므로 권한이 없습니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {10, 15, 20, 25, 30})
+    @DisplayName("퀴즈 생성 - 성공, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
+    void createQuizWhenCountIsCorrect(int count) {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(count)
+                .build();
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(1L))
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(quizResponses.size()).isEqualTo(count);
+    }
+
+    @Test
+    @DisplayName("퀴즈 생성 - 성공, 요청 개수가 가진 퀴즈 개수보다 많을 때, min 값을 취한다.")
+    void createQuizWhenCountIsMoreThanWeHave() {
+        // given
+        final int requestCount = 11;
+        final int existCardCount = 10;
+
+        List<Long> ids = List.of(1L); // 10개의 카드 존재
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(requestCount)
+                .build();
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(1L))
+                .build();
+
+        // when
+        final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(quizResponses.size()).isEqualTo(existCardCount);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 9, 31})
+    @DisplayName("퀴즈 생성 - 실패, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
+    void createQuizWhenQuizCountIsInvalid(int count) {
+        // given
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(count)
+                .build();
+
+        final HttpResponse response = request()
+                .post("/api/quizzes", quizRequest)
+                .auth(createToken(1L))
+                .build();
+
+        // when
+        ErrorResponse errorResponse = response.convertToErrorResponse();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResponse.getMessage()).isEqualTo("퀴즈의 개수는 10 ~ 30 사이의 수만 가능합니다.");
+    }
+
+    @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 시 encounterCount가 1 증가한다. - 성공")
     void checkEncounterCount() {
         // given
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
-        QuizRequest quizRequest =
-                new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when
@@ -100,15 +229,17 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 문제집 id가 비어있음")
-    void createQuizWithEmptyCategoryIdList() {
+    void createQuizWithEmptyWorkbookIdList() {
         // given
         List<Long> ids = Collections.emptyList();
-        QuizRequest quizRequest =
-                new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when, then
@@ -122,12 +253,14 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizWithNotExistId() {
         // given
         List<Long> ids = Arrays.asList(1000L, 1001L, 1002L);
-        QuizRequest quizRequest =
-                new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when, then
@@ -141,11 +274,14 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizWithEmptyCards() {
         // given
         List<Long> ids = Collections.singletonList(4L);
-        QuizRequest quizRequest = new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when, then
@@ -158,14 +294,21 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("다음에 또 보기가 포함된 카드를 퀴즈에 포함한다. - 성공")
     void createQuizIncludeNextQuizOption() {
         // given
-        다음에_또_보기(List.of(1L, 2L, 3L));
+        List<CardResponse> cards = 문제집의_카드_모아보기(1L).getCards();
+        final List<Long> cardIds = cards.stream()
+                .map(CardResponse::getId)
+                .collect(Collectors.toList());
+
+        다음에_또_보기(cardIds);
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
-        QuizRequest quizRequest =
-                new QuizRequest(ids);
+        QuizRequest quizRequest = QuizRequest.builder()
+                .workbookIds(ids)
+                .count(10)
+                .build();
 
         final HttpResponse response = request()
                 .post("/api/quizzes", quizRequest)
-                .auth()
+                .auth(createToken(1L))
                 .build();
 
         // when
@@ -175,9 +318,9 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
         assertThat(quizResponses.stream()
-                .map(QuizResponse::getQuestion)
+                .map(QuizResponse::getId)
                 .collect(Collectors.toList()))
-                .containsAll(List.of("1", "2", "3"));
+                .containsAll(cardIds);
     }
 
     public ExtractableResponse<Response> 다음에_또_보기(List<Long> cardIds) {
@@ -187,7 +330,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/api/cards/next-quiz", request)
-                .auth()
+                .auth(createToken(admin.getId()))
                 .build()
                 .extract();
     }
@@ -235,7 +378,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 1L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -243,7 +386,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         // then
         assertThat(quizResponses).isNotEmpty();
-        assertThat(quizResponses.size()).isEqualTo(5);
+        assertThat(quizResponses.size()).isEqualTo(10);
     }
 
     @Test
@@ -253,7 +396,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 100L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -271,7 +414,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 5L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when
@@ -290,7 +433,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 4번 문제집은 isPublic = true
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 4L)
-                .auth()
+                .failAuth()
                 .build();
 
         // when

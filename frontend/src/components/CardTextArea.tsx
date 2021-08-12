@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 import { CARD_TEXT_MAX_LENGTH } from '../constants';
 import { useForm } from '../hooks';
@@ -16,34 +16,49 @@ interface ContainerStyleProps {
   errorMessage: string | null;
 }
 
-const CardTextArea = ({ title, inputName, ...props }: Props) => {
-  const { values, errorMessages, onChange, onBlur } = useForm();
-  const [isFocus, setIsFocus] = useState(false);
+interface TextStyleProps {
+  textAreaHeight: number;
+}
 
-  return (
-    <Container errorMessage={errorMessages[inputName]}>
-      <Header>
-        <span>{title}</span>
-        <Limiter>
-          {values[inputName].length}/{CARD_TEXT_MAX_LENGTH}
-        </Limiter>
-      </Header>
-      <CardTemplate isChecked={isFocus}>
-        <Text
-          name={inputName}
-          value={values[inputName]}
-          onChange={onChange}
-          onFocus={() => setIsFocus(true)}
-          onBlur={(event) => {
-            onBlur(event);
-            setIsFocus(false);
-          }}
-          {...props}
-        />
-      </CardTemplate>
-    </Container>
-  );
-};
+const CardTextArea = forwardRef<HTMLTextAreaElement, Props>(
+  ({ title, inputName, ...props }: Props, ref) => {
+    const { values, errorMessages, onChange, onBlur } = useForm();
+    const [isFocus, setIsFocus] = useState(false);
+    const [textAreaHeight] = useState((window.innerHeight - 360) * 0.5);
+
+    return (
+      <Container errorMessage={errorMessages[inputName]}>
+        <Header>
+          <span>{title}</span>
+          <Limiter>
+            {values[inputName].length}/{CARD_TEXT_MAX_LENGTH}
+          </Limiter>
+        </Header>
+        <CardTemplate isChecked={isFocus}>
+          <Text
+            ref={ref}
+            name={inputName}
+            value={values[inputName]}
+            onChange={onChange}
+            onFocus={({ currentTarget }) => {
+              setIsFocus(true);
+              currentTarget.setSelectionRange(
+                currentTarget.value.length,
+                currentTarget.value.length
+              );
+            }}
+            onBlur={(event) => {
+              onBlur(event);
+              setIsFocus(false);
+            }}
+            textAreaHeight={textAreaHeight}
+            {...props}
+          />
+        </CardTemplate>
+      </Container>
+    );
+  }
+);
 
 const Container = styled.div<ContainerStyleProps>`
   position: relative;
@@ -78,17 +93,18 @@ const Limiter = styled.span`
   `}
 `;
 
-const Text = styled.textarea`
+const Text = styled.textarea<TextStyleProps>`
   width: 100%;
   border: none;
   outline: none;
   resize: none;
-  height: 12rem;
   overflow-y: auto;
 
-  ${({ theme }) => css`
+  ${({ theme, textAreaHeight }) => css`
     font-size: ${theme.fontSize.default};
+    height: ${textAreaHeight}px;
   `}
 `;
 
+CardTextArea.displayName = 'CardTextArea';
 export default CardTextArea;

@@ -1,10 +1,12 @@
 package botobo.core.infrastructure;
 
+import botobo.core.domain.user.SocialType;
+import botobo.core.domain.user.User;
 import botobo.core.dto.auth.GithubTokenRequest;
-import botobo.core.dto.auth.GithubTokenResponse;
 import botobo.core.dto.auth.GithubUserInfoResponse;
-import botobo.core.dto.auth.LoginRequest;
-import botobo.core.exception.auth.GithubApiFailedException;
+import botobo.core.dto.auth.OauthTokenResponse;
+import botobo.core.dto.auth.UserInfoResponse;
+import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.UserProfileLoadFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,7 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class GithubOauthManager {
+public class GithubOauthManager implements OauthManager {
 
     @Value("${github.client.id}")
     private String clientId;
@@ -27,27 +29,35 @@ public class GithubOauthManager {
     @Value("${github.url.profile}")
     private String profileUrl;
 
-    public GithubUserInfoResponse getUserInfoFromGithub(LoginRequest loginRequest) {
-        GithubTokenResponse githubTokenResponse = getAccessTokenFromGithub(loginRequest.getCode());
+    @Override
+    public User getUserInfo(String code) {
+        OauthTokenResponse githubTokenResponse = getAccessToken(code);
         final String accessToken = githubTokenResponse.getAccessToken();
         if (accessToken == null) {
-            throw new GithubApiFailedException();
+            throw new OauthApiFailedException();
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "token " + accessToken);
+        headers.add("Authorization", githubTokenResponse.getTokenType() + " " + accessToken);
         HttpEntity httpEntity = new HttpEntity(headers);
         RestTemplate restTemplate = new RestTemplate();
         try {
-            return restTemplate
+            UserInfoResponse githubUserInfoResponse = restTemplate
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubUserInfoResponse.class)
                     .getBody();
+            return githubUserInfoResponse.toUser();
         } catch (RestClientException e) {
             throw new UserProfileLoadFailedException();
         }
     }
 
-    private GithubTokenResponse getAccessTokenFromGithub(String code) {
+    @Override
+    public boolean isSameSocialType(SocialType socialType) {
+        return socialType == SocialType.GITHUB;
+    }
+
+    @Override
+    public OauthTokenResponse getAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
         GithubTokenRequest githubTokenRequest = GithubTokenRequest.builder()
                 .code(code)
@@ -57,6 +67,6 @@ public class GithubOauthManager {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<GithubTokenRequest> httpEntity = new HttpEntity<>(githubTokenRequest, httpHeaders);
-        return restTemplate.exchange(url, HttpMethod.POST, httpEntity, GithubTokenResponse.class).getBody();
+        return restTemplate.exchange(url, HttpMethod.POST, httpEntity, OauthTokenResponse.class).getBody();
     }
 }
