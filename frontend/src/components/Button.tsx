@@ -83,6 +83,7 @@ const StyledButton = styled.button<StyledProps>`
     ${inversion &&
     css`
       background-color: transparent;
+      -webkit-box-shadow: ${`${theme.boxShadow.inset} ${theme.color[backgroundColor]}`};
       box-shadow: ${`${theme.boxShadow.inset} ${theme.color[backgroundColor]}`};
       color: ${theme.color[backgroundColor]};
     `}

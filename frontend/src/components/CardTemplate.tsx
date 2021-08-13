@@ -44,6 +44,9 @@ const Container = styled.div<ContainerStyleProps>`
   ${({ theme, isChecked, onClick }) => css`
     background-color: ${theme.color.white};
     border-radius: ${theme.borderRadius.square};
+    -webkit-box-shadow: ${isChecked
+      ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
+      : theme.boxShadow.card};
     box-shadow: ${isChecked
       ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
       : theme.boxShadow.card};

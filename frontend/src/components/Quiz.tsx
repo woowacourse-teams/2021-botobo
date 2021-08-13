@@ -118,6 +118,7 @@ const EncounterCount = styled.span`
 `;
 
 const Question = styled.div`
+  transform: rotateX(0deg);
   overflow-y: auto;
 
   ${({ theme }) => css`

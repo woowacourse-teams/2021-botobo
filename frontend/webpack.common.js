@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main-100.js',
+    filename: 'main-103.js',
     publicPath: '/',
   },
   plugins: [

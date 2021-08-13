@@ -237,12 +237,13 @@ const SearchTabWrapper = styled.nav`
 
 const SearchInfo = styled.ul`
   ${Flex()};
-  column-gap: 2rem;
   margin-top: 0.5rem;
   height: 2rem;
 `;
 
 const SearchTabItem = styled.li<Pick<SearchBarStyleProps, 'isFocus'>>`
+  margin-right: 2rem;
+
   ${({ theme, isFocus }) => css`
     ${isFocus
       ? css`
