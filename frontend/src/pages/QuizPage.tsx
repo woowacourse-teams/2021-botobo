@@ -251,7 +251,6 @@ const Tooltip = styled.div`
 const QuizList = styled.ul<QuizListProps>`
   ${Flex()};
   transition: transform 0.1s ease-out;
-  column-gap: 1.25rem;
   white-space: pre-wrap;
   word-break: break-all;
 `;
@@ -259,6 +258,7 @@ const QuizList = styled.ul<QuizListProps>`
 const QuizItem = styled.li<QuizItemProps>`
   width: 100%;
   flex-shrink: 0;
+  margin-right: 1.25rem;
 `;
 
 const DesktopPageNation = styled.div`

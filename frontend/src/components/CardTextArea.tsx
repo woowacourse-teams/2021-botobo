@@ -99,6 +99,7 @@ const Text = styled.textarea<TextStyleProps>`
   outline: none;
   resize: none;
   overflow-y: auto;
+  min-height: 8rem;
 
   ${({ theme, textAreaHeight }) => css`
     font-size: ${theme.fontSize.default};
