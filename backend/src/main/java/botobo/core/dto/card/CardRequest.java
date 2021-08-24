@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -23,7 +24,7 @@ public class CardRequest {
     @Length(max = 2000, message = "C003")
     private String question;
 
-    @NotBlank(message = "C004")
+    @NotEmpty(message = "C004")
     @Length(max = 2000, message = "C005")
     private String answer;
 

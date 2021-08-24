@@ -26,7 +26,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("카드 인수 테스트")
-public class CardAcceptanceTest extends DomainAcceptanceTest {
+class CardAcceptanceTest extends DomainAcceptanceTest {
 
     private String joanneToken;
 
@@ -38,13 +38,14 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         workbookId = 유저_태그_포함_문제집_등록되어_있음("문제집", true, joanneToken).getId();
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"answer", "  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 생성 - 성공")
-    void createCard() {
+    void createCard(String answer) {
         // given
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
-                .answer("answer")
+                .answer(answer)
                 .workbookId(workbookId)
                 .build();
 
@@ -101,8 +102,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
-    @DisplayName("카드 생성 - 실패, 유효하지 않은 answer")
+    @DisplayName("카드 생성 - 실패, answer는 null 또는 \"\"이 될 수 없다.")
     void createCardWithInvalidAnswer(String answer) {
         // given
         CardRequest cardRequest = CardRequest.builder()
@@ -221,15 +221,16 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"answer", "  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 수정 - 성공")
-    void updateCard() {
+    void updateCard(String answer) {
         // given
         final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
-                .answer("answer")
+                .answer(answer)
                 .workbookId(workbookId)
                 .encounterCount(0)
                 .bookmark(true)
@@ -302,9 +303,8 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n", "\r\n", "\r"})
-    @DisplayName("카드 수정 - 실패, 유효하지 않은 answer")
-    void updateCardWithInvalidAnswer(String answer) {
+    @DisplayName("카드 수정 - 실패, null, \"\"")
+    void updateCardWithNullAndEmptyAnswer(String answer) {
         // given
         final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
 
@@ -319,6 +319,7 @@ public class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, joanneToken);
+
 
         // then
         ErrorResponse errorResponse = response.convertToErrorResponse();
