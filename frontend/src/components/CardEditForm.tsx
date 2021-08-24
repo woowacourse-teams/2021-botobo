@@ -27,6 +27,7 @@ const CardEditForm = ({ cardInfo, onSubmit }: Props) => {
   return (
     <FormProvider
       initialValues={{ question: cardInfo.question, answer: cardInfo.answer }}
+      keysWithNoValueAllowed={['answer']}
       validators={{ question: validateCardText, answer: validateCardText }}
       onSubmit={({ question, answer }) => {
         onSubmit({ ...cardInfo, question, answer });
