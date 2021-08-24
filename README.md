@@ -16,7 +16,7 @@
 <br>
 
 ## 🐸 보고 또 보고
-* [보고 또 보고 바로가기](https://botobo.kro.kr)
+* [보고 또 보고 바로가기](https://botobo.kr)
 * [보고 또 보고 이야기](https://github.com/woowacourse-teams/2021-botobo/wiki)
   <br>
 

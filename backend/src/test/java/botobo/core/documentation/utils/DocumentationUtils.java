@@ -13,7 +13,7 @@ public class DocumentationUtils {
     public static OperationRequestPreprocessor getDocumentRequest() {
         return preprocessRequest(
                 prettyPrint(),
-                modifyUris().host("botobo.kro.kr").removePort()
+                modifyUris().host("botobo.kr").removePort()
         );
     }
 
