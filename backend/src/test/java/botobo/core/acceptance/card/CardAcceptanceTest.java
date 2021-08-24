@@ -13,7 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
@@ -39,6 +41,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @ParameterizedTest
+    @EmptySource
     @ValueSource(strings = {"answer", "  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 생성 - 성공")
     void createCard(String answer) {
@@ -101,8 +104,8 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("카드 생성 - 실패, answer는 null 또는 \"\"이 될 수 없다.")
+    @NullSource
+    @DisplayName("카드 생성 - 실패, answer는 null이 될 수 없다.")
     void createCardWithInvalidAnswer(String answer) {
         // given
         CardRequest cardRequest = CardRequest.builder()
@@ -222,6 +225,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @ParameterizedTest
+    @EmptySource
     @ValueSource(strings = {"answer", "  ", "\t", "\n", "\r\n", "\r"})
     @DisplayName("카드 수정 - 성공")
     void updateCard(String answer) {
@@ -302,8 +306,8 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("카드 수정 - 실패, null, \"\"")
+    @NullSource
+    @DisplayName("카드 수정 - 실패, null")
     void updateCardWithNullAndEmptyAnswer(String answer) {
         // given
         final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
