@@ -11,6 +11,7 @@ interface ErrorMessages {
 
 interface Props {
   initialValues: Values;
+  keysWithNoValueAllowed?: string[];
   validators?: {
     [key: string]: (value: string) => never | void | Promise<never | void>;
   };
@@ -29,6 +30,7 @@ export const FormContext = createContext<null | FormContextType>(null);
 
 const FormProvider = ({
   initialValues,
+  keysWithNoValueAllowed = [],
   validators,
   onSubmit,
   children,
@@ -51,7 +53,7 @@ const FormProvider = ({
     const value = target.value;
     const validator = validators?.[key];
 
-    if (value.length === 0) {
+    if (!keysWithNoValueAllowed.includes(key) && value.trim().length === 0) {
       setErrorMessages({ ...errorMessages, [key]: '내용을 입력해 주세요.' });
 
       return;
@@ -71,7 +73,10 @@ const FormProvider = ({
   ) => {
     event.preventDefault();
 
-    const emptyInput = Object.keys(values).find((key) => values[key] === '');
+    const emptyInput = Object.keys(values).find(
+      (key) =>
+        !keysWithNoValueAllowed.includes(key) && values[key].trim().length === 0
+    );
 
     if (emptyInput) {
       event.currentTarget[emptyInput].focus();
