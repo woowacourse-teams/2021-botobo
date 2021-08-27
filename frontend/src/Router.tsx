@@ -12,6 +12,7 @@ import { useRecoilValue } from 'recoil';
 import { ROUTE } from './constants';
 import {
   CardsPage,
+  Guide,
   LoginPage,
   LogoutPage,
   MainLoadable,
@@ -107,6 +108,11 @@ const routes = [
   {
     path: `(${ROUTE.GITHUB_CALLBACK.PATH}|${ROUTE.GOOGLE_CALLBACK.PATH})`,
     component: <OAuthCallbackPage />,
+    isPublic: true,
+  },
+  {
+    path: ROUTE.GUIDE.PATH,
+    component: <Guide />,
     isPublic: true,
   },
 ];

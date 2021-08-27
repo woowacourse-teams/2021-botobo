@@ -58,6 +58,9 @@ const ROUTE = {
   GOOGLE_CALLBACK: {
     PATH: '/google/callback',
   },
+  GUIDE: {
+    PATH: '/guide',
+  },
 } as const;
 
 export default ROUTE;

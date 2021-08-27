@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
-import { STORAGE_KEY } from '../constants';
+import { DEVICE, STORAGE_KEY } from '../constants';
 import { useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
@@ -16,7 +16,8 @@ const MainPage = () => {
   const userInfo = useRecoilValue(userState);
   const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
     useWorkbook();
-  const { routeWorkbookAdd, routeCards, routePublicSearch } = useRouter();
+  const { routeWorkbookAdd, routeCards, routePublicSearch, routeGuide } =
+    useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
 
   useEffect(() => {
@@ -29,7 +30,10 @@ const MainPage = () => {
     <>
       <MainHeader />
       <PageTemplate isScroll={true}>
-        {userInfo && <Greeting>안녕하세요, {userInfo.userName} 님!</Greeting>}
+        <GreetingWrapper>
+          {userInfo && <span>안녕하세요, {userInfo.userName} 님!</span>}
+          <Guide onClick={routeGuide}>보고 또 보고 이용 방법</Guide>
+        </GreetingWrapper>
         <Banner onClick={routePublicSearch}>
           <BannerText>다양한 문제집 보러 가기</BannerText>
           <StyledButton backgroundColor="white" color="gray_8" shape="circle">
@@ -64,8 +68,40 @@ const MainPage = () => {
   );
 };
 
-const Greeting = styled.div`
+const GreetingWrapper = styled.div`
+  ${Flex({ direction: 'column', justify: 'space-between' })};
   margin-bottom: 1rem;
+
+  & > span {
+    margin-bottom: 0.5rem;
+  }
+
+  @media ${DEVICE.TABLET} {
+    ${Flex({ justify: 'space-between', items: 'center' })};
+
+    & > span {
+      margin-bottom: 0;
+    }
+  }
+`;
+
+const Guide = styled.button`
+  padding: 0.7rem 1.3rem;
+  width: 100%;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.green}20;
+    border-radius: ${theme.borderRadius.square};
+    color: ${theme.color.green};
+
+    &:hover {
+      background-color: ${theme.color.green}30;
+    }
+  `};
+
+  @media ${DEVICE.TABLET} {
+    width: max-content;
+  }
 `;
 
 const Banner = styled.div`
@@ -88,7 +124,7 @@ const BannerText = styled.span`
 `;
 
 const StyledButton = styled(Button)`
-  ${Flex({ justify: 'center', items: 'center' })}
+  ${Flex({ justify: 'center', items: 'center' })};
   width: 1.5rem;
   height: 1.5rem;
   padding: 0;
