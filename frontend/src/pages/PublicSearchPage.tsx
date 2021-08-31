@@ -66,19 +66,20 @@ const PublicSearchPage = () => {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         >
-          <SearchInputWrapper>
-            <SearchInput
-              value={searchKeyword}
-              onChange={({ target }) => setSearchKeyword(target.value)}
-              placeholder={'문제집을 검색해보세요.'}
-              ref={searchInputRef}
-            />
-            {searchKeyword && (
-              <button type="button" onClick={() => setSearchKeyword('')}>
-                <SearchCloseIcon width="0.5rem" height="0.5rem" />
-              </button>
-            )}
-          </SearchInputWrapper>
+          <SearchInput
+            value={searchKeyword}
+            onChange={({ target }) => setSearchKeyword(target.value)}
+            placeholder={'문제집을 검색해보세요.'}
+            ref={searchInputRef}
+          />
+          {searchKeyword && (
+            <KeywordResetButton
+              type="button"
+              onClick={() => setSearchKeyword('')}
+            >
+              <SearchCloseIcon width="0.5rem" height="0.5rem" />
+            </KeywordResetButton>
+          )}
           <SearchButton isFocus={isFocus}>
             <SearchIcon width="1.3rem" height="1.3rem" />
           </SearchButton>
@@ -93,7 +94,8 @@ const StyledPageTemplate = styled(PageTemplate)`
 `;
 
 const SearchBar = styled.form<SearchBarStyleProps>`
-  ${Flex({ items: 'center' })};
+  ${Flex({ justify: 'space-between', items: 'center' })};
+  position: relative;
   width: 100%;
   height: 3rem;
   margin-bottom: 1.5rem;
@@ -123,14 +125,8 @@ const SearchBar = styled.form<SearchBarStyleProps>`
   `};
 `;
 
-const SearchInputWrapper = styled.div`
-  width: 90%;
-  height: 100%;
-  margin: 0 0.3rem;
-`;
-
 const SearchInput = styled.input`
-  width: 90%;
+  width: 80%;
   height: 100%;
   outline: none;
   border: none;
@@ -138,6 +134,11 @@ const SearchInput = styled.input`
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
   `}
+`;
+
+const KeywordResetButton = styled.button`
+  position: absolute;
+  right: 3rem;
 `;
 
 const SearchButton = styled.button<SearchButtonStyleProps>`
