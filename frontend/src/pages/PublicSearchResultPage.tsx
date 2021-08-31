@@ -4,12 +4,28 @@ import React, { useEffect, useState } from 'react';
 
 import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
-import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
+import {
+  useModal,
+  usePublicSearch,
+  usePublicSearchQuery,
+  useRouter,
+} from '../hooks';
 import { Flex } from '../styles';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
-const filters = [
+interface MultiFilters {
+  id: number;
+  name: string;
+  data: string[];
+}
+
+const multiFilters: MultiFilters[] = [
+  { id: 1, name: '태그', data: [] },
+  { id: 2, name: '작성자', data: [] },
+];
+
+const singleFilters = [
   { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
   { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
   { id: 3, name: '이름 순', criteria: SEARCH_CRITERIA.NAME },
@@ -27,11 +43,29 @@ const PublicSearchResultPage = () => {
   } = usePublicSearch();
   const { keyword, type, criteria } = usePublicSearchQuery();
 
+  const { openModal } = useModal();
+
   const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
+  const [selectedMultiFilters, setSelectedMultiFilters] =
+    useState(multiFilters);
   const [currentFilterId, setCurrentFilterId] = useState(
-    filters.find((filter) => filter.criteria === criteria)?.id ?? filters[0].id
+    singleFilters.find((filter) => filter.criteria === criteria)?.id ??
+      singleFilters[0].id
   );
+
+  const setMultiFilterData = (filterName: string, data: string) => {
+    setSelectedMultiFilters((prevValue) =>
+      prevValue.map((value) => {
+        if (value.name !== filterName) return value;
+
+        return {
+          ...value,
+          data: [...value.data, data],
+        };
+      })
+    );
+  };
 
   useEffect(() => {
     setIsSearching(true);
@@ -61,7 +95,32 @@ const PublicSearchResultPage = () => {
           <>
             <Title>{keyword} 검색 결과</Title>
             <Filter>
-              {filters.map(({ id, name, criteria }) => (
+              {multiFilters.map(({ id, name }, index) => (
+                <Button
+                  key={id}
+                  shape="round"
+                  backgroundColor={
+                    selectedMultiFilters[index].data.length > 0
+                      ? 'green'
+                      : 'gray_5'
+                  }
+                  inversion={true}
+                  onClick={() => {
+                    openModal({
+                      title: name,
+                      content: (
+                        <div onClick={() => setMultiFilterData(name, 'hello')}>
+                          hello
+                        </div>
+                      ),
+                      closeIcon: 'back',
+                    });
+                  }}
+                >
+                  {name}
+                </Button>
+              ))}
+              {singleFilters.map(({ id, name, criteria }) => (
                 <Button
                   key={id}
                   shape="round"
@@ -88,6 +147,16 @@ const PublicSearchResultPage = () => {
                 </Button>
               ))}
             </Filter>
+            <SelectedMultiFilterWrapper>
+              {selectedMultiFilters.map(
+                ({ id, name, data }) =>
+                  data.length > 0 && (
+                    <SelectedMultiFilter key={id}>
+                      선택된 {name}: {data.join(', ')}
+                    </SelectedMultiFilter>
+                  )
+              )}
+            </SelectedMultiFilterWrapper>
             <PublicWorkbookList
               isLoading={isLoading}
               publicWorkbooks={workbookSearchResult}
@@ -134,7 +203,24 @@ const Filter = styled.div`
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+`;
+
+const SelectedMultiFilterWrapper = styled.div`
+  margin-bottom: 1rem;
+
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.small};
+    `}
+`;
+
+const SelectedMultiFilter = styled.div`
+  margin-bottom: 0.5rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `;
 
 export default PublicSearchResultPage;
