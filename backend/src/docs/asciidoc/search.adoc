@@ -76,7 +76,7 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |내림차순
 |===
 
-=== 태그 자동완성
+=== 추천 태그 조회
 ==== 요청
 include::{snippets}/search-tags-get-success/http-request.adoc[]
 ==== 응답
@@ -85,15 +85,4 @@ include::{snippets}/search-tags-get-success/http-response.adoc[]
 .URI 파라미터
 |===
 |keyword |태그에 포함될 키워드 (대소문자 구별하지 않음)
-|===
-
-=== 유저 자동완성
-==== 요청
-include::{snippets}/search-users-get-success/http-request.adoc[]
-==== 응답
-include::{snippets}/search-users-get-success/http-response.adoc[]
-
-.URI 파라미터
-|===
-|keyword |유저 이름에 포함될 키워드 (대소문자 구별함)
 |===

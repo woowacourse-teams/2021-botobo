@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +67,23 @@ class TagRepositoryTest {
         // then
         assertThat(tag).isNotEmpty();
         assertThat(tag).get().isEqualTo(savedTag);
+    }
+
+    @Test
+    @DisplayName("keyword에 포함된 태그 조회 - 성공")
+    void findAllTagsIn() {
+        // given
+        save30Tags();
+
+        // when
+        List<Tag> tags = tagRepository.findAllTagContaining("자바");
+        assertThat(tags).hasSize(30);
+    }
+
+    private void save30Tags() {
+        for (int i = 0; i < 30; i++) {
+            tagRepository.save(Tag.of("자바스크립트" + i));
+        }
     }
 
     public void flushAndClear() {
