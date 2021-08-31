@@ -32,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -75,11 +76,14 @@ class WorkbookServiceTest {
         adminUser = User.builder().id(1L).userName("botobo").role(Role.ADMIN).build();
         normalUser = User.builder().id(2L).userName("ggyool").role(Role.USER).build();
 
-        workbooks = Arrays.asList(
-                Workbook.builder().id(1L).name("데이터베이스").opened(true).user(adminUser).build(),
-                Workbook.builder().id(2L).name("자바").opened(true).user(normalUser).build(),
-                Workbook.builder().id(3L).name("자바스크립트").opened(true).user(normalUser).build(),
-                Workbook.builder().id(4L).name("네트워크").opened(true).user(normalUser).build()
+        workbooks = new ArrayList<>();
+        workbooks.addAll(
+                Arrays.asList(
+                        Workbook.builder().id(1L).name("데이터베이스").opened(true).user(adminUser).build(),
+                        Workbook.builder().id(2L).name("자바").opened(true).user(normalUser).build(),
+                        Workbook.builder().id(3L).name("자바스크립트").opened(true).user(normalUser).build(),
+                        Workbook.builder().id(4L).name("네트워크").opened(true).user(normalUser).build()
+                )
         );
     }
 
@@ -817,5 +821,41 @@ class WorkbookServiceTest {
         assertThat(heartResponse.isHeart()).isFalse();
         then(workbookRepository).should(times(1))
                 .findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 조회한다. - 성공")
+    void findPublicWorkbooks() {
+        // given
+        given(workbookRepository.findRandomPublicWorkbooks())
+                .willReturn(workbooks);
+
+        // when
+        List<WorkbookResponse> findWorkbooks = workbookService.findPublicWorkbooks();
+
+        // then
+        assertThat(findWorkbooks).hasSize(4);
+        then(workbookRepository).should(times(1))
+                .findRandomPublicWorkbooks();
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 조회한다. - 성공, 비공개가 있을 경우 공개만 조회한다.")
+    void findPublicWorkbooksWhenHasPrivate() {
+        // given
+        given(workbookRepository.findRandomPublicWorkbooks())
+                .willReturn(new ArrayList<>(workbooks));
+        workbooks.add(Workbook.builder()
+                .name("비공개지롱")
+                .opened(false)
+                .build());
+
+        // when
+        List<WorkbookResponse> findWorkbooks = workbookService.findPublicWorkbooks();
+
+        // then
+        assertThat(findWorkbooks).hasSize(4);
+        then(workbookRepository).should(times(1))
+                .findRandomPublicWorkbooks();
     }
 }
