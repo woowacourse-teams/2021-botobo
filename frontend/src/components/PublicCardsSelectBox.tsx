@@ -56,7 +56,7 @@ const PublicCardsSelectBox = ({
         onClick={async () => {
           if (isDefaultSelected) {
             const { id } = await postWorkbookAsync({
-              name: publicWorkbookName,
+              name: `[공유] ${publicWorkbookName}`,
               opened: true,
               tags: [],
             });

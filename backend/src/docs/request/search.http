@@ -6,4 +6,4 @@
 ### 시작 인덱스 : 0
 ### 결과 가져올 수 : 10
 GET /api/search/workbooks?type=name&criteria=date&order=desc&keyword=java&start=0&size=10 HTTP/1.1
-Host: botobo.kro.kr
+Host: botobo.kr

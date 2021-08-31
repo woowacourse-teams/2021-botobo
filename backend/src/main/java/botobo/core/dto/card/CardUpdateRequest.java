@@ -23,7 +23,7 @@ public class CardUpdateRequest {
     @Length(max = 2000, message = "C003")
     private String question;
 
-    @NotBlank(message = "C004")
+    @NotNull(message = "C004")
     @Length(max = 2000, message = "C005")
     private String answer;
 

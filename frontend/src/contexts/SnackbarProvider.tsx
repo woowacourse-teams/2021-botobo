@@ -76,6 +76,7 @@ const Container = styled.div<ContainerStyleProps>`
   padding: 1.5rem;
   transition: transform 300ms linear;
   max-width: 30rem;
+  z-index: 100;
 
   ${({ theme, isVisible, type }) => css`
     color: ${theme.color.white};

@@ -26,6 +26,7 @@ const CardAddForm = ({ onSubmit }: Props) => {
   return (
     <FormProvider
       initialValues={{ question: '', answer: '' }}
+      keysWithNoValueAllowed={['answer']}
       validators={{ question: validateCardText, answer: validateCardText }}
       onSubmit={({ question, answer }) => onSubmit(question, answer)}
     >
