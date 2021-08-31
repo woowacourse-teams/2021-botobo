@@ -1,125 +1,30 @@
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { getTagKeywordAsync, getUserKeywordAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import {
-  MainHeader,
-  PublicSearchList,
-  PublicWorkbookList,
-} from '../components';
-import { CLOUD_FRONT_DOMAIN, DEVICE, SEARCH_TYPE } from '../constants';
-import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
+import { MainHeader } from '../components';
+import { DEVICE } from '../constants';
 import { Flex } from '../styles';
-import { SearchKeywordResponse } from '../types';
-import { debounce } from '../utils';
 import PageTemplate from './PageTemplate';
-
-const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
 
 interface SearchBarStyleProps {
   isFocus: boolean;
   isSticky: boolean;
 }
 
-interface LoadImageStyleProps {
-  isSearching: boolean;
-  isFrogJumping: boolean;
+interface SearchButtonStyleProps {
+  isFocus: boolean;
 }
 
-const searchInfos = [
-  {
-    id: 1,
-    name: '문제집',
-    placeholder: '문제집을 검색해보세요',
-    type: SEARCH_TYPE.NAME,
-    searchForKeyword: null,
-  },
-  {
-    id: 2,
-    name: '태그',
-    placeholder: '태그를 검색해보세요',
-    type: SEARCH_TYPE.TAG,
-    searchForKeyword: getTagKeywordAsync,
-  },
-  {
-    id: 3,
-    name: '작성자',
-    placeholder: '작성자를 검색해보세요',
-    type: SEARCH_TYPE.USER,
-    searchForKeyword: getUserKeywordAsync,
-  },
-];
-
 const PublicSearchPage = () => {
-  const {
-    workbookSearchResult,
-    resetSearchResult,
-    isSearching,
-    isLoading,
-    setIsSearching,
-    searchForPublicWorkbook,
-  } = usePublicSearch();
-  const { keyword, type } = usePublicSearchQuery();
-
-  const { routePublicSearchQuery } = useRouter();
-
-  const stickyTriggerRef = useRef<HTMLDivElement>(null);
-
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  const [inputValue, setInputValue] = useState(keyword);
-  const [currentFocusTab, setCurrentFocusTab] = useState(
-    searchInfos.find((item) => item.type === type) ?? searchInfos[0]
-  );
-  const [keywordSearchResult, setKeywordSearchResult] = useState<
-    SearchKeywordResponse[]
-  >([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
-  const [isFrogJumping, setIsFrogJumping] = useState(false);
-
-  const hasNoSearchResult =
-    inputValue &&
-    !isSearching &&
-    workbookSearchResult.length === 0 &&
-    keywordSearchResult.length === 0;
-
-  const searchForKeyword = async (keyword: string) => {
-    if (keyword === '') {
-      setIsSearching(false);
-
-      return;
-    }
-
-    if (!currentFocusTab.searchForKeyword)
-      return searchForPublicWorkbook({ keyword, start: 0 });
-
-    try {
-      const data = await currentFocusTab.searchForKeyword(keyword);
-
-      setKeywordSearchResult(data);
-      setIsSearching(false);
-    } catch (error) {
-      console.error(error);
-      setIsSearching(false);
-    }
-  };
-
-  const resetSearch = () => {
-    resetSearchResult();
-    setKeywordSearchResult([]);
-  };
-
-  useEffect(() => {
-    if (!keyword) return;
-
-    routePublicSearchQuery({ keyword, type });
-    searchForKeyword(keyword);
-    setIsSearching(true);
-    setIsFrogJumping(true);
-  }, []);
+  const stickyTriggerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!stickyTriggerRef.current) return;
@@ -142,86 +47,42 @@ const PublicSearchPage = () => {
     return () => searchTabObserver.disconnect();
   }, [stickyTriggerRef.current]);
 
+  useEffect(() => {
+    if (!searchInputRef.current || !isFocus) return;
+
+    searchInputRef.current.focus();
+  }, [searchKeyword]);
+
   return (
     <>
       <MainHeader sticky={false} />
       <StyledPageTemplate isScroll={true}>
-        <SearchTabWrapper>
-          <SearchInfo>
-            {searchInfos.map(({ id, name, type }) => (
-              <SearchTabItem key={id} isFocus={currentFocusTab.id === id}>
-                <button
-                  onClick={() => {
-                    const currentTab =
-                      searchInfos.find((searchInfo) => searchInfo.id === id) ??
-                      searchInfos[0];
-
-                    setCurrentFocusTab(currentTab);
-                    setInputValue('');
-                    resetSearch();
-                    routePublicSearchQuery({ type });
-                  }}
-                >
-                  {name}
-                </button>
-              </SearchTabItem>
-            ))}
-          </SearchInfo>
-          <SearchHr />
-        </SearchTabWrapper>
-        <SearchBarStickyTrigger ref={stickyTriggerRef} />
-        <SearchBar isSticky={isSticky} isFocus={isFocus}>
-          <SearchIcon width="1.3rem" height="1.3rem" />
-          <SearchInput
-            autoFocus={true}
-            value={inputValue}
-            onKeyDown={() => setIsFrogJumping(false)}
-            onKeyUp={() => setIsFrogJumping(true)}
-            onChange={({ target }) => {
-              setIsSearching(true);
-              setInputValue(target.value);
-              resetSearch();
-              debounce(() => {
-                routePublicSearchQuery({
-                  keyword: target.value,
-                  type: currentFocusTab.type,
-                });
-                searchForKeyword(target.value);
-              }, 400);
-            }}
-            placeholder={currentFocusTab.placeholder}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
-          />
-          {inputValue && (
-            <button
-              onClick={() => {
-                setInputValue('');
-                resetSearch();
-              }}
-            >
-              <SearchCloseIcon width="0.5rem" height="0.5rem" />
-            </button>
-          )}
-        </SearchBar>
-        {currentFocusTab.type === 'name'
-          ? workbookSearchResult.length > 0 && (
-              <PublicWorkbookList
-                isLoading={isLoading}
-                publicWorkbooks={workbookSearchResult}
-                searchForPublicWorkbook={searchForPublicWorkbook}
-              />
-            )
-          : keywordSearchResult.length > 0 && (
-              <PublicSearchList
-                searchItems={keywordSearchResult}
-                type={currentFocusTab.type}
-              />
+        <div ref={stickyTriggerRef} />
+        <SearchBar
+          name="search"
+          role="search"
+          isSticky={isSticky}
+          isFocus={isFocus}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+        >
+          <SearchInputWrapper>
+            <SearchInput
+              value={searchKeyword}
+              onChange={({ target }) => setSearchKeyword(target.value)}
+              placeholder={'문제집을 검색해보세요.'}
+              ref={searchInputRef}
+            />
+            {searchKeyword && (
+              <button type="button" onClick={() => setSearchKeyword('')}>
+                <SearchCloseIcon width="0.5rem" height="0.5rem" />
+              </button>
             )}
-        {hasNoSearchResult && (
-          <NoSearchResult>검색 결과가 없어요.</NoSearchResult>
-        )}
-        <LoadImage isSearching={isSearching} isFrogJumping={isFrogJumping} />
+          </SearchInputWrapper>
+          <SearchButton isFocus={isFocus}>
+            <SearchIcon width="1.3rem" height="1.3rem" />
+          </SearchButton>
+        </SearchBar>
       </StyledPageTemplate>
     </>
   );
@@ -231,55 +92,8 @@ const StyledPageTemplate = styled(PageTemplate)`
   padding-top: 1rem;
 `;
 
-const SearchTabWrapper = styled.nav`
-  margin-bottom: 1rem;
-`;
-
-const SearchInfo = styled.ul`
-  ${Flex()};
-  margin-top: 0.5rem;
-  height: 2rem;
-`;
-
-const SearchTabItem = styled.li<Pick<SearchBarStyleProps, 'isFocus'>>`
-  margin-right: 2rem;
-
-  ${({ theme, isFocus }) => css`
-    ${isFocus
-      ? css`
-          color: ${theme.color.gray_9};
-          border-bottom: 2px solid ${theme.color.gray_9};
-          font-weight: ${theme.fontWeight.bold};
-        `
-      : css`
-          color: ${theme.color.gray_5};
-        `}
-  `}
-
-  & > button {
-    color: inherit;
-    font-weight: inherit;
-  }
-`;
-
-const SearchHr = styled.hr`
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  left: 50%;
-  border: none;
-  transform: translateX(-50%);
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.gray_4};
-    max-width: calc(${theme.responsive.maxWidth} - 2.5rem);
-  `}
-`;
-
-const SearchBarStickyTrigger = styled.div``;
-
-const SearchBar = styled.div<SearchBarStyleProps>`
-  ${Flex({ justify: 'space-between', items: 'center' })};
+const SearchBar = styled.form<SearchBarStyleProps>`
+  ${Flex({ items: 'center' })};
   width: 100%;
   height: 3rem;
   margin-bottom: 1.5rem;
@@ -306,62 +120,35 @@ const SearchBar = styled.div<SearchBarStyleProps>`
         border-right: 1px solid ${theme.color.gray_3};
       }
     `}
-
-    & > svg {
-      transition: all 0.3s ease;
-      fill: ${isFocus ? theme.color.green : theme.color.gray_3};
-    }
   `};
+`;
 
-  & > img {
-    cursor: text;
-  }
+const SearchInputWrapper = styled.div`
+  width: 90%;
+  height: 100%;
+  margin: 0 0.3rem;
 `;
 
 const SearchInput = styled.input`
-  width: 100%;
+  width: 90%;
   height: 100%;
   outline: none;
   border: none;
-  margin: 0 0.5rem;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
   `}
 `;
 
-const jumpAnimation = keyframes`
-  0%{
-    transform: translateY(0);
-  }
-  50%{
-    transform:translateY(-100%);
-  }
-  100%{
-    transform:translateY(0);
-  }
-`;
+const SearchButton = styled.button<SearchButtonStyleProps>`
+  ${Flex({ items: 'center' })};
 
-const LoadImage = styled.div<LoadImageStyleProps>`
-  width: 3.75rem;
-  height: 3.25rem;
-  background-image: url(${loadSrc});
-  background-repeat: no-repeat;
-  background-size: contain;
-  margin: 0 auto;
-  margin-top: 6rem;
-
-  ${({ isSearching, isFrogJumping }) => css`
-    display: ${isSearching ? 'block' : 'none'};
-    ${isFrogJumping &&
-    css`
-      animation: ${jumpAnimation} 1s infinite ease-in-out;
-    `}
-  `}
-`;
-
-const NoSearchResult = styled.div`
-  text-align: center;
+  ${({ theme, isFocus }) => css`
+    & > svg {
+      transition: all 0.3s ease;
+      fill: ${isFocus ? theme.color.green : theme.color.gray_3};
+    }
+  `};
 `;
 
 export default PublicSearchPage;
