@@ -2,6 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
+import DownIcon from '../assets/chevron-down-solid.svg';
+import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
 import { Button, MainHeader, PublicWorkbookList } from '../components';
 import { SEARCH_CRITERIA } from '../constants';
 import {
@@ -11,6 +13,7 @@ import {
   useRouter,
 } from '../hooks';
 import { Flex } from '../styles';
+import { ValueOf } from '../types/utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
@@ -54,6 +57,28 @@ const PublicSearchResultPage = () => {
       singleFilters[0].id
   );
 
+  const isFiltered =
+    currentFilterId !== singleFilters[0].id ||
+    selectedMultiFilters.some(({ data }) => data.length > 0);
+
+  const setSingleFilterData = (
+    id: number,
+    criteria: ValueOf<typeof SEARCH_CRITERIA>
+  ) => {
+    const initialValue = {
+      keyword,
+      type,
+      start: 0,
+      criteria,
+    };
+
+    setCurrentFilterId(id);
+    resetSearchResult();
+    setIsSearching(true);
+    routePublicSearchResultQuery(initialValue);
+    searchForPublicWorkbook(initialValue);
+  };
+
   const setMultiFilterData = (filterName: string, data: string) => {
     setSelectedMultiFilters((prevValue) =>
       prevValue.map((value) => {
@@ -64,6 +89,13 @@ const PublicSearchResultPage = () => {
           data: [...value.data, data],
         };
       })
+    );
+  };
+
+  const resetFilterData = () => {
+    setSingleFilterData(singleFilters[0].id, singleFilters[0].criteria);
+    setSelectedMultiFilters((prevValue) =>
+      prevValue.map((value) => ({ ...value, data: [] }))
     );
   };
 
@@ -95,8 +127,23 @@ const PublicSearchResultPage = () => {
           <>
             <Title>{keyword} 검색 결과</Title>
             <Filter>
-              {multiFilters.map(({ id, name }, index) => (
+              {singleFilters.map(({ id, name, criteria }) => (
                 <Button
+                  key={id}
+                  shape="round"
+                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+                  inversion={true}
+                  onClick={() => {
+                    if (id === currentFilterId) return;
+
+                    setSingleFilterData(id, criteria);
+                  }}
+                >
+                  {name}
+                </Button>
+              ))}
+              {multiFilters.map(({ id, name }, index) => (
+                <MultiFilterButton
                   key={id}
                   shape="round"
                   backgroundColor={
@@ -118,34 +165,15 @@ const PublicSearchResultPage = () => {
                   }}
                 >
                   {name}
-                </Button>
+                  <DownIcon width="1rem" height="1rem" />
+                </MultiFilterButton>
               ))}
-              {singleFilters.map(({ id, name, criteria }) => (
-                <Button
-                  key={id}
-                  shape="round"
-                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
-                  inversion={true}
-                  onClick={() => {
-                    if (id === currentFilterId) return;
-
-                    const resetValue = {
-                      keyword,
-                      type,
-                      start: 0,
-                      criteria,
-                    };
-
-                    setCurrentFilterId(id);
-                    resetSearchResult();
-                    setIsSearching(true);
-                    routePublicSearchResultQuery(resetValue);
-                    searchForPublicWorkbook(resetValue);
-                  }}
-                >
-                  {name}
-                </Button>
-              ))}
+              {isFiltered && (
+                <FilterResetButton onClick={resetFilterData}>
+                  <span>초기화</span>
+                  <ResetIcon width="1rem" height="1rem" />
+                </FilterResetButton>
+              )}
             </Filter>
             <SelectedMultiFilterWrapper>
               {selectedMultiFilters.map(
@@ -198,6 +226,15 @@ const Title = styled.h2`
   `}
 `;
 
+const MultiFilterButton = styled(Button)`
+  ${Flex({ items: 'center' })};
+  padding: 0.5rem 0.8rem;
+
+  & > svg {
+    margin-left: 0.3rem;
+  }
+`;
+
 const Filter = styled.div`
   ${Flex()};
   flex-wrap: wrap;
@@ -208,18 +245,18 @@ const Filter = styled.div`
 
 const SelectedMultiFilterWrapper = styled.div`
   margin-bottom: 1rem;
-
-  ${({ theme }) =>
-    css`
-      font-size: ${theme.fontSize.small};
-    `}
+  word-break: break-all;
 `;
 
 const SelectedMultiFilter = styled.div`
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
+`;
 
-  &:last-of-type {
-    margin-bottom: 0;
+const FilterResetButton = styled.button`
+  ${Flex({ items: 'center' })};
+
+  & > svg {
+    margin-left: 0.3rem;
   }
 `;
 
