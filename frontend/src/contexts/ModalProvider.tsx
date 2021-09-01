@@ -75,10 +75,14 @@ const ModalProvider = ({ children }: Props) => {
     setCloseIcon(closeIcon ?? '');
     setType(type ?? 'bottom');
     setIsOpened(true);
+
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsOpened(false);
+
+    document.body.style.overflow = '';
   };
 
   const deleteContent = () => {
