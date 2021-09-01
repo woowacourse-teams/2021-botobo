@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { PublicWorkbookAsync, getPublicWorkbookAsync } from '../api';
+import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
 import { PublicWorkbookResponse } from '../types';
 
 const usePublicSearch = () => {
@@ -25,7 +25,7 @@ const usePublicSearch = () => {
     }
 
     try {
-      const data = await getPublicWorkbookAsync({
+      const data = await getSearchResultAsync({
         keyword,
         start: start ?? startIndex,
         ...options,
