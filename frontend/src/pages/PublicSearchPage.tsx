@@ -1,12 +1,16 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { MainHeader } from '../components';
-import { DEVICE } from '../constants';
+import { MainHeader, PublicWorkbook } from '../components';
+import { DEVICE, STORAGE_KEY } from '../constants';
+import { useRouter, useSnackbar } from '../hooks';
+import { publicWorkbookState } from '../recoil';
 import { Flex } from '../styles';
+import { setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface SearchBarStyleProps {
@@ -19,12 +23,29 @@ interface SearchButtonStyleProps {
 }
 
 const PublicSearchPage = () => {
+  const { data: publicWorkbooks, errorMessage } =
+    useRecoilValue(publicWorkbookState);
+  const updateWorkbooks = useResetRecoilState(publicWorkbookState);
+
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const { routePublicCards } = useRouter();
+  const showSnackbar = useSnackbar();
+
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    updateWorkbooks();
+  }, []);
+
+  useEffect(() => {
+    if (errorMessage) {
+      showSnackbar({ message: errorMessage, type: 'error' });
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     if (!stickyTriggerRef.current) return;
@@ -45,7 +66,7 @@ const PublicSearchPage = () => {
     searchTabObserver.observe(stickyTriggerRef.current);
 
     return () => searchTabObserver.disconnect();
-  }, [stickyTriggerRef.current]);
+  });
 
   useEffect(() => {
     if (!searchInputRef.current || !isFocus) return;
@@ -84,6 +105,21 @@ const PublicSearchPage = () => {
             <SearchIcon width="1.3rem" height="1.3rem" />
           </SearchButton>
         </SearchBar>
+        <StyledUl>
+          {publicWorkbooks.map(({ id, name, cardCount, author }) => (
+            <li key={id}>
+              <PublicWorkbook
+                name={name}
+                cardCount={cardCount}
+                author={author}
+                onClick={() => {
+                  setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+                  routePublicCards();
+                }}
+              />
+            </li>
+          ))}
+        </StyledUl>
       </StyledPageTemplate>
     </>
   );
@@ -150,6 +186,17 @@ const SearchButton = styled.button<SearchButtonStyleProps>`
       fill: ${isFocus ? theme.color.green : theme.color.gray_3};
     }
   `};
+`;
+
+const StyledUl = styled.ul`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+
+  & > li:last-of-type {
+    margin-bottom: 1rem;
+  }
 `;
 
 export default PublicSearchPage;

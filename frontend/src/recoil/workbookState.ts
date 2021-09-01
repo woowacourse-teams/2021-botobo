@@ -1,14 +1,19 @@
 import { DefaultValue, atom, selector } from 'recoil';
 
-import { getWorkbooksAsync } from '../api';
+import { getPublicWorkbookAsync, getWorkbooksAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
-import { WorkbookResponse } from '../types';
+import { PublicWorkbookResponse, WorkbookResponse } from '../types';
 import { getSessionStorage } from '../utils';
 import { workbookInitialState } from './initialState';
 import { userState } from './userState';
 
 interface WorkbookState {
   data: WorkbookResponse[];
+  errorMessage: string | null;
+}
+
+interface PublicWorkbookState {
+  data: PublicWorkbookResponse[];
   errorMessage: string | null;
 }
 
@@ -62,5 +67,34 @@ export const editedWorkbookState = selector<WorkbookResponse>({
       data.find((workbook) => workbook.id === workbookId) ||
       workbookInitialState
     );
+  },
+});
+
+const publicWorkbookUpdateTrigger = atom({
+  key: 'publicWorkbookUpdateTrigger',
+  default: 0,
+});
+
+export const publicWorkbookState = selector<PublicWorkbookState>({
+  key: 'publicWorkbookState',
+  get: async ({ get }) => {
+    get(publicWorkbookUpdateTrigger);
+
+    try {
+      return {
+        data: await getPublicWorkbookAsync(),
+        errorMessage: null,
+      };
+    } catch (error) {
+      return {
+        data: [],
+        errorMessage: '문제집을 불러오지 못했습니다.',
+      };
+    }
+  },
+  set: ({ set }, value) => {
+    if (value instanceof DefaultValue) {
+      set(publicWorkbookUpdateTrigger, (prevState) => prevState + 1);
+    }
   },
 });
