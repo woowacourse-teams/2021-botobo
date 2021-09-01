@@ -4,7 +4,12 @@ import React, { useEffect, useState } from 'react';
 
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
-import { Button, MainHeader, PublicWorkbookList } from '../components';
+import {
+  Button,
+  MainHeader,
+  MultiFilterSelector,
+  PublicWorkbookList,
+} from '../components';
 import { SEARCH_CRITERIA } from '../constants';
 import {
   useModal,
@@ -17,22 +22,59 @@ import { ValueOf } from '../types/utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
+const dummy = [
+  {
+    id: 1,
+    name: 'java',
+  },
+  {
+    id: 2,
+    name: 'javascript',
+  },
+  {
+    id: 3,
+    name: '자바',
+  },
+  {
+    id: 4,
+    name: '자스',
+  },
+  {
+    id: 5,
+    name: '자바스크립트',
+  },
+  {
+    id: 6,
+    name: 'javascriptjavascriptjavascriptjavascript',
+  },
+  {
+    id: 7,
+    name: '자스스스',
+  },
+  {
+    id: 8,
+    name: 'ㅁㄴㅇㅁㄴㅇ',
+  },
+];
+
+type MultiFilterTypes = '태그' | '작성자';
+
 interface MultiFilters {
   id: number;
-  name: string;
+  type: MultiFilterTypes;
   data: string[];
 }
 
 const multiFilters: MultiFilters[] = [
-  { id: 1, name: '태그', data: [] },
-  { id: 2, name: '작성자', data: [] },
+  { id: 1, type: '태그', data: [] },
+  { id: 2, type: '작성자', data: [] },
 ];
 
 const singleFilters = [
-  { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
-  { id: 3, name: '이름 순', criteria: SEARCH_CRITERIA.NAME },
-  { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
+  { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
+  { id: 2, type: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
+  { id: 3, type: '이름 순', criteria: SEARCH_CRITERIA.NAME },
+  { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
 const PublicSearchResultPage = () => {
@@ -79,19 +121,6 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook(initialValue);
   };
 
-  const setMultiFilterData = (filterName: string, data: string) => {
-    setSelectedMultiFilters((prevValue) =>
-      prevValue.map((value) => {
-        if (value.name !== filterName) return value;
-
-        return {
-          ...value,
-          data: [...value.data, data],
-        };
-      })
-    );
-  };
-
   const resetFilterData = () => {
     setSingleFilterData(singleFilters[0].id, singleFilters[0].criteria);
     setSelectedMultiFilters((prevValue) =>
@@ -127,7 +156,7 @@ const PublicSearchResultPage = () => {
           <>
             <Title>{keyword} 검색 결과</Title>
             <Filter>
-              {singleFilters.map(({ id, name, criteria }) => (
+              {singleFilters.map(({ id, type, criteria }) => (
                 <Button
                   key={id}
                   shape="round"
@@ -139,10 +168,10 @@ const PublicSearchResultPage = () => {
                     setSingleFilterData(id, criteria);
                   }}
                 >
-                  {name}
+                  {type}
                 </Button>
               ))}
-              {multiFilters.map(({ id, name }, index) => (
+              {multiFilters.map(({ id, type }, index) => (
                 <MultiFilterButton
                   key={id}
                   shape="round"
@@ -154,17 +183,18 @@ const PublicSearchResultPage = () => {
                   inversion={true}
                   onClick={() => {
                     openModal({
-                      title: name,
                       content: (
-                        <div onClick={() => setMultiFilterData(name, 'hello')}>
-                          hello
-                        </div>
+                        <MultiFilterSelector
+                          type={type}
+                          data={dummy}
+                          selectedData={selectedMultiFilters[index].data}
+                          setSelectedMultiFilters={setSelectedMultiFilters}
+                        />
                       ),
-                      closeIcon: 'back',
                     });
                   }}
                 >
-                  {name}
+                  {type}
                   <DownIcon width="1rem" height="1rem" />
                 </MultiFilterButton>
               ))}
@@ -177,10 +207,10 @@ const PublicSearchResultPage = () => {
             </Filter>
             <SelectedMultiFilterWrapper>
               {selectedMultiFilters.map(
-                ({ id, name, data }) =>
+                ({ id, type, data }) =>
                   data.length > 0 && (
                     <SelectedMultiFilter key={id}>
-                      선택된 {name}: {data.join(', ')}
+                      선택된 {type}: {data.join(', ')}
                     </SelectedMultiFilter>
                   )
               )}
