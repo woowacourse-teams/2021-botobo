@@ -17,32 +17,35 @@ public class SimilarityChecker {
     public static List<Tag> orderBySimilarity(String origin, List<Tag> target, int sizeLimit) {
         List<Pair> tempList = new ArrayList<>();
         for (Tag tag : target) {
-            double score = similarity(origin, tag.getTagName());
+            int score = similarity(origin, tag.getTagName());
             tempList.add(new Pair(tag, score));
         }
         return tempList.stream()
-                .sorted(Comparator.comparingDouble(p -> -p.score))
+                .sorted((previous, next) -> comparePriority(previous, next, origin))
                 .map(pair -> pair.tag)
                 .limit(sizeLimit)
                 .collect(Collectors.toList());
     }
 
-    private static double similarity(String origin, TagName tagName) {
-        final String target = tagName.getValue();
-        String longStr = origin;
-        String shortStr = target;
-
-        if (origin.length() < target.length()) {
-            longStr = target;
-            shortStr = origin;
+    private static int comparePriority(Pair previous, Pair next, String origin) {
+        if (tagNameStartsWith(previous, origin) && !tagNameStartsWith(next, origin)) {
+            return -1;
         }
-
-        int lengthOfLong = longStr.length();
-        if (lengthOfLong == 0) return 1.0;
-        return (lengthOfLong - editDistance(longStr, shortStr)) / (double) lengthOfLong;
+        if (tagNameStartsWith(next, origin) && !tagNameStartsWith(previous, origin)) {
+            return 1;
+        }
+        if (previous.score == next.score) {
+            return previous.getTag().compareToIgnoreCase(next.getTag());
+        }
+        return previous.score > next.score ? 1 : -1;
     }
 
-    private static int editDistance(String s1, String s2) {
+    private static boolean tagNameStartsWith(Pair previous, String origin) {
+        return previous.getTag().startsWith(origin);
+    }
+
+    private static int similarity(String s1, TagName tagName) {
+        String s2 = tagName.getValue();
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
         int[] scores = new int[s2.length() + 1];
@@ -76,11 +79,15 @@ public class SimilarityChecker {
 
     private static class Pair {
         Tag tag;
-        double score;
+        int score;
 
-        public Pair(Tag tag, double score) {
+        public Pair(Tag tag, int score) {
             this.tag = tag;
             this.score = score;
+        }
+
+        public String getTag() {
+            return tag.getTagNameValue();
         }
     }
 }
