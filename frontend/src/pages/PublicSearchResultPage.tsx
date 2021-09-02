@@ -155,66 +155,70 @@ const PublicSearchResultPage = () => {
         ) : (
           <>
             <Title>{keyword} 검색 결과</Title>
-            <Filter>
-              {singleFilters.map(({ id, type, criteria }) => (
-                <Button
-                  key={id}
-                  shape="round"
-                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
-                  inversion={true}
-                  onClick={() => {
-                    if (id === currentFilterId) return;
+            <FilterWrapper>
+              <Filter>
+                {isFiltered && (
+                  <FilterResetButton onClick={resetFilterData}>
+                    <span>초기화</span>
+                    <ResetIcon width="1rem" height="1rem" />
+                  </FilterResetButton>
+                )}
+                {multiFilters.map(({ id, type }, index) => (
+                  <MultiFilterButton
+                    key={id}
+                    shape="round"
+                    backgroundColor={
+                      selectedMultiFilters[index].data.length > 0
+                        ? 'green'
+                        : 'gray_5'
+                    }
+                    inversion={true}
+                    onClick={() => {
+                      openModal({
+                        content: (
+                          <MultiFilterSelector
+                            type={type}
+                            data={dummy}
+                            selectedData={selectedMultiFilters[index].data}
+                            setSelectedMultiFilters={setSelectedMultiFilters}
+                          />
+                        ),
+                      });
+                    }}
+                  >
+                    {type}
+                    <DownIcon width="1rem" height="1rem" />
+                  </MultiFilterButton>
+                ))}
+                {singleFilters.map(({ id, type, criteria }) => (
+                  <Button
+                    key={id}
+                    shape="round"
+                    backgroundColor={
+                      currentFilterId === id ? 'green' : 'gray_5'
+                    }
+                    inversion={true}
+                    onClick={() => {
+                      if (id === currentFilterId) return;
 
-                    setSingleFilterData(id, criteria);
-                  }}
-                >
-                  {type}
-                </Button>
-              ))}
-              {multiFilters.map(({ id, type }, index) => (
-                <MultiFilterButton
-                  key={id}
-                  shape="round"
-                  backgroundColor={
-                    selectedMultiFilters[index].data.length > 0
-                      ? 'green'
-                      : 'gray_5'
-                  }
-                  inversion={true}
-                  onClick={() => {
-                    openModal({
-                      content: (
-                        <MultiFilterSelector
-                          type={type}
-                          data={dummy}
-                          selectedData={selectedMultiFilters[index].data}
-                          setSelectedMultiFilters={setSelectedMultiFilters}
-                        />
-                      ),
-                    });
-                  }}
-                >
-                  {type}
-                  <DownIcon width="1rem" height="1rem" />
-                </MultiFilterButton>
-              ))}
-              {isFiltered && (
-                <FilterResetButton onClick={resetFilterData}>
-                  <span>초기화</span>
-                  <ResetIcon width="1rem" height="1rem" />
-                </FilterResetButton>
-              )}
-            </Filter>
-            <SelectedMultiFilterWrapper>
-              {selectedMultiFilters.map(
-                ({ id, type, data }) =>
-                  data.length > 0 && (
-                    <SelectedMultiFilter key={id}>
-                      선택된 {type}: {data.join(', ')}
-                    </SelectedMultiFilter>
-                  )
-              )}
-            </SelectedMultiFilterWrapper>
+                      setSingleFilterData(id, criteria);
+                    }}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </Filter>
+              <SelectedMultiFilterWrapper>
+                {selectedMultiFilters.map(
+                  ({ id, type, data }) =>
+                    data.length > 0 && (
+                      <SelectedMultiFilter key={id}>
+                        선택된 {type}: {data.join(', ')}
+                      </SelectedMultiFilter>
+                    )
+                )}
+              </SelectedMultiFilterWrapper>
+            </FilterWrapper>
             <PublicWorkbookList
               isLoading={isLoading}
               publicWorkbooks={workbookSearchResult}
@@ -246,13 +250,25 @@ const NoSearchResult = styled.div`
 `;
 
 const Title = styled.h2`
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
   word-break: break-all;
+  text-align: center;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
+  `}
+`;
+
+const FilterWrapper = styled.div`
+  position: sticky;
+  top: 3.75rem;
+  padding: 0.1rem 1.25rem 0.5rem 1.25rem;
+  z-index: 1;
+  transform: translateX(-1.25rem);
+  width: calc(100% + 2.5rem);
+  margin-bottom: 0.5rem;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.gray_0};
   `}
 `;
 
@@ -267,19 +283,29 @@ const MultiFilterButton = styled(Button)`
 
 const Filter = styled.div`
   ${Flex()};
-  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  overflow-x: auto;
+
+  & > button {
+    flex-shrink: 0;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const SelectedMultiFilterWrapper = styled.div`
-  margin-bottom: 1rem;
-  word-break: break-all;
+  margin-top: 0.5rem;
+  white-space: nowrap;
 `;
 
 const SelectedMultiFilter = styled.div`
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const FilterResetButton = styled.button`

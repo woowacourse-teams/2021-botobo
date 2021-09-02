@@ -81,7 +81,7 @@ const MultiFilterSelector = ({
           onChange={({ target }) => setFilterKeyword(target.value)}
           name="search"
           role="search"
-          placeholder={'문제집을 검색해보세요.'}
+          placeholder={`${type}를 입력해보세요.`}
         />
         {filterKeyword && (
           <button type="button" onClick={() => setFilterKeyword('')}>
