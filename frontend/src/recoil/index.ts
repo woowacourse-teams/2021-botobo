@@ -10,5 +10,4 @@ export {
   workbookIdState,
   workbookState,
   editedWorkbookState,
-  publicWorkbookState,
 } from './workbookState';
