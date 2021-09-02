@@ -16,6 +16,7 @@ export { default as OAuthCallbackPage } from './OAuthCallbackPage';
 export { default as PublicCardsPage } from './PublicCardsPage';
 export { default as PublicCardsLoadable } from './PublicCardsLoadable';
 export { default as PublicSearchPage } from './PublicSearchPage';
+export { default as PublicSearchLoadable } from './PublicSearchLoadable';
 export { default as PublicSearchResultPage } from './PublicSearchResultPage';
 export { default as PublicSearchResultLoadable } from './PublicSearchResultLoadable';
 export { default as ProfilePage } from './ProfilePage';

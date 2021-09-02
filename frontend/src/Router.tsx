@@ -20,6 +20,7 @@ import {
   OAuthCallbackPage,
   ProfilePage,
   PublicCardsPage,
+  PublicSearchLoadable,
   PublicSearchPage,
   PublicSearchResultPage,
   QuizPage,
@@ -92,7 +93,11 @@ const routes = [
   },
   {
     path: ROUTE.PUBLIC_SEARCH.PATH,
-    component: <PublicSearchPage />,
+    component: (
+      <Suspense fallback={<PublicSearchLoadable />}>
+        <PublicSearchPage />
+      </Suspense>
+    ),
     isPublic: true,
   },
   {
