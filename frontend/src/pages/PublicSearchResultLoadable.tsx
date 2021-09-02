@@ -11,7 +11,7 @@ const PublicSearchResultLoadable = () => (
     <StyledPageTemplate isScroll={true}>
       <Title />
       <Filter>
-        {[...Array(4)].map((_, index) => (
+        {[...Array(6)].map((_, index) => (
           <Button
             key={index}
             shape="round"
@@ -41,7 +41,6 @@ const Title = styled.div`
   width: 40%;
   height: 1.5rem;
   margin: 0 auto;
-  margin-top: 0.5rem;
   margin-bottom: 1rem;
 
   ${loadContent};
@@ -49,14 +48,15 @@ const Title = styled.div`
 
 const Filter = styled.div`
   ${Flex()};
-  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  overflow-x: hidden;
 
   & > button {
     width: 4rem;
     height: 2rem;
+    flex-shrink: 0;
   }
 `;
 
