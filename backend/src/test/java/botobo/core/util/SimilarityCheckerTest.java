@@ -50,8 +50,7 @@ class SimilarityCheckerTest {
         );
 
         // when
-        List<Tag> orderBySimilarity = SimilarityChecker.orderBySimilarity("자바", tags, 5);
-
+        List<Tag> orderBySimilarity = SimilarityChecker.orderBySimilarity("java", tags, 5);
         // then
         assertThat(orderBySimilarity).containsExactly(
                 Tag.of("java"), Tag.of("aajava"), Tag.of("bbjava"), Tag.of("ozjava"), Tag.of("javabom")
