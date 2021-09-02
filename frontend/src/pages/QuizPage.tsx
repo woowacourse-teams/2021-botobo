@@ -9,6 +9,7 @@ import { MainHeader, Quiz, Timer } from '../components';
 import { useInterval, useQuiz } from '../hooks';
 import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
+import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface QuizListProps {
@@ -23,15 +24,6 @@ interface QuizItemProps {
 interface QuizIndexButtonStyleProps {
   isSelected: boolean;
 }
-
-const isMobile = () => {
-  const PC_DEVICE = ['win16', 'win32', 'win64', 'mac', 'macintel'];
-  const platform = navigator.platform;
-
-  if (!platform) return false;
-
-  return !PC_DEVICE.includes(platform.toLocaleLowerCase());
-};
 
 const QuizPage = () => {
   const {
@@ -127,7 +119,7 @@ const QuizPage = () => {
             </QuizList>
           )}
         </QuizWrapper>
-        {isMobile() ? (
+        {isMobile ? (
           <MobilePageNation>
             <TouchBar
               onTouchStart={(event) => {

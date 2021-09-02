@@ -19,6 +19,7 @@ import {
 } from '../hooks';
 import { Flex } from '../styles';
 import { ValueOf } from '../types/utils';
+import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
@@ -292,9 +293,23 @@ const Filter = styled.div`
     flex-shrink: 0;
   }
 
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  ${({ theme }) => css`
+    ${isMobile
+      ? css`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `
+      : css`
+          padding-bottom: 0.5rem;
+          ::-webkit-scrollbar {
+            height: 4px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: ${theme.color.gray_4};
+          }
+        `}
+  `}
 `;
 
 const SelectedMultiFilterWrapper = styled.div`
