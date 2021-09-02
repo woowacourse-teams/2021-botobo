@@ -3,6 +3,7 @@ package botobo.core.application;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.dto.tag.TagResponse;
+import botobo.core.ui.search.SearchRelated;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,7 +37,7 @@ class SearchServiceTest {
         given(tagRepository.findAllTagContaining(java)).willReturn(tags);
 
         // when
-        List<TagResponse> tagResponses = searchService.findTagsIn(java);
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(java));
 
         // then
         then(tagRepository).should(times(1))
@@ -54,7 +55,26 @@ class SearchServiceTest {
         given(tagRepository.findAllTagContaining(java)).willReturn(tags);
 
         // when
-        List<TagResponse> tagResponses = searchService.findTagsIn("JAVA");
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated("JAVA"));
+
+        // then
+        then(tagRepository).should(times(1))
+                .findAllTagContaining(java);
+        assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
+    }
+
+    @Test
+    @DisplayName("태그 검색 - 성공, 양 쪽 빈칸은 trim 된다.")
+    void searchTagsWhenHasEmptySpace() {
+        // given
+        String keyword = " java ";
+        String java = "java";
+        String javascript = "javascript";
+        List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
+        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
+
+        // when
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(keyword));
 
         // then
         then(tagRepository).should(times(1))

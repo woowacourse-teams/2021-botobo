@@ -4,6 +4,7 @@ import botobo.core.application.SearchService;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchController;
+import botobo.core.ui.search.SearchRelated;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .name("javascript")
                         .build()
         );
-        given(searchService.findTagsIn(any(String.class))).willReturn(tagResponses);
+        given(searchService.findTagsIn(any(SearchRelated.class))).willReturn(tagResponses);
 
         // when, then
         document()

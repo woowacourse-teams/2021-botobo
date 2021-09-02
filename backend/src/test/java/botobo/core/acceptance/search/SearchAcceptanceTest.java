@@ -613,6 +613,21 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 .allMatch(name -> name.contains(keyword));
     }
 
+    @Test
+    @DisplayName("태그 검색 - 성공")
+    void recommendRelatedTagsWhenKeywordIsEmpty() {
+        // given
+        String keyword = "";
+
+        // when
+        HttpResponse response = 추천_태그_검색_요청(keyword);
+
+        // then
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tagResponses).hasSize(0);
+    }
+
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
         return request()
                 .get("/api/search/workbooks")

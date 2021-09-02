@@ -28,7 +28,7 @@ public class SearchController {
     }
 
     @GetMapping("/tags")
-    public ResponseEntity<List<TagResponse>> recommendRelatedTags(@RequestParam String keyword) {
+    public ResponseEntity<List<TagResponse>> recommendRelatedTags(@RequestParam SearchRelated keyword) {
         List<TagResponse> tagResponses = searchService.findTagsIn(keyword);
         return ResponseEntity.ok(tagResponses);
     }
