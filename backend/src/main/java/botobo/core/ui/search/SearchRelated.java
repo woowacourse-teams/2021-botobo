@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class SearchRelated {
 
-    private static final String EMTPY = "";
+    private static final String EMPTY = "";
 
     private final String value;
 
@@ -14,7 +14,7 @@ public class SearchRelated {
 
     private String resolve(String tag) {
         if (Objects.isNull(tag)) {
-            return EMTPY;
+            return EMPTY;
         }
         tag = tag.trim();
         return tag.toLowerCase();
