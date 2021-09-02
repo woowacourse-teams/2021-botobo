@@ -1,7 +1,7 @@
 export const isMobile = (() => {
   const { userAgent, maxTouchPoints } = window.navigator;
 
-  const isMac = /Mac OS/i.test(userAgent);
+  const isMac = /Macintosh/i.test(userAgent);
 
   if (isMac && maxTouchPoints > 0) return true;
 
