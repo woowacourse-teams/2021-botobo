@@ -24,7 +24,7 @@ interface SearchButtonStyleProps {
 }
 
 const PublicSearchPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [publicWorkbooks, setPublicWorkbooks] = useState<
     PublicWorkbookResponse[]
   >([]);
@@ -42,7 +42,6 @@ const PublicSearchPage = () => {
   useEffect(() => {
     const getPublicWorkbooks = async () => {
       try {
-        setIsLoading(true);
         const newPublicWorkbooks = await getPublicWorkbookAsync();
 
         setPublicWorkbooks(newPublicWorkbooks);
@@ -75,7 +74,7 @@ const PublicSearchPage = () => {
     searchTabObserver.observe(stickyTriggerRef.current);
 
     return () => searchTabObserver.disconnect();
-  });
+  }, [isLoading]);
 
   useEffect(() => {
     if (!searchInputRef.current || !isFocus) return;
