@@ -30,7 +30,7 @@ const useCard = () => {
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
   const { workbookName, cards } = cardInfo;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
   const { openModal, closeModal } = useModal();
@@ -38,7 +38,6 @@ const useCard = () => {
 
   const getCards = async () => {
     try {
-      setIsLoading(true);
       const newCardInfo = await getCardsAsync(workbookId);
       setCardInfo(newCardInfo);
       setIsLoading(false);

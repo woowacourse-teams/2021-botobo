@@ -3,15 +3,17 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 
+import { getPublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
-import { useRouter, useSnackbar } from '../hooks';
-import { publicWorkbookState } from '../recoil';
+import { useErrorHandler, useRouter } from '../hooks';
 import { Flex } from '../styles';
+import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
+import { PublicSearchLoadable } from '.';
 
 interface SearchBarStyleProps {
   isFocus: boolean;
@@ -23,29 +25,36 @@ interface SearchButtonStyleProps {
 }
 
 const PublicSearchPage = () => {
-  const { data: publicWorkbooks, errorMessage } =
-    useRecoilValue(publicWorkbookState);
-  const updateWorkbooks = useResetRecoilState(publicWorkbookState);
+  const [isLoading, setIsLoading] = useState(true);
+  const [publicWorkbooks, setPublicWorkbooks] = useState<
+    PublicWorkbookResponse[]
+  >([]);
 
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const { routePublicCards } = useRouter();
-  const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    updateWorkbooks();
-  }, []);
+    const getPublicWorkbooks = async () => {
+      try {
+        const newPublicWorkbooks = await getPublicWorkbookAsync();
 
-  useEffect(() => {
-    if (errorMessage) {
-      showSnackbar({ message: errorMessage, type: 'error' });
-    }
-  }, [errorMessage]);
+        setPublicWorkbooks(newPublicWorkbooks);
+        setIsLoading(false);
+      } catch (error) {
+        errorHandler(error);
+        setIsLoading(false);
+      }
+    };
+
+    getPublicWorkbooks();
+  }, []);
 
   useEffect(() => {
     if (!stickyTriggerRef.current) return;
@@ -66,13 +75,15 @@ const PublicSearchPage = () => {
     searchTabObserver.observe(stickyTriggerRef.current);
 
     return () => searchTabObserver.disconnect();
-  });
+  }, [isLoading]);
 
   useEffect(() => {
     if (!searchInputRef.current || !isFocus) return;
 
     searchInputRef.current.focus();
   }, [searchKeyword]);
+
+  if (isLoading) return <PublicSearchLoadable />;
 
   return (
     <>

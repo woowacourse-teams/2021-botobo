@@ -5,7 +5,7 @@ import { PublicWorkbookResponse } from '../types';
 
 const usePublicSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
   const [workbookSearchResult, setWorkbookSearchResult] = useState<
     PublicWorkbookResponse[]
@@ -16,8 +16,6 @@ const usePublicSearch = () => {
     start,
     ...options
   }: PublicWorkbookAsync) => {
-    setIsLoading(true);
-
     if (keyword === '') {
       setIsSearching(false);
 
