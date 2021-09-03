@@ -155,4 +155,9 @@ public class WorkbookService extends AbstractUserService {
                 workbook.toggleHeart(heart)
         );
     }
+
+    public List<WorkbookResponse> findPublicWorkbooks() {
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+        return WorkbookResponse.simpleListOf(workbooks);
+    }
 }

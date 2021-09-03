@@ -371,6 +371,56 @@ public class WorkbookRepositoryTest {
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
     }
 
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
+    void findRandomPublicWorkbooks() {
+        saveWorkbooks(101, 0);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(100);
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 비공개 문제집은 조회하지 않는다.")
+    void findRandomPublicWorkbooksIncludePrivate() {
+        saveWorkbooks(90, 10);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(90);
+    }
+
+    private void saveWorkbooks(int publicSize, int privateSize) {
+        User user = User.builder()
+                .socialId("1")
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        for (int i = 0; i < publicSize; i++) {
+            workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(true)
+                            .user(user)
+                            .build()
+            );
+        }
+
+        for (int i = 0; i < privateSize; i++) {
+            workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(false)
+                            .user(user)
+                            .build()
+            );
+        }
+    }
+
     private void flushAndClear() {
         testEntityManager.flush();
         testEntityManager.clear();

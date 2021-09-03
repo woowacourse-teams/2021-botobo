@@ -34,4 +34,8 @@ export {
   putNextQuizAsync,
 } from './quiz';
 
-export { getUserKeywordAsync, getTagKeywordAsync } from './search';
+export {
+  getUserKeywordAsync,
+  getTagKeywordAsync,
+  getSearchResultAsync,
+} from './search';

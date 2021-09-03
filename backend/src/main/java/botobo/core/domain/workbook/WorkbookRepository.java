@@ -24,4 +24,7 @@ public interface WorkbookRepository extends JpaRepository<Workbook, Long>, JpaSp
     boolean existsByIdAndOpenedTrue(Long id);
 
     boolean existsById(Long id);
+
+    @Query(value = "select * from workbook where opened = true order by RAND() limit 100", nativeQuery = true)
+    List<Workbook> findRandomPublicWorkbooks();
 }
