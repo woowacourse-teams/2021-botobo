@@ -16,6 +16,8 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 public class AdminService extends AbstractUserService {
@@ -35,10 +37,14 @@ public class AdminService extends AbstractUserService {
     @Transactional
     public AdminWorkbookResponse createWorkbook(AdminWorkbookRequest adminWorkbookRequest, AppUser appUser) {
         User user = findUser(appUser);
-        Tags tags = tagService.convertTags(adminWorkbookRequest.getTags());
         Workbook workbook = adminWorkbookRequest.toWorkbook()
-                .createBy(user)
-                .taggedBy(tags);
+                .createBy(user);
+
+        if (Objects.nonNull(adminWorkbookRequest.getTags())) {
+            Tags tags = tagService.convertTags(adminWorkbookRequest.getTags());
+            workbook = workbook.taggedBy(tags);
+        }
+
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return AdminWorkbookResponse.of(savedWorkbook);
     }

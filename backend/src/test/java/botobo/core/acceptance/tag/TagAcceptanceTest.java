@@ -3,14 +3,17 @@ package botobo.core.acceptance.tag;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.tag.TagResponse;
+import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
+import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TagAcceptanceTest extends DomainAcceptanceTest {
@@ -75,13 +78,10 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenInvalidLength() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook="+)
+                .get("/api/tags?workbook=" + stringGenerator(31))
                 .build();
 
-        // when
-        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
-
         // then
-        assertThat(tagResponses).isEmpty();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

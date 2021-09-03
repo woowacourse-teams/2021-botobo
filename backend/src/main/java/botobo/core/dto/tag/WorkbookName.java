@@ -3,6 +3,8 @@ package botobo.core.dto.tag;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class WorkbookName {
     private static final int MAX_NAME_LENGTH = 30;
@@ -15,13 +17,13 @@ public class WorkbookName {
     }
 
     private String validateName(String workbook) {
-        if (workbook.isBlank()) {
+        if (Objects.isNull(workbook) || workbook.isEmpty()) {
             return EMPTY;
         }
         if (workbook.length() > MAX_NAME_LENGTH) {
             throw new WorkbookNameLengthException();
         }
-        return workbook;
+        return workbook.toLowerCase();
     }
 
     public boolean isEmpty() {

@@ -104,7 +104,7 @@ class TagRepositoryTest {
         initWorkbooks();
 
         // when
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllByWorkbookName("Java"));
+        Set<Tag> tags = new HashSet<>(tagRepository.findAllByWorkbookName("java"));
         // then
         assertThat(tags).hasSize(6);
         assertThat(tags.stream().map(Tag::getTagNameValue).collect(Collectors.toList()))
