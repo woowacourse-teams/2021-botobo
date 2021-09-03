@@ -18,6 +18,11 @@ import {
   useRouter,
 } from '../hooks';
 import { Flex } from '../styles';
+import {
+  MultiFilter,
+  MultiFilterTypes,
+  MultiFilterValue,
+} from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -57,20 +62,6 @@ const dummyList = [
     name: 'ㅁㄴㅇㅁㄴㅇ',
   },
 ];
-
-type MultiFilterTypes = '태그' | '작성자';
-
-interface MultiFilterValue {
-  id: number;
-  name: string;
-  isSelected: boolean;
-}
-
-interface MultiFilter {
-  id: number;
-  type: MultiFilterTypes;
-  values: MultiFilterValue[];
-}
 
 const singleFilters = [
   { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },

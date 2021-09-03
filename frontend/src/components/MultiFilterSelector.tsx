@@ -6,25 +6,16 @@ import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
 import { Flex, scrollBarStyle } from '../styles';
+import {
+  MultiFilter,
+  MultiFilterTypes,
+  MultiFilterValue,
+} from '../types/filter';
 
 interface Props {
   type: MultiFilterTypes;
   values: MultiFilterValue[];
   setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
-}
-
-type MultiFilterTypes = '태그' | '작성자';
-
-interface MultiFilter {
-  id: number;
-  type: MultiFilterTypes;
-  values: MultiFilterValue[];
-}
-
-interface MultiFilterValue {
-  id: number;
-  name: string;
-  isSelected: boolean;
 }
 
 interface SearchBarStyleProps {
