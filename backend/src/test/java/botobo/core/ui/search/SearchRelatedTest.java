@@ -7,8 +7,17 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 class SearchRelatedTest {
+
+    @DisplayName("value로 SearchRelated를 생성한다. - 성공")
+    @Test
+    void create() {
+        // given
+        assertThatCode(() -> new SearchRelated("value"))
+                .doesNotThrowAnyException();
+    }
 
     @DisplayName("value를 가져온다. - 성공, 알맞은 value")
     @Test
