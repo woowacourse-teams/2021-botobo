@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import { getPublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';

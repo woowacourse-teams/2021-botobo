@@ -18,13 +18,22 @@ import java.util.stream.Collectors;
 public class WorkbookResponse {
 
     private Long id;
+
     private String name;
-    private int cardCount;
-    private int heartCount;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer cardCount;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer heartCount;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String author;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean opened;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<TagResponse> tags;
 
     public static WorkbookResponse of(Workbook workbook) {
@@ -39,9 +48,18 @@ public class WorkbookResponse {
                 .build();
     }
 
-    public static List<WorkbookResponse> listOf(List<Workbook> workbooks) {
+    private static WorkbookResponse simpleOf(Workbook workbook) {
+        return WorkbookResponse.builder()
+                .id(workbook.getId())
+                .name(workbook.getName())
+                .cardCount(workbook.cardCount())
+                .author(workbook.author())
+                .build();
+    }
+
+    public static List<WorkbookResponse> simpleListOf(List<Workbook> workbooks) {
         return workbooks.stream()
-                .map(WorkbookResponse::of)
+                .map(WorkbookResponse::simpleOf)
                 .collect(Collectors.toList());
     }
 

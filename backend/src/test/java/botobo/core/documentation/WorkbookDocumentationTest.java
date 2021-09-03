@@ -232,6 +232,21 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                 .identifier("workbooks-toggle-hearts-success");
     }
 
+    @Test
+    @DisplayName("다양한 공개 문제집 조회 - 성공")
+    void findPublicWorkbooks() throws Exception {
+        // given
+        given(workbookService.findPublicWorkbooks()).willReturn(generatePublicWorkbookResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/workbooks/public")
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-random-public-get-success");
+    }
+
     private List<WorkbookResponse> generateUserWorkbookResponse() {
         return Arrays.asList(
                 WorkbookResponse.builder()
@@ -339,23 +354,13 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .id(1L)
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
-                        .heartCount(314)
                         .author("피케이")
-                        .tags(Arrays.asList(
-                                TagResponse.builder().id(1L).name("네트워크").build(),
-                                TagResponse.builder().id(2L).name("network").build()
-                        ))
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
                         .name("오즈의 Network 정복 최종판")
                         .cardCount(20)
-                        .heartCount(100)
                         .author("오즈")
-                        .tags(Arrays.asList(
-                                TagResponse.builder().id(3L).name("네트워크").build(),
-                                TagResponse.builder().id(4L).name("천재").build()
-                        ))
                         .build()
         );
     }

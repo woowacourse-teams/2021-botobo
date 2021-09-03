@@ -5,7 +5,6 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +60,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("네트워크는 나의 것", true, makeNetworkTags(), pkToken),
+                유저_문제집_등록되어_있음("자바스크립트 문제집", true, makeJSTags(), pkToken),
                 1,
                 pkToken
         );
@@ -96,9 +94,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         );
     }
 
-    private List<TagRequest> makeNetworkTags() {
-        return Collections.singletonList(
-                TagRequest.builder().id(0L).name("network").build()
+    private List<TagRequest> makeJSTags() {
+        return Arrays.asList(
+                TagRequest.builder().id(0L).name("javascript").build(),
+                TagRequest.builder().id(0L).name("js").build()
         );
     }
 
@@ -211,7 +210,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "네트워크는 나의 것",
+                        "자바스크립트 문제집",
                         "피케이의 자바 고급 문제집",
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 기초 문제집"
@@ -241,7 +240,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                         "피케이의 자바 기초 문제집",
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 고급 문제집",
-                        "네트워크는 나의 것"
+                        "자바스크립트 문제집"
                 );
     }
 
@@ -268,7 +267,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 기초 문제집",
                         "피케이의 자바 고급 문제집",
-                        "네트워크는 나의 것"
+                        "자바스크립트 문제집"
                 );
     }
 
@@ -292,7 +291,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "네트워크는 나의 것",
+                        "자바스크립트 문제집",
                         "피케이의 자바 고급 문제집",
                         "피케이의 자바 기초 문제집",
                         "피케이의 자바 중급 문제집"
@@ -374,7 +373,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                         "피케이의 자바 고급 문제집",
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 기초 문제집",
-                        "네트워크는 나의 것"
+                        "자바스크립트 문제집"
                 );
     }
 
@@ -398,7 +397,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "네트워크는 나의 것",
+                        "자바스크립트 문제집",
                         "피케이의 자바 기초 문제집",
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 고급 문제집"
@@ -426,7 +425,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "네트워크는 나의 것",
+                        "자바스크립트 문제집",
                         "피케이의 자바 고급 문제집",
                         "피케이의 자바 중급 문제집",
                         "피케이의 자바 기초 문제집"
@@ -598,61 +597,48 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("태그 검색 - 성공")
-    void searchTagsWithKeyword() {
+    void recommendRelatedTags() {
         // given
-        String keyword = "ava";
+        String keyword = "j";
 
         // when
-        HttpResponse response = 태그_검색_요청(keyword);
+        HttpResponse response = 추천_태그_검색_요청(keyword);
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(tagResponses).hasSize(1);
+        assertThat(tagResponses).hasSize(3);
         assertThat(tagResponses)
                 .extracting(TagResponse::getName)
                 .allMatch(name -> name.contains(keyword));
     }
 
     @Test
-    @DisplayName("유저 검색 - 성공")
-    void searchUsersWithKeyword() {
+    @DisplayName("태그 검색 - 성공")
+    void recommendRelatedTagsWhenKeywordIsEmpty() {
         // given
-        String keyword = "ear";
+        String keyword = "";
 
         // when
-        HttpResponse response = 유저_검색_요청(keyword);
+        HttpResponse response = 추천_태그_검색_요청(keyword);
 
         // then
-        List<SimpleUserResponse> searchUserResponse = response.convertBodyToList(SimpleUserResponse.class);
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(searchUserResponse).hasSize(1);
-        assertThat(searchUserResponse)
-                .extracting(SimpleUserResponse::getName)
-                .allMatch(name -> name.contains(keyword));
+        assertThat(tagResponses).hasSize(0);
     }
 
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
         return request()
                 .get("/api/search/workbooks")
                 .queryParams(parameters)
-                .auth(createToken(admin.getId()))
                 .build();
     }
 
-    private HttpResponse 태그_검색_요청(String keyword) {
+    private HttpResponse 추천_태그_검색_요청(String keyword) {
         return request()
                 .get("/api/search/tags")
                 .queryParam("keyword", keyword)
-                .auth(createToken(admin.getId()))
-                .build();
-    }
-
-    private HttpResponse 유저_검색_요청(String keyword) {
-        return request()
-                .get("/api/search/users")
-                .queryParam("keyword", keyword)
-                .auth(createToken(admin.getId()))
                 .build();
     }
 }

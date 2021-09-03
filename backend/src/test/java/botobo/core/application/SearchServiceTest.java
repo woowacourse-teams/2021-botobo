@@ -2,11 +2,8 @@ package botobo.core.application;
 
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
-import botobo.core.domain.user.User;
-import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.SimpleUserResponse;
-import botobo.core.ui.search.SearchKeyword;
+import botobo.core.ui.search.SearchRelated;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,9 +24,6 @@ class SearchServiceTest {
     @Mock
     private TagRepository tagRepository;
 
-    @Mock
-    private UserRepository userRepository;
-
     @InjectMocks
     private SearchService searchService;
 
@@ -40,15 +34,14 @@ class SearchServiceTest {
         String java = "java";
         String javascript = "javascript";
         List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
-        given(tagRepository.findByKeyword(java)).willReturn(tags);
+        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
 
         // when
-        SearchKeyword searchKeyword = SearchKeyword.of(java);
-        List<TagResponse> tagResponses = searchService.searchTags(searchKeyword);
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(java));
 
         // then
         then(tagRepository).should(times(1))
-                .findByKeyword(searchKeyword.toLowercase());
+                .findAllTagContaining(java);
         assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
     }
 
@@ -59,40 +52,33 @@ class SearchServiceTest {
         String java = "java";
         String javascript = "javascript";
         List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
-        given(tagRepository.findByKeyword(java)).willReturn(tags);
+        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
 
         // when
-        SearchKeyword searchKeyword = SearchKeyword.of(java.toUpperCase());
-        List<TagResponse> tagResponses = searchService.searchTags(searchKeyword);
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated("JAVA"));
 
         // then
         then(tagRepository).should(times(1))
-                .findByKeyword(searchKeyword.toLowercase());
+                .findAllTagContaining(java);
         assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
     }
 
     @Test
-    @DisplayName("유저 검색 - 성공, 유저 검색은 대소문자를 구별하고, 이름에 키워드가 들어가면 결과에 포함된다")
-    void searchUsers() {
+    @DisplayName("태그 검색 - 성공, 양 쪽 빈칸은 trim 된다.")
+    void searchTagsWhenHasEmptySpace() {
         // given
-        String sam = "sam";
-        String samantha = "samantha";
-        List<User> users = List.of(user(sam), user(samantha));
-        given(userRepository.findByKeyword(sam)).willReturn(users);
+        String keyword = " java ";
+        String java = "java";
+        String javascript = "javascript";
+        List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
+        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
 
         // when
-        SearchKeyword searchKeyword = SearchKeyword.of(sam);
-        List<SimpleUserResponse> simpleUserResponses = searchService.searchUsers(searchKeyword);
+        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(keyword));
 
         // then
-        then(userRepository).should(times(1))
-                .findByKeyword(sam);
-        assertThat(simpleUserResponses).extracting("name").containsExactly(sam, samantha);
-    }
-
-    private User user(String name) {
-        return User.builder()
-                .userName(name)
-                .build();
+        then(tagRepository).should(times(1))
+                .findAllTagContaining(java);
+        assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
     }
 }
