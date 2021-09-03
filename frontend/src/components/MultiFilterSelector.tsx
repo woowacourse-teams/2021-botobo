@@ -7,18 +7,24 @@ import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
 import { Flex, scrollBarStyle } from '../styles';
 
+interface Props {
+  type: MultiFilterTypes;
+  values: MultiFilterValue[];
+  setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
+}
+
 type MultiFilterTypes = '태그' | '작성자';
 
-interface MultiFilterData {
+interface MultiFilter {
+  id: number;
+  type: MultiFilterTypes;
+  values: MultiFilterValue[];
+}
+
+interface MultiFilterValue {
   id: number;
   name: string;
   isSelected: boolean;
-}
-
-interface Props {
-  type: MultiFilterTypes;
-  data: MultiFilterData[];
-  setSelectedMultiFilters: React.Dispatch<React.SetStateAction<MultiFilters[]>>;
 }
 
 interface SearchBarStyleProps {
@@ -29,39 +35,33 @@ interface MultiFilterItemStyleProps {
   isSelected: boolean;
 }
 
-interface MultiFilters {
-  id: number;
-  type: MultiFilterTypes;
-  data: MultiFilterData[];
-}
-
 const MultiFilterSelector = ({
   type,
-  data,
-  setSelectedMultiFilters,
+  values: data,
+  setMultiFilters,
 }: Props) => {
   const { closeModal } = useModal();
 
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
-  const [multiFilterItemData, setMultiFilterItemData] = useState(data);
+  const [values, setValues] = useState(data);
 
   const checkFilterItem = (name: string) => {
-    setMultiFilterItemData((prevValue) =>
-      prevValue.map((value) => {
-        if (value.name !== name) return value;
+    setValues((prevValue) =>
+      prevValue.map((item) => {
+        if (item.name !== name) return item;
 
-        return { ...value, isSelected: !value.isSelected };
+        return { ...item, isSelected: !item.isSelected };
       })
     );
   };
 
-  const setSelectedData = () => {
-    setSelectedMultiFilters((prevValue) =>
-      prevValue.map((value) => {
-        if (value.type !== type) return value;
+  const setSelectedValues = () => {
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => {
+        if (item.type !== type) return item;
 
-        return { ...value, data: multiFilterItemData };
+        return { ...item, values };
       })
     );
   };
@@ -86,7 +86,7 @@ const MultiFilterSelector = ({
         )}
       </SearchBar>
       <MultiFilterList>
-        {multiFilterItemData.map(({ id, name, isSelected }) => (
+        {values.map(({ id, name, isSelected }) => (
           <MultiFilterItem
             key={id}
             isSelected={isSelected}
@@ -100,7 +100,7 @@ const MultiFilterSelector = ({
       <Confirm
         type="button"
         onClick={() => {
-          setSelectedData();
+          setSelectedValues();
           closeModal();
         }}
       >

@@ -60,22 +60,17 @@ const dummyList = [
 
 type MultiFilterTypes = '태그' | '작성자';
 
-interface MultiFilterData {
+interface MultiFilterValue {
   id: number;
   name: string;
   isSelected: boolean;
 }
 
-interface MultiFilters {
+interface MultiFilter {
   id: number;
   type: MultiFilterTypes;
-  data: MultiFilterData[];
+  values: MultiFilterValue[];
 }
-
-const multiFilters: MultiFilters[] = [
-  { id: 1, type: '태그', data: [] },
-  { id: 2, type: '작성자', data: [] },
-];
 
 const singleFilters = [
   { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
@@ -84,8 +79,8 @@ const singleFilters = [
   { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
 
-const hasSelectedData = (data: MultiFilterData[]) => {
-  return data.some(({ isSelected }) => isSelected);
+const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
+  return values.some(({ isSelected }) => isSelected);
 };
 
 const PublicSearchResultPage = () => {
@@ -103,21 +98,24 @@ const PublicSearchResultPage = () => {
 
   const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
-  const [selectedMultiFilters, setSelectedMultiFilters] =
-    useState(multiFilters);
+  const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
+    { id: 1, type: '태그', values: [] },
+    { id: 2, type: '작성자', values: [] },
+  ]);
+
   const [currentFilterId, setCurrentFilterId] = useState(
     singleFilters.find((filter) => filter.criteria === criteria)?.id ??
       singleFilters[0].id
   );
 
-  const hasMultiFilterSelected = selectedMultiFilters.find(({ data }) =>
-    hasSelectedData(data)
+  const hasSelectedMultiFilter = multiFilters.find(({ values }) =>
+    hasSelectedValueInMultiFilter(values)
   );
 
   const isFiltered =
-    currentFilterId !== singleFilters[0].id || hasMultiFilterSelected;
+    currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
 
-  const setSingleFilterData = (
+  const setSingleFilterValues = (
     id: number,
     criteria: ValueOf<typeof SEARCH_CRITERIA>
   ) => {
@@ -135,34 +133,34 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook(initialValue);
   };
 
-  const getMultiFilterData = () => {
-    setSelectedMultiFilters((prevValue) =>
-      prevValue.map((value) => ({
-        ...value,
-        data: dummyList.map((dummy) => ({ ...dummy, isSelected: false })),
+  const getMultiFilterValues = () => {
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => ({
+        ...item,
+        values: dummyList.map((dummy) => ({ ...dummy, isSelected: false })),
       }))
     );
   };
 
   const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
-    setSelectedMultiFilters((prevValue) =>
-      prevValue.map((multiFilterItem) => {
-        if (multiFilterItem.type !== type) return multiFilterItem;
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => {
+        if (item.type !== type) return item;
 
         return {
-          ...multiFilterItem,
-          data: multiFilterItem.data.filter(({ id }) => id !== itemId),
+          ...item,
+          values: item.values.filter(({ id }) => id !== itemId),
         };
       })
     );
   };
 
-  const resetFilterData = () => {
-    setSingleFilterData(singleFilters[0].id, singleFilters[0].criteria);
-    setSelectedMultiFilters((prevValue) =>
-      prevValue.map((multiFilterItem) => ({
-        ...multiFilterItem,
-        data: multiFilterItem.data.map((value) => ({
+  const resetFilterValues = () => {
+    setSingleFilterValues(singleFilters[0].id, singleFilters[0].criteria);
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => ({
+        ...item,
+        values: item.values.map((value) => ({
           ...value,
           isSelected: false,
         })),
@@ -172,7 +170,7 @@ const PublicSearchResultPage = () => {
 
   useEffect(() => {
     setIsSearching(true);
-    getMultiFilterData();
+    getMultiFilterValues();
     searchForPublicWorkbook({ keyword, type, criteria });
   }, []);
 
@@ -201,7 +199,7 @@ const PublicSearchResultPage = () => {
             <FilterWrapper>
               <Filter>
                 {isFiltered && (
-                  <FilterResetButton onClick={resetFilterData}>
+                  <FilterResetButton onClick={resetFilterValues}>
                     <span>초기화</span>
                     <ResetIcon width="1rem" height="1rem" />
                   </FilterResetButton>
@@ -211,7 +209,7 @@ const PublicSearchResultPage = () => {
                     key={id}
                     shape="round"
                     backgroundColor={
-                      hasSelectedData(selectedMultiFilters[index].data)
+                      hasSelectedValueInMultiFilter(multiFilters[index].values)
                         ? 'green'
                         : 'gray_5'
                     }
@@ -221,8 +219,8 @@ const PublicSearchResultPage = () => {
                         content: (
                           <MultiFilterSelector
                             type={type}
-                            data={selectedMultiFilters[index].data}
-                            setSelectedMultiFilters={setSelectedMultiFilters}
+                            values={multiFilters[index].values}
+                            setMultiFilters={setMultiFilters}
                           />
                         ),
                       });
@@ -243,17 +241,17 @@ const PublicSearchResultPage = () => {
                     onClick={() => {
                       if (id === currentFilterId) return;
 
-                      setSingleFilterData(id, criteria);
+                      setSingleFilterValues(id, criteria);
                     }}
                   >
                     {type}
                   </Button>
                 ))}
               </Filter>
-              {hasMultiFilterSelected && (
+              {hasSelectedMultiFilter && (
                 <SelectedMultiFilterWrapper>
-                  {selectedMultiFilters.map(({ type, data }) =>
-                    data
+                  {multiFilters.map(({ type, values }) =>
+                    values
                       .filter(({ isSelected }) => isSelected)
                       .map(({ name, id }) => (
                         <SelectedMultiFilterButton
