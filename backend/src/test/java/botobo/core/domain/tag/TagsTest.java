@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +30,7 @@ class TagsTest {
     @DisplayName("Tags 객체 생성 - 실패, null 입력")
     void createWithNull() {
         // when, then
-        assertThatThrownBy(() -> Tags.of(null))
+        assertThatThrownBy(() -> Tags.of((List<Tag>) null))
                 .isInstanceOf(TagsCreationFailureException.class);
     }
 

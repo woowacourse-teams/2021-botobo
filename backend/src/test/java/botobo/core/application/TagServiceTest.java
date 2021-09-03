@@ -83,4 +83,25 @@ class TagServiceTest {
                 .extracting("id")
                 .containsExactly(java.getId(), spring.getId(), react.getId());
     }
+
+    @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공")
+    @Test
+    void findAllTagsByWorkbookName() {
+        // given
+        Tag java = tagRepository.save(Tag.of("java"));
+        Tag spring = tagRepository.save(Tag.of("spring"));
+        Tag react = tagRepository.save(Tag.of("react"));
+        tagRepository.flush();
+
+        List<TagRequest> tagRequests = Arrays.asList(
+                TagRequest.builder().id(1L).name("java").build(),
+                TagRequest.builder().id(2L).name("spring").build(),
+                TagRequest.builder().id(3L).name("react").build(),
+                TagRequest.builder().id(0L).name("java").build()
+        );
+
+        // when
+
+        // then
+    }
 }

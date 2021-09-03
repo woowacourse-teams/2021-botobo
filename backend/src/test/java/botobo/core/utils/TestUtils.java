@@ -13,4 +13,13 @@ public class TestUtils {
     public static String stringGenerator(int max) {
         return "a".repeat(max);
     }
+
+    public static long measureExecutionStartTime() {
+        return System.currentTimeMillis();
+    }
+
+    public static void measureExecutionEndTimeFrom(long start) {
+        long end = System.currentTimeMillis();
+        System.out.println("@@@ findAllByWorkbookName 완료 실행 시간 : " + (end - start));
+    }
 }

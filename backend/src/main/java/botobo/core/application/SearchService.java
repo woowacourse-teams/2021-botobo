@@ -45,7 +45,7 @@ public class SearchService {
     public List<TagResponse> findTagsIn(SearchRelated keyword) {
         String target = keyword.get();
         if (target.isBlank()) {
-            return TagResponse.listOf(Tags.of(new ArrayList<>()));
+            return TagResponse.listOf(Tags.empty());
         }
         List<Tag> tags = tagRepository.findAllTagContaining(target);
         List<Tag> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);

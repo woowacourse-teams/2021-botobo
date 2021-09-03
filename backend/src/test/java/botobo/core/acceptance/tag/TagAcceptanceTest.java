@@ -40,12 +40,42 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
                 .contains("자바", "자바스크립트","리액트","네트워크", "스프링");
     }
 
-    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 빈 응답")
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 문제집 명이 비어있는 경우 빈 응답")
     @Test
     void findAllTagsByWorkbookNameWhenEmpty() {
         // given
         final HttpResponse response = request()
                 .get("/api/tags?workbook=")
+                .build();
+
+        // when
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+
+        // then
+        assertThat(tagResponses).isEmpty();
+    }
+
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 문제집 명이 null인 경우 빈 응답")
+    @Test
+    void findAllTagsByWorkbookNameWhenNull() {
+        // given
+        final HttpResponse response = request()
+                .get("/api/tags?workbook="+ null)
+                .build();
+
+        // when
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+
+        // then
+        assertThat(tagResponses).isEmpty();
+    }
+
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 실패, 문제집 명이 30글자를 넘는 경우 예외")
+    @Test
+    void findAllTagsByWorkbookNameWhenInvalidLength() {
+        // given
+        final HttpResponse response = request()
+                .get("/api/tags?workbook="+)
                 .build();
 
         // when

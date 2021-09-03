@@ -8,11 +8,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByTagName(TagName tagName);
 
     @Query("select t from Tag t where t.tagName.value like %:keyword%")
     List<Tag> findAllTagContaining(@Param("keyword") String keyword);
+    @Query(value = "SELECT * FROM tag t WHERE t.NAME LIKE %:keyword% LIMIT 10", nativeQuery = true)
+    List<Tag> findByKeyword(@Param("keyword") String keyword);
+
+    @Query("select t from Tag t join fetch t.workbookTags wt " +
+            "where t.id = wt.tag.id " +
+            "and wt.workbook.name like %:workbookName%")
+    List<Tag> findAllByWorkbookName(String workbookName);
 }

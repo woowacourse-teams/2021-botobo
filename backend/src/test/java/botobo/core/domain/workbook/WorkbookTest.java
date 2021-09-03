@@ -6,7 +6,7 @@ import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
-import botobo.core.exception.workbook.WorkbookNameNullException;
+import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(name)
                 .build())
-                .isInstanceOf(WorkbookNameNullException.class);
+                .isInstanceOf(WorkbookNameBlankException.class);
     }
 
     @Test
