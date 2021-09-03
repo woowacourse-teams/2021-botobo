@@ -75,9 +75,12 @@ const PublicSearchResultPage = () => {
       singleFilters[0].id
   );
 
+  const hasMultiFilterSelected = selectedMultiFilters.find(({ data }) =>
+    hasSelectedData(data)
+  );
+
   const isFiltered =
-    currentFilterId !== singleFilters[0].id ||
-    selectedMultiFilters.find(({ data }) => hasSelectedData(data));
+    currentFilterId !== singleFilters[0].id || hasMultiFilterSelected;
 
   const setSingleFilterData = (
     id: number,
@@ -95,6 +98,19 @@ const PublicSearchResultPage = () => {
     setIsSearching(true);
     routePublicSearchResultQuery(initialValue);
     searchForPublicWorkbook(initialValue);
+  };
+
+  const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
+    setSelectedMultiFilters((prevValue) =>
+      prevValue.map((multiFilterItem) => {
+        if (multiFilterItem.type !== type) return multiFilterItem;
+
+        return {
+          ...multiFilterItem,
+          data: multiFilterItem.data.filter(({ id }) => id !== itemId),
+        };
+      })
+    );
   };
 
   const resetFilterData = () => {
@@ -189,20 +205,28 @@ const PublicSearchResultPage = () => {
                   </Button>
                 ))}
               </Filter>
-              <SelectedMultiFilterWrapper>
-                {selectedMultiFilters.map(
-                  ({ id, type, data }) =>
-                    hasSelectedData(data) && (
-                      <SelectedMultiFilter key={id}>
-                        선택된 {type}:{' '}
-                        {data
-                          .filter(({ isSelected }) => isSelected)
-                          .map(({ name }) => name)
-                          .join(', ')}
-                      </SelectedMultiFilter>
-                    )
-                )}
-              </SelectedMultiFilterWrapper>
+              {hasMultiFilterSelected && (
+                <SelectedMultiFilterWrapper>
+                  {selectedMultiFilters.map(({ type, data }) =>
+                    data
+                      .filter(({ isSelected }) => isSelected)
+                      .map(({ name, id }) => (
+                        <SelectedMultiFilterButton
+                          key={id}
+                          type="button"
+                          shape="round"
+                          backgroundColor={
+                            type === '작성자' ? 'gray_2' : 'green'
+                          }
+                          color={type === '작성자' ? 'gray_8' : 'white'}
+                          onClick={() => removeMultiFilterItem(type, id)}
+                        >
+                          {name}
+                        </SelectedMultiFilterButton>
+                      ))
+                  )}
+                </SelectedMultiFilterWrapper>
+              )}
             </FilterWrapper>
             <PublicWorkbookList
               isLoading={isLoading}
@@ -297,14 +321,37 @@ const Filter = styled.div`
 `;
 
 const SelectedMultiFilterWrapper = styled.div`
-  margin-top: 0.5rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.3rem;
   white-space: nowrap;
+  overflow-x: auto;
+
+  ${({ theme }) => css`
+    ${isMobile
+      ? css`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `
+      : css`
+          padding-bottom: 0.5rem;
+          ::-webkit-scrollbar {
+            height: 4px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: ${theme.color.gray_4};
+          }
+        `}
+  `}
 `;
 
-const SelectedMultiFilter = styled.div`
-  margin-bottom: 0.3rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const SelectedMultiFilterButton = styled(Button)`
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+
+  &:not(:first-of-type) {
+    margin-left: 0.5rem;
+  }
 `;
 
 const FilterResetButton = styled.button`
