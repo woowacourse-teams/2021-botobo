@@ -4,7 +4,6 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagName;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
