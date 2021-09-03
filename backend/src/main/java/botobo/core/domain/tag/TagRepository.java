@@ -13,6 +13,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByTagName(TagName tagName);
 
-    @Query(value = "SELECT * FROM tag t WHERE t.NAME LIKE %:keyword% LIMIT 10", nativeQuery = true)
-    List<Tag> findByKeyword(@Param("keyword") String keyword);
+    @Query("select t from Tag t where t.tagName.value like %:keyword%")
+    List<Tag> findAllTagContaining(@Param("keyword") String keyword);
 }
