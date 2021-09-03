@@ -1,6 +1,5 @@
 package botobo.core.dto.admin;
 
-import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.TagRequest;
 import lombok.AccessLevel;
@@ -24,7 +23,7 @@ public class AdminWorkbookRequest {
     @NotBlank(message = "W002")
     @Length(max = 30, message = "W001")
     private String name;
-    private boolean opened;
+    private boolean opened = true;
 
     @Builder.Default
     @Valid

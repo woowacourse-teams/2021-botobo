@@ -3,7 +3,6 @@ package botobo.core.acceptance.tag;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
         assertThat(tagResponses.stream()
                 .map(TagResponse::getName)
                 .collect(Collectors.toList()))
-                .contains("자바", "자바스크립트","리액트","네트워크", "스프링");
+                .contains("자바", "자바스크립트", "리액트", "네트워크", "스프링");
     }
 
     @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 문제집 명이 비어있는 경우 빈 응답")
@@ -63,7 +62,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenNull() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook="+ null)
+                .get("/api/tags?workbook=" + null)
                 .build();
 
         // when
