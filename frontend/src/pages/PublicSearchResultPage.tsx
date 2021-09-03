@@ -23,6 +23,41 @@ import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
+const dummyList = [
+  {
+    id: 1,
+    name: 'java',
+  },
+  {
+    id: 2,
+    name: 'javascript',
+  },
+  {
+    id: 3,
+    name: '자바',
+  },
+  {
+    id: 4,
+    name: '자스',
+  },
+  {
+    id: 5,
+    name: '자바스크립트',
+  },
+  {
+    id: 6,
+    name: 'javascriptjavascriptjavascriptjavascript',
+  },
+  {
+    id: 7,
+    name: '자스스스',
+  },
+  {
+    id: 8,
+    name: 'ㅁㄴㅇㅁㄴㅇ',
+  },
+];
+
 type MultiFilterTypes = '태그' | '작성자';
 
 interface MultiFilterData {
@@ -100,6 +135,15 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook(initialValue);
   };
 
+  const getMultiFilterData = () => {
+    setSelectedMultiFilters((prevValue) =>
+      prevValue.map((value) => ({
+        ...value,
+        data: dummyList.map((dummy) => ({ ...dummy, isSelected: false })),
+      }))
+    );
+  };
+
   const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
     setSelectedMultiFilters((prevValue) =>
       prevValue.map((multiFilterItem) => {
@@ -128,6 +172,7 @@ const PublicSearchResultPage = () => {
 
   useEffect(() => {
     setIsSearching(true);
+    getMultiFilterData();
     searchForPublicWorkbook({ keyword, type, criteria });
   }, []);
 

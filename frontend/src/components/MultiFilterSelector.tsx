@@ -1,46 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
 import { Flex, scrollBarStyle } from '../styles';
-
-const dummyList = [
-  {
-    id: 1,
-    name: 'java',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: 'javascriptjavascriptjavascriptjavascript',
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
 
 type MultiFilterTypes = '태그' | '작성자';
 
@@ -91,27 +56,15 @@ const MultiFilterSelector = ({
     );
   };
 
-  const setSelectedData = (initialData?: MultiFilterData[]) => {
+  const setSelectedData = () => {
     setSelectedMultiFilters((prevValue) =>
       prevValue.map((value) => {
         if (value.type !== type) return value;
 
-        return { ...value, data: initialData ?? multiFilterItemData };
+        return { ...value, data: multiFilterItemData };
       })
     );
   };
-
-  useEffect(() => {
-    if (data.length !== 0) return;
-
-    const initialData = dummyList.map((dummy) => ({
-      ...dummy,
-      isSelected: false,
-    }));
-
-    setMultiFilterItemData(initialData);
-    setSelectedData(initialData);
-  }, []);
 
   return (
     <>
