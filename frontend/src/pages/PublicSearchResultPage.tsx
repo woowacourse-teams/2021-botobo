@@ -23,47 +23,18 @@ import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
-const dummy = [
-  {
-    id: 1,
-    name: 'java',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: 'javascriptjavascriptjavascriptjavascript',
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
-
 type MultiFilterTypes = '태그' | '작성자';
+
+interface MultiFilterData {
+  id: number;
+  name: string;
+  isSelected: boolean;
+}
 
 interface MultiFilters {
   id: number;
   type: MultiFilterTypes;
-  data: string[];
+  data: MultiFilterData[];
 }
 
 const multiFilters: MultiFilters[] = [
@@ -77,6 +48,10 @@ const singleFilters = [
   { id: 3, type: '이름 순', criteria: SEARCH_CRITERIA.NAME },
   { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
 ];
+
+const hasSelectedData = (data: MultiFilterData[]) => {
+  return data.some(({ isSelected }) => isSelected);
+};
 
 const PublicSearchResultPage = () => {
   const {
@@ -102,7 +77,7 @@ const PublicSearchResultPage = () => {
 
   const isFiltered =
     currentFilterId !== singleFilters[0].id ||
-    selectedMultiFilters.some(({ data }) => data.length > 0);
+    selectedMultiFilters.find(({ data }) => hasSelectedData(data));
 
   const setSingleFilterData = (
     id: number,
@@ -125,7 +100,13 @@ const PublicSearchResultPage = () => {
   const resetFilterData = () => {
     setSingleFilterData(singleFilters[0].id, singleFilters[0].criteria);
     setSelectedMultiFilters((prevValue) =>
-      prevValue.map((value) => ({ ...value, data: [] }))
+      prevValue.map((multiFilterItem) => ({
+        ...multiFilterItem,
+        data: multiFilterItem.data.map((value) => ({
+          ...value,
+          isSelected: false,
+        })),
+      }))
     );
   };
 
@@ -169,7 +150,7 @@ const PublicSearchResultPage = () => {
                     key={id}
                     shape="round"
                     backgroundColor={
-                      selectedMultiFilters[index].data.length > 0
+                      hasSelectedData(selectedMultiFilters[index].data)
                         ? 'green'
                         : 'gray_5'
                     }
@@ -179,8 +160,7 @@ const PublicSearchResultPage = () => {
                         content: (
                           <MultiFilterSelector
                             type={type}
-                            data={dummy}
-                            selectedData={selectedMultiFilters[index].data}
+                            data={selectedMultiFilters[index].data}
                             setSelectedMultiFilters={setSelectedMultiFilters}
                           />
                         ),
@@ -212,9 +192,13 @@ const PublicSearchResultPage = () => {
               <SelectedMultiFilterWrapper>
                 {selectedMultiFilters.map(
                   ({ id, type, data }) =>
-                    data.length > 0 && (
+                    hasSelectedData(data) && (
                       <SelectedMultiFilter key={id}>
-                        선택된 {type}: {data.join(', ')}
+                        선택된 {type}:{' '}
+                        {data
+                          .filter(({ isSelected }) => isSelected)
+                          .map(({ name }) => name)
+                          .join(', ')}
                       </SelectedMultiFilter>
                     )
                 )}
