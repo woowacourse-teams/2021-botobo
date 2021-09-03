@@ -66,14 +66,13 @@ const usePublicCard = () => {
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
   const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
   const { routeMain } = useRouter();
   const errorHandler = useErrorHandler();
 
   const getPublicCards = async () => {
     try {
-      setIsLoading(true);
       const newPublicCardInfo = await getPublicCardsAsync(publicWorkbookId);
       const { heart, heartCount } = newPublicCardInfo;
 
