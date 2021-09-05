@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
+    "lib": ["DOM", "ESNext"],
 
     "strict": true,
     "noImplicitAny": true,

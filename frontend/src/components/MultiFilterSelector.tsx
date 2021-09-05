@@ -37,6 +37,8 @@ const MultiFilterSelector = ({
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
 
+  const regExpKeyword = new RegExp(filterKeyword, 'i');
+
   const checkFilterItem = (name: string) => {
     setValues((prevValue) =>
       prevValue.map((item) => {
@@ -77,16 +79,18 @@ const MultiFilterSelector = ({
         )}
       </SearchBar>
       <MultiFilterList>
-        {values.map(({ id, name, isSelected }) => (
-          <MultiFilterItem
-            key={id}
-            isSelected={isSelected}
-            onClick={() => checkFilterItem(name)}
-          >
-            <div>{name}</div>
-            {isSelected && <CheckIcon width="1rem" height="1rem" />}
-          </MultiFilterItem>
-        ))}
+        {values
+          .filter((v) => regExpKeyword.test(v.name.replaceAll(/\s/g, '')))
+          .map(({ id, name, isSelected }) => (
+            <MultiFilterItem
+              key={id}
+              isSelected={isSelected}
+              onClick={() => checkFilterItem(name)}
+            >
+              <div>{name}</div>
+              {isSelected && <CheckIcon width="1rem" height="1rem" />}
+            </MultiFilterItem>
+          ))}
       </MultiFilterList>
       <Confirm
         type="button"
