@@ -52,7 +52,7 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
-  const { keyword, type, criteria } = usePublicSearchQuery();
+  const { keyword, tags, users, criteria } = usePublicSearchQuery();
 
   const { openModal } = useModal();
 
@@ -91,7 +91,8 @@ const PublicSearchResultPage = () => {
   ) => {
     const initialValue = {
       keyword,
-      type,
+      tags,
+      users,
       start: 0,
       criteria,
     };
@@ -161,7 +162,7 @@ const PublicSearchResultPage = () => {
     setIsSearching(true);
     setMultiFilterValues('태그');
     setMultiFilterValues('작성자');
-    searchForPublicWorkbook({ keyword, type, criteria });
+    searchForPublicWorkbook({ keyword, tags, users, criteria });
   }, []);
 
   if (isSearching) {

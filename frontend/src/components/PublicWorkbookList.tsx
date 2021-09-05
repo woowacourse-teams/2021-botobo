@@ -23,7 +23,7 @@ const PublicWorkbookList = ({
   publicWorkbooks,
   searchForPublicWorkbook,
 }: Props) => {
-  const { keyword, type } = usePublicSearchQuery();
+  const { keyword, tags, users } = usePublicSearchQuery();
   const { routePublicCards } = useRouter();
 
   const scrollTarget = useRef<HTMLLIElement>(null);
@@ -38,7 +38,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({ keyword, type });
+        await searchForPublicWorkbook({ keyword, tags, users });
       },
       {
         threshold: 0.1,
