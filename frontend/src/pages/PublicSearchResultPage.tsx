@@ -17,8 +17,8 @@ import {
 import { SEARCH_CRITERIA } from '../constants';
 import {
   useModal,
-  usePublicSearch,
   usePublicSearchQuery,
+  usePublicSearchResult,
   useRouter,
 } from '../hooks';
 import { Flex } from '../styles';
@@ -86,7 +86,7 @@ const PublicSearchResultPage = () => {
     setIsSearching,
     searchForPublicWorkbook,
     resetSearchResult,
-  } = usePublicSearch();
+  } = usePublicSearchResult();
 
   const query = usePublicSearchQuery();
   const { keyword, tags, users, criteria } = query;

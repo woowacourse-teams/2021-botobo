@@ -8,7 +8,7 @@ export { default as useRouter } from './useRouter';
 export { default as usePublicSearchQuery } from './usePublicSearchQuery';
 export { default as useForm } from './useForm';
 export { default as useWorkbook } from './useWorkbook';
-export { default as usePublicSearch } from './usePublicSearch';
+export { default as usePublicSearchResult } from './usePublicSearchResult';
 export { default as usePublicCard } from './usePublicCard';
 export { default as useModal } from './useModal';
 export { default as useInterval } from './useInterval';

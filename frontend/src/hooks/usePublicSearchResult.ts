@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
 import { PublicWorkbookResponse } from '../types';
 
-const usePublicSearch = () => {
+const usePublicSearchResult = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
@@ -54,4 +54,4 @@ const usePublicSearch = () => {
   };
 };
 
-export default usePublicSearch;
+export default usePublicSearchResult;
