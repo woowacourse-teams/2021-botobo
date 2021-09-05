@@ -25,7 +25,7 @@ const PublicSearchResultLoadable = () => (
       </Filter>
 
       <StyledUl>
-        {[...Array(8)].map((_, index) => (
+        {[...Array(6)].map((_, index) => (
           <StyledCardSkeleton key={index} />
         ))}
       </StyledUl>
