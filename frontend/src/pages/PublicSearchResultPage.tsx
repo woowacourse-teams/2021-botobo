@@ -126,19 +126,8 @@ const PublicSearchResultPage = () => {
     id: number,
     criteria: ValueOf<typeof SEARCH_CRITERIA>
   ) => {
-    const initialValue = {
-      keyword,
-      tags,
-      users,
-      start: 0,
-      criteria,
-    };
-
     setCurrentFilterId(id);
-    resetSearchResult();
-    setIsSearching(true);
-    routePublicSearchResultQuery(initialValue);
-    searchForPublicWorkbook(initialValue);
+    routePublicSearchResultQuery({ keyword, tags, users, criteria, start: 0 });
   };
 
   const getMultiFilterValues = async (type: MultiFilterTypes) => {
@@ -193,20 +182,25 @@ const PublicSearchResultPage = () => {
         })),
       }))
     );
+    resetQuery();
+  };
+
+  const resetQuery = () => {
+    routePublicSearchResultQuery({ keyword, start: 0 });
   };
 
   useEffect(() => {
     setIsSearching(true);
     setMultiFilterValues('tags');
     setMultiFilterValues('users');
-    searchForPublicWorkbook({ keyword, tags, users, criteria });
+    searchForPublicWorkbook({ keyword, tags, users, criteria, start: 0 });
   }, []);
 
   useEffect(() => {
-    resetSearchResult();
     setIsSearching(true);
+    resetSearchResult();
     searchForPublicWorkbook({ keyword, tags, users, criteria, start: 0 });
-  }, [tags, users]);
+  }, [currentFilterId, tags, users]);
 
   if (isSearching) {
     return <PublicWorkbookLoadable />;
@@ -216,7 +210,7 @@ const PublicSearchResultPage = () => {
     <>
       <MainHeader />
       <StyledPageTemplate isScroll={true}>
-        {workbookSearchResult.length === 0 ? (
+        {workbookSearchResult.length !== 0 ? (
           <NoSearchResult>
             <div>검색 결과가 없어요.</div>
             <Button
