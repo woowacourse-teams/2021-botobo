@@ -32,6 +32,41 @@ import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
 
+const dummyList = [
+  {
+    id: 1,
+    name: 'java',
+  },
+  {
+    id: 2,
+    name: 'javascript',
+  },
+  {
+    id: 3,
+    name: '자바',
+  },
+  {
+    id: 4,
+    name: '자스',
+  },
+  {
+    id: 5,
+    name: '자바스크립트',
+  },
+  {
+    id: 6,
+    name: 'javascriptjavascriptjavascriptjavascript',
+  },
+  {
+    id: 7,
+    name: '자스스스',
+  },
+  {
+    id: 8,
+    name: 'ㅁㄴㅇㅁㄴㅇ',
+  },
+];
+
 const singleFilters = [
   { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
   { id: 2, type: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
@@ -61,13 +96,15 @@ const PublicSearchResultPage = () => {
   const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
     {
       id: 1,
-      type: '태그',
+      type: 'tags',
+      name: '태그',
       values: [],
       getValues: getTagsWhenWorkbookSearchASync,
     },
     {
       id: 2,
-      type: '작성자',
+      type: 'users',
+      name: '작성자',
       values: [],
       getValues: getUsersWhenWorkbookSearchAsync,
     },
@@ -126,7 +163,7 @@ const PublicSearchResultPage = () => {
 
         return {
           ...item,
-          values: values.map((dummy) => ({ ...dummy, isSelected: false })),
+          values: dummyList.map((value) => ({ ...value, isSelected: false })),
         };
       })
     );
@@ -160,10 +197,16 @@ const PublicSearchResultPage = () => {
 
   useEffect(() => {
     setIsSearching(true);
-    setMultiFilterValues('태그');
-    setMultiFilterValues('작성자');
+    setMultiFilterValues('tags');
+    setMultiFilterValues('users');
     searchForPublicWorkbook({ keyword, tags, users, criteria });
   }, []);
+
+  useEffect(() => {
+    resetSearchResult();
+    setIsSearching(true);
+    searchForPublicWorkbook({ keyword, tags, users, criteria, start: 0 });
+  }, [tags, users]);
 
   if (isSearching) {
     return <PublicWorkbookLoadable />;
@@ -195,7 +238,7 @@ const PublicSearchResultPage = () => {
                     <ResetIcon width="1rem" height="1rem" />
                   </FilterResetButton>
                 )}
-                {multiFilters.map(({ id, type }, index) => (
+                {multiFilters.map(({ id, type, name }, index) => (
                   <MultiFilterButton
                     key={id}
                     shape="round"
@@ -210,14 +253,16 @@ const PublicSearchResultPage = () => {
                         content: (
                           <MultiFilterSelector
                             type={type}
+                            name={name}
                             values={multiFilters[index].values}
+                            query={{ keyword, criteria, tags, users }}
                             setMultiFilters={setMultiFilters}
                           />
                         ),
                       });
                     }}
                   >
-                    {type}
+                    {name}
                     <DownIcon width="1rem" height="1rem" />
                   </MultiFilterButton>
                 ))}
@@ -250,9 +295,9 @@ const PublicSearchResultPage = () => {
                           type="button"
                           shape="round"
                           backgroundColor={
-                            type === '작성자' ? 'gray_2' : 'green'
+                            type === 'users' ? 'gray_2' : 'green'
                           }
-                          color={type === '작성자' ? 'gray_8' : 'white'}
+                          color={type === 'users' ? 'gray_8' : 'white'}
                           onClick={() => removeMultiFilterItem(type, id)}
                         >
                           {name}

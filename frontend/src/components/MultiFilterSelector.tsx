@@ -4,19 +4,29 @@ import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
-import { useModal } from '../hooks';
+import { SEARCH_CRITERIA } from '../constants';
+import { useModal, useRouter } from '../hooks';
 import { Flex, scrollBarStyle } from '../styles';
 import {
   MultiFilter,
+  MultiFilterNames,
   MultiFilterTypes,
   MultiFilterValue,
 } from '../types/filter';
+import { ValueOf } from '../types/utils';
 
 interface Props {
   type: MultiFilterTypes;
+  name: MultiFilterNames;
   values: MultiFilterValue[];
+  query: Query;
   setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
 }
+
+type Query = Record<MultiFilterTypes, string | null> & {
+  keyword: string;
+  criteria: ValueOf<typeof SEARCH_CRITERIA>;
+};
 
 interface SearchBarStyleProps {
   isFocus: boolean;
@@ -28,7 +38,9 @@ interface MultiFilterItemStyleProps {
 
 const MultiFilterSelector = ({
   type,
+  name,
   values: data,
+  query,
   setMultiFilters,
 }: Props) => {
   const { closeModal } = useModal();
@@ -36,6 +48,8 @@ const MultiFilterSelector = ({
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
+
+  const { routePublicSearchResultQuery } = useRouter();
 
   const regExpKeyword = new RegExp(filterKeyword, 'i');
 
@@ -61,7 +75,7 @@ const MultiFilterSelector = ({
 
   return (
     <>
-      <Title>{type} 선택</Title>
+      <Title>{name} 선택</Title>
       <SearchBar isFocus={isSearchBarFocus}>
         <SearchInput
           onFocus={() => setIsSearchBarFocus(true)}
@@ -70,7 +84,7 @@ const MultiFilterSelector = ({
           onChange={({ target }) => setFilterKeyword(target.value)}
           name="search"
           role="search"
-          placeholder={`${type}를 입력해보세요.`}
+          placeholder={`${name}를 입력해보세요.`}
         />
         {filterKeyword && (
           <button type="button" onClick={() => setFilterKeyword('')}>
@@ -97,6 +111,13 @@ const MultiFilterSelector = ({
         onClick={() => {
           setSelectedValues();
           closeModal();
+          routePublicSearchResultQuery({
+            ...query,
+            [type]: values
+              .filter(({ isSelected }) => isSelected)
+              .map(({ id }) => id)
+              .join(','),
+          });
         }}
       >
         확인
