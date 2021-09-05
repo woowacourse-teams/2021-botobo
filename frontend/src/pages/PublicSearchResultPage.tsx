@@ -87,7 +87,9 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook,
     resetSearchResult,
   } = usePublicSearch();
-  const { keyword, tags, users, criteria } = usePublicSearchQuery();
+
+  const query = usePublicSearchQuery();
+  const { keyword, tags, users, criteria } = query;
 
   const { openModal } = useModal();
 
@@ -165,10 +167,25 @@ const PublicSearchResultPage = () => {
 
         return {
           ...item,
-          values: item.values.filter(({ id }) => id !== itemId),
+          values: item.values.map((value) => {
+            if (value.id !== itemId) return value;
+
+            return {
+              ...value,
+              isSelected: !value.isSelected,
+            };
+          }),
         };
       })
     );
+
+    routePublicSearchResultQuery({
+      ...query,
+      [type]: query[type]
+        ?.split(',')
+        .filter((id) => Number(id) !== itemId)
+        .join(','),
+    });
   };
 
   const resetFilterValues = () => {
@@ -193,13 +210,13 @@ const PublicSearchResultPage = () => {
     setIsSearching(true);
     setMultiFilterValues('tags');
     setMultiFilterValues('users');
-    searchForPublicWorkbook({ keyword, tags, users, criteria, start: 0 });
+    searchForPublicWorkbook(query);
   }, []);
 
   useEffect(() => {
     setIsSearching(true);
     resetSearchResult();
-    searchForPublicWorkbook({ keyword, tags, users, criteria, start: 0 });
+    searchForPublicWorkbook({ ...query, start: 0 });
   }, [currentFilterId, tags, users]);
 
   if (isSearching) {
@@ -249,7 +266,7 @@ const PublicSearchResultPage = () => {
                             type={type}
                             name={name}
                             values={multiFilters[index].values}
-                            query={{ keyword, criteria, tags, users }}
+                            query={query}
                             setMultiFilters={setMultiFilters}
                           />
                         ),

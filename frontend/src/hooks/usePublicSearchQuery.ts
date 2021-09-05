@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { SEARCH_CRITERIA, SEARCH_ORDER } from '../constants';
 import { ValueOf } from '../types/utils';
 
+export type UsePublicSearchQueryType = ReturnType<typeof usePublicSearchQuery>;
+
 const usePublicSearchQuery = () => {
   const query = new URLSearchParams(useLocation().search);
 

@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
-import { SEARCH_CRITERIA } from '../constants';
 import { useModal, useRouter } from '../hooks';
+import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
 import { Flex, scrollBarStyle } from '../styles';
 import {
   MultiFilter,
@@ -13,20 +13,14 @@ import {
   MultiFilterTypes,
   MultiFilterValue,
 } from '../types/filter';
-import { ValueOf } from '../types/utils';
 
 interface Props {
   type: MultiFilterTypes;
   name: MultiFilterNames;
   values: MultiFilterValue[];
-  query: Query;
+  query: UsePublicSearchQueryType;
   setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
 }
-
-type Query = Record<MultiFilterTypes, string | null> & {
-  keyword: string;
-  criteria: ValueOf<typeof SEARCH_CRITERIA>;
-};
 
 interface SearchBarStyleProps {
   isFocus: boolean;
