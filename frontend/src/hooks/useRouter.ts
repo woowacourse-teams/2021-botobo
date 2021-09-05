@@ -54,8 +54,8 @@ const useRouter = () => {
     history[method]({
       pathname: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
       search: `?keyword=${keyword}&criteria=${criteria}&size=${size}${
-        tags ? `tags=${tags}` : ''
-      }${users ? `users=${users}` : ''}`,
+        tags ? `&tags=${tags}` : ''
+      }${users ? `&users=${users}` : ''}`,
     });
 
   const routePrevPage = () => history.goBack();

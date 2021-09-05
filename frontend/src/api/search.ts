@@ -37,8 +37,8 @@ export const getSearchResultAsync = async ({
 }: PublicWorkbookAsync) => {
   const { data } = await request.get<PublicWorkbookResponse[]>(
     `/search/workbooks?keyword=${keyword}&criteria=${criteria}&order=${order}&start=${start}&size=${size}${
-      tags ? `tags=${tags}` : ''
-    }${users ? `users=${users}` : ''}`
+      tags ? `&tags=${tags}` : ''
+    }${users ? `&users=${users}` : ''}`
   );
 
   return data;
