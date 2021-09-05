@@ -2,9 +2,17 @@ import { PublicWorkbookResponse, SearchKeywordResponse } from './../types';
 import { request } from './request';
 import { PublicWorkbookAsync } from './workbook';
 
-export const getUserKeywordAsync = async (keyword: string) => {
+export const getTagsWhenWorkbookSearchASync = async (keyword: string) => {
   const { data } = await request.get<SearchKeywordResponse[]>(
-    `/search/users?keyword=${keyword}`
+    `/tags?workbook=${keyword}`
+  );
+
+  return data;
+};
+
+export const getAuthorsWhenWorkbookSearchAsync = async (keyword: string) => {
+  const { data } = await request.get<SearchKeywordResponse[]>(
+    `/users?workbook=${keyword}`
   );
 
   return data;

@@ -2,6 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
+import {
+  getAuthorsWhenWorkbookSearchAsync,
+  getTagsWhenWorkbookSearchASync,
+} from '../api';
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
 import {
@@ -27,41 +31,6 @@ import { ValueOf } from '../types/utils';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicWorkbookLoadable from './PublicSearchResultLoadable';
-
-const dummyList = [
-  {
-    id: 1,
-    name: 'java',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: 'javascriptjavascriptjavascriptjavascript',
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
 
 const singleFilters = [
   { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
@@ -90,8 +59,18 @@ const PublicSearchResultPage = () => {
   const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
   const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
-    { id: 1, type: '태그', values: [] },
-    { id: 2, type: '작성자', values: [] },
+    {
+      id: 1,
+      type: '태그',
+      values: [],
+      getValues: getTagsWhenWorkbookSearchASync,
+    },
+    {
+      id: 2,
+      type: '작성자',
+      values: [],
+      getValues: getAuthorsWhenWorkbookSearchAsync,
+    },
   ]);
 
   const [currentFilterId, setCurrentFilterId] = useState(
@@ -124,12 +103,31 @@ const PublicSearchResultPage = () => {
     searchForPublicWorkbook(initialValue);
   };
 
-  const getMultiFilterValues = () => {
+  const getMultiFilterValues = async (type: MultiFilterTypes) => {
+    try {
+      const targetFilter = multiFilters.find((item) => item.type === type);
+
+      if (!targetFilter) return [];
+
+      return await targetFilter.getValues(keyword);
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
+  const setMultiFilterValues = async (type: MultiFilterTypes) => {
+    const values = await getMultiFilterValues(type);
+
     setMultiFilters((prevValue) =>
-      prevValue.map((item) => ({
-        ...item,
-        values: dummyList.map((dummy) => ({ ...dummy, isSelected: false })),
-      }))
+      prevValue.map((item) => {
+        if (item.type !== type) return item;
+
+        return {
+          ...item,
+          values: values.map((dummy) => ({ ...dummy, isSelected: false })),
+        };
+      })
     );
   };
 
@@ -161,7 +159,8 @@ const PublicSearchResultPage = () => {
 
   useEffect(() => {
     setIsSearching(true);
-    getMultiFilterValues();
+    setMultiFilterValues('태그');
+    setMultiFilterValues('작성자');
     searchForPublicWorkbook({ keyword, type, criteria });
   }, []);
 
