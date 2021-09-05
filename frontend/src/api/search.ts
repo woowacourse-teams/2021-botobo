@@ -10,7 +10,7 @@ export const getTagsWhenWorkbookSearchASync = async (keyword: string) => {
   return data;
 };
 
-export const getAuthorsWhenWorkbookSearchAsync = async (keyword: string) => {
+export const getUsersWhenWorkbookSearchAsync = async (keyword: string) => {
   const { data } = await request.get<SearchKeywordResponse[]>(
     `/users?workbook=${keyword}`
   );

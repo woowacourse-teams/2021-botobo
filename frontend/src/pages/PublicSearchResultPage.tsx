@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
 import {
-  getAuthorsWhenWorkbookSearchAsync,
   getTagsWhenWorkbookSearchASync,
+  getUsersWhenWorkbookSearchAsync,
 } from '../api';
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
@@ -69,7 +69,7 @@ const PublicSearchResultPage = () => {
       id: 2,
       type: '작성자',
       values: [],
-      getValues: getAuthorsWhenWorkbookSearchAsync,
+      getValues: getUsersWhenWorkbookSearchAsync,
     },
   ]);
 

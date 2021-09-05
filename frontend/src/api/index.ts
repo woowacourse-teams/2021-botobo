@@ -36,7 +36,7 @@ export {
 
 export {
   getTagsWhenWorkbookSearchASync,
-  getAuthorsWhenWorkbookSearchAsync,
+  getUsersWhenWorkbookSearchAsync,
   getTagKeywordAsync,
   getSearchResultAsync,
 } from './search';
