@@ -45,7 +45,7 @@ export const workbookState = selector<WorkbookState>({
     } catch (error) {
       return {
         data: [],
-        errorMessage: '문제집을 불러오지 못했습니다.',
+        errorMessage: '문제집을 불러오지 못했어요.',
       };
     }
   },

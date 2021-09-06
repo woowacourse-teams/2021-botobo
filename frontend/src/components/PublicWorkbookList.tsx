@@ -12,10 +12,10 @@ import PublicWorkbook from './PublicWorkbook';
 interface Props {
   isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
-  searchForPublicWorkbook: ({
-    keyword,
-    ...options
-  }: PublicWorkbookAsync) => Promise<void>;
+  searchForPublicWorkbook: (
+    { keyword, ...options }: PublicWorkbookAsync,
+    isNew?: boolean
+  ) => Promise<void>;
 }
 
 const PublicWorkbookList = ({
@@ -38,7 +38,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({ keyword, tags, users });
+        await searchForPublicWorkbook({ keyword, tags, users }, false);
       },
       {
         threshold: 0.1,

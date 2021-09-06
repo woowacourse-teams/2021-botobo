@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
 import {
+  PublicWorkbookAsync,
   getTagsWhenWorkbookSearchASync,
   getUsersWhenWorkbookSearchAsync,
 } from '../api';
@@ -19,7 +20,6 @@ import {
   useModal,
   usePublicSearchQuery,
   usePublicSearchResult,
-  useRouter,
 } from '../hooks';
 import { Flex } from '../styles';
 import {
@@ -30,7 +30,7 @@ import {
 import { ValueOf } from '../types/utils';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
-import PublicWorkbookLoadable from './PublicSearchResultLoadable';
+import PublicSearchResultLoadable from './PublicSearchResultLoadable';
 
 const dummyList = [
   {
@@ -81,19 +81,18 @@ const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
 const PublicSearchResultPage = () => {
   const {
     workbookSearchResult,
+    isInitialLoading,
     isLoading,
-    isSearching,
-    setIsSearching,
+    setIsLoading,
     searchForPublicWorkbook,
     resetSearchResult,
+    routePrevPage,
   } = usePublicSearchResult();
 
   const query = usePublicSearchQuery();
-  const { keyword, tags, users, criteria } = query;
+  const { keyword, criteria } = query;
 
   const { openModal } = useModal();
-
-  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
   const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
     {
@@ -124,12 +123,18 @@ const PublicSearchResultPage = () => {
   const isFiltered =
     currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
 
+  const setFilteredPublicWorkbook = (newQuery: PublicWorkbookAsync) => {
+    setIsLoading(true);
+    resetSearchResult();
+    searchForPublicWorkbook({ ...newQuery, start: 0 });
+  };
+
   const setSingleFilterValues = (
     id: number,
     criteria: ValueOf<typeof SEARCH_CRITERIA>
   ) => {
     setCurrentFilterId(id);
-    routePublicSearchResultQuery({ keyword, tags, users, criteria, start: 0 });
+    setFilteredPublicWorkbook({ ...query, criteria });
   };
 
   const getMultiFilterValues = async (type: MultiFilterTypes) => {
@@ -145,7 +150,7 @@ const PublicSearchResultPage = () => {
     }
   };
 
-  const setMultiFilterValues = async (type: MultiFilterTypes) => {
+  const setInitialMultiFilterValues = async (type: MultiFilterTypes) => {
     const values = await getMultiFilterValues(type);
 
     setMultiFilters((prevValue) =>
@@ -179,7 +184,7 @@ const PublicSearchResultPage = () => {
       })
     );
 
-    routePublicSearchResultQuery({
+    setFilteredPublicWorkbook({
       ...query,
       [type]: query[type]
         ?.split(',')
@@ -189,7 +194,7 @@ const PublicSearchResultPage = () => {
   };
 
   const resetFilterValues = () => {
-    setSingleFilterValues(singleFilters[0].id, singleFilters[0].criteria);
+    setCurrentFilterId(singleFilters[0].id);
     setMultiFilters((prevValue) =>
       prevValue.map((item) => ({
         ...item,
@@ -199,28 +204,20 @@ const PublicSearchResultPage = () => {
         })),
       }))
     );
-    resetQuery();
-  };
 
-  const resetQuery = () => {
-    routePublicSearchResultQuery({ keyword, start: 0 });
+    setFilteredPublicWorkbook({ keyword });
   };
 
   useEffect(() => {
-    setIsSearching(true);
-    setMultiFilterValues('tags');
-    setMultiFilterValues('users');
-    searchForPublicWorkbook(query);
+    if (!isInitialLoading) return;
+
+    setInitialMultiFilterValues('tags');
+    setInitialMultiFilterValues('users');
+    searchForPublicWorkbook({ keyword, start: 0 });
   }, []);
 
-  useEffect(() => {
-    setIsSearching(true);
-    resetSearchResult();
-    searchForPublicWorkbook({ ...query, start: 0 });
-  }, [currentFilterId, tags, users]);
-
-  if (isSearching) {
-    return <PublicWorkbookLoadable />;
+  if (isInitialLoading) {
+    return <PublicSearchResultLoadable />;
   }
 
   return (
@@ -256,6 +253,7 @@ const PublicSearchResultPage = () => {
                           values={multiFilters[index].values}
                           query={query}
                           setMultiFilters={setMultiFilters}
+                          setFilteredPublicWorkbook={setFilteredPublicWorkbook}
                         />
                       ),
                     });
@@ -302,7 +300,7 @@ const PublicSearchResultPage = () => {
               </SelectedMultiFilterWrapper>
             )}
           </FilterWrapper>
-          {workbookSearchResult.length === 0 ? (
+          {!isLoading && workbookSearchResult.length === 0 ? (
             <NoSearchResult>
               <div>검색 결과가 없어요.</div>
               <Button

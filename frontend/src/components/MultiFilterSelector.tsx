@@ -2,9 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import { PublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
-import { useModal, useRouter } from '../hooks';
+import { useModal } from '../hooks';
 import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
 import { Flex, scrollBarStyle } from '../styles';
 import {
@@ -20,6 +21,7 @@ interface Props {
   values: MultiFilterValue[];
   query: UsePublicSearchQueryType;
   setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
+  setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
 }
 
 interface SearchBarStyleProps {
@@ -36,14 +38,13 @@ const MultiFilterSelector = ({
   values: data,
   query,
   setMultiFilters,
+  setFilteredPublicWorkbook,
 }: Props) => {
   const { closeModal } = useModal();
 
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
-
-  const { routePublicSearchResultQuery } = useRouter();
 
   const regExpKeyword = new RegExp(filterKeyword, 'i');
 
@@ -105,7 +106,7 @@ const MultiFilterSelector = ({
         onClick={() => {
           setSelectedValues();
           closeModal();
-          routePublicSearchResultQuery({
+          setFilteredPublicWorkbook({
             ...query,
             [type]: values
               .filter(({ isSelected }) => isSelected)

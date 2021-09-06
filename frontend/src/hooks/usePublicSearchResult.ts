@@ -1,41 +1,54 @@
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
-import { PublicWorkbookResponse } from '../types';
+import { publicSearchResultState } from '../recoil';
+import { publicSearchInitialLoadState } from '../recoil/searchState';
+import { useRouter } from '.';
 
 const usePublicSearchResult = () => {
-  const [isSearching, setIsSearching] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [startIndex, setStartIndex] = useState(0);
-  const [workbookSearchResult, setWorkbookSearchResult] = useState<
-    PublicWorkbookResponse[]
-  >([]);
+  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
-  const searchForPublicWorkbook = async ({
-    keyword,
-    start,
-    ...options
-  }: PublicWorkbookAsync) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+
+  const [isInitialLoading, setIsInitialLoading] = useRecoilState(
+    publicSearchInitialLoadState
+  );
+  const [workbookSearchResult, setWorkbookSearchResult] = useRecoilState(
+    publicSearchResultState
+  );
+
+  const searchForPublicWorkbook = async (
+    { keyword, start, ...options }: PublicWorkbookAsync,
+    isNew = true
+  ) => {
     if (keyword === '') {
-      setIsSearching(false);
+      setIsLoading(false);
+      setIsInitialLoading(false);
 
       return;
     }
 
     try {
-      const data = await getSearchResultAsync({
+      const newValues = await getSearchResultAsync({
         keyword,
         start: start ?? startIndex,
         ...options,
       });
-      setWorkbookSearchResult((prevValue) => [...prevValue, ...data]);
-      setStartIndex((prevState) => prevState + 1);
-      setIsSearching(false);
+
+      setWorkbookSearchResult(
+        isNew ? newValues : (prevValues) => [...prevValues, ...newValues]
+      );
+      setStartIndex((prevValue) => prevValue + 1);
       setIsLoading(false);
+      setIsInitialLoading(false);
+
+      routePublicSearchResultQuery({ keyword, start, ...options });
     } catch (error) {
       console.error(error);
-      setIsSearching(false);
       setIsLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
@@ -47,10 +60,11 @@ const usePublicSearchResult = () => {
   return {
     workbookSearchResult,
     resetSearchResult,
-    isSearching,
+    isInitialLoading,
     isLoading,
-    setIsSearching,
+    setIsLoading,
     searchForPublicWorkbook,
+    routePrevPage,
   };
 };
 
