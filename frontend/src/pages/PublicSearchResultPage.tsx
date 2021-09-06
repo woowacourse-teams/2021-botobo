@@ -29,7 +29,7 @@ import PublicSearchResultLoadable from './PublicSearchResultLoadable';
 const dummyList = [
   {
     id: 1,
-    name: 'java',
+    name: 'java  dd',
   },
   {
     id: 2,
@@ -49,7 +49,8 @@ const dummyList = [
   },
   {
     id: 6,
-    name: 'javascriptjavascriptjavascriptjavascript',
+    name: `javascriptjavascriptjavascriptja
+    vascript`,
   },
   {
     id: 7,

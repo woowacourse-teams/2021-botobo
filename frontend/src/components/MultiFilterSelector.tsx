@@ -47,7 +47,7 @@ const MultiFilterSelector = ({
 
   const setPublicWorkbookState = useSetRecoilState(publicSearchResultState);
 
-  const regExpKeyword = new RegExp(filterKeyword, 'i');
+  const regExpKeyword = new RegExp(filterKeyword.replace(/\s+/g, ''), 'i');
 
   const checkFilterItem = (name: string) => {
     setValues((prevValue) =>
@@ -91,7 +91,7 @@ const MultiFilterSelector = ({
       </SearchBar>
       <MultiFilterList>
         {values
-          .filter((v) => regExpKeyword.test(v.name.replaceAll(/\s/g, '')))
+          .filter((v) => regExpKeyword.test(v.name.replace(/\s+/g, '')))
           .map(({ id, name, isSelected }) => (
             <MultiFilterItem
               key={id}
