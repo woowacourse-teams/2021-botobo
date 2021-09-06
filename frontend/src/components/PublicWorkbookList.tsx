@@ -52,8 +52,8 @@ const PublicWorkbookList = ({
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-        <li ref={scrollTarget} key={id}>
+      {publicWorkbooks.map(({ id, name, cardCount, author }, index) => (
+        <li ref={scrollTarget} key={index}>
           <PublicWorkbook
             name={name}
             cardCount={cardCount}
