@@ -159,13 +159,15 @@ const PublicSearchResultPage = () => {
           {!isLoading && publicWorkbookResult.length === 0 ? (
             <NoSearchResult>
               <div>검색 결과가 없어요.</div>
-              <Button
-                size="full"
-                backgroundColor="gray_6"
-                onClick={routePrevPage}
-              >
-                돌아가기
-              </Button>
+              {!hasSelectedMultiFilter && (
+                <Button
+                  size="full"
+                  backgroundColor="gray_6"
+                  onClick={routePrevPage}
+                >
+                  돌아가기
+                </Button>
+              )}
             </NoSearchResult>
           ) : (
             <PublicWorkbookList
