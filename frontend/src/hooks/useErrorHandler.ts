@@ -8,7 +8,9 @@ const useErrorHandler = () => {
   const { routeLogin } = useRouter();
   const showSnackbar = useSnackbar();
 
-  const handler = (error: AxiosError | Error) => {
+  const handler = (error: AxiosError | Error | unknown) => {
+    if (!(error instanceof Error)) return;
+
     console.error(error.message);
 
     if (!axios.isAxiosError(error)) return;
