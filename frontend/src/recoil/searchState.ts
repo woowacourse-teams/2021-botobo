@@ -11,3 +11,8 @@ export const publicSearchInitialLoadState = atom({
   key: 'publicSearchInitialLoadState',
   default: true,
 });
+
+export const publicSearchStartIndexState = atom({
+  key: 'publicSearchStartIndexState',
+  default: 0,
+});

@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
-import { publicSearchResultState } from '../recoil';
+import {
+  publicSearchResultState,
+  publicSearchStartIndexState,
+} from '../recoil';
 import { publicSearchInitialLoadState } from '../recoil/searchState';
 import { useRouter } from '.';
 
@@ -10,8 +13,10 @@ const usePublicSearchResult = () => {
   const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [startIndex, setStartIndex] = useState(0);
 
+  const [startIndex, setStartIndex] = useRecoilState(
+    publicSearchStartIndexState
+  );
   const [isInitialLoading, setIsInitialLoading] = useRecoilState(
     publicSearchInitialLoadState
   );
