@@ -3,24 +3,20 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
-import SearchCloseIcon from '../assets/cross-mark.svg';
+import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
 import { Flex } from '../styles';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
-import { setSessionStorage } from '../utils';
+import { isMobile, setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 import { PublicSearchLoadable } from '.';
 
 interface SearchBarStyleProps {
   isFocus: boolean;
   isSticky: boolean;
-}
-
-interface SearchButtonStyleProps {
-  isFocus: boolean;
 }
 
 const PublicSearchPage = () => {
@@ -89,8 +85,7 @@ const PublicSearchPage = () => {
     if (!searchKeyword) return;
 
     const getRecommendedKeywords = async () => {
-      const keyword = searchKeyword.trim().replace(/\s+/g, ' ');
-      const tagKeywords = await getTagKeywordAsync(keyword);
+      const tagKeywords = await getTagKeywordAsync(searchKeyword);
 
       setRecommendedKeywords(tagKeywords);
     };
@@ -111,16 +106,15 @@ const PublicSearchPage = () => {
           isSticky={isSticky}
           isFocus={isFocus}
           onFocus={() => setIsFocus(true)}
-          onBlur={() => {
-            if (searchKeyword) return;
-
-            setIsFocus(false);
-          }}
+          onBlur={() => setIsFocus(isMobile ? true : false)}
           onSubmit={(event) => {
             event.preventDefault();
             if (!searchKeyword) return;
 
-            routePublicSearchResultQuery({ keyword: searchKeyword });
+            routePublicSearchResultQuery({
+              keyword: searchKeyword,
+              method: 'push',
+            });
           }}
         >
           <SearchInput
@@ -134,26 +128,34 @@ const PublicSearchPage = () => {
               type="button"
               onClick={() => setSearchKeyword('')}
             >
-              <SearchCloseIcon width="0.5rem" height="0.5rem" />
+              <KeywordResetIcon width="0.5rem" height="0.5rem" />
             </KeywordResetButton>
           )}
           <SearchButton isFocus={isFocus}>
             <SearchIcon width="1.3rem" height="1.3rem" />
           </SearchButton>
-          {searchKeyword && recommendedKeywords.length > 0 && (
-            <Autocomplete>
+          {isFocus && searchKeyword && recommendedKeywords.length > 0 && (
+            <Autocomplete isSticky={isSticky}>
               {recommendedKeywords.map(({ id, name }) => (
                 <RecommendedKeyword
                   key={id}
-                  onTouchStart={searchInputRef.current?.blur}
-                  onClick={() => {
-                    routePublicSearchResultQuery({ keyword: name });
+                  onTouchStart={() => {
+                    if (!isMobile) return;
+
+                    searchInputRef.current?.blur();
                   }}
+                  onMouseDown={() =>
+                    routePublicSearchResultQuery({
+                      keyword: name,
+                      method: 'push',
+                    })
+                  }
                 >
                   <SearchIcon width="0.8rem" height="0.8rem" />
                   {name}
                 </RecommendedKeyword>
               ))}
+              <button onClick={() => setIsFocus(false)}>닫기</button>
             </Autocomplete>
           )}
         </SearchBar>
@@ -229,7 +231,7 @@ const KeywordResetButton = styled.button`
   right: 3rem;
 `;
 
-const SearchButton = styled.button<SearchButtonStyleProps>`
+const SearchButton = styled.button<Pick<SearchBarStyleProps, 'isFocus'>>`
   ${Flex({ items: 'center' })};
 
   ${({ theme, isFocus }) => css`
@@ -240,25 +242,35 @@ const SearchButton = styled.button<SearchButtonStyleProps>`
   `};
 `;
 
-const Autocomplete = styled.ul`
+const Autocomplete = styled.ul<Pick<SearchBarStyleProps, 'isSticky'>>`
   position: absolute;
   left: 0;
-  top: 3rem;
   width: 100%;
   padding: 0.5rem 0;
 
-  ${({ theme }) => css`
+  ${({ theme, isSticky }) => css`
     background-color: ${theme.color.white};
-    border: 1px solid ${theme.color.gray_3};
+    box-shadow: ${theme.boxShadow.card};
+    border-bottom-right-radius: ${theme.borderRadius.square};
+    border-bottom-left-radius: ${theme.borderRadius.square};
     border-top: 0;
+
+    top: ${isSticky ? '3rem' : 'calc(3rem - 1px)'};
+
+    & > button {
+      float: right;
+      color: ${theme.color.gray_1}
+      font-size: ${theme.fontSize.small};
+      margin: 0.5rem 0;
+      margin-right: 1rem;
+    }
   `};
 `;
 
 const RecommendedKeyword = styled.li`
   ${Flex({ items: 'center' })};
-  margin-bottom: 0.3rem;
   cursor: pointer;
-  padding: 0.3rem 0.5rem;
+  padding: 0.7rem 1rem;
 
   & > svg {
     margin-right: 0.5rem;

@@ -59,8 +59,9 @@ const useRouter = () => {
     type = 'name',
     keyword = '',
     size = 20,
+    method = 'replace',
   }: PublicSearchQuery = {}) =>
-    history.push({
+    history[method]({
       pathname: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
       search: `?type=${type}&keyword=${keyword}&criteria=${criteria}&size=${size}`,
     });
