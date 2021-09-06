@@ -7,7 +7,7 @@ import { publicSearchResultState } from '../recoil';
 import { PublicWorkbookResponse } from '../types';
 import { MultiFilterTypes } from '../types/filter';
 import { ValueOf } from '../types/utils';
-import { usePublicSearchQuery, useRouter } from '.';
+import { usePublicSearchQuery, useRouter, useSnackbar } from '.';
 
 const dummyList = [
   {
@@ -60,6 +60,8 @@ const usePublicSearchResult = () => {
     singleFilters.find((filter) => filter.criteria === criteria)?.id ??
       singleFilters[0].id
   );
+
+  const showSnackbar = useSnackbar();
 
   const setIsInitialLoading = (isInitialLoading: boolean) => {
     setPublicWorkbookState((prevValue) => ({ ...prevValue, isInitialLoading }));
@@ -123,6 +125,11 @@ const usePublicSearchResult = () => {
       console.error(error);
       setIsLoading(false);
       setIsInitialLoading(false);
+
+      showSnackbar({
+        message: '검색에 실패했어요. 다시 시도해주세요.',
+        type: 'error',
+      });
     }
   };
 
