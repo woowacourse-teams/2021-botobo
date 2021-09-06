@@ -27,19 +27,23 @@ const PublicSearchResultPage = () => {
   const {
     query,
     isLoading,
-    singleFilters,
     currentFilterId,
     searchForPublicWorkbook,
-    routePrevPage,
     setFilteredPublicWorkbook,
     setSingleFilterValues,
     setInitialMultiFilterValues,
     removeMultiFilterItem,
     resetFilterValues,
+    routePublicCards,
+    routePrevPage,
   } = usePublicSearchResult();
 
-  const { publicWorkbookResult, isInitialLoading, multiFilters } =
-    useRecoilValue(publicSearchResultState);
+  const {
+    publicWorkbookResult,
+    isInitialLoading,
+    singleFilters,
+    multiFilters,
+  } = useRecoilValue(publicSearchResultState);
 
   const { keyword } = query;
 
@@ -72,12 +76,6 @@ const PublicSearchResultPage = () => {
           <Title>{keyword} 검색 결과</Title>
           <FilterWrapper>
             <Filter>
-              {isFiltered && (
-                <FilterResetButton onClick={resetFilterValues}>
-                  <span>초기화</span>
-                  <ResetIcon width="1rem" height="1rem" />
-                </FilterResetButton>
-              )}
               {multiFilters.map(({ id, type, name }, index) => (
                 <MultiFilterButton
                   key={id}
@@ -88,7 +86,12 @@ const PublicSearchResultPage = () => {
                       : 'gray_5'
                   }
                   inversion={true}
-                  onClick={() => {
+                  onClick={({ currentTarget }) => {
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                    });
+
                     openModal({
                       content: (
                         <MultiFilterSelector
@@ -112,8 +115,13 @@ const PublicSearchResultPage = () => {
                   shape="round"
                   backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
                   inversion={true}
-                  onClick={() => {
+                  onClick={({ currentTarget }) => {
                     if (id === currentFilterId) return;
+
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                    });
 
                     setSingleFilterValues(id, criteria);
                   }}
@@ -122,8 +130,13 @@ const PublicSearchResultPage = () => {
                 </Button>
               ))}
             </Filter>
-            {hasSelectedMultiFilter && (
+
+            {isFiltered && (
               <SelectedMultiFilterWrapper>
+                <FilterResetButton onClick={resetFilterValues}>
+                  <span>초기화</span>
+                  <ResetIcon width="1rem" height="1rem" />
+                </FilterResetButton>
                 {multiFilters.map(({ type, values }) =>
                   values
                     .filter(({ isSelected }) => isSelected)
@@ -156,9 +169,11 @@ const PublicSearchResultPage = () => {
             </NoSearchResult>
           ) : (
             <PublicWorkbookList
+              query={query}
               isLoading={isLoading}
               publicWorkbooks={publicWorkbookResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
+              routePublicCards={routePublicCards}
             />
           )}
         </>
@@ -248,6 +263,7 @@ const Filter = styled.div`
 `;
 
 const SelectedMultiFilterWrapper = styled.div`
+  ${Flex({ items: 'center' })};
   margin-top: 0.7rem;
   margin-bottom: 0.3rem;
   white-space: nowrap;
@@ -283,9 +299,11 @@ const SelectedMultiFilterButton = styled(Button)`
 
 const FilterResetButton = styled.button`
   ${Flex({ items: 'center' })};
+  height: 2rem;
 
   & > svg {
     margin-left: 0.3rem;
+    margin-bottom: 0.1rem;
   }
 `;
 

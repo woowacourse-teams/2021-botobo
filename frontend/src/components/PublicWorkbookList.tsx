@@ -3,28 +3,31 @@ import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
-import { usePublicSearchQuery, useRouter } from '../hooks';
+import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
+  query: UsePublicSearchQueryType;
   isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
   searchForPublicWorkbook: (
     { keyword, ...options }: PublicWorkbookAsync,
     isNew?: boolean
   ) => Promise<void>;
+  routePublicCards: () => void;
 }
 
 const PublicWorkbookList = ({
+  query,
   isLoading,
   publicWorkbooks,
   searchForPublicWorkbook,
+  routePublicCards,
 }: Props) => {
-  const { keyword, tags, users } = usePublicSearchQuery();
-  const { routePublicCards } = useRouter();
+  const { keyword, tags, users } = query;
 
   const scrollTarget = useRef<HTMLLIElement>(null);
 

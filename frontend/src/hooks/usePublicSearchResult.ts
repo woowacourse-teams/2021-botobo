@@ -45,26 +45,20 @@ const dummyList = [
   },
 ];
 
-const singleFilters = [
-  { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, type: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
-  { id: 3, type: '이름 순', criteria: SEARCH_CRITERIA.NAME },
-  { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
-];
-
 const usePublicSearchResult = () => {
-  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
+  const { routePrevPage, routePublicCards, routePublicSearchResultQuery } =
+    useRouter();
+
   const query = usePublicSearchQuery();
   const { keyword, criteria } = query;
+
+  const [{ startIndex, singleFilters, multiFilters }, setPublicWorkbookState] =
+    useRecoilState(publicSearchResultState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentFilterId, setCurrentFilterId] = useState(
     singleFilters.find((filter) => filter.criteria === criteria)?.id ??
       singleFilters[0].id
-  );
-
-  const [{ startIndex, multiFilters }, setPublicWorkbookState] = useRecoilState(
-    publicSearchResultState
   );
 
   const setIsInitialLoading = (isInitialLoading: boolean) => {
@@ -93,6 +87,12 @@ const usePublicSearchResult = () => {
   const resetSearchResult = () => {
     setWorkbookSearchResult([], true);
     setStartIndex('reset');
+  };
+
+  const setFilteredPublicWorkbook = (newQuery: PublicWorkbookAsync) => {
+    setIsLoading(true);
+    resetSearchResult();
+    searchForPublicWorkbook({ ...newQuery, start: 0 });
   };
 
   const searchForPublicWorkbook = async (
@@ -124,20 +124,6 @@ const usePublicSearchResult = () => {
       setIsLoading(false);
       setIsInitialLoading(false);
     }
-  };
-
-  const setFilteredPublicWorkbook = (newQuery: PublicWorkbookAsync) => {
-    setIsLoading(true);
-    resetSearchResult();
-    searchForPublicWorkbook({ ...newQuery, start: 0 });
-  };
-
-  const setSingleFilterValues = (
-    id: number,
-    criteria: ValueOf<typeof SEARCH_CRITERIA>
-  ) => {
-    setCurrentFilterId(id);
-    setFilteredPublicWorkbook({ ...query, criteria });
   };
 
   const getMultiFilterValues = async (type: MultiFilterTypes) => {
@@ -198,6 +184,14 @@ const usePublicSearchResult = () => {
     });
   };
 
+  const setSingleFilterValues = (
+    id: number,
+    criteria: ValueOf<typeof SEARCH_CRITERIA>
+  ) => {
+    setCurrentFilterId(id);
+    setFilteredPublicWorkbook({ ...query, criteria });
+  };
+
   const resetFilterValues = () => {
     setCurrentFilterId(singleFilters[0].id);
     setPublicWorkbookState((prevValue) => ({
@@ -217,16 +211,16 @@ const usePublicSearchResult = () => {
   return {
     query,
     isLoading,
-    singleFilters,
     currentFilterId,
     setIsLoading,
     searchForPublicWorkbook,
-    routePrevPage,
     setFilteredPublicWorkbook,
     setSingleFilterValues,
     setInitialMultiFilterValues,
     removeMultiFilterItem,
     resetFilterValues,
+    routePublicCards,
+    routePrevPage,
   };
 };
 
