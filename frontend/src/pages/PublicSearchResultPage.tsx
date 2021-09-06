@@ -1,9 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import { PublicWorkbookAsync } from '../api';
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
 import {
@@ -12,62 +11,13 @@ import {
   MultiFilterSelector,
   PublicWorkbookList,
 } from '../components';
-import { SEARCH_CRITERIA } from '../constants';
-import {
-  useModal,
-  usePublicSearchQuery,
-  usePublicSearchResult,
-} from '../hooks';
+import { useModal, usePublicSearchResult } from '../hooks';
 import { publicSearchResultState } from '../recoil';
 import { Flex } from '../styles';
-import { MultiFilterTypes, MultiFilterValue } from '../types/filter';
-import { ValueOf } from '../types/utils';
+import { MultiFilterValue } from '../types/filter';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 import PublicSearchResultLoadable from './PublicSearchResultLoadable';
-
-const dummyList = [
-  {
-    id: 1,
-    name: 'java  dd',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: `javascriptjavascriptjavascriptja
-    vascript`,
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
-
-const singleFilters = [
-  { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, type: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
-  { id: 3, type: '이름 순', criteria: SEARCH_CRITERIA.NAME },
-  { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
-];
 
 const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
   return values.some(({ isSelected }) => isSelected);
@@ -75,27 +25,25 @@ const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
 
 const PublicSearchResultPage = () => {
   const {
+    query,
     isLoading,
-    setIsLoading,
+    singleFilters,
+    currentFilterId,
     searchForPublicWorkbook,
-    resetSearchResult,
     routePrevPage,
+    setFilteredPublicWorkbook,
+    setSingleFilterValues,
+    setInitialMultiFilterValues,
+    removeMultiFilterItem,
+    resetFilterValues,
   } = usePublicSearchResult();
 
-  const query = usePublicSearchQuery();
-  const { keyword, criteria } = query;
+  const { publicWorkbookResult, isInitialLoading, multiFilters } =
+    useRecoilValue(publicSearchResultState);
+
+  const { keyword } = query;
 
   const { openModal } = useModal();
-
-  const [
-    { publicWorkbookResult, isInitialLoading, multiFilters },
-    setPublicWorkbookState,
-  ] = useRecoilState(publicSearchResultState);
-
-  const [currentFilterId, setCurrentFilterId] = useState(
-    singleFilters.find((filter) => filter.criteria === criteria)?.id ??
-      singleFilters[0].id
-  );
 
   const hasSelectedMultiFilter = multiFilters.find(({ values }) =>
     hasSelectedValueInMultiFilter(values)
@@ -103,94 +51,6 @@ const PublicSearchResultPage = () => {
 
   const isFiltered =
     currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
-
-  const setFilteredPublicWorkbook = (newQuery: PublicWorkbookAsync) => {
-    setIsLoading(true);
-    resetSearchResult();
-    searchForPublicWorkbook({ ...newQuery, start: 0 });
-  };
-
-  const setSingleFilterValues = (
-    id: number,
-    criteria: ValueOf<typeof SEARCH_CRITERIA>
-  ) => {
-    setCurrentFilterId(id);
-    setFilteredPublicWorkbook({ ...query, criteria });
-  };
-
-  const getMultiFilterValues = async (type: MultiFilterTypes) => {
-    try {
-      const targetFilter = multiFilters.find((item) => item.type === type);
-
-      if (!targetFilter) return [];
-
-      return await targetFilter.getValues(keyword);
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
-  const setInitialMultiFilterValues = async (type: MultiFilterTypes) => {
-    const values = await getMultiFilterValues(type);
-
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => {
-        if (item.type !== type) return item;
-
-        return {
-          ...item,
-          values: dummyList.map((value) => ({ ...value, isSelected: false })),
-        };
-      }),
-    }));
-  };
-
-  const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => {
-        if (item.type !== type) return item;
-
-        return {
-          ...item,
-          values: item.values.map((value) => {
-            if (value.id !== itemId) return value;
-
-            return {
-              ...value,
-              isSelected: !value.isSelected,
-            };
-          }),
-        };
-      }),
-    }));
-
-    setFilteredPublicWorkbook({
-      ...query,
-      [type]: query[type]
-        ?.split(',')
-        .filter((id) => Number(id) !== itemId)
-        .join(','),
-    });
-  };
-
-  const resetFilterValues = () => {
-    setCurrentFilterId(singleFilters[0].id);
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => ({
-        ...item,
-        values: item.values.map((value) => ({
-          ...value,
-          isSelected: false,
-        })),
-      })),
-    }));
-
-    setFilteredPublicWorkbook({ keyword });
-  };
 
   useEffect(() => {
     if (!isInitialLoading) return;
