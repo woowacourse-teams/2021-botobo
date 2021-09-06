@@ -1,12 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
-import {
-  PublicWorkbookAsync,
-  getTagsWhenWorkbookSearchASync,
-  getUsersWhenWorkbookSearchAsync,
-} from '../api';
+import { PublicWorkbookAsync } from '../api';
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
 import {
@@ -21,12 +18,9 @@ import {
   usePublicSearchQuery,
   usePublicSearchResult,
 } from '../hooks';
+import { publicSearchResultState } from '../recoil';
 import { Flex } from '../styles';
-import {
-  MultiFilter,
-  MultiFilterTypes,
-  MultiFilterValue,
-} from '../types/filter';
+import { MultiFilterTypes, MultiFilterValue } from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -80,8 +74,6 @@ const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
 
 const PublicSearchResultPage = () => {
   const {
-    workbookSearchResult,
-    isInitialLoading,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
@@ -94,22 +86,10 @@ const PublicSearchResultPage = () => {
 
   const { openModal } = useModal();
 
-  const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
-    {
-      id: 1,
-      type: 'tags',
-      name: '태그',
-      values: [],
-      getValues: getTagsWhenWorkbookSearchASync,
-    },
-    {
-      id: 2,
-      type: 'users',
-      name: '작성자',
-      values: [],
-      getValues: getUsersWhenWorkbookSearchAsync,
-    },
-  ]);
+  const [
+    { publicWorkbookResult, isInitialLoading, multiFilters },
+    setPublicWorkbookState,
+  ] = useRecoilState(publicSearchResultState);
 
   const [currentFilterId, setCurrentFilterId] = useState(
     singleFilters.find((filter) => filter.criteria === criteria)?.id ??
@@ -153,21 +133,23 @@ const PublicSearchResultPage = () => {
   const setInitialMultiFilterValues = async (type: MultiFilterTypes) => {
     const values = await getMultiFilterValues(type);
 
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => {
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      multiFilters: prevValue.multiFilters.map((item) => {
         if (item.type !== type) return item;
 
         return {
           ...item,
           values: dummyList.map((value) => ({ ...value, isSelected: false })),
         };
-      })
-    );
+      }),
+    }));
   };
 
   const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => {
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      multiFilters: prevValue.multiFilters.map((item) => {
         if (item.type !== type) return item;
 
         return {
@@ -181,8 +163,8 @@ const PublicSearchResultPage = () => {
             };
           }),
         };
-      })
-    );
+      }),
+    }));
 
     setFilteredPublicWorkbook({
       ...query,
@@ -195,15 +177,16 @@ const PublicSearchResultPage = () => {
 
   const resetFilterValues = () => {
     setCurrentFilterId(singleFilters[0].id);
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => ({
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      multiFilters: prevValue.multiFilters.map((item) => ({
         ...item,
         values: item.values.map((value) => ({
           ...value,
           isSelected: false,
         })),
-      }))
-    );
+      })),
+    }));
 
     setFilteredPublicWorkbook({ keyword });
   };
@@ -252,7 +235,6 @@ const PublicSearchResultPage = () => {
                           name={name}
                           values={multiFilters[index].values}
                           query={query}
-                          setMultiFilters={setMultiFilters}
                           setFilteredPublicWorkbook={setFilteredPublicWorkbook}
                         />
                       ),
@@ -300,7 +282,7 @@ const PublicSearchResultPage = () => {
               </SelectedMultiFilterWrapper>
             )}
           </FilterWrapper>
-          {!isLoading && workbookSearchResult.length === 0 ? (
+          {!isLoading && publicWorkbookResult.length === 0 ? (
             <NoSearchResult>
               <div>검색 결과가 없어요.</div>
               <Button
@@ -314,7 +296,7 @@ const PublicSearchResultPage = () => {
           ) : (
             <PublicWorkbookList
               isLoading={isLoading}
-              publicWorkbooks={workbookSearchResult}
+              publicWorkbooks={publicWorkbookResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
           )}

@@ -1,7 +1,4 @@
-export {
-  publicSearchResultState,
-  publicSearchStartIndexState,
-} from './searchState';
+export { publicSearchResultState } from './searchState';
 export {
   quizState,
   quizModeState,

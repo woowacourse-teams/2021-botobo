@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
-import {
-  publicSearchResultState,
-  publicSearchStartIndexState,
-} from '../recoil';
-import { publicSearchInitialLoadState } from '../recoil/searchState';
+import { publicSearchResultState } from '../recoil';
+import { PublicWorkbookResponse } from '../types';
 import { useRouter } from '.';
 
 const usePublicSearchResult = () => {
@@ -14,15 +11,32 @@ const usePublicSearchResult = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [startIndex, setStartIndex] = useRecoilState(
-    publicSearchStartIndexState
-  );
-  const [isInitialLoading, setIsInitialLoading] = useRecoilState(
-    publicSearchInitialLoadState
-  );
-  const [workbookSearchResult, setWorkbookSearchResult] = useRecoilState(
+  const [{ startIndex }, setPublicWorkbookState] = useRecoilState(
     publicSearchResultState
   );
+
+  const setIsInitialLoading = (isInitialLoading: boolean) => {
+    setPublicWorkbookState((prevValue) => ({ ...prevValue, isInitialLoading }));
+  };
+
+  const setStartIndex = (type: 'add' | 'reset') => {
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      startIndex: type === 'reset' ? 0 : prevValue.startIndex + 1,
+    }));
+  };
+
+  const setWorkbookSearchResult = (
+    newWorkbooks: PublicWorkbookResponse[],
+    isNew: boolean
+  ) => {
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      publicWorkbookResult: isNew
+        ? newWorkbooks
+        : [...prevValue.publicWorkbookResult, ...newWorkbooks],
+    }));
+  };
 
   const searchForPublicWorkbook = async (
     { keyword, start, ...options }: PublicWorkbookAsync,
@@ -36,16 +50,14 @@ const usePublicSearchResult = () => {
     }
 
     try {
-      const newValues = await getSearchResultAsync({
+      const newWorkbooks = await getSearchResultAsync({
         keyword,
         start: start ?? startIndex,
         ...options,
       });
 
-      setWorkbookSearchResult(
-        isNew ? newValues : (prevValues) => [...prevValues, ...newValues]
-      );
-      setStartIndex((prevValue) => prevValue + 1);
+      setWorkbookSearchResult(newWorkbooks, isNew);
+      setStartIndex('add');
       setIsLoading(false);
       setIsInitialLoading(false);
 
@@ -58,14 +70,12 @@ const usePublicSearchResult = () => {
   };
 
   const resetSearchResult = () => {
-    setWorkbookSearchResult([]);
-    setStartIndex(0);
+    setWorkbookSearchResult([], true);
+    setStartIndex('reset');
   };
 
   return {
-    workbookSearchResult,
     resetSearchResult,
-    isInitialLoading,
     isLoading,
     setIsLoading,
     searchForPublicWorkbook,
