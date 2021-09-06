@@ -1,16 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { getPublicWorkbookAsync } from '../api';
+import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
 import { Flex } from '../styles';
-import { PublicWorkbookResponse } from '../types';
+import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 import { PublicSearchLoadable } from '.';
@@ -33,8 +32,11 @@ const PublicSearchPage = () => {
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [recommendedKeywords, setRecommendedKeywords] = useState<
+    SearchKeywordResponse[]
+  >([]);
 
-  const { routePublicCards } = useRouter();
+  const { routePublicCards, routePublicSearchResultQuery } = useRouter();
   const errorHandler = useErrorHandler();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
@@ -83,6 +85,19 @@ const PublicSearchPage = () => {
     searchInputRef.current.focus();
   }, [searchKeyword]);
 
+  useEffect(() => {
+    if (!searchKeyword) return;
+
+    const getRecommendedKeywords = async () => {
+      const keyword = searchKeyword.trim().replace(/\s+/g, ' ');
+      const tagKeywords = await getTagKeywordAsync(keyword);
+
+      setRecommendedKeywords(tagKeywords);
+    };
+
+    getRecommendedKeywords();
+  }, [searchKeyword]);
+
   if (isLoading) return <PublicSearchLoadable />;
 
   return (
@@ -96,7 +111,17 @@ const PublicSearchPage = () => {
           isSticky={isSticky}
           isFocus={isFocus}
           onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
+          onBlur={() => {
+            if (searchKeyword) return;
+
+            setIsFocus(false);
+          }}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!searchKeyword) return;
+
+            routePublicSearchResultQuery({ keyword: searchKeyword });
+          }}
         >
           <SearchInput
             value={searchKeyword}
@@ -115,6 +140,22 @@ const PublicSearchPage = () => {
           <SearchButton isFocus={isFocus}>
             <SearchIcon width="1.3rem" height="1.3rem" />
           </SearchButton>
+          {searchKeyword && recommendedKeywords.length > 0 && (
+            <Autocomplete>
+              {recommendedKeywords.map(({ id, name }) => (
+                <RecommendedKeyword
+                  key={id}
+                  onTouchStart={searchInputRef.current?.blur}
+                  onClick={() => {
+                    routePublicSearchResultQuery({ keyword: name });
+                  }}
+                >
+                  <SearchIcon width="0.8rem" height="0.8rem" />
+                  {name}
+                </RecommendedKeyword>
+              ))}
+            </Autocomplete>
+          )}
         </SearchBar>
         <StyledUl>
           {publicWorkbooks.map(({ id, name, cardCount, author }) => (
@@ -148,6 +189,7 @@ const SearchBar = styled.form<SearchBarStyleProps>`
   margin-bottom: 1.5rem;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease;
+  z-index: 1;
 
   ${({ theme, isFocus, isSticky }) => css`
     background-color: ${theme.color.white};
@@ -156,7 +198,6 @@ const SearchBar = styled.form<SearchBarStyleProps>`
     ${isSticky &&
     css`
       position: sticky;
-      z-index: 1;
       top: 0;
       transform: translateX(-1.25rem);
       width: calc(100% + 2.5rem);
@@ -197,6 +238,37 @@ const SearchButton = styled.button<SearchButtonStyleProps>`
       fill: ${isFocus ? theme.color.green : theme.color.gray_3};
     }
   `};
+`;
+
+const Autocomplete = styled.ul`
+  position: absolute;
+  left: 0;
+  top: 3rem;
+  width: 100%;
+  padding: 0.5rem 0;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.white};
+    border: 1px solid ${theme.color.gray_3};
+    border-top: 0;
+  `};
+`;
+
+const RecommendedKeyword = styled.li`
+  ${Flex({ items: 'center' })};
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+
+  & > svg {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    ${({ theme }) => css`
+      background-color: ${theme.color.gray_3};
+    `}
+  }
 `;
 
 const StyledUl = styled.ul`
