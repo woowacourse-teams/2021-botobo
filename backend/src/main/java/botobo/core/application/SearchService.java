@@ -12,7 +12,6 @@ import botobo.core.ui.search.WorkbookSearchParameter;
 import botobo.core.util.SimilarityChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +32,12 @@ public class SearchService {
         this.tagRepository = tagRepository;
     }
 
-    public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter) {
-        Specification<Workbook> specification = workbookSearchParameter.toSpecification();
+    public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter,
+                                                  List<Long> tags,
+                                                  List<Long> users) {
         PageRequest pageRequest = workbookSearchParameter.toPageRequest();
 
-        Page<Workbook> page = workbookRepository.findAll(specification, pageRequest);
+        Page<Workbook> page = workbookRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
         List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);
     }

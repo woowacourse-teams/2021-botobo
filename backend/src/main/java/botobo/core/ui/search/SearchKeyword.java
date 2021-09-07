@@ -54,8 +54,4 @@ public class SearchKeyword {
     public static SearchKeyword of(String value) {
         return new SearchKeyword(value);
     }
-
-    public String toLowercase() {
-        return value.toLowerCase();
-    }
 }
