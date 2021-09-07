@@ -8,7 +8,7 @@ import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
-import { Flex } from '../styles';
+import { Flex, scrollBarStyle } from '../styles';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 import { isMobile, setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -17,6 +17,7 @@ import { PublicSearchLoadable } from '.';
 interface SearchBarStyleProps {
   isFocus: boolean;
   isSticky: boolean;
+  scaleX: number;
 }
 
 const PublicSearchPage = () => {
@@ -32,6 +33,8 @@ const PublicSearchPage = () => {
     SearchKeywordResponse[]
   >([]);
 
+  const [scaleX, setScaleX] = useState(1);
+
   const { routePublicCards, routePublicSearchResultQuery } = useRouter();
   const errorHandler = useErrorHandler();
 
@@ -42,7 +45,6 @@ const PublicSearchPage = () => {
     const getPublicWorkbooks = async () => {
       try {
         const newPublicWorkbooks = await getPublicWorkbookAsync();
-
         setPublicWorkbooks(newPublicWorkbooks);
         setIsLoading(false);
       } catch (error) {
@@ -93,6 +95,23 @@ const PublicSearchPage = () => {
     getRecommendedKeywords();
   }, [searchKeyword]);
 
+  useEffect(() => {
+    const calculateScaleX = () => {
+      if (!stickyTriggerRef.current) return;
+
+      setScaleX(
+        (stickyTriggerRef.current.offsetWidth + 40) /
+          stickyTriggerRef.current.offsetWidth
+      );
+    };
+
+    calculateScaleX();
+
+    window.addEventListener('resize', calculateScaleX);
+
+    return () => window.addEventListener('resize', calculateScaleX);
+  }, [stickyTriggerRef.current]);
+
   if (isLoading) return <PublicSearchLoadable />;
 
   return (
@@ -105,6 +124,7 @@ const PublicSearchPage = () => {
           role="search"
           isSticky={isSticky}
           isFocus={isFocus}
+          scaleX={scaleX}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(isMobile ? true : false)}
           onSubmit={(event) => {
@@ -193,19 +213,36 @@ const SearchBar = styled.form<SearchBarStyleProps>`
   transition: all 0.2s ease;
   z-index: 1;
 
-  ${({ theme, isFocus, isSticky }) => css`
+  ${({ theme, isFocus, isSticky, scaleX }) => css`
     background-color: ${theme.color.white};
     border: 1px solid ${isFocus ? theme.color.green : theme.color.gray_3};
 
     ${isSticky &&
     css`
       position: sticky;
-      top: 0;
-      transform: translateX(-1.25rem);
-      width: calc(100% + 2.5rem);
+      top: -1px;
       border: none;
       border-bottom: 1px solid
         ${isFocus ? theme.color.green : theme.color.gray_3};
+      transform: scaleX(${scaleX});
+
+      & > input {
+        transform: scaleX(${1 / scaleX}) translateX(-0.75rem);
+      }
+
+      & > button {
+        transform: scaleX(${1 / scaleX});
+      }
+
+      & > ul {
+        & > li {
+          transform: scaleX(${1 / scaleX}) translateX(-1rem);
+        }
+
+        & > button {
+          transform: scaleX(${1 / scaleX});
+        }
+      }
 
       @media ${DEVICE.TABLET} {
         border-left: 1px solid ${theme.color.gray_3};
@@ -246,7 +283,11 @@ const Autocomplete = styled.ul<Pick<SearchBarStyleProps, 'isSticky'>>`
   position: absolute;
   left: 0;
   width: 100%;
+  max-height: calc(100vh - 3rem);
   padding: 0.5rem 0;
+  overflow-y: auto;
+
+  ${scrollBarStyle}
 
   ${({ theme, isSticky }) => css`
     background-color: ${theme.color.white};
