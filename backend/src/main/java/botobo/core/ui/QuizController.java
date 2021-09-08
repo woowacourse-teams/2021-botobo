@@ -39,7 +39,6 @@ public class QuizController {
         return ResponseEntity.ok(quizResponses);
     }
 
-    // TODO: 로그인한 회원만 가능한데 열려있음.
     @GetMapping("/{workbookId}")
     public ResponseEntity<List<QuizResponse>> createQuizFromWorkbook(@PathVariable Long workbookId) {
         List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
