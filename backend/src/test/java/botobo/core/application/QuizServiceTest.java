@@ -338,10 +338,11 @@ class QuizServiceTest {
         // given
         Long workbookId = 1L;
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
         // when
-        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId, appUser);
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
@@ -349,6 +350,9 @@ class QuizServiceTest {
         then(cardRepository)
                 .should(times(1))
                 .findCardsByWorkbookId(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
                 .existsByIdAndOpenedTrue(workbookId);
@@ -360,10 +364,12 @@ class QuizServiceTest {
         // given
         Long workbookId = 1L;
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(cards);
 
+
         // when
-        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId, appUser);
 
         // then
         assertThat(quizResponses.size()).isEqualTo(10);
@@ -374,6 +380,9 @@ class QuizServiceTest {
         then(cardRepository)
                 .should(times(1))
                 .findCardsByWorkbookId(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
                 .existsByIdAndOpenedTrue(workbookId);
@@ -384,10 +393,11 @@ class QuizServiceTest {
     void createQuizFromWorkbookFailed() {
         // given
         Long workbookId = 100L;
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId, appUser))
                 .isInstanceOf(WorkbookNotFoundException.class);
 
         then(cardRepository)
@@ -396,6 +406,9 @@ class QuizServiceTest {
         then(workbookRepository)
                 .should(times(1))
                 .existsByIdAndOpenedTrue(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
     }
 
     @Test
@@ -403,15 +416,19 @@ class QuizServiceTest {
     void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() {
         // given
         Long workbookId = 1L;
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId, appUser))
                 .isInstanceOf(WorkbookNotFoundException.class);
 
         then(cardRepository)
                 .should(never())
                 .findCardsByWorkbookId(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
                 .existsByIdAndOpenedTrue(workbookId);
@@ -424,17 +441,43 @@ class QuizServiceTest {
         Long workbookId = 1L;
         List<Card> emptyCards = new ArrayList<>();
         given(workbookRepository.existsByIdAndOpenedTrue(any())).willReturn(true);
+        given(userRepository.findById(appUser.getId())).willReturn(Optional.of(user));
         given(cardRepository.findCardsByWorkbookId(workbookId)).willReturn(emptyCards);
 
         // when
-        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId))
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId, appUser))
                 .isInstanceOf(QuizEmptyException.class);
 
         then(cardRepository)
                 .should(times(1))
                 .findCardsByWorkbookId(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
         then(workbookRepository)
                 .should(times(1))
+                .existsByIdAndOpenedTrue(workbookId);
+    }
+
+    @Test
+    @DisplayName("문제집에서 바로 풀기 - 실패, 존재하지 않는 유저")
+    void createQuizFromWorkbookFailedWhenNotExistUser() {
+        // given
+        Long workbookId = 1L;
+        given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
+
+        // when
+        assertThatThrownBy(() -> quizService.createQuizFromWorkbook(workbookId, appUser))
+                .isInstanceOf(UserNotFoundException.class);
+
+        then(cardRepository)
+                .should(never())
+                .findCardsByWorkbookId(workbookId);
+        then(userRepository)
+                .should(times(1))
+                .findById(appUser.getId());
+        then(workbookRepository)
+                .should(never())
                 .existsByIdAndOpenedTrue(workbookId);
     }
 }

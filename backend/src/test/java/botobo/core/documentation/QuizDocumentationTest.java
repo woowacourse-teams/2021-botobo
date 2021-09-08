@@ -46,7 +46,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     void createQuizFromWorkbook() throws Exception {
         // given
         Long workbookId = 1L;
-        given(quizService.createQuizFromWorkbook(workbookId)).willReturn(generateQuizResponses());
+        given(quizService.createQuizFromWorkbook(any(Long.class), any(AppUser.class))).willReturn(generateQuizResponses());
 
         // when, then
         document()

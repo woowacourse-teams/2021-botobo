@@ -8,7 +8,7 @@ import botobo.core.exception.user.UserNotFoundException;
 public abstract class AbstractUserService {
     protected final UserRepository userRepository;
 
-    public AbstractUserService(UserRepository userRepository) {
+    protected AbstractUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

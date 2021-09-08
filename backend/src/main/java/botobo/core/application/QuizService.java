@@ -67,7 +67,8 @@ public class QuizService extends AbstractUserService {
         }
     }
 
-    public List<QuizResponse> createQuizFromWorkbook(Long workbookId) {
+    public List<QuizResponse> createQuizFromWorkbook(Long workbookId, AppUser appUser) {
+        findUser(appUser);
         validateWorkbook(workbookId);
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookId(workbookId), DEFAULT_QUIZ_COUNT);
         return QuizResponse.cardsOf(quiz);

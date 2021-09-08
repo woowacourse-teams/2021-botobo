@@ -40,8 +40,9 @@ public class QuizController {
     }
 
     @GetMapping("/{workbookId}")
-    public ResponseEntity<List<QuizResponse>> createQuizFromWorkbook(@PathVariable Long workbookId) {
-        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId);
+    public ResponseEntity<List<QuizResponse>> createQuizFromWorkbook(@PathVariable Long workbookId,
+                                                                     @AuthenticationPrincipal AppUser appUser) {
+        List<QuizResponse> quizResponses = quizService.createQuizFromWorkbook(workbookId, appUser);
         return ResponseEntity.ok(quizResponses);
     }
 }
