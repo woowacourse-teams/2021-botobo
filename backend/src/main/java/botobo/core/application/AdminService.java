@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.CardRepository;
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -15,23 +16,34 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 public class AdminService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
+    private final TagService tagService;
 
-    public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
+    public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository, TagService tagService) {
         super(userRepository);
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
+        this.tagService = tagService;
     }
 
     @Transactional
     public AdminWorkbookResponse createWorkbook(AdminWorkbookRequest adminWorkbookRequest, AppUser appUser) {
         User user = findUser(appUser);
-        Workbook workbook = adminWorkbookRequest.toWorkbook(user);
+        Workbook workbook = adminWorkbookRequest.toWorkbook()
+                .createBy(user);
+
+        if (Objects.nonNull(adminWorkbookRequest.getTags())) {
+            Tags tags = tagService.convertTags(adminWorkbookRequest.getTags());
+            workbook = workbook.taggedBy(tags);
+        }
+
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return AdminWorkbookResponse.of(savedWorkbook);
     }

@@ -19,21 +19,14 @@ import java.util.Objects;
 @Entity
 public class Tag extends BaseEntity {
 
-    @Embedded
-    private TagName tagName;
-
     @OneToMany(mappedBy = "tag")
     private final List<WorkbookTag> workbookTags = new ArrayList<>();
+    @Embedded
+    private TagName tagName;
 
     private Tag(TagName tagName) {
         validateNotNull(tagName);
         this.tagName = tagName;
-    }
-
-    private void validateNotNull(TagName tagName) {
-        if (Objects.isNull(tagName)) {
-            throw new TagNullException();
-        }
     }
 
     public static Tag of(TagName tagName) {
@@ -42,6 +35,12 @@ public class Tag extends BaseEntity {
 
     public static Tag of(String tagNameValue) {
         return new Tag(TagName.of(tagNameValue));
+    }
+
+    private void validateNotNull(TagName tagName) {
+        if (Objects.isNull(tagName)) {
+            throw new TagNullException();
+        }
     }
 
     public String getTagNameValue() {

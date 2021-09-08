@@ -26,6 +26,10 @@ public class SearchKeyword {
         this.value = refinedValue;
     }
 
+    public static SearchKeyword of(String value) {
+        return new SearchKeyword(value);
+    }
+
     private void validateNonNull(String value) {
         if (Objects.isNull(value)) {
             throw new SearchKeywordNullException();
@@ -49,10 +53,6 @@ public class SearchKeyword {
         if (value.contains("바보")) {
             throw new ForbiddenSearchKeywordException();
         }
-    }
-
-    public static SearchKeyword of(String value) {
-        return new SearchKeyword(value);
     }
 
     public String toLowercase() {

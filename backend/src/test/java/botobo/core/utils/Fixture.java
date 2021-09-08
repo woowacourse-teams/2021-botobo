@@ -5,6 +5,7 @@ import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.GoogleUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
+import botobo.core.dto.tag.TagRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,16 @@ public class Fixture {
             .profileUrl("ditto.profile")
             .build();
 
+    private static final TagRequest TAG_REQUEST_1 = TagRequest.builder().id(1L).name("자바").build();
+    private static final TagRequest TAG_REQUEST_2 = TagRequest.builder().id(2L).name("자바스크립트").build();
+    private static final TagRequest TAG_REQUEST_3 = TagRequest.builder().id(3L).name("리액트").build();
+    private static final TagRequest TAG_REQUEST_4 = TagRequest.builder().id(4L).name("스프링").build();
+    private static final TagRequest TAG_REQUEST_5 = TagRequest.builder().id(5L).name("네트워크").build();
+
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_1 = List.of(TAG_REQUEST_1, TAG_REQUEST_2, TAG_REQUEST_3);
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_2 = List.of(TAG_REQUEST_1, TAG_REQUEST_3, TAG_REQUEST_5);
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_3 = List.of(TAG_REQUEST_2, TAG_REQUEST_4, TAG_REQUEST_5);
+
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_1 = new AdminWorkbookRequest("1");
     public static final AdminWorkbookRequest WORKBOOK_REQUEST_2 = new AdminWorkbookRequest("2");
     private static final AdminWorkbookRequest WORKBOOK_REQUEST_3 = new AdminWorkbookRequest("3");
@@ -57,6 +68,22 @@ public class Fixture {
     public static final List<AdminWorkbookRequest> ADMIN_WORKBOOK_REQUESTS =
             Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3,
                     WORKBOOK_REQUEST_4, WORKBOOK_REQUEST_5);
+
+    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_1 = AdminWorkbookRequest.builder()
+            .name("Java")
+            .tags(TAG_REQUESTS_TYPE_1)
+            .build();
+    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_2 = AdminWorkbookRequest.builder()
+            .name("Java")
+            .tags(TAG_REQUESTS_TYPE_2)
+            .build();
+    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_3 = AdminWorkbookRequest.builder()
+            .name("Javascript")
+            .tags(TAG_REQUESTS_TYPE_3)
+            .build();
+
+    public static final List<AdminWorkbookRequest> ADMIN_WORKBOOK_REQUESTS_WITH_TAG =
+            Arrays.asList(WORKBOOK_REQUEST_WITH_TAG_1, WORKBOOK_REQUEST_WITH_TAG_2, WORKBOOK_REQUEST_WITH_TAG_3);
 
     private static final AdminCardRequest CARD_REQUEST_1 = new AdminCardRequest("1", "answer", 1L);
     private static final AdminCardRequest CARD_REQUEST_2 = new AdminCardRequest("2", "answer", 1L);

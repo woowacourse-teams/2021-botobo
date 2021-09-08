@@ -63,6 +63,13 @@ public class Card extends BaseEntity {
         }
     }
 
+    public static Card createCopyOf(Card other) {
+        return Card.builder()
+                .question(other.question)
+                .answer(other.answer)
+                .build();
+    }
+
     private void validateNull(String question, String answer) {
         if (Objects.isNull(question)) {
             throw new CardQuestionNullException();
@@ -70,13 +77,6 @@ public class Card extends BaseEntity {
         if (Objects.isNull(answer)) {
             throw new CardAnswerNullException();
         }
-    }
-
-    public static Card createCopyOf(Card other) {
-        return Card.builder()
-                .question(other.question)
-                .answer(other.answer)
-                .build();
     }
 
     public void addWorkbook(Workbook workbook) {
