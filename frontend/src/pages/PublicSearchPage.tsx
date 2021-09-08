@@ -1,27 +1,23 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { getPublicWorkbookAsync } from '../api';
-import SearchCloseIcon from '../assets/cross-mark.svg';
+import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
+import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
-import { Flex } from '../styles';
-import { PublicWorkbookResponse } from '../types';
-import { setSessionStorage } from '../utils';
+import { Flex, scrollBarStyle } from '../styles';
+import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
+import { isMobile, setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 import { PublicSearchLoadable } from '.';
 
 interface SearchBarStyleProps {
   isFocus: boolean;
   isSticky: boolean;
-}
-
-interface SearchButtonStyleProps {
-  isFocus: boolean;
+  scaleX: number;
 }
 
 const PublicSearchPage = () => {
@@ -33,27 +29,42 @@ const PublicSearchPage = () => {
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [recommendedKeywords, setRecommendedKeywords] = useState<
+    SearchKeywordResponse[]
+  >([]);
 
-  const { routePublicCards } = useRouter();
+  const [searchBarWidth, setSearchBarWidth] = useState(1);
+
+  const { routePublicCards, routePublicSearchResultQuery } = useRouter();
   const errorHandler = useErrorHandler();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const getPublicWorkbooks = async () => {
       try {
         const newPublicWorkbooks = await getPublicWorkbookAsync();
 
-        setPublicWorkbooks(newPublicWorkbooks);
+        if (!mounted) return;
+
         setIsLoading(false);
+        setPublicWorkbooks(newPublicWorkbooks);
       } catch (error) {
+        if (!mounted) return;
+
         errorHandler(error);
         setIsLoading(false);
       }
     };
 
     getPublicWorkbooks();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -83,6 +94,35 @@ const PublicSearchPage = () => {
     searchInputRef.current.focus();
   }, [searchKeyword]);
 
+  useEffect(() => {
+    if (!searchKeyword) return;
+
+    const getRecommendedKeywords = async () => {
+      const tagKeywords = await getTagKeywordAsync(searchKeyword);
+
+      setRecommendedKeywords(tagKeywords);
+    };
+
+    getRecommendedKeywords();
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    const calculateSearchBarWidth = () => {
+      if (!stickyTriggerRef.current) return;
+
+      setSearchBarWidth(
+        (stickyTriggerRef.current.offsetWidth + 40) /
+          stickyTriggerRef.current.offsetWidth
+      );
+    };
+
+    calculateSearchBarWidth();
+
+    window.addEventListener('resize', calculateSearchBarWidth);
+
+    return () => window.removeEventListener('resize', calculateSearchBarWidth);
+  }, [stickyTriggerRef.current]);
+
   if (isLoading) return <PublicSearchLoadable />;
 
   return (
@@ -95,8 +135,18 @@ const PublicSearchPage = () => {
           role="search"
           isSticky={isSticky}
           isFocus={isFocus}
+          scaleX={searchBarWidth}
           onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
+          onBlur={() => setIsFocus(isMobile ? true : false)}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!searchKeyword) return;
+
+            routePublicSearchResultQuery({
+              keyword: searchKeyword,
+              method: 'push',
+            });
+          }}
         >
           <SearchInput
             value={searchKeyword}
@@ -109,12 +159,36 @@ const PublicSearchPage = () => {
               type="button"
               onClick={() => setSearchKeyword('')}
             >
-              <SearchCloseIcon width="0.5rem" height="0.5rem" />
+              <KeywordResetIcon width="0.5rem" height="0.5rem" />
             </KeywordResetButton>
           )}
           <SearchButton isFocus={isFocus}>
             <SearchIcon width="1.3rem" height="1.3rem" />
           </SearchButton>
+          {isFocus && searchKeyword && recommendedKeywords.length > 0 && (
+            <Autocomplete isSticky={isSticky}>
+              {recommendedKeywords.map(({ id, name }) => (
+                <RecommendedKeyword
+                  key={id}
+                  onTouchStart={() => {
+                    if (!isMobile) return;
+
+                    searchInputRef.current?.blur();
+                  }}
+                  onMouseDown={() =>
+                    routePublicSearchResultQuery({
+                      keyword: name,
+                      method: 'push',
+                    })
+                  }
+                >
+                  <SearchIcon width="0.8rem" height="0.8rem" />
+                  {name}
+                </RecommendedKeyword>
+              ))}
+              <button onClick={() => setIsFocus(false)}>닫기</button>
+            </Autocomplete>
+          )}
         </SearchBar>
         <StyledUl>
           {publicWorkbooks.map(({ id, name, cardCount, author }) => (
@@ -148,21 +222,38 @@ const SearchBar = styled.form<SearchBarStyleProps>`
   margin-bottom: 1.5rem;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease;
+  z-index: 1;
 
-  ${({ theme, isFocus, isSticky }) => css`
+  ${({ theme, isFocus, isSticky, scaleX }) => css`
     background-color: ${theme.color.white};
     border: 1px solid ${isFocus ? theme.color.green : theme.color.gray_3};
 
     ${isSticky &&
     css`
       position: sticky;
-      z-index: 1;
-      top: 0;
-      transform: translateX(-1.25rem);
-      width: calc(100% + 2.5rem);
+      top: -1px;
       border: none;
       border-bottom: 1px solid
         ${isFocus ? theme.color.green : theme.color.gray_3};
+      transform: scaleX(${scaleX});
+
+      & > input {
+        transform: scaleX(${1 / scaleX}) translateX(-0.75rem);
+      }
+
+      & > button {
+        transform: scaleX(${1 / scaleX});
+      }
+
+      & > ul {
+        & > li {
+          transform: scaleX(${1 / scaleX}) translateX(-1rem);
+        }
+
+        & > button {
+          transform: scaleX(${1 / scaleX});
+        }
+      }
 
       @media ${DEVICE.TABLET} {
         border-left: 1px solid ${theme.color.gray_3};
@@ -188,7 +279,7 @@ const KeywordResetButton = styled.button`
   right: 3rem;
 `;
 
-const SearchButton = styled.button<SearchButtonStyleProps>`
+const SearchButton = styled.button<Pick<SearchBarStyleProps, 'isFocus'>>`
   ${Flex({ items: 'center' })};
 
   ${({ theme, isFocus }) => css`
@@ -197,6 +288,51 @@ const SearchButton = styled.button<SearchButtonStyleProps>`
       fill: ${isFocus ? theme.color.green : theme.color.gray_3};
     }
   `};
+`;
+
+const Autocomplete = styled.ul<Pick<SearchBarStyleProps, 'isSticky'>>`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  max-height: calc(100vh - 3rem);
+  padding: 0.5rem 0;
+  overflow-y: auto;
+
+  ${scrollBarStyle}
+
+  ${({ theme, isSticky }) => css`
+    background-color: ${theme.color.white};
+    box-shadow: ${theme.boxShadow.card};
+    border-bottom-right-radius: ${theme.borderRadius.square};
+    border-bottom-left-radius: ${theme.borderRadius.square};
+    border-top: 0;
+
+    top: ${isSticky ? '3rem' : 'calc(3rem - 1px)'};
+
+    & > button {
+      float: right;
+      color: ${theme.color.gray_1}
+      font-size: ${theme.fontSize.small};
+      margin: 0.5rem 0;
+      margin-right: 1rem;
+    }
+  `};
+`;
+
+const RecommendedKeyword = styled.li`
+  ${Flex({ items: 'center' })};
+  cursor: pointer;
+  padding: 0.7rem 1rem;
+
+  & > svg {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    ${({ theme }) => css`
+      background-color: ${theme.color.gray_3};
+    `}
+  }
 `;
 
 const StyledUl = styled.ul`

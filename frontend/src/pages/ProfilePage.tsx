@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import axios from 'axios';
 import React, { useState } from 'react';
 
 import { postUserNameCheckAsync } from '../api';
@@ -26,11 +27,15 @@ const validateUserName = async (value: string) => {
   try {
     await postUserNameCheckAsync(value);
   } catch (error) {
-    if (error.response.data.code === 'U003') {
-      throw new Error(ERROR_MESSAGE.U003);
-    }
+    if (!(error instanceof Error)) return;
 
     console.error(error);
+
+    if (!axios.isAxiosError(error)) return;
+
+    if (error.response?.data.code === 'U003') {
+      throw new Error(ERROR_MESSAGE.U003);
+    }
   }
 
   if (value.length > USER_NAME_MAXIMUM_LENGTH) {
@@ -79,6 +84,8 @@ const ProfilePage = () => {
       updateProfileUrl(file);
       currentTarget.value = '';
     } catch (error) {
+      if (!(error instanceof Error)) return;
+
       showSnackbar({ message: error.message });
     }
   };
