@@ -1,8 +1,11 @@
 package botobo.core.application;
 
+import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.dto.tag.FilterCriteria;
+import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
@@ -14,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Collections.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -64,5 +71,13 @@ public class UserService extends AbstractUserService {
                     }
                 }
         );
+    }
+
+    public List<UserResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
+        if (filterCriteria.isEmpty()) {
+            return UserResponse.listOf(emptyList());
+        }
+        List<User> users = userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+        return UserResponse.listOf(users);
     }
 }

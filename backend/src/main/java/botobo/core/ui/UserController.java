@@ -2,6 +2,8 @@ package botobo.core.ui;
 
 import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
+import botobo.core.dto.tag.FilterCriteria;
+import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -58,5 +61,12 @@ public class UserController {
                                                        @AuthenticationPrincipal AppUser appUser) {
         userService.checkDuplicatedUserName(userNameRequest, appUser);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> findAllUsersByWorkbookName(@RequestParam String workbook) {
+        FilterCriteria filterCriteria = new FilterCriteria(workbook);
+        List<UserResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+        return ResponseEntity.ok(responses);
     }
 }

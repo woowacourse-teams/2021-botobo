@@ -11,10 +11,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserName(String userName);
 
-    @Query(value = "SELECT * FROM user u WHERE u.user_name LIKE %:keyword% LIMIT 10", nativeQuery = true)
-    List<User> findByKeyword(@Param("keyword") String keyword);
-
     boolean existsByIdAndRole(Long id, Role role);
 
     Optional<User> findBySocialIdAndSocialType(String socialId, SocialType socialType);
+
+    @Query("select distinct u from User u join fetch u.workbooks w " +
+            "where u.id = w.user.id " +
+            "and lower(w.name) like %:workbookName%")
+    List<User> findAllByContainsWorkbookName(@Param("workbookName") String workbook);
 }
