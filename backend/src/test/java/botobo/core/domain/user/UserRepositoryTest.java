@@ -163,6 +163,4 @@ class UserRepositoryTest {
                 .user(user)
                 .build();
     }
-
-
 }

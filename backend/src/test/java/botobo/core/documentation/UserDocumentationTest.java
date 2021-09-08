@@ -3,6 +3,8 @@ package botobo.core.documentation;
 import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
+import botobo.core.domain.user.User;
+import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
@@ -15,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -23,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("유저용 API 문서화 테스트")
 @WebMvcTest(UserController.class)
-public class UserDocumentationTest extends DocumentationTest {
+class UserDocumentationTest extends DocumentationTest {
 
     @MockBean
     private UserService userService;
@@ -119,5 +123,31 @@ public class UserDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("users-name-check-post-success");
+    }
+
+    @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공")
+    @Test
+    void findAllUsersByWorkbookName() throws Exception {
+        // given
+        final User 조앤 = User.builder()
+                .id(1L)
+                .userName("조앤")
+                .build();
+        final User 민정 = User.builder()
+                .id(1L)
+                .userName("민정")
+                .build();
+        List<UserResponse> userResponses = UserResponse.listOf(List.of(조앤, 민정));
+
+        given(userService.findAllUsersByWorkbookName(any(FilterCriteria.class)))
+                .willReturn(userResponses);
+
+        // when - then
+        document()
+                .mockMvc(mockMvc)
+                .get("/api/users?workbook=java")
+                .build()
+                .status(status().isOk())
+                .identifier("users-get-success");
     }
 }

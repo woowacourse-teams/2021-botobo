@@ -18,11 +18,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
 import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserAcceptanceTest extends DomainAcceptanceTest {
+class UserAcceptanceTest extends DomainAcceptanceTest {
 
     @Value("${aws.user-default-image}")
     private String userDefaultImage;
@@ -521,5 +525,58 @@ public class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
+    @Test
+    void findAllUsersByWorkbookName() {
+        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG);
+
+        // given
+        final String workbookName = "Java";
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(3);
+        assertThat(userResponses.stream()
+                .map(UserResponse::getUserName)
+                .sorted()
+                .collect(Collectors.toList()))
+                .containsExactly("user1", "user2", "user3");
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
+    @Test
+    void findAllUsersByWorkbookNameIsEmpty() {
+        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG);
+
+        // given
+        final String workbookName = "";
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+
+        // then
+        assertThat(userResponses).isEmpty();
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 실패, 문제집명이 30글자를 넘는 비정상적 경우")
+    @Test
+    void findAllUsersByWorkbookNameIsLong() {
+        // given
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + stringGenerator(31))
+                .build();
+
+        // when - then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

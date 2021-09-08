@@ -17,6 +17,6 @@ include::admin.adoc[]
 
 include::login.adoc[]
 
-include::user.adoc[]
+include::users.adoc[]
 
 include::errors.adoc[]

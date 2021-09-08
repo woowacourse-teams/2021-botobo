@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -45,7 +46,9 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     private OauthManagerFactory oauthManagerFactory;
 
-    protected User admin;
+    protected User admin, user1, user2, user3;
+
+    protected List<User> users;
 
     @Override
     @BeforeEach
@@ -57,7 +60,30 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
+        user1 = User.builder()
+                .socialId("2")
+                .userName("user1")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
+        user2 = User.builder()
+                .socialId("3")
+                .userName("user2")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
+        user3 = User.builder()
+                .socialId("4")
+                .userName("user3")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
         userRepository.save(admin);
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+
+        users = List.of(user1, user2, user3);
     }
 
     protected User anyUser() {
@@ -76,6 +102,22 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .auth(jwtTokenProvider.createToken(admin.getId()))
                 .build()
                 .extract();
+    }
+
+    public ExtractableResponse<Response> 서로_다른_유저의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User user) {
+        return request()
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth(jwtTokenProvider.createToken(user.getId()))
+                .build()
+                .extract();
+    }
+
+    public void 서로_다른_유저의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
+        int index = 0;
+        for (AdminWorkbookRequest adminRequest : adminRequests) {
+            if (index > users.size()) index = 0;
+            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(index++));
+        }
     }
 
     public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
