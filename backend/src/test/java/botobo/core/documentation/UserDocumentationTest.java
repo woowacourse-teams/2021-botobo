@@ -6,6 +6,7 @@ import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -137,7 +138,7 @@ class UserDocumentationTest extends DocumentationTest {
                 .id(1L)
                 .userName("민정")
                 .build();
-        List<UserResponse> userResponses = UserResponse.listOf(List.of(조앤, 민정));
+        List<UserFilterResponse> userResponses = UserFilterResponse.listOf(List.of(조앤, 민정));
 
         given(userService.findAllUsersByWorkbookName(any(FilterCriteria.class)))
                 .willReturn(userResponses);

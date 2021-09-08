@@ -6,6 +6,7 @@ import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -49,7 +50,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         assertThat(userResponse.getId()).isNotNull();
         assertThat(userResponse.getUserName()).isEqualTo("pk");
         assertThat(userResponse.getProfileUrl()).isEqualTo("pk.profile");
-        assertThat(userResponse.getBio()).isEqualTo("");
+        assertThat(userResponse.getBio()).isEmpty();
     }
 
     @Test
@@ -384,7 +385,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         assertThat(userResponse.getId()).isNotNull();
         assertThat(userResponse.getUserName()).isEqualTo("admin");
         assertThat(userResponse.getProfileUrl()).isEqualTo("github.io");
-        assertThat(userResponse.getBio()).isEqualTo("");
+        assertThat(userResponse.getBio()).isEmpty();
     }
 
     @Test
@@ -539,12 +540,12 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
 
         // then
         assertThat(userResponses).hasSize(3);
         assertThat(userResponses.stream()
-                .map(UserResponse::getUserName)
+                .map(UserFilterResponse::getUserName)
                 .sorted()
                 .collect(Collectors.toList()))
                 .containsExactly("user1", "user2", "user3");
@@ -562,7 +563,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final List<UserResponse> userResponses = response.convertBodyToList(UserResponse.class);
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
 
         // then
         assertThat(userResponses).isEmpty();

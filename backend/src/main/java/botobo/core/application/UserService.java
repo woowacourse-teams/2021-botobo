@@ -5,6 +5,7 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -70,11 +71,11 @@ public class UserService extends AbstractUserService {
         );
     }
 
-    public List<UserResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
+    public List<UserFilterResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
         if (filterCriteria.isEmpty()) {
-            return UserResponse.listOf(emptyList());
+            return UserFilterResponse.listOf(emptyList());
         }
         List<User> users = userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
-        return UserResponse.listOf(users);
+        return UserFilterResponse.listOf(users);
     }
 }

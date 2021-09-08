@@ -3,8 +3,8 @@ package botobo.core.ui;
 import botobo.core.application.UserService;
 import botobo.core.domain.user.AppUser;
 import botobo.core.dto.tag.FilterCriteria;
-import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -64,9 +64,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAllUsersByWorkbookName(@RequestParam String workbook) {
+    public ResponseEntity<List<UserFilterResponse>> findAllUsersByWorkbookName(@RequestParam String workbook) {
         FilterCriteria filterCriteria = new FilterCriteria(workbook);
-        List<UserResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
         return ResponseEntity.ok(responses);
     }
 }

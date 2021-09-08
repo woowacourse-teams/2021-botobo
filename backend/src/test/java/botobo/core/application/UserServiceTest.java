@@ -8,6 +8,7 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -329,7 +330,7 @@ class UserServiceTest {
         FilterCriteria filterCriteria = new FilterCriteria(workbook);
 
         // when
-        List<UserResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
 
         // then
         assertThat(responses).isEmpty();
@@ -347,7 +348,7 @@ class UserServiceTest {
                 .willReturn(List.of(user1, user2, user3));
 
         // when
-        List<UserResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
 
         // then
         assertThat(responses).hasSize(3);

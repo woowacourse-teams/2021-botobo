@@ -6,22 +6,27 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponse {
+public class UserFilterResponse {
     private Long id;
     private String userName;
-    private String bio;
-    private String profileUrl;
 
-    public static UserResponse of(User user) {
-        return UserResponse.builder()
+    public static UserFilterResponse of(User user) {
+        return UserFilterResponse.builder()
                 .id(user.getId())
                 .userName(user.getUserName())
-                .bio(user.getBio())
-                .profileUrl(user.getProfileUrl())
                 .build();
+    }
+
+    public static List<UserFilterResponse> listOf(List<User> users) {
+        return users.stream()
+                .map(UserFilterResponse::of)
+                .collect(Collectors.toList());
     }
 }
