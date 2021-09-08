@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,12 +20,6 @@ public class Tags {
         this.tags = tags;
     }
 
-    private void validateNotNull(List<Tag> tags) {
-        if (Objects.isNull(tags)) {
-            throw new TagsCreationFailureException("tags는 null이 될 수 없습니다.");
-        }
-    }
-
     public static Tags empty() {
         return new Tags(new ArrayList<>());
     }
@@ -35,8 +28,10 @@ public class Tags {
         return new Tags(tags);
     }
 
-    public static Tags of(Set<Tag> tags) {
-        return new Tags(new ArrayList<>(tags));
+    private void validateNotNull(List<Tag> tags) {
+        if (Objects.isNull(tags)) {
+            throw new TagsCreationFailureException("tags는 null이 될 수 없습니다.");
+        }
     }
 
     public int countSameTagName(Tags other) {

@@ -17,8 +17,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query(value = "SELECT * FROM tag t WHERE t.NAME LIKE %:keyword% LIMIT 10", nativeQuery = true)
     List<Tag> findByKeyword(@Param("keyword") String keyword);
 
-    @Query("select t from Tag t join fetch t.workbookTags wt " +
+    @Query("select distinct t from Tag t join fetch t.workbookTags wt " +
             "where t.id = wt.tag.id " +
             "and lower(wt.workbook.name) like %:workbookName%")
-    List<Tag> findAllByWorkbookName(String workbookName);
+    List<Tag> findAllByContainsWorkbookName(String workbookName);
 }

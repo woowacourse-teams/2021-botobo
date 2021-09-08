@@ -10,7 +10,6 @@ import botobo.core.dto.tag.WorkbookName;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class TagService {
         if (workbookName.isEmpty()) {
             return TagResponse.listOf(Tags.empty());
         }
-        Tags tags = Tags.of(new HashSet<>(tagRepository.findAllByWorkbookName(workbookName.getWorkbook())));
+        Tags tags = Tags.of(tagRepository.findAllByContainsWorkbookName(workbookName.getWorkbook()));
         return TagResponse.listOf(tags);
     }
 }

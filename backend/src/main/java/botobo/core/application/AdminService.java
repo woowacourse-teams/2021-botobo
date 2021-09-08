@@ -26,8 +26,7 @@ public class AdminService extends AbstractUserService {
     private final CardRepository cardRepository;
     private final TagService tagService;
 
-    public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository
-            , TagService tagService) {
+    public AdminService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository, TagService tagService) {
         super(userRepository);
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;

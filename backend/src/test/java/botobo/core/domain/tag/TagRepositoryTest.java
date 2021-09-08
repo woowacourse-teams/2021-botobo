@@ -10,10 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,30 +92,30 @@ class TagRepositoryTest {
         }
     }
 
-    @DisplayName("문제집명을 포함하는 문제집명을 가진 문제집의 태그를 모두 가져온다. - 성공")
+    @DisplayName("문제집명을 포함하는 문제집의 태그를 모두 가져온다. - 성공")
     @Test
     void findAllByWorkbookName() {
         // given
         initWorkbooks();
 
         // when
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllByWorkbookName("java"));
+        List<Tag> tags = tagRepository.findAllByContainsWorkbookName("java");
         // then
         assertThat(tags).hasSize(6);
         assertThat(tags.stream().map(Tag::getTagNameValue).collect(Collectors.toList()))
                 .contains(
-                        "java", "자바", "자바짱", "jdk", "js"
+                        "java", "자바", "자바짱", "jdk", "js", "javascript"
                 );
     }
 
-    @DisplayName("문제집명을 포함하는 문제집명을 가진 문제집의 태그를 모두 가져온다. - 성공, 일치하는 문제집 없음")
+    @DisplayName("문제집명을 포함하는 문제집의 태그를 모두 가져온다. - 성공, 일치하는 문제집 없음")
     @Test
     void findAllByWorkbookNameEmpty() {
         // given
         initWorkbooks();
 
         // when
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllByWorkbookName("babo"));
+        List<Tag> tags = tagRepository.findAllByContainsWorkbookName("babo");
         // then
         assertThat(tags).isEmpty();
     }
@@ -131,7 +129,6 @@ class TagRepositoryTest {
         Tag js = Tag.of("js");
         Tag javascript = Tag.of("javascript");
         Tag spring = Tag.of("Spring");
-        tagRepository.saveAll(List.of(java, 자바, 자바짱, jdk, js, javascript, spring));
 
         List<Workbook> workbooks = List.of(
                 makeWorkbookWithTwoTags("Java", 자바, java),
