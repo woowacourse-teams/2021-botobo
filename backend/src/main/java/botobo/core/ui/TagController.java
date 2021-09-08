@@ -2,7 +2,7 @@ package botobo.core.ui;
 
 import botobo.core.application.TagService;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.tag.WorkbookName;
+import botobo.core.dto.tag.FilterCriteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +23,8 @@ public class TagController {
 
     @GetMapping
     public ResponseEntity<List<TagResponse>> findAllTagsByWorkbookName(@RequestParam String workbook) {
-        WorkbookName workbookName = new WorkbookName(workbook);
-        List<TagResponse> responses = tagService.findAllTagsByWorkbookName(workbookName);
+        FilterCriteria filterCriteria = new FilterCriteria(workbook);
+        List<TagResponse> responses = tagService.findAllTagsByWorkbookName(filterCriteria);
         return ResponseEntity.ok(responses);
     }
 }

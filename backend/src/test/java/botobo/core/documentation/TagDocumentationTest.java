@@ -4,7 +4,7 @@ import botobo.core.application.TagService;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.tag.WorkbookName;
+import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.ui.TagController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class TagDocumentationTest extends DocumentationTest {
                         Tag.of("자바")
                 ))
         );
-        given(tagService.findAllTagsByWorkbookName(any(WorkbookName.class)))
+        given(tagService.findAllTagsByWorkbookName(any(FilterCriteria.class)))
                 .willReturn(tagResponses);
 
         // when - then

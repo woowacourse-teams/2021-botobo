@@ -10,24 +10,24 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class WorkbookNameTest {
+class FilterCriteriaTest {
 
     @DisplayName("workbook이 비어있으면 true를 리턴한다. - 성공")
     @Test
     void isEmpty() {
         // given
-        WorkbookName workbookName = new WorkbookName("");
+        FilterCriteria filterCriteria = new FilterCriteria("");
         // when - then
-        assertThat(workbookName.isEmpty()).isTrue();
+        assertThat(filterCriteria.isEmpty()).isTrue();
     }
 
     @DisplayName("workbook을 생성한다. - 성공, 항상 소문자를 갖는다.")
     @Test
     void create() {
         // given
-        WorkbookName workbookName = new WorkbookName("JAVA");
+        FilterCriteria filterCriteria = new FilterCriteria("JAVA");
         // when - then
-        assertThat(workbookName.getWorkbook()).isEqualTo("java");
+        assertThat(filterCriteria.getWorkbook()).isEqualTo("java");
     }
 
     @DisplayName("workbook을 생성한다. - 성공, 비어있거나 null이면 빈 문자열을 가진다.")
@@ -35,16 +35,16 @@ class WorkbookNameTest {
     @NullAndEmptySource
     void create(String workbook) {
         // given
-        WorkbookName workbookName = new WorkbookName(workbook);
+        FilterCriteria filterCriteria = new FilterCriteria(workbook);
         // when - then
-        assertThat(workbookName.getWorkbook()).isEqualTo("");
+        assertThat(filterCriteria.getWorkbook()).isEqualTo("");
     }
 
     @DisplayName("workbook을 생성한다. - 실패, 길이가 30자를 넘으면 예외")
     @Test
     void createFailed() {
         // given
-        assertThatThrownBy(() -> new WorkbookName(stringGenerator(31)))
+        assertThatThrownBy(() -> new FilterCriteria(stringGenerator(31)))
                 .isInstanceOf(WorkbookNameLengthException.class);
     }
 }

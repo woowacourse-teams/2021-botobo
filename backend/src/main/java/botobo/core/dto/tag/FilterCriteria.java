@@ -6,13 +6,13 @@ import lombok.Getter;
 import java.util.Objects;
 
 @Getter
-public class WorkbookName {
+public class FilterCriteria {
     private static final int MAX_NAME_LENGTH = 30;
     private static final String EMPTY = "";
 
     private final String workbook;
 
-    public WorkbookName(String workbook) {
+    public FilterCriteria(String workbook) {
         this.workbook = validateName(workbook);
     }
 

@@ -7,7 +7,7 @@ import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.tag.WorkbookName;
+import botobo.core.dto.tag.FilterCriteria;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,10 +109,10 @@ class TagServiceTest {
         workbookRepository.saveAll(workbooks);
 
 
-        WorkbookName workbookName = new WorkbookName("JAVA");
+        FilterCriteria filterCriteria = new FilterCriteria("JAVA");
 
         // when - then
-        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(workbookName);
+        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
         assertThat(tagResponses).hasSize(2);
@@ -136,10 +136,10 @@ class TagServiceTest {
         workbookRepository.saveAll(workbooks);
 
 
-        WorkbookName workbookName = new WorkbookName("문제집");
+        FilterCriteria filterCriteria = new FilterCriteria("문제집");
 
         // when - then
-        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(workbookName);
+        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
@@ -164,10 +164,10 @@ class TagServiceTest {
         workbookRepository.saveAll(workbooks);
 
 
-        WorkbookName workbookName = new WorkbookName("");
+        FilterCriteria filterCriteria = new FilterCriteria("");
 
         // when - then
-        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(workbookName);
+        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).isEmpty();
     }
