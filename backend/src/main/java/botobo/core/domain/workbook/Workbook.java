@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Where(clause = "deleted=false")
-//@Table(indexes = @Index(name = "i_workbook_name", columnList = "name"))
 public class Workbook extends BaseEntity {
 
     private static final int MAX_NAME_LENGTH = 30;
@@ -71,6 +70,9 @@ public class Workbook extends BaseEntity {
         this.opened = opened;
         this.deleted = deleted;
         this.user = user;
+        if (Objects.nonNull(user)) {
+            addWorkbooksOf(user);
+        }
         if (Objects.nonNull(cards)) {
             this.cards = cards;
         }
@@ -126,6 +128,10 @@ public class Workbook extends BaseEntity {
     }
 
     public Workbook createBy(User user) {
+        return addWorkbooksOf(user);
+    }
+
+    private Workbook addWorkbooksOf(User user) {
         if (Objects.nonNull(this.user)) {
             this.user.getWorkbooks().remove(this);
         }
