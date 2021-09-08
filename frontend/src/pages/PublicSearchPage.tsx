@@ -33,7 +33,7 @@ const PublicSearchPage = () => {
     SearchKeywordResponse[]
   >([]);
 
-  const [scaleX, setScaleX] = useState(1);
+  const [searchBarWidth, setSearchBarWidth] = useState(1);
 
   const { routePublicCards, routePublicSearchResultQuery } = useRouter();
   const errorHandler = useErrorHandler();
@@ -42,18 +42,29 @@ const PublicSearchPage = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const getPublicWorkbooks = async () => {
       try {
         const newPublicWorkbooks = await getPublicWorkbookAsync();
-        setPublicWorkbooks(newPublicWorkbooks);
+
+        if (!mounted) return;
+
         setIsLoading(false);
+        setPublicWorkbooks(newPublicWorkbooks);
       } catch (error) {
+        if (!mounted) return;
+
         errorHandler(error);
         setIsLoading(false);
       }
     };
 
     getPublicWorkbooks();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -96,20 +107,20 @@ const PublicSearchPage = () => {
   }, [searchKeyword]);
 
   useEffect(() => {
-    const calculateScaleX = () => {
+    const calculateSearchBarWidth = () => {
       if (!stickyTriggerRef.current) return;
 
-      setScaleX(
+      setSearchBarWidth(
         (stickyTriggerRef.current.offsetWidth + 40) /
           stickyTriggerRef.current.offsetWidth
       );
     };
 
-    calculateScaleX();
+    calculateSearchBarWidth();
 
-    window.addEventListener('resize', calculateScaleX);
+    window.addEventListener('resize', calculateSearchBarWidth);
 
-    return () => window.addEventListener('resize', calculateScaleX);
+    return () => window.removeEventListener('resize', calculateSearchBarWidth);
   }, [stickyTriggerRef.current]);
 
   if (isLoading) return <PublicSearchLoadable />;
@@ -124,7 +135,7 @@ const PublicSearchPage = () => {
           role="search"
           isSticky={isSticky}
           isFocus={isFocus}
-          scaleX={scaleX}
+          scaleX={searchBarWidth}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(isMobile ? true : false)}
           onSubmit={(event) => {
