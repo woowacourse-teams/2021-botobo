@@ -116,7 +116,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         int userSize = users.size();
         int i = 0;
         for (AdminWorkbookRequest adminRequest : adminRequests) {
-            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(i % userSize));
+            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(i++ % userSize));
         }
     }
 
