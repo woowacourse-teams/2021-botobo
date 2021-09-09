@@ -27,7 +27,7 @@ const PublicWorkbookList = ({
   searchForPublicWorkbook,
   routePublicCards,
 }: Props) => {
-  const { keyword, tags, users } = query;
+  const { tags, users, criteria } = query;
 
   const scrollTarget = useRef<HTMLLIElement>(null);
 
@@ -41,7 +41,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({ keyword, tags, users }, false);
+        await searchForPublicWorkbook(query, false);
       },
       {
         threshold: 0.1,
@@ -51,7 +51,7 @@ const PublicWorkbookList = ({
     scrollObserver.observe(scrollTarget.current);
 
     return () => scrollObserver.disconnect();
-  }, [scrollTarget.current]);
+  }, [scrollTarget.current, tags, users, criteria]);
 
   return (
     <StyledUl>

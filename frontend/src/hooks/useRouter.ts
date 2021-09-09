@@ -16,7 +16,6 @@ interface PublicSearchResultQuery {
   order?: ValueOf<typeof SEARCH_ORDER>;
   keyword?: string;
   size?: number;
-  start?: number;
   method?: 'push' | 'replace';
 }
 
@@ -47,13 +46,14 @@ const useRouter = () => {
     tags,
     users,
     criteria = 'date',
+    order = 'desc',
     keyword = '',
     size = 20,
     method = 'replace',
   }: PublicSearchResultQuery = {}) =>
     history[method]({
       pathname: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
-      search: `?keyword=${keyword}&criteria=${criteria}&size=${size}${
+      search: `?keyword=${keyword}&criteria=${criteria}&size=${size}&order=${order}${
         tags ? `&tags=${tags}` : ''
       }${users ? `&users=${users}` : ''}`,
     });
