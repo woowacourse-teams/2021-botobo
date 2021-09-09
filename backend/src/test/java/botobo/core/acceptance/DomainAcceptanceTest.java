@@ -25,8 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +48,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected User admin, user1, user2, user3;
 
-    protected List<User> users;
+    protected static final List<User> USERS = new ArrayList<>();
 
     @Override
     @BeforeEach
@@ -83,7 +83,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         userRepository.save(user2);
         userRepository.save(user3);
 
-        users = List.of(user1, user2, user3);
+        USERS.addAll(List.of(user1,user2, user3));
     }
 
     protected User anyUser() {
@@ -112,11 +112,11 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void 서로_다른_유저의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
-        int index = 0;
+    public void 서로_다른_유저의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests, List<User> users) {
+        int userSize = users.size();
+        int i = 0;
         for (AdminWorkbookRequest adminRequest : adminRequests) {
-            if (index > users.size()) index = 0;
-            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(index++));
+            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(i % userSize));
         }
     }
 
