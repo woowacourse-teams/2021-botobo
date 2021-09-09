@@ -90,6 +90,7 @@ const PublicSearchResultPage = () => {
                     currentTarget.scrollIntoView({
                       behavior: 'smooth',
                       inline: 'center',
+                      block: 'center',
                     });
 
                     openModal({
