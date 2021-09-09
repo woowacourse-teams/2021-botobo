@@ -317,9 +317,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
-        assertThat(quizResponses.stream()
-                .map(QuizResponse::getId)
-                .collect(Collectors.toList()))
+        assertThat(quizResponses)
+                .extracting(QuizResponse::getId)
                 .containsAll(cardIds);
     }
 

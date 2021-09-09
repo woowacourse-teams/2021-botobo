@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -102,10 +101,9 @@ class TagRepositoryTest {
         List<Tag> tags = tagRepository.findAllByContainsWorkbookName("java");
         // then
         assertThat(tags).hasSize(6);
-        assertThat(tags.stream().map(Tag::getTagNameValue).collect(Collectors.toList()))
-                .contains(
-                        "java", "자바", "자바짱", "jdk", "js", "javascript"
-                );
+        assertThat(tags)
+                .extracting(Tag::getTagNameValue)
+                .contains("java", "자바", "자바짱", "jdk", "js", "javascript");
     }
 
     @DisplayName("문제집명을 포함하는 문제집의 태그를 모두 가져온다. - 성공, 일치하는 문제집 없음")

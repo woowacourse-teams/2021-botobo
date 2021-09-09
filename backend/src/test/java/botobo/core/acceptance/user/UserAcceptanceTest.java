@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
 import static botobo.core.utils.Fixture.pk;
@@ -531,7 +530,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
     @Test
     void findAllUsersByWorkbookName() {
-        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG);
+        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, USERS);
 
         // given
         final String workbookName = "Java";
@@ -544,17 +543,15 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
 
         // then
         assertThat(userResponses).hasSize(3);
-        assertThat(userResponses.stream()
-                .map(UserFilterResponse::getUserName)
-                .sorted()
-                .collect(Collectors.toList()))
-                .containsExactly("user1", "user2", "user3");
+        assertThat(userResponses)
+                .extracting(UserFilterResponse::getUserName)
+                .containsExactlyInAnyOrder("user1", "user2", "user3");
     }
 
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
     @Test
     void findAllUsersByWorkbookNameIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG);
+        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, USERS);
 
         // given
         final String workbookName = "";
