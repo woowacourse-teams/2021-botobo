@@ -1,16 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
 
 import { PublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
-import { publicSearchResultState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import {
+  MultiFilter,
   MultiFilterName,
   MultiFilterType,
   MultiFilterValue,
@@ -21,6 +20,7 @@ interface Props {
   name: MultiFilterName;
   values: MultiFilterValue[];
   query: PublicSearchQueryReturnType;
+  setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
   setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
 }
 
@@ -37,6 +37,7 @@ const MultiFilterSelector = ({
   name,
   values: data,
   query,
+  setMultiFilters,
   setFilteredPublicWorkbook,
 }: Props) => {
   const { closeModal } = useModal();
@@ -44,8 +45,6 @@ const MultiFilterSelector = ({
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
-
-  const setPublicWorkbookState = useSetRecoilState(publicSearchResultState);
 
   const regExpKeyword = new RegExp(filterKeyword.replace(/\s+/g, ''), 'i');
 
@@ -60,14 +59,13 @@ const MultiFilterSelector = ({
   };
 
   const setSelectedValuesInMultiFilter = () => {
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => {
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => {
         if (item.type !== type) return item;
 
         return { ...item, values };
-      }),
-    }));
+      })
+    );
   };
 
   const searchFilteredPublicWorkbook = () => {

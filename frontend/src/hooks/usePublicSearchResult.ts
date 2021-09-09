@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
+import {
+  PublicWorkbookAsync,
+  getSearchResultAsync,
+  getTagsFromWorkbookAsync,
+  getUsersFromWorkbookAsync,
+} from '../api';
 import { SEARCH_CRITERIA } from '../constants';
 import { publicSearchResultState } from '../recoil';
 import { PublicWorkbookResponse } from '../types';
-import { MultiFilterType } from '../types/filter';
+import { MultiFilter, MultiFilterType, SingleFilter } from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { usePublicSearchQuery, useRouter, useSnackbar } from '.';
 
@@ -45,6 +50,13 @@ const dummyList = [
   },
 ];
 
+const singleFilters: SingleFilter[] = [
+  { id: 1, type: '최신순', criteria: 'date' },
+  { id: 2, type: '좋아요 순', criteria: 'heart' },
+  { id: 3, type: '이름 순', criteria: 'name' },
+  { id: 4, type: '카드 개수 순', criteria: 'count' },
+];
+
 const usePublicSearchResult = () => {
   const { routePrevPage, routePublicCards, routePublicSearchResultQuery } =
     useRouter();
@@ -52,14 +64,31 @@ const usePublicSearchResult = () => {
   const query = usePublicSearchQuery();
   const { keyword, criteria } = query;
 
-  const [{ startIndex, singleFilters, multiFilters }, setPublicWorkbookState] =
-    useRecoilState(publicSearchResultState);
+  const [{ startIndex, tags, users }, setPublicWorkbookState] = useRecoilState(
+    publicSearchResultState
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentFilterId, setCurrentFilterId] = useState(
     singleFilters.find((filter) => filter.criteria === criteria)?.id ??
       singleFilters[0].id
   );
+  const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
+    {
+      id: 1,
+      type: 'tags',
+      name: '태그',
+      values: tags,
+      getValues: getTagsFromWorkbookAsync,
+    },
+    {
+      id: 2,
+      type: 'users',
+      name: '작성자',
+      values: users,
+      getValues: getUsersFromWorkbookAsync,
+    },
+  ]);
 
   const showSnackbar = useSnackbar();
 
@@ -98,7 +127,7 @@ const usePublicSearchResult = () => {
   };
 
   const searchForPublicWorkbook = async (
-    { keyword, start, ...options }: PublicWorkbookAsync,
+    { keyword, start, criteria, ...options }: PublicWorkbookAsync,
     isNew = true
   ) => {
     if (keyword === '') {
@@ -112,6 +141,7 @@ const usePublicSearchResult = () => {
       const newWorkbooks = await getSearchResultAsync({
         keyword,
         start: start ?? startIndex,
+        criteria,
         ...options,
       });
 
@@ -120,7 +150,7 @@ const usePublicSearchResult = () => {
       setIsLoading(false);
       setIsInitialLoading(false);
 
-      routePublicSearchResultQuery({ keyword, start, ...options });
+      routePublicSearchResultQuery({ keyword, criteria, ...options });
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -149,23 +179,21 @@ const usePublicSearchResult = () => {
   const setInitialMultiFilterValues = async (type: MultiFilterType) => {
     const values = await getMultiFilterValues(type);
 
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => {
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => {
         if (item.type !== type) return item;
 
         return {
           ...item,
           values: dummyList.map((value) => ({ ...value, isSelected: false })),
         };
-      }),
-    }));
+      })
+    );
   };
 
   const removeMultiFilterItem = (type: MultiFilterType, itemId: number) => {
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => {
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => {
         if (item.type !== type) return item;
 
         return {
@@ -179,8 +207,8 @@ const usePublicSearchResult = () => {
             };
           }),
         };
-      }),
-    }));
+      })
+    );
 
     setFilteredPublicWorkbook({
       ...query,
@@ -201,24 +229,37 @@ const usePublicSearchResult = () => {
 
   const resetFilterValues = () => {
     setCurrentFilterId(singleFilters[0].id);
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      multiFilters: prevValue.multiFilters.map((item) => ({
+    setMultiFilters((prevValue) =>
+      prevValue.map((item) => ({
         ...item,
         values: item.values.map((value) => ({
           ...value,
           isSelected: false,
         })),
-      })),
-    }));
+      }))
+    );
 
     setFilteredPublicWorkbook({ keyword });
   };
+
+  useEffect(() => {
+    const [tag, user] = multiFilters;
+
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      tags: tag.values,
+      users: user.values,
+    }));
+  }, [multiFilters]);
 
   return {
     query,
     isLoading,
     currentFilterId,
+    singleFilters,
+    multiFilters,
+    setPublicWorkbookState,
+    setMultiFilters,
     setIsLoading,
     searchForPublicWorkbook,
     setFilteredPublicWorkbook,

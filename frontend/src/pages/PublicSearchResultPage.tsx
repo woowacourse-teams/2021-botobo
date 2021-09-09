@@ -28,6 +28,9 @@ const PublicSearchResultPage = () => {
     query,
     isLoading,
     currentFilterId,
+    singleFilters,
+    multiFilters,
+    setMultiFilters,
     searchForPublicWorkbook,
     setFilteredPublicWorkbook,
     setSingleFilterValues,
@@ -38,12 +41,9 @@ const PublicSearchResultPage = () => {
     routePrevPage,
   } = usePublicSearchResult();
 
-  const {
-    publicWorkbookResult,
-    isInitialLoading,
-    singleFilters,
-    multiFilters,
-  } = useRecoilValue(publicSearchResultState);
+  const { publicWorkbookResult, isInitialLoading } = useRecoilValue(
+    publicSearchResultState
+  );
 
   const { keyword } = query;
 
@@ -100,6 +100,7 @@ const PublicSearchResultPage = () => {
                           name={name}
                           values={multiFilters[index].values}
                           query={query}
+                          setMultiFilters={setMultiFilters}
                           setFilteredPublicWorkbook={setFilteredPublicWorkbook}
                         />
                       ),
