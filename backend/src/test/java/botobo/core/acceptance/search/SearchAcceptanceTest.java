@@ -45,22 +45,22 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     private void initializeWorkbooks() {
         // pk의 문제집 생성
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("피케이의 자바 기초 문제집", true, makeJavaTags(), pkToken),
+                유저_문제집_등록되어_있음("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), pkToken),
                 2,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("피케이의 자바 중급 문제집", true, makeJavaTags(), pkToken),
+                유저_문제집_등록되어_있음("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), pkToken),
                 5,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("피케이의 자바 고급 문제집", true, makeJavaTags(), pkToken),
+                유저_문제집_등록되어_있음("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), pkToken),
                 10,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("자바스크립트 문제집", true, makeJSTags(), pkToken),
+                유저_문제집_등록되어_있음("피케이의 자바스크립트 문제집", true, makeJSTags(), pkToken),
                 1,
                 pkToken
         );
@@ -79,12 +79,12 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 List.of(pkToken, bearToken)
         );
         카드와_좋아요도_함께_등록(
-                유저_문제집_등록되어_있음("중간곰의 자바 고급 문제집", true, makeJavaTags(), bearToken),
+                유저_문제집_등록되어_있음("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), bearToken),
                 1,
                 bearToken,
                 List.of()
         );
-        유저_문제집_등록되어_있음("너도 자바 할 수 있어", true, makeJavaTags(), bearToken);
+        유저_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeJavaTags(), bearToken);
     }
 
     private List<TagRequest> makeJavaTags() {
@@ -133,11 +133,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("문제집 검색 - 성공, 문제집 이름으로 검색")
-    void searchFromNameType() {
+    void searchFromKeyword() {
         // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "기초");
-        parameters.put("type", "name");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -152,53 +151,12 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 검색 - 성공, 태그 이름으로 검색")
-    void searchFromTagType() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "java");
-        parameters.put("type", "tag");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(6);
-        workbookResponses.forEach(workbookResponse ->
-                assertThat(workbookResponse.getTags()).extracting(TagResponse::getName).contains("java")
-        );
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 성공, 유저 이름으로 검색")
-    void searchFromUserType() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(4);
-        assertThat(workbookResponses).extracting(WorkbookResponse::getAuthor)
-                .allMatch(userName -> userName.equals("pk"));
-    }
-
-    @Test
     @DisplayName("문제집 검색 - 성공, 시간 기준 최신 순 정렬")
     void searchFromDateDesc() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
+        parameters.put("keyword", "피케이");
         parameters.put("criteria", "date");
-        parameters.put("order", "desc");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -210,37 +168,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "자바스크립트 문제집",
-                        "피케이의 자바 고급 문제집",
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 기초 문제집"
-                );
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 성공, 시간 기준 오랜 순 정렬")
-    void searchFromDateAsc() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
-        parameters.put("criteria", "date");
-        parameters.put("order", "asc");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(4);
-        assertThat(workbookResponses)
-                .extracting(WorkbookResponse::getName)
-                .containsExactly(
-                        "피케이의 자바 기초 문제집",
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 고급 문제집",
-                        "자바스크립트 문제집"
+                        "피케이의 자바스크립트 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
                 );
     }
 
@@ -249,10 +180,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchFromNameDesc() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
+        parameters.put("keyword", "피케이");
         parameters.put("criteria", "name");
-        parameters.put("order", "desc");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -264,37 +193,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 기초 문제집",
-                        "피케이의 자바 고급 문제집",
-                        "자바스크립트 문제집"
-                );
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 성공, 사전 순 정렬")
-    void searchFromNameAsc() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
-        parameters.put("criteria", "name");
-        parameters.put("order", "asc");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(4);
-        assertThat(workbookResponses)
-                .extracting(WorkbookResponse::getName)
-                .containsExactly(
-                        "자바스크립트 문제집",
-                        "피케이의 자바 고급 문제집",
-                        "피케이의 자바 기초 문제집",
-                        "피케이의 자바 중급 문제집"
+                        "가장 멋진 피케이의 자바 기초 문제집",
+                        "나는 피케이의 자바 중급 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "피케이의 자바스크립트 문제집"
                 );
     }
 
@@ -303,11 +205,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchFromHeartDesc() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "bear");
-        parameters.put("type", "user");
+        parameters.put("keyword", "중간곰");
         parameters.put("criteria", "heart");
-        parameters.put("order", "desc");
-
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
 
@@ -320,33 +219,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 .containsExactly(
                         "중간곰의 자바 중급 문제집",
                         "중간곰의 자바 기초 문제집",
-                        "중간곰의 자바 고급 문제집"
-                );
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 성공, 좋아요 적은 순 정렬")
-    void searchFromHeartAsc() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "bear");
-        parameters.put("type", "user");
-        parameters.put("criteria", "heart");
-        parameters.put("order", "asc");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(3);
-        assertThat(workbookResponses)
-                .extracting(WorkbookResponse::getName)
-                .containsExactly(
-                        "중간곰의 자바 고급 문제집",
-                        "중간곰의 자바 기초 문제집",
-                        "중간곰의 자바 중급 문제집"
+                        "중간곰의 자바스크립트 고급 문제집"
                 );
     }
 
@@ -355,10 +228,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchFromCountDesc() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
+        parameters.put("keyword", "피케이");
         parameters.put("criteria", "count");
-        parameters.put("order", "desc");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -370,37 +241,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "피케이의 자바 고급 문제집",
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 기초 문제집",
-                        "자바스크립트 문제집"
-                );
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 성공, 카드 적은 순 정렬")
-    void searchFromCountAsc() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
-        parameters.put("criteria", "count");
-        parameters.put("order", "asc");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).hasSize(4);
-        assertThat(workbookResponses)
-                .extracting(WorkbookResponse::getName)
-                .containsExactly(
-                        "자바스크립트 문제집",
-                        "피케이의 자바 기초 문제집",
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 고급 문제집"
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집",
+                        "피케이의 자바스크립트 문제집"
                 );
     }
 
@@ -409,10 +253,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchWithBiggerSizeThanStored() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
+        parameters.put("keyword", "피케이");
         parameters.put("criteria", "date");
-        parameters.put("order", "desc");
         parameters.put("size", "50");
 
         // when
@@ -425,10 +267,10 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "자바스크립트 문제집",
-                        "피케이의 자바 고급 문제집",
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 기초 문제집"
+                        "피케이의 자바스크립트 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
                 );
     }
 
@@ -437,10 +279,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchWithPaging() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "pk");
-        parameters.put("type", "user");
+        parameters.put("keyword", "피케이");
         parameters.put("criteria", "date");
-        parameters.put("order", "desc");
         parameters.put("start", "1");
         parameters.put("size", "2");
 
@@ -454,8 +294,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
-                        "피케이의 자바 중급 문제집",
-                        "피케이의 자바 기초 문제집"
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
                 );
     }
 
@@ -464,8 +304,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     void searchExceptZeroCards() {
         // given
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "bear");
-        parameters.put("type", "user");
+        parameters.put("keyword", "중간곰");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -477,6 +316,234 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponses)
                 .extracting(WorkbookResponse::getCardCount)
                 .allMatch(cardCount -> cardCount > 0);
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 최신순 및 원하는 태그로 필터링함.")
+    void searchFromKeywordAndDateDescAndTagFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "피케이");
+        parameters.put("criteria", "date");
+        parameters.put("tags", "1");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 카드순 및 원하는 태그로 필터링함.")
+    void searchFromKeywordAndCountDescAndTagFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "피케이");
+        parameters.put("criteria", "count");
+        parameters.put("tags", "1");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 좋아요순 및 원하는 태그로 필터링함.")
+    void searchFromKeywordAndHeartDescAndTagFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "중간곰");
+        parameters.put("criteria", "heart");
+        parameters.put("tags", "2");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(2);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 최신순 및 원하는 유저로 필터링함.")
+    void searchFromKeywordAndDateDescAndUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "date");
+        parameters.put("users", "2");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(4);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "피케이의 자바스크립트 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 카드순 및 원하는 유저로 필터링함.")
+    void searchFromKeywordAndCountDescAndUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "count");
+        parameters.put("users", "2");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(4);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집",
+                        "피케이의 자바스크립트 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 좋아요순 및 원하는 유저로 필터링함.")
+    void searchFromKeywordAndHeartDescAndUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "heart");
+        parameters.put("users", "3");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "중간곰의 자바스크립트 고급 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 최신순 및 원하는 태그, 유저로 필터링함.")
+    void searchFromKeywordAndDateDescAndTagUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "date");
+        parameters.put("tags", "1");
+        parameters.put("users", "2");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 카드순 및 원하는 태그, 유저로 필터링함.")
+    void searchFromKeywordAndCountDescAndTagUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "count");
+        parameters.put("tags", "1");
+        parameters.put("users", "2");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(3);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 키워드로 검색한 결과에 좋아요순 및 원하는 태그, 유저로 필터링함.")
+    void searchFromKeywordAndHeartDescAndTagUserFiltering() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+        parameters.put("criteria", "heart");
+        parameters.put("tags", "1");
+        parameters.put("users", "3");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(2);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집"
+                );
     }
 
     @Test
@@ -510,23 +577,6 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 검색 - 실패, 지원하지 않는 검색 타입")
-    void searchWithInvalidType() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "java");
-        parameters.put("type", "alphabet");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("유효하지 않은 검색 타입입니다. 유효한 검색 타임 : name, tag, user");
-    }
-
-    @Test
     @DisplayName("문제집 검색 - 실패, 지원하지 않는 정렬 기준")
     void searchWithInvalidCriteria() {
         // given
@@ -541,23 +591,6 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).contains("유효하지 않은 정렬 조건입니다. 유효한 정렬 조건 : date, name, count, heart");
-    }
-
-    @Test
-    @DisplayName("문제집 검색 - 실패, 지원하지 않는 정렬 방법")
-    void searchWithInvalidOrder() {
-        // given
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("keyword", "java");
-        parameters.put("order", "center");
-
-        // when
-        HttpResponse response = 문제집_검색_요청(parameters);
-
-        // then
-        ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResponse.getMessage()).contains("유효하지 않은 정렬 방향입니다. 유효한 정렬 방식 : ASC, DESC");
     }
 
     @Test

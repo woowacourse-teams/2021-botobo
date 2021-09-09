@@ -26,12 +26,18 @@ public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
                                     List<Long> users, Pageable pageable) {
        QueryResults<Workbook> results =  jpaQueryFactory.selectFrom(workbook)
                .where(containKeyword(parameter.getSearchKeyword()), containTags(tags),
-                        containUsers(users))
+                        containUsers(users), containCard())
                .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
                .offset(pageable.getOffset())
                .limit(pageable.getPageSize())
                .fetchResults();
        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    private BooleanExpression containCard() {
+        return workbook.cards
+                .cards
+                .isNotEmpty();
     }
 
     private BooleanExpression containKeyword(SearchKeyword searchKeyword) {
