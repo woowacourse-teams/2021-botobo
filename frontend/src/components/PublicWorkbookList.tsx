@@ -3,14 +3,14 @@ import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
-import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
+import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
-  query: UsePublicSearchQueryType;
+  query: PublicSearchQueryReturnType;
   isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
   searchForPublicWorkbook: (

@@ -7,7 +7,7 @@ import { PublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
-import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
+import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { publicSearchResultState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import {
@@ -20,7 +20,7 @@ interface Props {
   type: MultiFilterType;
   name: MultiFilterName;
   values: MultiFilterValue[];
-  query: UsePublicSearchQueryType;
+  query: PublicSearchQueryReturnType;
   setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
 }
 
