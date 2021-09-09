@@ -1,9 +1,6 @@
 import { atom } from 'recoil';
 
-import {
-  getTagsWhenWorkbookSearchASync,
-  getUsersWhenWorkbookSearchAsync,
-} from '../api';
+import { getTagsFromWorkbookAsync, getUsersFromWorkbookAsync } from '../api';
 import { PublicWorkbookResponse } from '../types';
 import { MultiFilter, SingleFilter } from '../types/filter';
 
@@ -33,14 +30,14 @@ export const publicSearchResultState = atom<PublicSearchState>({
         type: 'tags',
         name: '태그',
         values: [],
-        getValues: getTagsWhenWorkbookSearchASync,
+        getValues: getTagsFromWorkbookAsync,
       },
       {
         id: 2,
         type: 'users',
         name: '작성자',
         values: [],
-        getValues: getUsersWhenWorkbookSearchAsync,
+        getValues: getUsersFromWorkbookAsync,
       },
     ],
   },
