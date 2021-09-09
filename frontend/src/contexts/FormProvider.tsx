@@ -63,6 +63,8 @@ const FormProvider = ({
       await validator?.(value);
       setErrorMessages({ ...errorMessages, [key]: null });
     } catch (error) {
+      if (!(error instanceof Error)) return;
+
       console.error(error);
       setErrorMessages({ ...errorMessages, [key]: error.message });
     }
