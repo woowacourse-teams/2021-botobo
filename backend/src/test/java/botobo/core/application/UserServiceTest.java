@@ -67,9 +67,12 @@ class UserServiceTest {
                 .socialId("1")
                 .userName("user1")
                 .profileUrl("profile.io")
+                .role(Role.USER)
+                .socialType(SocialType.GITHUB)
                 .build();
 
         user2 = User.builder()
+                .id(2L)
                 .socialId("2")
                 .userName("user2")
                 .profileUrl("profile.io")
@@ -78,6 +81,7 @@ class UserServiceTest {
                 .build();
 
         user3 = User.builder()
+                .id(3L)
                 .socialId("3")
                 .userName("user3")
                 .profileUrl("profile.io")
