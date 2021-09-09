@@ -5,7 +5,7 @@ import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
 import { SEARCH_CRITERIA } from '../constants';
 import { publicSearchResultState } from '../recoil';
 import { PublicWorkbookResponse } from '../types';
-import { MultiFilterTypes } from '../types/filter';
+import { MultiFilterType } from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { usePublicSearchQuery, useRouter, useSnackbar } from '.';
 
@@ -133,7 +133,7 @@ const usePublicSearchResult = () => {
     }
   };
 
-  const getMultiFilterValues = async (type: MultiFilterTypes) => {
+  const getMultiFilterValues = async (type: MultiFilterType) => {
     try {
       const targetFilter = multiFilters.find((item) => item.type === type);
 
@@ -146,7 +146,7 @@ const usePublicSearchResult = () => {
     }
   };
 
-  const setInitialMultiFilterValues = async (type: MultiFilterTypes) => {
+  const setInitialMultiFilterValues = async (type: MultiFilterType) => {
     const values = await getMultiFilterValues(type);
 
     setPublicWorkbookState((prevValue) => ({
@@ -162,7 +162,7 @@ const usePublicSearchResult = () => {
     }));
   };
 
-  const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
+  const removeMultiFilterItem = (type: MultiFilterType, itemId: number) => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
       multiFilters: prevValue.multiFilters.map((item) => {

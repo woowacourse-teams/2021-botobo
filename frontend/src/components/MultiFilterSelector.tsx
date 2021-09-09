@@ -11,14 +11,14 @@ import { UsePublicSearchQueryType } from '../hooks/usePublicSearchQuery';
 import { publicSearchResultState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import {
-  MultiFilterNames,
-  MultiFilterTypes,
+  MultiFilterName,
+  MultiFilterType,
   MultiFilterValue,
 } from '../types/filter';
 
 interface Props {
-  type: MultiFilterTypes;
-  name: MultiFilterNames;
+  type: MultiFilterType;
+  name: MultiFilterName;
   values: MultiFilterValue[];
   query: UsePublicSearchQueryType;
   setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
