@@ -2,6 +2,7 @@ package botobo.core.domain.tag;
 
 import botobo.core.exception.tag.TagsCreationFailureException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,18 @@ public class Tags {
         this.tags = tags;
     }
 
-    private void validateNotNull(List<Tag> tags) {
-        if (Objects.isNull(tags)) {
-            throw new TagsCreationFailureException("tags는 null이 될 수 없습니다.");
-        }
+    public static Tags empty() {
+        return new Tags(new ArrayList<>());
     }
 
     public static Tags of(List<Tag> tags) {
         return new Tags(tags);
+    }
+
+    private void validateNotNull(List<Tag> tags) {
+        if (Objects.isNull(tags)) {
+            throw new TagsCreationFailureException("tags는 null이 될 수 없습니다.");
+        }
     }
 
     public int countSameTagName(Tags other) {

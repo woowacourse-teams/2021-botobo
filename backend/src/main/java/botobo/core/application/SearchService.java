@@ -16,7 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,7 +44,7 @@ public class SearchService {
     public List<TagResponse> findTagsIn(SearchRelated keyword) {
         String target = keyword.get();
         if (target.isBlank()) {
-            return TagResponse.listOf(Tags.of(new ArrayList<>()));
+            return TagResponse.listOf(Tags.empty());
         }
         List<Tag> tags = tagRepository.findAllTagContaining(target);
         List<Tag> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);

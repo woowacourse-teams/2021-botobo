@@ -9,8 +9,8 @@ import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.workbooktag.WorkbookTag;
+import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
-import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Where(clause = "deleted=false")
+//@Table(indexes = @Index(name = "i_workbook_name", columnList = "name"))
 public class Workbook extends BaseEntity {
 
     private static final int MAX_NAME_LENGTH = 30;
@@ -80,10 +81,10 @@ public class Workbook extends BaseEntity {
 
     private void validateName(String name) {
         if (Objects.isNull(name)) {
-            throw new WorkbookNameNullException();
+            throw new WorkbookNameBlankException();
         }
         if (name.isBlank()) {
-            throw new WorkbookNameNullException();
+            throw new WorkbookNameBlankException();
         }
         if (name.length() > MAX_NAME_LENGTH) {
             throw new WorkbookNameLengthException();
