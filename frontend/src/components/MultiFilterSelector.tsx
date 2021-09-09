@@ -59,7 +59,7 @@ const MultiFilterSelector = ({
     );
   };
 
-  const setSelectedValues = () => {
+  const setSelectedValuesInMultiFilter = () => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
       multiFilters: prevValue.multiFilters.map((item) => {
@@ -68,6 +68,16 @@ const MultiFilterSelector = ({
         return { ...item, values };
       }),
     }));
+  };
+
+  const searchFilteredPublicWorkbook = () => {
+    setFilteredPublicWorkbook({
+      ...query,
+      [type]: values
+        .filter(({ isSelected }) => isSelected)
+        .map(({ id }) => id)
+        .join(','),
+    });
   };
 
   return (
@@ -106,15 +116,9 @@ const MultiFilterSelector = ({
       <Confirm
         type="button"
         onClick={() => {
-          setSelectedValues();
+          setSelectedValuesInMultiFilter();
+          searchFilteredPublicWorkbook();
           closeModal();
-          setFilteredPublicWorkbook({
-            ...query,
-            [type]: values
-              .filter(({ isSelected }) => isSelected)
-              .map(({ id }) => id)
-              .join(','),
-          });
         }}
       >
         확인
