@@ -46,9 +46,9 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     private OauthManagerFactory oauthManagerFactory;
 
-    protected User admin, user1, user2, user3;
+    protected User admin, admin1, admin2, admin3;
 
-    protected static final List<User> USERS = new ArrayList<>();
+    protected static final List<User> ADMINS = new ArrayList<>();
 
     @Override
     @BeforeEach
@@ -60,30 +60,30 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
-        user1 = User.builder()
+        admin1 = User.builder()
                 .socialId("2")
                 .userName("user1")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
-        user2 = User.builder()
+        admin2 = User.builder()
                 .socialId("3")
                 .userName("user2")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
-        user3 = User.builder()
+        admin3 = User.builder()
                 .socialId("4")
                 .userName("user3")
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
         userRepository.save(admin);
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
+        userRepository.save(admin1);
+        userRepository.save(admin2);
+        userRepository.save(admin3);
 
-        USERS.addAll(List.of(user1,user2, user3));
+        ADMINS.addAll(List.of(admin1, admin2, admin3));
     }
 
     protected User anyUser() {
@@ -104,19 +104,19 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public ExtractableResponse<Response> 서로_다른_유저의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User user) {
+    public ExtractableResponse<Response> 서로_다른_관리자의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User admin) {
         return request()
                 .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth(jwtTokenProvider.createToken(user.getId()))
+                .auth(jwtTokenProvider.createToken(admin.getId()))
                 .build()
                 .extract();
     }
 
-    public void 서로_다른_유저의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests, List<User> users) {
-        int userSize = users.size();
+    public void 서로_다른_관리자의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests, List<User> admins) {
+        int userSize = admins.size();
         int i = 0;
         for (AdminWorkbookRequest adminRequest : adminRequests) {
-            서로_다른_유저의_문제집_생성_요청(adminRequest, users.get(i++ % userSize));
+            서로_다른_관리자의_문제집_생성_요청(adminRequest, admins.get(i++ % userSize));
         }
     }
 
