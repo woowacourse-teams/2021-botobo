@@ -57,8 +57,6 @@ class UserDocumentationTest extends DocumentationTest {
     @Test
     @DisplayName("유저의 프로필 이미지 수정 - 성공")
     void updateProfile() throws Exception {
-        MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
-
         ProfileResponse profileResponse = ProfileResponse.builder()
                 .profileUrl("https://cloudfront.com/users/user/aaabbbccc_210807.png")
                 .build();
@@ -135,7 +133,7 @@ class UserDocumentationTest extends DocumentationTest {
                 .userName("조앤")
                 .build();
         final User 민정 = User.builder()
-                .id(1L)
+                .id(2L)
                 .userName("민정")
                 .build();
         List<UserFilterResponse> userResponses = UserFilterResponse.listOf(List.of(조앤, 민정));
