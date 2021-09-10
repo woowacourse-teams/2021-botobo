@@ -2,10 +2,11 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { ThemeProvider } from '@emotion/react';
 import { RenderOptions, render } from '@testing-library/react';
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
+import { SsrSuspense } from './components';
 import { theme } from './constants';
 import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
@@ -17,10 +18,10 @@ const AllTheProviders: React.FC = ({ children }) => {
       <ModalProvider>
         <SnackbarProvider>
           <RecoilRoot>
-            <Suspense fallback={<div></div>}>
+            <SsrSuspense fallback={<div></div>}>
               <GlobalStyle />
               <BrowserRouter>{children}</BrowserRouter>
-            </Suspense>
+            </SsrSuspense>
           </RecoilRoot>
         </SnackbarProvider>
       </ModalProvider>
