@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Where(clause = "deleted=false")
-//@Table(indexes = @Index(name = "i_workbook_name", columnList = "name"))
 public class Workbook extends BaseEntity {
 
     private static final int MAX_NAME_LENGTH = 30;
@@ -70,12 +69,14 @@ public class Workbook extends BaseEntity {
         this.name = name;
         this.opened = opened;
         this.deleted = deleted;
-        this.user = user;
+        if (Objects.nonNull(user)) {
+            setUser(user);
+        }
         if (Objects.nonNull(cards)) {
             this.cards = cards;
         }
         if (Objects.nonNull(tags)) {
-            addTags(tags);
+            setTags(tags);
         }
     }
 
@@ -91,7 +92,15 @@ public class Workbook extends BaseEntity {
         }
     }
 
-    public void addTags(Tags tags) {
+    public void setUser(User user) {
+        if (Objects.nonNull(this.user)) {
+            this.user.getWorkbooks().remove(this);
+        }
+        this.user = user;
+        user.getWorkbooks().add(this);
+    }
+
+    public void setTags(Tags tags) {
         validateTagSize(tags);
         this.workbookTags.addAll(
                 castWorkbookTags(tags)
@@ -120,20 +129,6 @@ public class Workbook extends BaseEntity {
                 .collect(Collectors.toList()));
     }
 
-    public Workbook taggedBy(Tags tags) {
-        addTags(tags);
-        return this;
-    }
-
-    public Workbook createBy(User user) {
-        if (Objects.nonNull(this.user)) {
-            this.user.getWorkbooks().remove(this);
-        }
-        this.user = user;
-        user.getWorkbooks().add(this);
-        return this;
-    }
-
     public String author() {
         if (Objects.isNull(user)) {
             return "존재하지 않는 유저";
@@ -154,10 +149,6 @@ public class Workbook extends BaseEntity {
         return !isOpened();
     }
 
-    public boolean authorIsAdmin() {
-        return user.isAdmin();
-    }
-
     public boolean authorIsUser() {
         return user.isUser();
     }
@@ -170,7 +161,7 @@ public class Workbook extends BaseEntity {
         this.name = other.name;
         this.opened = other.opened;
         clearWorkbookTags();
-        addTags(other.tags());
+        setTags(other.tags());
     }
 
     public void clearWorkbookTags() {

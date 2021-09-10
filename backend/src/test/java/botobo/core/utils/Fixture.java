@@ -74,7 +74,7 @@ public class Fixture {
             .tags(TAG_REQUESTS_TYPE_1)
             .build();
     private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_2 = AdminWorkbookRequest.builder()
-            .name("Java")
+            .name("JAVAVA")
             .tags(TAG_REQUESTS_TYPE_2)
             .build();
     private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_3 = AdminWorkbookRequest.builder()
