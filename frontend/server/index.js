@@ -62,12 +62,12 @@ app.get('/', async (req, res) => {
       constructStyleTagsFromChunks({ html, styles })
     );
 
-    newHTML = newHTML.replace(
+    /*     newHTML = newHTML.replace(
       '<script id="initial-state"></script>',
       `<script id="initial-state">window.__INITIAL_STATE__=${JSON.stringify(
         initialState
       ).replace(/</g, '\\u003c')}</script>`
-    );
+    ); */
 
     newHTML = newHTML.replace(
       '<div id="root"></div>',
