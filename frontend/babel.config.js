@@ -1,4 +1,5 @@
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const isWeb = typeof window !== 'undefined';
 
 module.exports = {
   presets: [
@@ -26,6 +27,6 @@ module.exports = {
     '@babel/proposal-class-properties',
     '@babel/proposal-object-rest-spread',
     '@emotion',
-    isDevelopment && require.resolve('react-refresh/babel'),
+    isDevelopment && isWeb && require.resolve('react-refresh/babel'),
   ].filter(Boolean),
 };

@@ -13,6 +13,7 @@ import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useWorkbook = () => {
+  console.log('useWorkbook');
   const { data: workbooks, errorMessage } = useRecoilValue(workbookState);
   const editedWorkbook = useRecoilValue(editedWorkbookState);
   const setWorkbookId = useSetRecoilState(workbookIdState);

@@ -1,6 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
 import React from 'react';
-import { RecoilRoot } from 'recoil';
 
 import { HeaderSkeleton, SsrSuspense } from './components';
 import { theme } from './constants';
@@ -10,16 +9,14 @@ import Router from './Router';
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <RecoilRoot>
-      <SnackbarProvider>
-        <ModalProvider>
-          <SsrSuspense fallback={<HeaderSkeleton />}>
-            <GlobalStyle />
-            <Router />
-          </SsrSuspense>
-        </ModalProvider>
-      </SnackbarProvider>
-    </RecoilRoot>
+    <SnackbarProvider>
+      <ModalProvider>
+        <SsrSuspense fallback={<HeaderSkeleton />}>
+          <GlobalStyle />
+          <Router />
+        </SsrSuspense>
+      </ModalProvider>
+    </SnackbarProvider>
   </ThemeProvider>
 );
 

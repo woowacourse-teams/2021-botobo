@@ -7,6 +7,7 @@ export const userState = atom({
   default: selector({
     key: 'userRequest',
     get: async () => {
+      console.log('userState');
       try {
         return await getUserInfoAsync();
       } catch (error) {

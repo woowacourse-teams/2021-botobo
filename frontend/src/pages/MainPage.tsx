@@ -14,6 +14,7 @@ import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
+  console.log('mainpage', userInfo);
   const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
     useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicSearch, routeGuide } =

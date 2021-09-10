@@ -37,6 +37,8 @@ export const workbookState = selector<WorkbookState>({
   get: async ({ get }) => {
     get(workbookUpdateTrigger);
 
+    console.log('workbookState', get(userState));
+
     try {
       return {
         data: get(userState) ? await getWorkbooksAsync() : [],
