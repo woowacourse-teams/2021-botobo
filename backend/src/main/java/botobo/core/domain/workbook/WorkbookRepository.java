@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface WorkbookRepository extends JpaRepository<Workbook, Long>, JpaSpecificationExecutor<Workbook>, WorkbookRepositoryCustom {
+public interface WorkbookRepository extends JpaRepository<Workbook, Long>, WorkbookRepositoryCustom {
 
     @Query("select w from Workbook w where w.user.id = :userId order by w.createdAt desc")
     List<Workbook> findAllByUserId(@Param("userId") Long userId);

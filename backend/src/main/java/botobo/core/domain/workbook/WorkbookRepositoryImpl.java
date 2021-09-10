@@ -41,7 +41,7 @@ public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
     }
 
     private BooleanExpression containKeyword(SearchKeyword searchKeyword) {
-        if (searchKeyword == null || searchKeyword.equals("")) {
+        if (searchKeyword == null || searchKeyword.getValue().equals("")) {
             return null;
         }
         return workbook
