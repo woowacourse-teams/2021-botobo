@@ -11,43 +11,34 @@ import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { RecoilRoot } from 'recoil';
 
-import { getUserInfoAsync } from '../src/api';
-import { request } from '../src/api/request';
 import App from '../src/App';
 import { STORAGE_KEY } from '../src/constants';
-import { userState } from '../src/recoil';
+import { userState, workbookState } from '../src/recoil';
+import { getUserInfo, getWorkbook } from './initialState';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-const key = 'custom';
-const cache = createCache({ key });
+const cache = createCache({ key: STORAGE_KEY.EMOTION_KEY });
 const { extractCriticalToChunks, constructStyleTagsFromChunks } =
   createEmotionServer(cache);
 
-const getCookie = (name, cookies) => {
-  const key = `${name}=`;
-
-  return cookies
-    .split('; ')
-    ?.find((cookie) => cookie.includes(key))
-    ?.slice(name.length + 1);
-};
-
 app.get('/', async (req, res) => {
-  const token = getCookie(STORAGE_KEY.TOKEN, req.headers.cookie);
+  const userInfo = await getUserInfo(req.headers.cookie);
+  const workbookInfo = await getWorkbook(userInfo);
 
-  request.defaults.headers.common['Authorization'] = token
-    ? `Bearer ${token}`
-    : '';
-
-  const userInfo = await getUserInfoAsync();
+  const initialState = { userInfo, workbookInfo };
 
   const context = {};
   const app = (
     <StaticRouter location={req.url} context={context}>
       <CacheProvider value={cache}>
-        <RecoilRoot initializeState={({ set }) => set(userState, userInfo)}>
+        <RecoilRoot
+          initializeState={({ set }) => {
+            set(userState, initialState.userInfo);
+            set(workbookState, initialState.workbookInfo);
+          }}
+        >
           <App />
         </RecoilRoot>
       </CacheProvider>
@@ -59,6 +50,7 @@ app.get('/', async (req, res) => {
   );
 
   const indexFile = path.resolve(__dirname, '../dist/index.html');
+
   fs.readFile(indexFile, 'utf8', (err, data) => {
     if (err) {
       console.error('Something went wrong:', err);
@@ -68,6 +60,13 @@ app.get('/', async (req, res) => {
     let newHTML = data.replace(
       '<style id="emotion"></style>',
       constructStyleTagsFromChunks({ html, styles })
+    );
+
+    newHTML = newHTML.replace(
+      '<script id="initial-state"></script>',
+      `<script id="initial-state">window.__INITIAL_STATE__=${JSON.stringify(
+        initialState
+      ).replace(/</g, '\\u003c')}</script>`
     );
 
     newHTML = newHTML.replace(

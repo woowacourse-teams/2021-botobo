@@ -6,14 +6,26 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
 import App from './App';
+import { STORAGE_KEY } from './constants';
+import { userState, workbookState } from './recoil';
 
-const key = 'custom';
-const cache = createCache({ key });
+const cache = createCache({ key: STORAGE_KEY.EMOTION_KEY });
+
+const initialState = window.__INITIAL_STATE__;
+
+delete window.__INITIAL_STATE__;
 
 ReactDOM.hydrate(
   <BrowserRouter>
     <CacheProvider value={cache}>
-      <RecoilRoot>
+      <RecoilRoot
+        initializeState={({ set }) => {
+          if (!initialState) return;
+
+          set(userState, initialState.userInfo);
+          set(workbookState, initialState.workbookInfo);
+        }}
+      >
         <App />
       </RecoilRoot>
     </CacheProvider>
