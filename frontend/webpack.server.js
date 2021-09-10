@@ -24,10 +24,6 @@ module.exports = {
           from: './package.json',
           to: path.resolve(__dirname, 'dist/dist-server'),
         },
-        {
-          from: './yarn.lock',
-          to: path.resolve(__dirname, 'dist/dist-server'),
-        },
       ],
     }),
   ],
