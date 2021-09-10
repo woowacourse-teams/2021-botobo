@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
     ReactDOMServer.renderToString(app)
   );
 
-  const indexFile = path.resolve(__dirname, '../dist/index.html');
+  const indexFile = path.resolve(__dirname, '../index.html');
 
   fs.readFile(indexFile, 'utf8', (err, data) => {
     if (err) {
@@ -80,7 +80,7 @@ app.get('/', async (req, res) => {
 
 app.use(history());
 
-app.use(express.static(path.resolve(__dirname, '../dist')));
+app.use(express.static(path.resolve(__dirname, '../')));
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
