@@ -9,6 +9,8 @@ export const request = axios.create({
 
 const token = getCookie(STORAGE_KEY.TOKEN);
 
+console.log(token);
+
 request.defaults.headers.common['Authorization'] = token
   ? `Bearer ${token}`
   : '';

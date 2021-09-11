@@ -16,6 +16,8 @@ const getCookie = (name: string, cookies: string) => {
 export const getUserInfo = async (cookies: string) => {
   const token = getCookie(STORAGE_KEY.TOKEN, cookies);
 
+  console.log(token);
+
   request.defaults.headers.get['Authorization'] = token
     ? `Bearer ${token}`
     : '';
