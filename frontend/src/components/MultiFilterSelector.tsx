@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
@@ -14,12 +14,14 @@ import {
   MultiFilterType,
   MultiFilterValue,
 } from '../types/filter';
+import { LoadingSpinner } from '.';
 
 interface Props {
   type: MultiFilterType;
   name: MultiFilterName;
   values: MultiFilterValue[];
   query: PublicSearchQueryReturnType;
+  setInitialValues: () => Promise<MultiFilterValue[]>;
   setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
   setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
 }
@@ -37,6 +39,7 @@ const MultiFilterSelector = ({
   name,
   values: data,
   query,
+  setInitialValues,
   setMultiFilters,
   setFilteredPublicWorkbook,
 }: Props) => {
@@ -45,6 +48,7 @@ const MultiFilterSelector = ({
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
+  const [isLoading, setIsLoading] = useState(values.length === 0);
 
   const regExpKeyword = new RegExp(filterKeyword.replace(/\s+/g, ''), 'i');
 
@@ -78,6 +82,17 @@ const MultiFilterSelector = ({
     });
   };
 
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const getValues = async () => {
+      await setInitialValues();
+      setIsLoading(false);
+    };
+
+    getValues();
+  }, []);
+
   return (
     <>
       <Title>{name} 선택</Title>
@@ -97,20 +112,29 @@ const MultiFilterSelector = ({
           </button>
         )}
       </SearchBar>
-      <MultiFilterList>
-        {values
-          .filter((v) => regExpKeyword.test(v.name.replace(/\s+/g, '')))
-          .map(({ id, name, isSelected }) => (
-            <MultiFilterItem
-              key={id}
-              isSelected={isSelected}
-              onClick={() => checkFilterItem(name)}
-            >
-              <div>{name}</div>
-              {isSelected && <CheckIcon width="1rem" height="1rem" />}
-            </MultiFilterItem>
-          ))}
-      </MultiFilterList>
+      {isLoading ? (
+        <CenterInList>
+          <LoadingSpinner />
+        </CenterInList>
+      ) : values.length === 0 ? (
+        <CenterInList>{name}가 존재하지 않네요.</CenterInList>
+      ) : (
+        <MultiFilterList>
+          {values
+            .filter((v) => regExpKeyword.test(v.name.replace(/\s+/g, '')))
+            .map(({ id, name, isSelected }) => (
+              <MultiFilterItem
+                key={id}
+                isSelected={isSelected}
+                onClick={() => checkFilterItem(name)}
+              >
+                <div>{name}</div>
+                {isSelected && <CheckIcon width="1rem" height="1rem" />}
+              </MultiFilterItem>
+            ))}
+        </MultiFilterList>
+      )}
+
       <Confirm
         type="button"
         onClick={() => {
@@ -210,6 +234,12 @@ const Confirm = styled.button`
   ${({ theme }) => css`
     border-top: 1px solid ${theme.color.gray_5};
   `}
+`;
+
+const CenterInList = styled.div`
+  ${Flex({ justify: 'center', items: 'center' })};
+  height: 30vh;
+  margin-bottom: 3.5rem;
 `;
 
 export default MultiFilterSelector;

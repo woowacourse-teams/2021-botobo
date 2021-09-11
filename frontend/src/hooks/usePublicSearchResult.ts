@@ -14,42 +14,6 @@ import { MultiFilter, MultiFilterType, SingleFilter } from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { usePublicSearchQuery, useRouter, useSnackbar } from '.';
 
-const dummyList = [
-  {
-    id: 1,
-    name: 'java  dd',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: `javascriptjavascriptjavascriptja
-    vascript`,
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
-
 const singleFilters: SingleFilter[] = [
   { id: 1, type: '최신순', criteria: 'date' },
   { id: 2, type: '좋아요 순', criteria: 'heart' },
@@ -177,18 +141,18 @@ const usePublicSearchResult = () => {
   };
 
   const setInitialMultiFilterValues = async (type: MultiFilterType) => {
-    const values = await getMultiFilterValues(type);
+    const response = await getMultiFilterValues(type);
+    const values = response.map((value) => ({ ...value, isSelected: false }));
 
     setMultiFilters((prevValue) =>
       prevValue.map((item) => {
         if (item.type !== type) return item;
 
-        return {
-          ...item,
-          values: dummyList.map((value) => ({ ...value, isSelected: false })),
-        };
+        return { ...item, values };
       })
     );
+
+    return values;
   };
 
   const removeMultiFilterItem = (type: MultiFilterType, itemId: number) => {

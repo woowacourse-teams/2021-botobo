@@ -102,6 +102,9 @@ const PublicSearchResultPage = () => {
                           query={query}
                           setMultiFilters={setMultiFilters}
                           setFilteredPublicWorkbook={setFilteredPublicWorkbook}
+                          setInitialValues={() =>
+                            setInitialMultiFilterValues(type)
+                          }
                         />
                       ),
                     });
