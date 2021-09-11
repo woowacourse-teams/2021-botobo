@@ -4,7 +4,7 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchRelated;
@@ -24,11 +24,11 @@ public class SearchService {
 
     private static final int SIZE_LIMIT = 10;
 
-    private final WorkbookRepository workbookRepository;
+    private final WorkbookSearchRepository workbookSearchRepository;
     private final TagRepository tagRepository;
 
-    public SearchService(WorkbookRepository workbookRepository, TagRepository tagRepository) {
-        this.workbookRepository = workbookRepository;
+    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagRepository tagRepository) {
+        this.workbookSearchRepository = workbookSearchRepository;
         this.tagRepository = tagRepository;
     }
 
@@ -37,7 +37,7 @@ public class SearchService {
                                                   List<Long> users) {
         PageRequest pageRequest = workbookSearchParameter.toPageRequest();
 
-        Page<Workbook> page = workbookRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
+        Page<Workbook> page = workbookSearchRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
         List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);
     }

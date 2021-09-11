@@ -1,6 +1,5 @@
 package botobo.core.domain.workbook;
 
-import botobo.core.config.TestConfig;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.heart.Heart;
 import botobo.core.domain.heart.HeartRepository;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -28,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
-@Import(value = TestConfig.class)
 public class WorkbookRepositoryTest {
 
     @Autowired

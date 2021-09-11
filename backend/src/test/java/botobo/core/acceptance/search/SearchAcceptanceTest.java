@@ -176,8 +176,8 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 검색 - 성공, 사전 역순 정렬")
-    void searchFromNameDesc() {
+    @DisplayName("문제집 검색 - 성공, 사전순 정렬")
+    void searchFromNameAsc() {
         // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "피케이");

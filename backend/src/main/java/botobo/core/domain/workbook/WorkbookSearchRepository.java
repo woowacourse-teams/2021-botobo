@@ -11,37 +11,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static botobo.core.domain.card.QCard.card;
+import static botobo.core.domain.heart.QHeart.heart;
+import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
+import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 
 @RequiredArgsConstructor
-public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
+@Repository
+public class WorkbookSearchRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @Override
     public Page<Workbook> searchAll(WorkbookSearchParameter parameter, List<Long> tags,
                                     List<Long> users, Pageable pageable) {
-       QueryResults<Workbook> results =  jpaQueryFactory.selectFrom(workbook)
-               .where(containKeyword(parameter.getSearchKeyword()), containTags(tags),
-                        containUsers(users), containCard())
-               .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
-               .offset(pageable.getOffset())
-               .limit(pageable.getPageSize())
-               .fetchResults();
-       return new PageImpl<>(results.getResults(), pageable, results.getTotal());
-    }
-
-    private BooleanExpression containCard() {
-        return workbook.cards
-                .cards
-                .isNotEmpty();
+        QueryResults<Workbook> results = jpaQueryFactory.selectFrom(workbook)
+                .innerJoin(workbook.user, user).fetchJoin()
+                .innerJoin(workbook.cards.cards, card)
+                .leftJoin(workbook.workbookTags, workbookTag)
+                .leftJoin(workbook.hearts.hearts, heart)
+                .where(containKeyword(parameter.getSearchKeyword()), containTags(tags),
+                        containUsers(users))
+                .groupBy(workbook.id)
+                .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     private BooleanExpression containKeyword(SearchKeyword searchKeyword) {
-        if (searchKeyword == null || searchKeyword.getValue().equals("")) {
+        if (searchKeyword == null) {
             return null;
         }
         return workbook
@@ -54,9 +58,7 @@ public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
         if (tags == null || tags.isEmpty()) {
             return null;
         }
-        return workbook
-                .workbookTags
-                .any()
+        return workbookTag
                 .tag
                 .id
                 .in(tags);
@@ -66,8 +68,7 @@ public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
         if (users == null || users.isEmpty()) {
             return null;
         }
-        return workbook
-                .user
+        return user
                 .id
                 .in(users);
     }
@@ -80,8 +81,8 @@ public class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
             return workbook.name.asc();
         }
         if (searchCriteria == SearchCriteria.COUNT) {
-            return workbook.cards.cards.size().desc();
+            return card.count().desc();
         }
-        return workbook.hearts.hearts.size().desc();
+        return heart.count().desc();
     }
 }
