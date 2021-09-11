@@ -40,11 +40,11 @@ const usePublicSearchResult = () => {
 
   const setWorkbookSearchResult = (
     newWorkbooks: PublicWorkbookResponse[],
-    isNew: boolean
+    isReset: boolean
   ) => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
-      publicWorkbookResult: isNew
+      publicWorkbookResult: isReset
         ? newWorkbooks
         : [...prevValue.publicWorkbookResult, ...newWorkbooks],
     }));
@@ -63,7 +63,7 @@ const usePublicSearchResult = () => {
 
   const searchForPublicWorkbook = async (
     { keyword, start, criteria, ...options }: PublicWorkbookAsync,
-    isNew = true
+    isReset = true
   ) => {
     if (keyword === '') {
       setIsLoading(false);
@@ -80,7 +80,7 @@ const usePublicSearchResult = () => {
         ...options,
       });
 
-      setWorkbookSearchResult(newWorkbooks, isNew);
+      setWorkbookSearchResult(newWorkbooks, isReset);
       setStartIndex('add');
       setIsLoading(false);
       setIsInitialLoading(false);
