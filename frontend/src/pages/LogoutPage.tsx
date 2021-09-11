@@ -2,16 +2,18 @@ import { useSetRecoilState } from 'recoil';
 
 import { postLogoutAsync } from '../api';
 import { useRouter } from '../hooks';
-import { userState } from '../recoil';
+import { shouldWorkbookUpdateState, userState } from '../recoil';
 
 const LogoutPage = () => {
   const { routeMain } = useRouter();
   const setUserInfo = useSetRecoilState(userState);
+  const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
 
   const logout = async () => {
     try {
       await postLogoutAsync();
       setUserInfo(null);
+      setIsWorkbookUpdate(true);
       routeMain();
     } catch (error) {
       //TODO: 에러 바운더리로 보내기
