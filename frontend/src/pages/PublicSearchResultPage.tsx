@@ -30,7 +30,6 @@ const PublicSearchResultPage = () => {
     currentFilterId,
     singleFilters,
     multiFilters,
-    setMultiFilters,
     searchForPublicWorkbook,
     setFilteredPublicWorkbook,
     setSingleFilterValues,
@@ -100,7 +99,6 @@ const PublicSearchResultPage = () => {
                           name={name}
                           values={multiFilters[index].values}
                           query={query}
-                          setMultiFilters={setMultiFilters}
                           setFilteredPublicWorkbook={setFilteredPublicWorkbook}
                           setInitialValues={() =>
                             setInitialMultiFilterValues(type)
