@@ -54,6 +54,7 @@ const PublicSearchResultPage = () => {
 
   const isFiltered =
     currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
+  const isNoSearchResult = !isLoading && publicWorkbookResult.length === 0;
 
   useEffect(() => {
     if (!isInitialLoading) return;
@@ -85,7 +86,10 @@ const PublicSearchResultPage = () => {
                       : 'gray_5'
                   }
                   inversion={true}
+                  disabled={isNoSearchResult}
                   onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
+
                     currentTarget.scrollIntoView({
                       behavior: 'smooth',
                       inline: 'center',
@@ -116,9 +120,16 @@ const PublicSearchResultPage = () => {
                 <Button
                   key={id}
                   shape="round"
-                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+                  backgroundColor={
+                    !isNoSearchResult && currentFilterId === id
+                      ? 'green'
+                      : 'gray_5'
+                  }
                   inversion={true}
+                  disabled={isNoSearchResult}
                   onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
+
                     if (id === currentFilterId) return;
 
                     currentTarget.scrollIntoView({
@@ -159,7 +170,7 @@ const PublicSearchResultPage = () => {
               </SelectedMultiFilterWrapper>
             )}
           </FilterWrapper>
-          {!isLoading && publicWorkbookResult.length === 0 ? (
+          {isNoSearchResult ? (
             <NoSearchResult>
               <div>검색 결과가 없어요.</div>
               {!hasSelectedMultiFilter && (
