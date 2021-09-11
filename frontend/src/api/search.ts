@@ -31,12 +31,13 @@ export const getSearchResultAsync = async ({
   tags,
   users,
   criteria = 'date',
-  order = 'desc',
   start = 0,
   size = 20,
 }: PublicWorkbookAsync) => {
   const { data } = await request.get<PublicWorkbookResponse[]>(
-    `/search/workbooks?keyword=${keyword}&criteria=${criteria}&order=${order}&start=${start}&size=${size}&type=user`
+    `/search/workbooks?keyword=${keyword}&criteria=${criteria}&start=${start}&size=${size}${
+      tags ? `&tags=${tags}` : ''
+    }${users ? `&users=${users}` : ''}`
   );
 
   return data;

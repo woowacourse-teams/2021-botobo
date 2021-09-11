@@ -1,11 +1,6 @@
 import { useHistory } from 'react-router-dom';
 
-import {
-  ROUTE,
-  SEARCH_CRITERIA,
-  SEARCH_ORDER,
-  STORAGE_KEY,
-} from '../constants';
+import { ROUTE, SEARCH_CRITERIA, STORAGE_KEY } from '../constants';
 import { ValueOf } from '../types/utils';
 import { setSessionStorage } from '../utils';
 
@@ -13,7 +8,6 @@ interface PublicSearchResultQuery {
   criteria?: ValueOf<typeof SEARCH_CRITERIA>;
   tags?: string | null;
   users?: string | null;
-  order?: ValueOf<typeof SEARCH_ORDER>;
   keyword?: string;
   size?: number;
   method?: 'push' | 'replace';
@@ -46,14 +40,13 @@ const useRouter = () => {
     tags,
     users,
     criteria = 'date',
-    order = 'desc',
     keyword = '',
     size = 20,
     method = 'replace',
   }: PublicSearchResultQuery = {}) =>
     history[method]({
       pathname: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
-      search: `?keyword=${keyword}&criteria=${criteria}&size=${size}&order=${order}${
+      search: `?keyword=${keyword}&criteria=${criteria}&size=${size}${
         tags ? `&tags=${tags}` : ''
       }${users ? `&users=${users}` : ''}`,
     });

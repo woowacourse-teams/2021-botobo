@@ -123,7 +123,7 @@ const MultiFilterSelector = ({
       ) : (
         <MultiFilterList>
           {values
-            .filter((v) => regExpKeyword.test(v.name.replace(/\s+/g, '')))
+            .filter((v) => regExpKeyword.test(v.name?.replace(/\s+/g, '')))
             .map(({ id, name, isSelected }) => (
               <MultiFilterItem
                 key={id}

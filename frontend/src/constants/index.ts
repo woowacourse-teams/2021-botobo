@@ -3,7 +3,7 @@ export { default as ROUTE } from './route';
 export { default as STORAGE_KEY } from './storage';
 export { default as ERROR_MESSAGE } from './errorMessage';
 export { CLOUD_FRONT_DOMAIN } from './path';
-export { SEARCH_TYPE, SEARCH_CRITERIA, SEARCH_ORDER } from './search';
+export { SEARCH_TYPE, SEARCH_CRITERIA } from './search';
 export { DEVICE } from './responsive';
 
 export const USER_NAME_MAXIMUM_LENGTH = 20;

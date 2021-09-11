@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-import { SEARCH_CRITERIA, SEARCH_ORDER } from '../constants';
+import { SEARCH_CRITERIA } from '../constants';
 import { ValueOf } from '../types/utils';
 
 export type PublicSearchQueryReturnType = ReturnType<
@@ -15,7 +15,6 @@ const usePublicSearchQuery = () => {
   >;
   const tags = query.get('tags');
   const users = query.get('users');
-  const order = (query.get('order') ?? 'desc') as ValueOf<typeof SEARCH_ORDER>;
   const keyword = query.get('keyword') ?? '';
   const size = query.get('size') ?? 0;
 
@@ -23,7 +22,6 @@ const usePublicSearchQuery = () => {
     tags,
     users,
     criteria,
-    order,
     keyword,
     size: Number(size),
   };

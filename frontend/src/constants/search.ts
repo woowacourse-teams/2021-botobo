@@ -10,8 +10,3 @@ export const SEARCH_CRITERIA = {
   COUNT: 'count',
   HEART: 'heart',
 } as const;
-
-export const SEARCH_ORDER = {
-  ASC: 'asc',
-  DESC: 'desc',
-} as const;
