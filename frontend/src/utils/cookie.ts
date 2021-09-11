@@ -14,8 +14,7 @@ export const getCookie = (name: string) => {
 };
 
 export const removeCookie = (name: string) => {
-  console.log(typeof document);
   if (typeof document === 'undefined') return;
 
-  document.cookie = `${name}=; max-age=0;`;
+  document.cookie = `${name}=; max-age=0; path=/;`;
 };
