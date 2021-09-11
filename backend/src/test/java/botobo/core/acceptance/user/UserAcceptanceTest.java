@@ -544,7 +544,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(userResponses).hasSize(3);
         assertThat(userResponses)
-                .extracting(UserFilterResponse::getUserName)
+                .extracting(UserFilterResponse::getName)
                 .containsExactlyInAnyOrder("user1", "user2", "user3");
     }
 

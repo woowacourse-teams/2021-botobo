@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 @Builder
 public class UserFilterResponse {
     private Long id;
-    private String userName;
+    private String name;
 
     public static UserFilterResponse of(User user) {
         return UserFilterResponse.builder()
                 .id(user.getId())
-                .userName(user.getUserName())
+                .name(user.getUserName())
                 .build();
     }
 
