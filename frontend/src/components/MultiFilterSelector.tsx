@@ -140,6 +140,16 @@ const MultiFilterSelector = ({
       <Confirm
         type="button"
         onClick={() => {
+          const isFiltered = data.find(
+            ({ isSelected }, index) => isSelected !== values[index].isSelected
+          );
+
+          if (!isFiltered) {
+            closeModal();
+
+            return;
+          }
+
           setSelectedValuesInMultiFilter();
           searchFilteredPublicWorkbook();
           closeModal();
