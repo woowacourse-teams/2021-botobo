@@ -36,12 +36,12 @@ public class AdminService extends AbstractUserService {
     @Transactional
     public AdminWorkbookResponse createWorkbook(AdminWorkbookRequest adminWorkbookRequest, AppUser appUser) {
         User user = findUser(appUser);
-        Workbook workbook = adminWorkbookRequest.toWorkbook()
-                .createBy(user);
+        Workbook workbook = adminWorkbookRequest.toWorkbook();
+        workbook.setUser(user);
 
         if (Objects.nonNull(adminWorkbookRequest.getTags())) {
             Tags tags = tagService.convertTags(adminWorkbookRequest.getTags());
-            workbook = workbook.taggedBy(tags);
+            workbook.setTags(tags);
         }
 
         Workbook savedWorkbook = workbookRepository.save(workbook);

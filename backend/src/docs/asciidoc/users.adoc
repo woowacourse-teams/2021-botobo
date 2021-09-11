@@ -30,3 +30,9 @@ include::{snippets}/users-name-check-post-success/http-response.adoc[]
 |409 Conflict
 |"[중복된 회원명](은)는 이미 존재합니다."
 |===
+
+=== 문제집명이 포함된 문제집의 유저 모두 조회
+==== 요청
+include::{snippets}/users-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/users-get-success/http-response.adoc[]

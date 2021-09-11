@@ -235,9 +235,9 @@ public class WorkbookRepositoryTest {
         Workbook workbook = Workbook.builder()
                 .name("오즈의 Java")
                 .opened(true)
+                .user(user)
                 .deleted(false)
-                .build()
-                .createBy(user);
+                .build();
 
         workbookRepository.save(workbook);
 
@@ -288,7 +288,7 @@ public class WorkbookRepositoryTest {
                 .tags(tags)
                 .build();
 
-        Workbook savedWorkbook = workbookRepository.save(workbook);
+        workbookRepository.save(workbook);
         flushAndClear();
 
         // when

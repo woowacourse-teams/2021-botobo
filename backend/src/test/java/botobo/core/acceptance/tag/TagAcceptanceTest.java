@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
 import static botobo.core.utils.TestUtils.stringGenerator;
@@ -36,10 +35,9 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
 
         // then
         assertThat(tagResponses).hasSize(5);
-        assertThat(tagResponses.stream()
-                .map(TagResponse::getName)
-                .collect(Collectors.toList()))
-                .contains("자바", "자바스크립트", "리액트", "네트워크", "스프링");
+        assertThat(tagResponses)
+                .extracting(TagResponse::getName)
+                .containsExactly("자바", "자바스크립트", "리액트", "네트워크", "스프링");
     }
 
     @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 문제집 명이 비어있는 경우 빈 응답")
