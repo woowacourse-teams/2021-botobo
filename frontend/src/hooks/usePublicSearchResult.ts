@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { PublicWorkbookAsync, getSearchResultAsync } from '../api';
@@ -171,16 +171,6 @@ const usePublicSearchResult = () => {
     }));
     setFilteredPublicWorkbook({ keyword });
   };
-
-  useEffect(() => {
-    const [tag, user] = multiFilters;
-
-    setPublicWorkbookState((prevValue) => ({
-      ...prevValue,
-      tags: tag.values,
-      users: user.values,
-    }));
-  }, [multiFilters]);
 
   return {
     query,
