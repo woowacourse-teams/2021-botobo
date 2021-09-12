@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useResetRecoilState } from 'recoil';
 
 import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
@@ -8,6 +9,7 @@ import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
+import { publicSearchResultState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 import { isMobile, setSessionStorage } from '../utils';
@@ -21,6 +23,8 @@ interface SearchBarStyleProps {
 }
 
 const PublicSearchPage = () => {
+  const resetSearchResult = useResetRecoilState(publicSearchResultState);
+
   const [isLoading, setIsLoading] = useState(true);
   const [publicWorkbooks, setPublicWorkbooks] = useState<
     PublicWorkbookResponse[]
@@ -40,6 +44,16 @@ const PublicSearchPage = () => {
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const searchForWorkbook = (keyword: string) => {
+    resetSearchResult();
+    setTimeout(() => {
+      routePublicSearchResultQuery({
+        keyword,
+        method: 'push',
+      });
+    }, 50);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -146,10 +160,7 @@ const PublicSearchPage = () => {
             event.preventDefault();
             if (!searchKeyword) return;
 
-            routePublicSearchResultQuery({
-              keyword: searchKeyword,
-              method: 'push',
-            });
+            searchForWorkbook(searchKeyword);
           }}
         >
           <SearchInput
@@ -179,12 +190,7 @@ const PublicSearchPage = () => {
 
                     searchInputRef.current?.blur();
                   }}
-                  onMouseDown={() =>
-                    routePublicSearchResultQuery({
-                      keyword: name,
-                      method: 'push',
-                    })
-                  }
+                  onMouseDown={() => searchForWorkbook(name)}
                 >
                   <SearchIcon width="0.8rem" height="0.8rem" />
                   {name}
