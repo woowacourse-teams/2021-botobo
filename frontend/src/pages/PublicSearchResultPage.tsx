@@ -62,7 +62,7 @@ const PublicSearchResultPage = () => {
     setInitialMultiFilterValues('tags');
     setInitialMultiFilterValues('users');
     searchForPublicWorkbook({ keyword, start: 0 });
-  }, []);
+  }, [isInitialLoading]);
 
   if (isInitialLoading) {
     return <PublicSearchResultLoadable />;
