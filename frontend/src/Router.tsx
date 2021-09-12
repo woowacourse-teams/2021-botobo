@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
-  BrowserRouter,
   Redirect,
   Route,
   RouteProps,
@@ -9,8 +8,8 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
+import { SsrSuspense } from './components';
 import { ROUTE } from './constants';
-import { ModalProvider } from './contexts';
 import {
   CardsPage,
   Guide,
@@ -37,9 +36,9 @@ const routes = [
   {
     path: ROUTE.HOME.PATH,
     component: (
-      <Suspense fallback={<MainLoadable />}>
+      <SsrSuspense fallback={<MainLoadable />}>
         <MainPage />
-      </Suspense>
+      </SsrSuspense>
     ),
     isPublic: true,
   },
@@ -71,9 +70,9 @@ const routes = [
   {
     path: ROUTE.QUIZ_SETTING.PATH,
     component: (
-      <Suspense fallback={<QuizSettingLoadable />}>
+      <SsrSuspense fallback={<QuizSettingLoadable />}>
         <QuizSettingPage />
-      </Suspense>
+      </SsrSuspense>
     ),
     isPublic: false,
   },
@@ -95,9 +94,9 @@ const routes = [
   {
     path: ROUTE.PUBLIC_SEARCH.PATH,
     component: (
-      <Suspense fallback={<PublicSearchLoadable />}>
+      <SsrSuspense fallback={<PublicSearchLoadable />}>
         <PublicSearchPage />
-      </Suspense>
+      </SsrSuspense>
     ),
     isPublic: true,
   },
@@ -146,25 +145,21 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
 };
 
 const Router = () => (
-  <BrowserRouter>
-    <ModalProvider>
-      <Switch>
-        {routes.map(({ path, component, isPublic }, index) =>
-          isPublic ? (
-            <Route key={index} exact path={path}>
-              <ScrollToTop />
-              {component}
-            </Route>
-          ) : (
-            <PrivateRoute key={index} exact path={path}>
-              <ScrollToTop />
-              {component}
-            </PrivateRoute>
-          )
-        )}
-      </Switch>
-    </ModalProvider>
-  </BrowserRouter>
+  <Switch>
+    {routes.map(({ path, component, isPublic }, index) =>
+      isPublic ? (
+        <Route key={index} exact path={path}>
+          <ScrollToTop />
+          {component}
+        </Route>
+      ) : (
+        <PrivateRoute key={index} exact path={path}>
+          <ScrollToTop />
+          {component}
+        </PrivateRoute>
+      )
+    )}
+  </Switch>
 );
 
 export default Router;

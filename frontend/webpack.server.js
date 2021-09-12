@@ -1,33 +1,40 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
+const Dotenv = require('dotenv-webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: './server/index.js',
+
+  target: 'node',
+
+  externals: [nodeExternals()],
+
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'main-106.js',
-    publicPath: '/',
+    path: path.resolve(__dirname, 'dist/dist-server'),
+    filename: 'index.js',
   },
+
   plugins: [
     new Dotenv(),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
+    new CopyPlugin({
+      patterns: [
+        {
+          from: './package.json',
+          to: path.resolve(__dirname, 'dist/dist-server'),
+        },
+      ],
     }),
   ],
+
   module: {
     rules: [
       {
         test: /\.(js|ts)x?$/,
-        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
         },
-      },
-      {
-        test: /\.png$/,
-        type: 'asset/resource',
       },
       {
         test: /\.svg$/,
@@ -45,6 +52,7 @@ module.exports = {
       },
     ],
   },
+
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },

@@ -1,4 +1,4 @@
-import { removeLocalStorage, setLocalStorage } from './../utils';
+import { removeCookie, setCookie } from './../utils';
 import { STORAGE_KEY } from '../constants';
 import { AccessTokenResponse, AuthType, UserInfoResponse } from '../types';
 import { request } from './request';
@@ -15,7 +15,7 @@ export const getAccessTokenAsync = async (
     data: { accessToken },
   } = await request.post<AccessTokenResponse>(`/login/${socialType}`, { code });
 
-  setLocalStorage(STORAGE_KEY.TOKEN, accessToken);
+  setCookie(STORAGE_KEY.TOKEN, accessToken, 3600);
 
   request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
@@ -29,7 +29,7 @@ export const getUserInfoAsync = async () => {
 };
 
 export const postLogoutAsync = async () => {
-  removeLocalStorage(STORAGE_KEY.TOKEN);
+  removeCookie(STORAGE_KEY.TOKEN);
 
   request.defaults.headers.common['Authorization'] = '';
 };
