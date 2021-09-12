@@ -1,4 +1,4 @@
-import { SEARCH_CRITERIA, SEARCH_ORDER, SEARCH_TYPE } from './../constants';
+import { SEARCH_CRITERIA } from './../constants';
 import {
   PublicWorkbookResponse,
   TagResponse,
@@ -15,9 +15,9 @@ interface PostWorkbookAsync {
 
 export interface PublicWorkbookAsync {
   keyword: string;
+  tags?: string | null;
+  users?: string | null;
   criteria?: ValueOf<typeof SEARCH_CRITERIA>;
-  order?: ValueOf<typeof SEARCH_ORDER>;
-  type?: ValueOf<typeof SEARCH_TYPE>;
   start?: number;
   size?: number;
 }

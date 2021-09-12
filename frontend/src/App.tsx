@@ -9,14 +9,14 @@ import Router from './Router';
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <SnackbarProvider>
-      <ModalProvider>
-        <SsrSuspense fallback={<HeaderSkeleton />}>
+    <SsrSuspense fallback={<HeaderSkeleton />}>
+      <SnackbarProvider>
+        <ModalProvider>
           <GlobalStyle />
           <Router />
-        </SsrSuspense>
-      </ModalProvider>
-    </SnackbarProvider>
+        </ModalProvider>
+      </SnackbarProvider>
+    </SsrSuspense>
   </ThemeProvider>
 );
 

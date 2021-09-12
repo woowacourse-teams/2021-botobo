@@ -35,7 +35,8 @@ export {
 } from './quiz';
 
 export {
-  getUserKeywordAsync,
+  getTagsFromWorkbookAsync,
+  getUsersFromWorkbookAsync,
   getTagKeywordAsync,
   getSearchResultAsync,
 } from './search';
