@@ -47,7 +47,11 @@ backend/src/main/resources/static/api/docs/**
 
 ### Secret files ###
 backend/src/main/resources/application-dev.yml
+backend/src/main/resources/application-dev1.yml
+backend/src/main/resources/application-dev2.yml
 backend/src/main/resources/application-local.yml
 backend/src/main/resources/application-prod.yml
+backend/src/main/resources/application-prod1.yml
+backend/src/main/resources/application-prod2.yml
 backend/src/main/resources/aws-s3.yml
 backend/src/apis/**

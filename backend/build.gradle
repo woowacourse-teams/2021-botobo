@@ -78,10 +78,16 @@ ext {
 processResources.dependsOn('copyDev')
 
 task copyDev(type: Copy) {
-    from '../dev/application-prod.yml'
+    from '../dev/application-prod1.yml'
     into './src/main/resources'
 
-    from '../dev/application-dev.yml'
+    from '../dev/application-prod2.yml'
+    into './src/main/resources'
+
+    from '../dev/application-dev1.yml'
+    into './src/main/resources'
+
+    from '../dev/application-dev2.yml'
     into './src/main/resources'
 
     from '../dev/application-local.yml'
