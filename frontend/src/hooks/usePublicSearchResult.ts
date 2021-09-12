@@ -35,7 +35,7 @@ const usePublicSearchResult = () => {
   const setIsInitialLoading = (isInitialLoading: boolean) => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
-      isInitialLoading: isInitialLoading,
+      isInitialLoading,
     }));
   };
 
