@@ -21,7 +21,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,9 +60,8 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(6);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .allMatch(name -> name.contains("Java"))).isTrue();
+        assertThat(workbookList).extracting(Workbook::getName)
+                .allMatch(name -> name.contains("Java"));
     }
 
     @Test
@@ -81,12 +79,10 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .allMatch(name -> name.contains("문제집"))).isTrue();
-        assertThat(workbookList.stream()
-                .map(Workbook::tags)
-                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1)).isTrue();
+        assertThat(workbookList).extracting(Workbook::getName)
+                .allMatch(name -> name.contains("문제집"));
+        assertThat(workbookList).extracting(Workbook::tags)
+                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1);
     }
 
     @Test
@@ -104,12 +100,10 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .allMatch(name -> name.contains("문제집"))).isTrue();
-        assertThat(workbookList.stream()
-                .map(Workbook::author)
-                .allMatch(name -> name.equals("bear"))).isTrue();
+        assertThat(workbookList).extracting(Workbook::getName)
+                .allMatch(name -> name.contains("문제집"));
+        assertThat(workbookList).extracting(Workbook::author)
+                .allMatch(name -> name.equals("bear"));
     }
 
     @Test
@@ -128,15 +122,12 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .allMatch(name -> name.contains("문제집"))).isTrue();
-        assertThat(workbookList.stream()
-                .map(Workbook::tags)
-                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1)).isTrue();
-        assertThat(workbookList.stream()
-                .map(Workbook::author)
-                .allMatch(name -> name.equals("bear"))).isTrue();
+        assertThat(workbookList).extracting(Workbook::getName)
+                .allMatch(name -> name.contains("문제집"));
+        assertThat(workbookList).extracting(Workbook::tags)
+                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1);
+        assertThat(workbookList).extracting(Workbook::author)
+                .allMatch(name -> name.equals("bear"));
     }
 
     @Test
@@ -154,9 +145,8 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .collect(Collectors.toList())).containsExactly("Javascript 문제집2",
+        assertThat(workbookList).extracting(Workbook::getName)
+                .containsExactly("Javascript 문제집2",
                 "Javascript 문제집1", "Javascript 문제집0");
     }
 
@@ -175,9 +165,8 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .collect(Collectors.toList())).containsExactly("Javascript 문제집0",
+        assertThat(workbookList).extracting(Workbook::getName)
+                .containsExactly("Javascript 문제집0",
                 "Javascript 문제집1", "Javascript 문제집2");
     }
 
@@ -196,9 +185,8 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(3);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .collect(Collectors.toList())).containsExactly("Javascript 문제집0",
+        assertThat(workbookList).extracting(Workbook::getName)
+                .containsExactly("Javascript 문제집0",
                 "Javascript 문제집1", "Javascript 문제집2");
     }
 
@@ -217,9 +205,8 @@ class WorkbookSearchRepositoryTest {
 
         // then
         assertThat(workbookList).hasSize(7);
-        assertThat(workbookList.stream()
-                .map(Workbook::getName)
-                .collect(Collectors.toList())).containsExactly("좋아요가 많아 문제다.",
+        assertThat(workbookList).extracting(Workbook::getName)
+                .containsExactly("좋아요가 많아 문제다.",
                 "Java 문제집0",
                 "Javascript 문제집0",
                 "Java 문제집1",
@@ -241,7 +228,7 @@ class WorkbookSearchRepositoryTest {
         List<Workbook> workbookList = workbooks.toList();
 
         // then
-        assertThat(workbookList).hasSize(0);
+        assertThat(workbookList).isEmpty();
     }
 
     private void initWorkbook(int workbookSize) {
