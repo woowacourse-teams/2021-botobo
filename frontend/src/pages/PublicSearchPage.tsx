@@ -95,7 +95,11 @@ const PublicSearchPage = () => {
   }, [searchKeyword]);
 
   useEffect(() => {
-    if (!searchKeyword) return;
+    if (!searchKeyword) {
+      setRecommendedKeywords([]);
+
+      return;
+    }
 
     const getRecommendedKeywords = async () => {
       const tagKeywords = await getTagKeywordAsync(searchKeyword);
