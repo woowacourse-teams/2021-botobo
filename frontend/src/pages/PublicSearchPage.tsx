@@ -47,12 +47,10 @@ const PublicSearchPage = () => {
 
   const searchForWorkbook = (keyword: string) => {
     resetSearchResult();
-    setTimeout(() => {
-      routePublicSearchResultQuery({
-        keyword,
-        method: 'push',
-      });
-    }, 50);
+    routePublicSearchResultQuery({
+      keyword,
+      method: 'push',
+    });
   };
 
   useEffect(() => {
