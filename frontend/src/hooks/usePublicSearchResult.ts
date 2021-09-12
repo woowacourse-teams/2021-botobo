@@ -9,6 +9,11 @@ import { MultiFilterType } from '../types/filter';
 import { ValueOf } from '../types/utils';
 import { usePublicSearchQuery, useRouter, useSnackbar } from '.';
 
+interface SetSearchResult {
+  searchResult: PublicWorkbookResponse[];
+  isReset: boolean;
+}
+
 const usePublicSearchResult = () => {
   const { routePrevPage, routePublicCards, routePublicSearchResultQuery } =
     useRouter();
@@ -28,36 +33,25 @@ const usePublicSearchResult = () => {
   const showSnackbar = useSnackbar();
 
   const setIsInitialLoading = (isInitialLoading: boolean) => {
-    setPublicWorkbookState((prevValue) => ({ ...prevValue, isInitialLoading }));
-  };
-
-  const setStartIndex = (type: 'add' | 'reset') => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
-      startIndex: type === 'reset' ? 0 : prevValue.startIndex + 1,
+      isInitialLoading: isInitialLoading,
     }));
   };
 
-  const setWorkbookSearchResult = (
-    newWorkbooks: PublicWorkbookResponse[],
-    isReset: boolean
-  ) => {
+  const setSearchResult = ({ searchResult, isReset }: SetSearchResult) => {
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,
+      isInitialLoading: false,
+      startIndex: isReset ? 0 : prevValue.startIndex + 1,
       publicWorkbookResult: isReset
-        ? newWorkbooks
-        : [...prevValue.publicWorkbookResult, ...newWorkbooks],
+        ? searchResult
+        : [...prevValue.publicWorkbookResult, ...searchResult],
     }));
-  };
-
-  const resetSearchResult = () => {
-    setWorkbookSearchResult([], true);
-    setStartIndex('reset');
   };
 
   const setFilteredPublicWorkbook = (newQuery: PublicWorkbookAsync) => {
-    setIsLoading(true);
-    resetSearchResult();
+    setSearchResult({ searchResult: [], isReset: true });
     searchForPublicWorkbook({ ...newQuery, start: 0 });
   };
 
@@ -65,6 +59,7 @@ const usePublicSearchResult = () => {
     { keyword, start, criteria, ...options }: PublicWorkbookAsync,
     isReset = true
   ) => {
+    setIsLoading(true);
     if (keyword === '') {
       setIsLoading(false);
       setIsInitialLoading(false);
@@ -73,17 +68,15 @@ const usePublicSearchResult = () => {
     }
 
     try {
-      const newWorkbooks = await getSearchResultAsync({
+      const searchResult = await getSearchResultAsync({
         keyword,
-        start: start ?? startIndex,
+        start: start ?? startIndex + 1,
         criteria,
         ...options,
       });
 
-      setWorkbookSearchResult(newWorkbooks, isReset);
-      setStartIndex('add');
+      setSearchResult({ searchResult, isReset });
       setIsLoading(false);
-      setIsInitialLoading(false);
 
       routePublicSearchResultQuery({ keyword, criteria, ...options });
     } catch (error) {
