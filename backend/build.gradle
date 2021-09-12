@@ -113,6 +113,12 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+    def Qdomains = []
+
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -136,7 +142,7 @@ jacocoTestCoverageVerification {
                     'botobo.core.dto.**',
                     'botobo.core.DataLoader',
                     'botobo.core.BotoboApplication'
-            ]
+            ] + Qdomains
         }
     }
 }
