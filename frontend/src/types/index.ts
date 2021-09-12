@@ -18,7 +18,7 @@ export interface WorkbookResponse {
 export interface PublicWorkbookResponse
   extends Omit<WorkbookResponse, 'opened'> {
   author: string;
-  heart: number;
+  heartCount: number;
 }
 
 export interface QuizResponse {

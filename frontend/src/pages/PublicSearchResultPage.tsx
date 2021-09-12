@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import DownIcon from '../assets/chevron-down-solid.svg';
 import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
@@ -10,65 +11,13 @@ import {
   MultiFilterSelector,
   PublicWorkbookList,
 } from '../components';
-import { SEARCH_CRITERIA } from '../constants';
-import {
-  useModal,
-  usePublicSearch,
-  usePublicSearchQuery,
-  useRouter,
-} from '../hooks';
+import { useModal, usePublicSearchResult } from '../hooks';
+import { publicSearchResultState } from '../recoil';
 import { Flex } from '../styles';
-import {
-  MultiFilter,
-  MultiFilterTypes,
-  MultiFilterValue,
-} from '../types/filter';
-import { ValueOf } from '../types/utils';
+import { MultiFilterValue } from '../types/filter';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
-import PublicWorkbookLoadable from './PublicSearchResultLoadable';
-
-const dummyList = [
-  {
-    id: 1,
-    name: 'java',
-  },
-  {
-    id: 2,
-    name: 'javascript',
-  },
-  {
-    id: 3,
-    name: '자바',
-  },
-  {
-    id: 4,
-    name: '자스',
-  },
-  {
-    id: 5,
-    name: '자바스크립트',
-  },
-  {
-    id: 6,
-    name: 'javascriptjavascriptjavascriptjavascript',
-  },
-  {
-    id: 7,
-    name: '자스스스',
-  },
-  {
-    id: 8,
-    name: 'ㅁㄴㅇㅁㄴㅇ',
-  },
-];
-
-const singleFilters = [
-  { id: 1, type: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, type: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
-  { id: 3, type: '이름 순', criteria: SEARCH_CRITERIA.NAME },
-  { id: 4, type: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
-];
+import PublicSearchResultLoadable from './PublicSearchResultLoadable';
 
 const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
   return values.some(({ isSelected }) => isSelected);
@@ -76,28 +25,28 @@ const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
 
 const PublicSearchResultPage = () => {
   const {
-    workbookSearchResult,
+    query,
     isLoading,
-    isSearching,
-    setIsSearching,
+    currentFilterId,
+    singleFilters,
+    multiFilters,
     searchForPublicWorkbook,
-    resetSearchResult,
-  } = usePublicSearch();
-  const { keyword, type, criteria } = usePublicSearchQuery();
+    setFilteredPublicWorkbook,
+    setSingleFilterValues,
+    setInitialMultiFilterValues,
+    removeMultiFilterItem,
+    resetFilterValues,
+    routePublicCards,
+    routePrevPage,
+  } = usePublicSearchResult();
+
+  const { publicWorkbookResult, isInitialLoading } = useRecoilValue(
+    publicSearchResultState
+  );
+
+  const { keyword } = query;
 
   const { openModal } = useModal();
-
-  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
-
-  const [multiFilters, setMultiFilters] = useState<MultiFilter[]>([
-    { id: 1, type: '태그', values: [] },
-    { id: 2, type: '작성자', values: [] },
-  ]);
-
-  const [currentFilterId, setCurrentFilterId] = useState(
-    singleFilters.find((filter) => filter.criteria === criteria)?.id ??
-      singleFilters[0].id
-  );
 
   const hasSelectedMultiFilter = multiFilters.find(({ values }) =>
     hasSelectedValueInMultiFilter(values)
@@ -105,170 +54,145 @@ const PublicSearchResultPage = () => {
 
   const isFiltered =
     currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
-
-  const setSingleFilterValues = (
-    id: number,
-    criteria: ValueOf<typeof SEARCH_CRITERIA>
-  ) => {
-    const initialValue = {
-      keyword,
-      type,
-      start: 0,
-      criteria,
-    };
-
-    setCurrentFilterId(id);
-    resetSearchResult();
-    setIsSearching(true);
-    routePublicSearchResultQuery(initialValue);
-    searchForPublicWorkbook(initialValue);
-  };
-
-  const getMultiFilterValues = () => {
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => ({
-        ...item,
-        values: dummyList.map((dummy) => ({ ...dummy, isSelected: false })),
-      }))
-    );
-  };
-
-  const removeMultiFilterItem = (type: MultiFilterTypes, itemId: number) => {
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => {
-        if (item.type !== type) return item;
-
-        return {
-          ...item,
-          values: item.values.filter(({ id }) => id !== itemId),
-        };
-      })
-    );
-  };
-
-  const resetFilterValues = () => {
-    setSingleFilterValues(singleFilters[0].id, singleFilters[0].criteria);
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => ({
-        ...item,
-        values: item.values.map((value) => ({
-          ...value,
-          isSelected: false,
-        })),
-      }))
-    );
-  };
+  const isNoSearchResult = !isLoading && publicWorkbookResult.length === 0;
 
   useEffect(() => {
-    setIsSearching(true);
-    getMultiFilterValues();
-    searchForPublicWorkbook({ keyword, type, criteria });
+    if (!isInitialLoading) return;
+
+    setInitialMultiFilterValues('tags');
+    setInitialMultiFilterValues('users');
+    searchForPublicWorkbook({ keyword, start: 0 });
   }, []);
 
-  if (isSearching) {
-    return <PublicWorkbookLoadable />;
+  if (isInitialLoading) {
+    return <PublicSearchResultLoadable />;
   }
 
   return (
     <>
       <MainHeader />
       <StyledPageTemplate isScroll={true}>
-        {workbookSearchResult.length === 0 ? (
-          <NoSearchResult>
-            <div>검색 결과가 없어요.</div>
-            <Button
-              size="full"
-              backgroundColor="gray_6"
-              onClick={routePrevPage}
-            >
-              돌아가기
-            </Button>
-          </NoSearchResult>
-        ) : (
-          <>
-            <Title>{keyword} 검색 결과</Title>
-            <FilterWrapper>
-              <Filter>
-                {isFiltered && (
-                  <FilterResetButton onClick={resetFilterValues}>
-                    <span>초기화</span>
-                    <ResetIcon width="1rem" height="1rem" />
-                  </FilterResetButton>
-                )}
-                {multiFilters.map(({ id, type }, index) => (
-                  <MultiFilterButton
-                    key={id}
-                    shape="round"
-                    backgroundColor={
-                      hasSelectedValueInMultiFilter(multiFilters[index].values)
-                        ? 'green'
-                        : 'gray_5'
-                    }
-                    inversion={true}
-                    onClick={() => {
-                      openModal({
-                        content: (
-                          <MultiFilterSelector
-                            type={type}
-                            values={multiFilters[index].values}
-                            setMultiFilters={setMultiFilters}
-                          />
-                        ),
-                      });
-                    }}
-                  >
-                    {type}
-                    <DownIcon width="1rem" height="1rem" />
-                  </MultiFilterButton>
-                ))}
-                {singleFilters.map(({ id, type, criteria }) => (
-                  <Button
-                    key={id}
-                    shape="round"
-                    backgroundColor={
-                      currentFilterId === id ? 'green' : 'gray_5'
-                    }
-                    inversion={true}
-                    onClick={() => {
-                      if (id === currentFilterId) return;
+        <>
+          <Title>{keyword} 검색 결과</Title>
+          <FilterWrapper>
+            <Filter>
+              {multiFilters.map(({ id, type, name }, index) => (
+                <MultiFilterButton
+                  key={id}
+                  shape="round"
+                  backgroundColor={
+                    hasSelectedValueInMultiFilter(multiFilters[index].values)
+                      ? 'green'
+                      : 'gray_5'
+                  }
+                  inversion={true}
+                  disabled={isNoSearchResult}
+                  onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
 
-                      setSingleFilterValues(id, criteria);
-                    }}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </Filter>
-              {hasSelectedMultiFilter && (
-                <SelectedMultiFilterWrapper>
-                  {multiFilters.map(({ type, values }) =>
-                    values
-                      .filter(({ isSelected }) => isSelected)
-                      .map(({ name, id }) => (
-                        <SelectedMultiFilterButton
-                          key={id}
-                          type="button"
-                          shape="round"
-                          backgroundColor={
-                            type === '작성자' ? 'gray_2' : 'green'
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                      block: 'nearest',
+                    });
+
+                    openModal({
+                      content: (
+                        <MultiFilterSelector
+                          type={type}
+                          name={name}
+                          values={multiFilters[index].values}
+                          query={query}
+                          setFilteredPublicWorkbook={setFilteredPublicWorkbook}
+                          setInitialValues={() =>
+                            setInitialMultiFilterValues(type)
                           }
-                          color={type === '작성자' ? 'gray_8' : 'white'}
-                          onClick={() => removeMultiFilterItem(type, id)}
-                        >
-                          {name}
-                        </SelectedMultiFilterButton>
-                      ))
-                  )}
-                </SelectedMultiFilterWrapper>
+                        />
+                      ),
+                    });
+                  }}
+                >
+                  {name}
+                  <DownIcon width="1rem" height="1rem" />
+                </MultiFilterButton>
+              ))}
+              {singleFilters.map(({ id, type, criteria }) => (
+                <Button
+                  key={id}
+                  shape="round"
+                  backgroundColor={
+                    !isNoSearchResult && currentFilterId === id
+                      ? 'green'
+                      : 'gray_5'
+                  }
+                  inversion={true}
+                  disabled={isNoSearchResult}
+                  onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
+
+                    if (id === currentFilterId) return;
+
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                    });
+
+                    setSingleFilterValues(id, criteria);
+                  }}
+                >
+                  {type}
+                </Button>
+              ))}
+            </Filter>
+
+            {isFiltered && (
+              <SelectedMultiFilterWrapper>
+                <FilterResetButton onClick={resetFilterValues}>
+                  <span>초기화</span>
+                  <ResetIcon width="1rem" height="1rem" />
+                </FilterResetButton>
+                {multiFilters.map(({ type, values }) =>
+                  values
+                    .filter(({ isSelected }) => isSelected)
+                    .map(({ name, id }) => (
+                      <SelectedMultiFilterButton
+                        key={id}
+                        type="button"
+                        shape="round"
+                        backgroundColor={type === 'users' ? 'gray_2' : 'green'}
+                        color={type === 'users' ? 'gray_8' : 'white'}
+                        onClick={() => removeMultiFilterItem(type, id)}
+                      >
+                        {name}
+                      </SelectedMultiFilterButton>
+                    ))
+                )}
+              </SelectedMultiFilterWrapper>
+            )}
+          </FilterWrapper>
+          {isNoSearchResult ? (
+            <NoSearchResult>
+              <div>검색 결과가 없어요.</div>
+              {!hasSelectedMultiFilter && (
+                <Button
+                  size="full"
+                  backgroundColor="gray_6"
+                  onClick={routePrevPage}
+                >
+                  돌아가기
+                </Button>
               )}
-            </FilterWrapper>
+            </NoSearchResult>
+          ) : (
             <PublicWorkbookList
+              query={query}
               isLoading={isLoading}
-              publicWorkbooks={workbookSearchResult}
+              publicWorkbooks={publicWorkbookResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
+              routePublicCards={routePublicCards}
             />
-          </>
-        )}
+          )}
+        </>
       </StyledPageTemplate>
     </>
   );
@@ -355,6 +279,7 @@ const Filter = styled.div`
 `;
 
 const SelectedMultiFilterWrapper = styled.div`
+  ${Flex({ items: 'center' })};
   margin-top: 0.7rem;
   margin-bottom: 0.3rem;
   white-space: nowrap;
@@ -390,9 +315,11 @@ const SelectedMultiFilterButton = styled(Button)`
 
 const FilterResetButton = styled.button`
   ${Flex({ items: 'center' })};
+  height: 2rem;
 
   & > svg {
     margin-left: 0.3rem;
+    margin-bottom: 0.1rem;
   }
 `;
 

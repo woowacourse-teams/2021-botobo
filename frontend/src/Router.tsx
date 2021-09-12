@@ -10,6 +10,7 @@ import {
 import { useRecoilValue } from 'recoil';
 
 import { ROUTE } from './constants';
+import { ModalProvider } from './contexts';
 import {
   CardsPage,
   Guide,
@@ -146,21 +147,23 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
 
 const Router = () => (
   <BrowserRouter>
-    <Switch>
-      {routes.map(({ path, component, isPublic }, index) =>
-        isPublic ? (
-          <Route key={index} exact path={path}>
-            <ScrollToTop />
-            {component}
-          </Route>
-        ) : (
-          <PrivateRoute key={index} exact path={path}>
-            <ScrollToTop />
-            {component}
-          </PrivateRoute>
-        )
-      )}
-    </Switch>
+    <ModalProvider>
+      <Switch>
+        {routes.map(({ path, component, isPublic }, index) =>
+          isPublic ? (
+            <Route key={index} exact path={path}>
+              <ScrollToTop />
+              {component}
+            </Route>
+          ) : (
+            <PrivateRoute key={index} exact path={path}>
+              <ScrollToTop />
+              {component}
+            </PrivateRoute>
+          )
+        )}
+      </Switch>
+    </ModalProvider>
   </BrowserRouter>
 );
 

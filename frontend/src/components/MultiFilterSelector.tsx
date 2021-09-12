@@ -1,21 +1,29 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 
+import { PublicWorkbookAsync } from '../api';
 import SearchCloseIcon from '../assets/cross-mark.svg';
 import CheckIcon from '../assets/tick.svg';
 import { useModal } from '../hooks';
+import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
+import { publicSearchResultState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import {
-  MultiFilter,
-  MultiFilterTypes,
+  MultiFilterName,
+  MultiFilterType,
   MultiFilterValue,
 } from '../types/filter';
+import { LoadingSpinner } from '.';
 
 interface Props {
-  type: MultiFilterTypes;
+  type: MultiFilterType;
+  name: MultiFilterName;
   values: MultiFilterValue[];
-  setMultiFilters: React.Dispatch<React.SetStateAction<MultiFilter[]>>;
+  query: PublicSearchQueryReturnType;
+  setInitialValues: () => Promise<MultiFilterValue[]>;
+  setFilteredPublicWorkbook: (newQuery: PublicWorkbookAsync) => void;
 }
 
 interface SearchBarStyleProps {
@@ -28,14 +36,22 @@ interface MultiFilterItemStyleProps {
 
 const MultiFilterSelector = ({
   type,
+  name,
   values: data,
-  setMultiFilters,
+  query,
+  setInitialValues,
+  setFilteredPublicWorkbook,
 }: Props) => {
   const { closeModal } = useModal();
 
   const [filterKeyword, setFilterKeyword] = useState('');
   const [isSearchBarFocus, setIsSearchBarFocus] = useState(false);
   const [values, setValues] = useState(data);
+  const [isLoading, setIsLoading] = useState(values.length === 0);
+
+  const setPublicWorkbookState = useSetRecoilState(publicSearchResultState);
+
+  const regExpKeyword = new RegExp(filterKeyword.replace(/\s+/g, ''), 'i');
 
   const checkFilterItem = (name: string) => {
     setValues((prevValue) =>
@@ -47,19 +63,41 @@ const MultiFilterSelector = ({
     );
   };
 
-  const setSelectedValues = () => {
-    setMultiFilters((prevValue) =>
-      prevValue.map((item) => {
+  const setSelectedValuesInMultiFilter = () => {
+    setPublicWorkbookState((prevValue) => ({
+      ...prevValue,
+      multiFilters: prevValue.multiFilters.map((item) => {
         if (item.type !== type) return item;
 
         return { ...item, values };
-      })
-    );
+      }),
+    }));
   };
+
+  const searchFilteredPublicWorkbook = () => {
+    setFilteredPublicWorkbook({
+      ...query,
+      [type]: values
+        .filter(({ isSelected }) => isSelected)
+        .map(({ id }) => id)
+        .join(','),
+    });
+  };
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const getValues = async () => {
+      await setInitialValues();
+      setIsLoading(false);
+    };
+
+    getValues();
+  }, []);
 
   return (
     <>
-      <Title>{type} 선택</Title>
+      <Title>{name} 선택</Title>
       <SearchBar isFocus={isSearchBarFocus}>
         <SearchInput
           onFocus={() => setIsSearchBarFocus(true)}
@@ -68,7 +106,7 @@ const MultiFilterSelector = ({
           onChange={({ target }) => setFilterKeyword(target.value)}
           name="search"
           role="search"
-          placeholder={`${type}를 입력해보세요.`}
+          placeholder={`${name}를 입력해보세요.`}
         />
         {filterKeyword && (
           <button type="button" onClick={() => setFilterKeyword('')}>
@@ -76,22 +114,44 @@ const MultiFilterSelector = ({
           </button>
         )}
       </SearchBar>
-      <MultiFilterList>
-        {values.map(({ id, name, isSelected }) => (
-          <MultiFilterItem
-            key={id}
-            isSelected={isSelected}
-            onClick={() => checkFilterItem(name)}
-          >
-            <div>{name}</div>
-            {isSelected && <CheckIcon width="1rem" height="1rem" />}
-          </MultiFilterItem>
-        ))}
-      </MultiFilterList>
+      {isLoading ? (
+        <CenterInList>
+          <LoadingSpinner />
+        </CenterInList>
+      ) : values.length === 0 ? (
+        <CenterInList>{name}가 존재하지 않네요.</CenterInList>
+      ) : (
+        <MultiFilterList>
+          {values
+            .filter((v) => regExpKeyword.test(v.name?.replace(/\s+/g, '')))
+            .map(({ id, name, isSelected }) => (
+              <MultiFilterItem
+                key={id}
+                isSelected={isSelected}
+                onClick={() => checkFilterItem(name)}
+              >
+                <div>{name}</div>
+                {isSelected && <CheckIcon width="1rem" height="1rem" />}
+              </MultiFilterItem>
+            ))}
+        </MultiFilterList>
+      )}
+
       <Confirm
         type="button"
         onClick={() => {
-          setSelectedValues();
+          const isFiltered = data.find(
+            ({ isSelected }, index) => isSelected !== values[index].isSelected
+          );
+
+          if (!isFiltered) {
+            closeModal();
+
+            return;
+          }
+
+          setSelectedValuesInMultiFilter();
+          searchFilteredPublicWorkbook();
           closeModal();
         }}
       >
@@ -186,6 +246,12 @@ const Confirm = styled.button`
   ${({ theme }) => css`
     border-top: 1px solid ${theme.color.gray_5};
   `}
+`;
+
+const CenterInList = styled.div`
+  ${Flex({ justify: 'center', items: 'center' })};
+  height: 30vh;
+  margin-bottom: 3.5rem;
 `;
 
 export default MultiFilterSelector;

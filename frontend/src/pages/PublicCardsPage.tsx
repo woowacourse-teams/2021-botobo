@@ -46,7 +46,7 @@ const PublicCardsPage = () => {
     showSnackbar,
   } = usePublicCard();
 
-  const { routePublicSearchQuery } = useRouter();
+  const { routePublicSearchResultQuery } = useRouter();
 
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
@@ -123,9 +123,8 @@ const PublicCardsPage = () => {
                 <Tag
                   type="button"
                   onClick={() =>
-                    routePublicSearchQuery({
+                    routePublicSearchResultQuery({
                       keyword: name,
-                      type: 'tag',
                       method: 'push',
                     })
                   }

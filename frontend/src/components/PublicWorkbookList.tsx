@@ -3,28 +3,31 @@ import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
-import { usePublicSearchQuery, useRouter } from '../hooks';
+import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import { setSessionStorage } from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
+  query: PublicSearchQueryReturnType;
   isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
-  searchForPublicWorkbook: ({
-    keyword,
-    ...options
-  }: PublicWorkbookAsync) => Promise<void>;
+  searchForPublicWorkbook: (
+    { keyword, ...options }: PublicWorkbookAsync,
+    isNew?: boolean
+  ) => Promise<void>;
+  routePublicCards: () => void;
 }
 
 const PublicWorkbookList = ({
+  query,
   isLoading,
   publicWorkbooks,
   searchForPublicWorkbook,
+  routePublicCards,
 }: Props) => {
-  const { keyword, type } = usePublicSearchQuery();
-  const { routePublicCards } = useRouter();
+  const { tags, users, criteria } = query;
 
   const scrollTarget = useRef<HTMLLIElement>(null);
 
@@ -38,7 +41,7 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({ keyword, type });
+        await searchForPublicWorkbook(query, false);
       },
       {
         threshold: 0.1,
@@ -48,12 +51,12 @@ const PublicWorkbookList = ({
     scrollObserver.observe(scrollTarget.current);
 
     return () => scrollObserver.disconnect();
-  }, [scrollTarget.current]);
+  }, [scrollTarget.current, tags, users, criteria]);
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-        <li ref={scrollTarget} key={id}>
+      {publicWorkbooks.map(({ id, name, cardCount, author }, index) => (
+        <li ref={scrollTarget} key={index}>
           <PublicWorkbook
             name={name}
             cardCount={cardCount}
