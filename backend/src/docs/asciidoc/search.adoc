@@ -10,29 +10,17 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |===
 |파라미터 이름 |값 |필수 여부 |기본 값 |설명
 
-|type
-|name, tag, user
-|false
-|name
-|검색 타입
+|keyword
+|-
+|true
+|-
+|검색어
 
 |criteria
 |date, name, count, heart
 |false
 |date
 |정렬 기준
-
-|order
-|desc, asc
-|false
-|desc
-|정렬 방법
-
-|keyword
-|-
-|true
-|-
-|검색어
 
 |start
 |-
@@ -51,17 +39,11 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |===
 |값 |설명
 
-|name
-|문제집 이름 (대소문자 구별하지 않음)
-
-|tag
-|태그 이름 (대소문자 구별하지 않음)
-
-|user
-|유저 이름 (대소문자 구별 함)
-
 |date
 |문제집 생성 날짜
+
+|name
+|문제집 이름 (대소문자 구별하지 않음)
 
 |count
 |문제집에 포함된 카드 수
@@ -69,11 +51,6 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 |heart
 |좋아요 수
 
-|asc
-|오름차순
-
-|desc
-|내림차순
 |===
 
 === 추천 태그 조회

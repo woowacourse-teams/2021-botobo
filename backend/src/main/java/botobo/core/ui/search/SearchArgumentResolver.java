@@ -24,10 +24,8 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
         Map<String, String> parameterMap = extractMap(request);
 
         return WorkbookSearchParameter.builder()
-                .searchType(parameterMap.getOrDefault("type", null))
                 .searchKeyword(parameterMap.getOrDefault("keyword", null))
                 .searchCriteria(parameterMap.getOrDefault("criteria", null))
-                .searchOrder(parameterMap.getOrDefault("order", null))
                 .start(parameterMap.getOrDefault("start", null))
                 .size(parameterMap.getOrDefault("size", null))
                 .build();

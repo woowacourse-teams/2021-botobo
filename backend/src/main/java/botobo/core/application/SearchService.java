@@ -4,7 +4,7 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchRelated;
@@ -12,7 +12,6 @@ import botobo.core.ui.search.WorkbookSearchParameter;
 import botobo.core.util.SimilarityChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,19 +23,20 @@ public class SearchService {
 
     private static final int SIZE_LIMIT = 10;
 
-    private final WorkbookRepository workbookRepository;
+    private final WorkbookSearchRepository workbookSearchRepository;
     private final TagRepository tagRepository;
 
-    public SearchService(WorkbookRepository workbookRepository, TagRepository tagRepository) {
-        this.workbookRepository = workbookRepository;
+    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagRepository tagRepository) {
+        this.workbookSearchRepository = workbookSearchRepository;
         this.tagRepository = tagRepository;
     }
 
-    public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter) {
-        Specification<Workbook> specification = workbookSearchParameter.toSpecification();
+    public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter,
+                                                  List<Long> tags,
+                                                  List<Long> users) {
         PageRequest pageRequest = workbookSearchParameter.toPageRequest();
 
-        Page<Workbook> page = workbookRepository.findAll(specification, pageRequest);
+        Page<Workbook> page = workbookSearchRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
         List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);
     }
