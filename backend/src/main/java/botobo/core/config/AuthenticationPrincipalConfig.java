@@ -60,6 +60,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/docs/**", PathMethod.GET)
                 .excludePathPatterns("/api/workbooks/public", PathMethod.GET)
                 .excludePathPatterns("/api/workbooks/public/**", PathMethod.GET)
+                .excludePathPatterns("/api/tags", PathMethod.GET)
                 .excludePathPatterns("/api/search/**", PathMethod.GET);
     }
 

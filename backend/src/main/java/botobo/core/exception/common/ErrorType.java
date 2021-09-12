@@ -30,8 +30,8 @@ import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
+import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
-import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import lombok.AllArgsConstructor;
@@ -67,7 +67,7 @@ public enum ErrorType {
     U012("U012", "허용되지 않는 파일 확장자입니다.", ImageExtensionNotAllowedException.class),
 
     W001("W001", "문제집 이름은 30자 이하여야 합니다.", WorkbookNameLengthException.class),
-    W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameNullException.class),
+    W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameBlankException.class),
     W003("W003", "태그 아이디는 필수 입력값입니다.", ExternalException.class),
     W004("W004", "태그 아이디는 0이상의 숫자입니다.", ExternalException.class),
     W005("W005", "태그 이름은 필수 입력값입니다.", TagNameNullException.class),
