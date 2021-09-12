@@ -20,6 +20,8 @@ interface Props {
   routePublicCards: () => void;
 }
 
+const MAX_COUNT_WORKBOOK_ONE_TIME = 20;
+
 const PublicWorkbookList = ({
   query,
   isLoading,
@@ -40,6 +42,8 @@ const PublicWorkbookList = ({
         if (!scrollTarget.current) return;
 
         observer.unobserve(entry.target);
+
+        if (publicWorkbooks.length < MAX_COUNT_WORKBOOK_ONE_TIME) return;
 
         await searchForPublicWorkbook(query, false);
       },
