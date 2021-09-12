@@ -23,4 +23,9 @@ public class InfraController {
                 .findFirst()
                 .orElse("nothing");
     }
+
+    @GetMapping("/health")
+    public String health() {
+        return "UP";
+    }
 }
