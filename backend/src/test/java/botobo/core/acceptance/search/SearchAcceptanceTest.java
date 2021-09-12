@@ -399,7 +399,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "자바");
         parameters.put("criteria", "date");
-        parameters.put("users", "2");
+        parameters.put("users", "5");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -425,7 +425,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "자바");
         parameters.put("criteria", "count");
-        parameters.put("users", "2");
+        parameters.put("users", "5");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -451,7 +451,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("keyword", "자바");
         parameters.put("criteria", "heart");
-        parameters.put("users", "3");
+        parameters.put("users", "6");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -477,7 +477,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "자바");
         parameters.put("criteria", "date");
         parameters.put("tags", "1");
-        parameters.put("users", "2");
+        parameters.put("users", "5");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -503,7 +503,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "자바");
         parameters.put("criteria", "count");
         parameters.put("tags", "1");
-        parameters.put("users", "2");
+        parameters.put("users", "5");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
@@ -529,7 +529,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "자바");
         parameters.put("criteria", "heart");
         parameters.put("tags", "1");
-        parameters.put("users", "3");
+        parameters.put("users", "6");
 
         // when
         HttpResponse response = 문제집_검색_요청(parameters);
