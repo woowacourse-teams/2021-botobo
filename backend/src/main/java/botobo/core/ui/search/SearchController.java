@@ -22,8 +22,10 @@ public class SearchController {
     }
 
     @GetMapping("/workbooks")
-    public ResponseEntity<List<WorkbookResponse>> searchWorkbooks(@SearchParams WorkbookSearchParameter workbookSearchParameter) {
-        List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter);
+    public ResponseEntity<List<WorkbookResponse>> searchWorkbooks(@SearchParams WorkbookSearchParameter workbookSearchParameter,
+                                                                  @RequestParam(required = false) List<Long> tags,
+                                                                  @RequestParam(required = false) List<Long> users) {
+        List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter, tags, users);
         return ResponseEntity.ok(workbookResponses);
     }
 

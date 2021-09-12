@@ -11,10 +11,3 @@ include::{snippets}/admin-workbooks-post-success/http-response.adoc[]
 include::{snippets}/admin-cards-post-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/admin-cards-post-success/http-response.adoc[]
-
-=== 카드 생성 실패
-==== 문제집 존재하지 않음
-==== 요청
-include::{snippets}/admin-cards-post-fail-invalid-workbook/http-request.adoc[]
-==== 응답
-include::{snippets}/admin-cards-post-fail-invalid-workbook/http-response.adoc[]

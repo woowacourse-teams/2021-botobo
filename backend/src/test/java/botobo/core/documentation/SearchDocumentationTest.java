@@ -41,21 +41,21 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .build(),
                 WorkbookResponse.builder()
                         .id(1L)
-                        .name("중간곰의 java 문제집")
+                        .name("피케이의 javascript 문제집")
                         .cardCount(15)
-                        .author("ggyool")
+                        .author("pkeugine")
                         .tags(List.of(
-                                TagResponse.builder().id(3L).name("자바").build(),
-                                TagResponse.builder().id(4L).name("백엔드").build()
+                                TagResponse.builder().id(3L).name("javascript").build(),
+                                TagResponse.builder().id(4L).name("frontend").build()
                         ))
                         .build()
         );
-        given(searchService.searchWorkbooks(any(WorkbookSearchParameter.class))).willReturn(workbookResponses);
+        given(searchService.searchWorkbooks(any(WorkbookSearchParameter.class), any(), any())).willReturn(workbookResponses);
 
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/search/workbooks?type=name&criteria=date&order=desc&keyword=java&start=0&size=10")
+                .get("/api/search/workbooks?keyword=java&tags=1,3&users=1&criteria=date&start=0&size=10")
                 .build()
                 .status(status().isOk())
                 .identifier("search-workbooks-get-success");

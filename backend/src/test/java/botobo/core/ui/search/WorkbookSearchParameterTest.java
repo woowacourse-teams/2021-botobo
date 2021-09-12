@@ -17,10 +17,8 @@ class WorkbookSearchParameterTest {
     void create() {
         // when, then
         assertThatCode(() -> WorkbookSearchParameter.builder()
-                .searchType("name")
                 .searchKeyword("java")
                 .searchCriteria("date")
-                .searchOrder("desc")
                 .start("0")
                 .size("10")
                 .build()
@@ -32,10 +30,8 @@ class WorkbookSearchParameterTest {
     void createWithNegativeStartValue() {
         // when, then
         assertThatThrownBy(() -> WorkbookSearchParameter.builder()
-                .searchType("name")
                 .searchKeyword("java")
                 .searchCriteria("date")
-                .searchOrder("desc")
                 .start("-1")
                 .size("10")
                 .build()
@@ -48,10 +44,8 @@ class WorkbookSearchParameterTest {
     void createWithInvalidSizeValue(String size) {
         // when, then
         assertThatThrownBy(() -> WorkbookSearchParameter.builder()
-                .searchType("name")
                 .searchKeyword("java")
                 .searchCriteria("date")
-                .searchOrder("desc")
                 .start("0")
                 .size(size)
                 .build()
