@@ -1,26 +1,23 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { CardSkeleton, CardSkeletonList, HeaderSkeleton } from '../components';
+import { CardSkeleton, CardSkeletonList } from '../components';
 import { DEVICE } from '../constants';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const MainLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <PageTemplate isScroll={true}>
-      <Greeting />
-      <Banner />
-      <QuizStarterSkeleton />
-      <section>
-        <WorkbookHeader>
-          <WorkbookTitle />
-        </WorkbookHeader>
-        <StyledCardSkeletonList count={8} />
-      </section>
-    </PageTemplate>
-  </>
+  <PageTemplate isScroll={true}>
+    <Greeting />
+    <Banner />
+    <QuizStarterSkeleton />
+    <section>
+      <WorkbookHeader>
+        <WorkbookTitle />
+      </WorkbookHeader>
+      <StyledCardSkeletonList count={8} />
+    </section>
+  </PageTemplate>
 );
 
 const Greeting = styled.div`

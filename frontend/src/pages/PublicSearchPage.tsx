@@ -6,7 +6,7 @@ import { useResetRecoilState } from 'recoil';
 import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { MainHeader, PublicWorkbook } from '../components';
+import { PublicWorkbook } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useErrorHandler, useRouter } from '../hooks';
 import { publicSearchResultState } from '../recoil';
@@ -142,79 +142,76 @@ const PublicSearchPage = () => {
   if (isLoading) return <PublicSearchLoadable />;
 
   return (
-    <>
-      <MainHeader sticky={false} />
-      <StyledPageTemplate isScroll={true}>
-        <div ref={stickyTriggerRef} />
-        <SearchBar
-          name="search"
-          role="search"
-          isSticky={isSticky}
-          isFocus={isFocus}
-          scaleX={searchBarWidth}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(isMobile ? true : false)}
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (!searchKeyword) return;
+    <StyledPageTemplate isScroll={true}>
+      <div ref={stickyTriggerRef} />
+      <SearchBar
+        name="search"
+        role="search"
+        isSticky={isSticky}
+        isFocus={isFocus}
+        scaleX={searchBarWidth}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(isMobile ? true : false)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!searchKeyword) return;
 
-            searchForWorkbook(searchKeyword);
-          }}
-        >
-          <SearchInput
-            value={searchKeyword}
-            onChange={({ target }) => setSearchKeyword(target.value)}
-            placeholder={'문제집을 검색해보세요.'}
-            ref={searchInputRef}
-          />
-          {searchKeyword && (
-            <KeywordResetButton
-              type="button"
-              onClick={() => setSearchKeyword('')}
-            >
-              <KeywordResetIcon width="0.5rem" height="0.5rem" />
-            </KeywordResetButton>
-          )}
-          <SearchButton isFocus={isFocus}>
-            <SearchIcon width="1.3rem" height="1.3rem" />
-          </SearchButton>
-          {isFocus && searchKeyword && recommendedKeywords.length > 0 && (
-            <Autocomplete isSticky={isSticky}>
-              {recommendedKeywords.map(({ id, name }) => (
-                <RecommendedKeyword
-                  key={id}
-                  onTouchStart={() => {
-                    if (!isMobile) return;
+          searchForWorkbook(searchKeyword);
+        }}
+      >
+        <SearchInput
+          value={searchKeyword}
+          onChange={({ target }) => setSearchKeyword(target.value)}
+          placeholder={'문제집을 검색해보세요.'}
+          ref={searchInputRef}
+        />
+        {searchKeyword && (
+          <KeywordResetButton
+            type="button"
+            onClick={() => setSearchKeyword('')}
+          >
+            <KeywordResetIcon width="0.5rem" height="0.5rem" />
+          </KeywordResetButton>
+        )}
+        <SearchButton isFocus={isFocus}>
+          <SearchIcon width="1.3rem" height="1.3rem" />
+        </SearchButton>
+        {isFocus && searchKeyword && recommendedKeywords.length > 0 && (
+          <Autocomplete isSticky={isSticky}>
+            {recommendedKeywords.map(({ id, name }) => (
+              <RecommendedKeyword
+                key={id}
+                onTouchStart={() => {
+                  if (!isMobile) return;
 
-                    searchInputRef.current?.blur();
-                  }}
-                  onMouseDown={() => searchForWorkbook(name)}
-                >
-                  <SearchIcon width="0.8rem" height="0.8rem" />
-                  {name}
-                </RecommendedKeyword>
-              ))}
-              <button onClick={() => setIsFocus(false)}>닫기</button>
-            </Autocomplete>
-          )}
-        </SearchBar>
-        <StyledUl>
-          {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-            <li key={id}>
-              <PublicWorkbook
-                name={name}
-                cardCount={cardCount}
-                author={author}
-                onClick={() => {
-                  setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-                  routePublicCards();
+                  searchInputRef.current?.blur();
                 }}
-              />
-            </li>
-          ))}
-        </StyledUl>
-      </StyledPageTemplate>
-    </>
+                onMouseDown={() => searchForWorkbook(name)}
+              >
+                <SearchIcon width="0.8rem" height="0.8rem" />
+                {name}
+              </RecommendedKeyword>
+            ))}
+            <button onClick={() => setIsFocus(false)}>닫기</button>
+          </Autocomplete>
+        )}
+      </SearchBar>
+      <StyledUl>
+        {publicWorkbooks.map(({ id, name, cardCount, author }) => (
+          <li key={id}>
+            <PublicWorkbook
+              name={name}
+              cardCount={cardCount}
+              author={author}
+              onClick={() => {
+                setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
+                routePublicCards();
+              }}
+            />
+          </li>
+        ))}
+      </StyledUl>
+    </StyledPageTemplate>
   );
 };
 

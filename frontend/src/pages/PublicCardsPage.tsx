@@ -9,7 +9,6 @@ import FillHeartIcon from '../assets/heart-solid.svg';
 import {
   Button,
   Checkbox,
-  MainHeader,
   PageHeader,
   PublicCardsSelectBox,
   PublicQnACard,
@@ -79,7 +78,6 @@ const PublicCardsPage = () => {
 
   return (
     <>
-      <MainHeader sticky={false} shadow={false} />
       <PageHeader
         title={ROUTE.PUBLIC_CARDS.TITLE}
         rightContent={

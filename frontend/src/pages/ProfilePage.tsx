@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 import { postUserNameCheckAsync } from '../api';
 import EditIcon from '../assets/pencil.svg';
-import { Button, InputField, MainHeader, TextAreaField } from '../components';
+import { Button, InputField, TextAreaField } from '../components';
 import {
   BIO_MAXIMUM_LENGTH,
   CLOUD_FRONT_DOMAIN,
@@ -91,78 +91,75 @@ const ProfilePage = () => {
   };
 
   return (
-    <>
-      <MainHeader />
-      <StyledPageTemplate isScroll={true}>
-        <Profile>
-          <ImageContainer>
-            <div onClick={() => setIsEditable((prevState) => !prevState)}>
-              <Avatar src={userInfo?.profileUrl ?? userSrc} />
-              <EditIconWrapper>
-                <EditIcon width="1.3rem" height="1.3rem" />
-              </EditIconWrapper>
-            </div>
-            {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
-            <ImageEditor isEditable={isEditable}>
-              <ImageUploader htmlFor="image-upload">
-                <input
-                  type="file"
-                  id="image-upload"
-                  name="image-upload"
-                  accept="image/png, image/jpg, image/jpeg, image/bmp"
-                  onChange={uploadImage}
-                />
-                <span>이미지 업로드</span>
-              </ImageUploader>
-              <button
-                type="button"
-                role="image-delete-button"
-                onClick={() => {
-                  setIsEditable(false);
-                  updateProfileUrl();
-                }}
-              >
-                이미지 제거
-              </button>
-            </ImageEditor>
-          </ImageContainer>
-          <FormProvider
-            initialValues={{
-              userName: userInfo?.userName ?? 'Unknown User',
-              bio: userInfo?.bio ?? '',
-            }}
-            validators={{
-              userName: async (value) => {
-                if (value === userInfo?.userName) return;
+    <StyledPageTemplate isScroll={true}>
+      <Profile>
+        <ImageContainer>
+          <div onClick={() => setIsEditable((prevState) => !prevState)}>
+            <Avatar src={userInfo?.profileUrl ?? userSrc} />
+            <EditIconWrapper>
+              <EditIcon width="1.3rem" height="1.3rem" />
+            </EditIconWrapper>
+          </div>
+          {isEditable && <Dimmed onClick={() => setIsEditable(false)} />}
+          <ImageEditor isEditable={isEditable}>
+            <ImageUploader htmlFor="image-upload">
+              <input
+                type="file"
+                id="image-upload"
+                name="image-upload"
+                accept="image/png, image/jpg, image/jpeg, image/bmp"
+                onChange={uploadImage}
+              />
+              <span>이미지 업로드</span>
+            </ImageUploader>
+            <button
+              type="button"
+              role="image-delete-button"
+              onClick={() => {
+                setIsEditable(false);
+                updateProfileUrl();
+              }}
+            >
+              이미지 제거
+            </button>
+          </ImageEditor>
+        </ImageContainer>
+        <FormProvider
+          initialValues={{
+            userName: userInfo?.userName ?? 'Unknown User',
+            bio: userInfo?.bio ?? '',
+          }}
+          validators={{
+            userName: async (value) => {
+              if (value === userInfo?.userName) return;
 
-                await validateUserName(value);
-              },
-              bio: validateBio,
-            }}
-            onSubmit={({ userName, bio }) => {
-              if (!userInfo) return;
+              await validateUserName(value);
+            },
+            bio: validateBio,
+          }}
+          onSubmit={({ userName, bio }) => {
+            if (!userInfo) return;
 
-              editProfile({ userName, profileUrl: userInfo.profileUrl, bio });
-            }}
-          >
-            <InputTitle>이름</InputTitle>
-            <NameInput
-              name="userName"
-              focusColor="gray"
-              maxLength={USER_NAME_MAXIMUM_LENGTH}
-            />
-            <InputTitle>소개글</InputTitle>
-            <BioInput
-              name="bio"
-              focusColor="gray"
-              placeholder="소개글을 작성해주세요."
-              maxLength={BIO_MAXIMUM_LENGTH}
-            />
-            <Button size="full">프로필 수정</Button>
-          </FormProvider>
-        </Profile>
-      </StyledPageTemplate>
-    </>
+            editProfile({ userName, profileUrl: userInfo.profileUrl, bio });
+          }}
+        >
+          <InputTitle>이름</InputTitle>
+          <NameInput
+            name="userName"
+            focusColor="gray"
+            maxLength={USER_NAME_MAXIMUM_LENGTH}
+          />
+          <InputTitle>소개글</InputTitle>
+          <BioInput
+            name="bio"
+            focusColor="gray"
+            placeholder="소개글을 작성해주세요."
+            maxLength={BIO_MAXIMUM_LENGTH}
+          />
+          <Button size="full">프로필 수정</Button>
+        </FormProvider>
+      </Profile>
+    </StyledPageTemplate>
   );
 };
 

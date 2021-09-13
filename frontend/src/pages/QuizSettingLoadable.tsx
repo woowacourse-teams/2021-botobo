@@ -1,28 +1,25 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
+import { Button, CardSkeletonList } from '../components';
 import { DEVICE } from '../constants';
 import { loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const QuizSettingLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <PageTemplate isScroll={true}>
-      <Title />
-      <Description />
-      <CardSkeletonWrapper>
-        <StyledCardSkeletonList count={4} />
-      </CardSkeletonWrapper>
-      <Description />
-      <SelectBoxSkeleton />
-      <Description />
-      <StyleButton size="full" shape="rectangle" backgroundColor={'gray_4'}>
-        {' '}
-      </StyleButton>
-    </PageTemplate>
-  </>
+  <PageTemplate isScroll={true}>
+    <Title />
+    <Description />
+    <CardSkeletonWrapper>
+      <StyledCardSkeletonList count={4} />
+    </CardSkeletonWrapper>
+    <Description />
+    <SelectBoxSkeleton />
+    <Description />
+    <StyleButton size="full" shape="rectangle" backgroundColor={'gray_4'}>
+      {' '}
+    </StyleButton>
+  </PageTemplate>
 );
 
 const Title = styled.div`

@@ -2,13 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import {
-  Hashtag,
-  InputField,
-  MainHeader,
-  PageHeader,
-  Toggle,
-} from '../components';
+import { Hashtag, InputField, PageHeader, Toggle } from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
 import { useWorkbook } from '../hooks';
@@ -30,36 +24,33 @@ const WorkbookAddPage = () => {
   const { createWorkbook } = useWorkbook();
 
   return (
-    <>
-      <MainHeader sticky={false} shadow={false} />
-      <FormProvider
-        initialValues={{ name: '' }}
-        validators={{ name: validateWorkbookName }}
-        onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
-      >
-        <PageHeader
-          title={ROUTE.WORKBOOK_ADD.TITLE}
-          rightContent={<button>확인</button>}
-        />
-        <PageTemplate isScroll={true}>
-          <ToggleWrapper>
-            <Toggle
-              labelText={'전체 공개'}
-              isChecked={isPublic}
-              onChange={({ target }) => setIsPublic(target.checked)}
-            />
-          </ToggleWrapper>
-          <Input
-            name="name"
-            placeholder="문제집 이름"
-            focusColor="gray"
-            autoFocus={true}
-            maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+    <FormProvider
+      initialValues={{ name: '' }}
+      validators={{ name: validateWorkbookName }}
+      onSubmit={({ name }) => createWorkbook(name, hashtags, isPublic)}
+    >
+      <PageHeader
+        title={ROUTE.WORKBOOK_ADD.TITLE}
+        rightContent={<button>확인</button>}
+      />
+      <PageTemplate isScroll={true}>
+        <ToggleWrapper>
+          <Toggle
+            labelText={'전체 공개'}
+            isChecked={isPublic}
+            onChange={({ target }) => setIsPublic(target.checked)}
           />
-          <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
-        </PageTemplate>
-      </FormProvider>
-    </>
+        </ToggleWrapper>
+        <Input
+          name="name"
+          placeholder="문제집 이름"
+          focusColor="gray"
+          autoFocus={true}
+          maxLength={WORKBOOK_NAME_MAXIMUM_LENGTH}
+        />
+        <Hashtag hashtags={hashtags} setHashtags={setHashtags} />
+      </PageTemplate>
+    </FormProvider>
   );
 };
 

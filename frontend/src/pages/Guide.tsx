@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { MainHeader } from '../components';
 import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { formatNewLine } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -42,20 +41,17 @@ const guides: Guide[] = [
 ];
 
 const Guide = () => (
-  <>
-    <MainHeader />
-    <PageTemplate isScroll={true}>
-      <Title>보고 또 보고 이용 방법</Title>
-      {guides.map(({ description, imgSrc }, index) => (
-        <div key={index}>
-          <span>
-            {index + 1}. {formatNewLine(description)}
-          </span>
-          <Image src={imgSrc} alt={description} />
-        </div>
-      ))}
-    </PageTemplate>
-  </>
+  <PageTemplate isScroll={true}>
+    <Title>보고 또 보고 이용 방법</Title>
+    {guides.map(({ description, imgSrc }, index) => (
+      <div key={index}>
+        <span>
+          {index + 1}. {formatNewLine(description)}
+        </span>
+        <Image src={imgSrc} alt={description} />
+      </div>
+    ))}
+  </PageTemplate>
 );
 
 const Title = styled.h2`

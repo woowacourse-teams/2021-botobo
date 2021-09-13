@@ -13,28 +13,24 @@ import { Flex } from '../styles';
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 const userSrc = `${CLOUD_FRONT_DOMAIN}/user.png`;
 
-interface Props {
-  sticky?: boolean;
-  shadow?: boolean;
-}
-
 interface MenuStyleProps {
   isMenuVisible: boolean;
 }
 
-const MainHeader = ({ sticky = true, shadow = true }: Props) => {
+const MainHeader = () => {
   const { routeMain, routeLogin, routeLogout, routeProfile } = useRouter();
   const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
-    <StyledHeader sticky={sticky} shadow={shadow}>
+    <StyledHeader>
       <InnerContent>
         <h1>
           <Logo
             href="/"
             onClick={(event) => {
               event.preventDefault();
+              setIsMenuVisible(false);
               routeMain();
             }}
           >
@@ -61,11 +57,24 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
           )}
         </RightContent>
         <Menu isMenuVisible={isMenuVisible}>
-          <button role="profile-link" onClick={routeProfile}>
+          <button
+            role="profile-link"
+            onClick={() => {
+              setIsMenuVisible(false);
+              routeProfile();
+            }}
+          >
             <Avatar src={userInfo?.profileUrl ?? userSrc} />
             <div>{userInfo?.userName ?? 'Unknown User'}</div>
           </button>
-          <button type="button" role="logout-button" onClick={routeLogout}>
+          <button
+            type="button"
+            role="logout-button"
+            onClick={() => {
+              setIsMenuVisible(false);
+              routeLogout();
+            }}
+          >
             <StyledLogoutIcon width={'1rem'} height={'1rem'} />
             <div>로그아웃</div>
           </button>
@@ -75,23 +84,16 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
   );
 };
 
-const StyledHeader = styled.header<Required<Props>>`
+const StyledHeader = styled.header`
   height: 3.75rem;
   padding: 0 0.75rem;
-  z-index: 1;
-  position: relative;
+  z-index: 2;
+  position: sticky;
+  top: 0;
 
-  ${({ theme, sticky, shadow }) => css`
+  ${({ theme }) => css`
     background-color: ${theme.color.white};
-    box-shadow: ${shadow ? theme.boxShadow.header : ''};
-    z-index: 2;
-
-    ${sticky
-      ? css`
-          position: sticky;
-          top: 0;
-        `
-      : ''}
+    border-bottom: 1px solid ${theme.color.gray_3};
   `};
 `;
 
@@ -170,7 +172,6 @@ const Menu = styled.nav<MenuStyleProps>`
   ${({ theme, isMenuVisible }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
-    transition: height 0.2s ease;
 
     ${isMenuVisible &&
     css`

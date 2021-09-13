@@ -1,35 +1,32 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
+import { Button, CardSkeletonList } from '../components';
 import { loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const CardsLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <PageTemplate isScroll={true}>
-      <WorkbookName />
-      <Description />
-      <Filter>
-        {[...Array(2)].map((_, index) => (
-          <Button
-            key={index}
-            shape="round"
-            backgroundColor={'gray_5'}
-            inversion={true}
-            disabled={true}
-          >
-            {''}
-          </Button>
-        ))}
-      </Filter>
-      <Button size="full" backgroundColor="blue" disabled={true}>
-        {''}
-      </Button>
-      <CardSkeletonList count={6} />
-    </PageTemplate>
-  </>
+  <PageTemplate isScroll={true}>
+    <WorkbookName />
+    <Description />
+    <Filter>
+      {[...Array(2)].map((_, index) => (
+        <Button
+          key={index}
+          shape="round"
+          backgroundColor={'gray_5'}
+          inversion={true}
+          disabled={true}
+        >
+          {''}
+        </Button>
+      ))}
+    </Filter>
+    <Button size="full" backgroundColor="blue" disabled={true}>
+      {''}
+    </Button>
+    <CardSkeletonList count={6} />
+  </PageTemplate>
 );
 
 const WorkbookName = styled.div`

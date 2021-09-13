@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { MainHeader, OAuth } from '../components';
+import { OAuth } from '../components';
 import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { Flex } from '../styles';
 import PageTemplate from './PageTemplate';
@@ -9,18 +9,15 @@ import PageTemplate from './PageTemplate';
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo-full.png`;
 
 const LoginPage = () => (
-  <>
-    <MainHeader />
-    <StyledPageTemplate isScroll={false}>
-      <LogoWrapper>
-        <img src={logoSrc} alt="로고 이미지" />
-      </LogoWrapper>
-      <AuthWrapper>
-        <OAuth type="github" />
-        <OAuth type="google" />
-      </AuthWrapper>
-    </StyledPageTemplate>
-  </>
+  <StyledPageTemplate isScroll={false}>
+    <LogoWrapper>
+      <img src={logoSrc} alt="로고 이미지" />
+    </LogoWrapper>
+    <AuthWrapper>
+      <OAuth type="github" />
+      <OAuth type="google" />
+    </AuthWrapper>
+  </StyledPageTemplate>
 );
 
 const StyledPageTemplate = styled(PageTemplate)`

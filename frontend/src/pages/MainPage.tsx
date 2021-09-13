@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
-import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
+import { Button, QuizStarter, WorkbookList } from '../components';
 import { DEVICE, STORAGE_KEY } from '../constants';
 import { useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
@@ -27,44 +27,41 @@ const MainPage = () => {
   }, []);
 
   return (
-    <>
-      <MainHeader />
-      <PageTemplate isScroll={true}>
-        <GreetingWrapper>
-          {userInfo && <span>안녕하세요, {userInfo.userName} 님!</span>}
-          <Guide onClick={routeGuide}>보고 또 보고 이용 방법</Guide>
-        </GreetingWrapper>
-        <Banner onClick={routePublicSearch}>
-          <BannerText>다양한 문제집 보러 가기</BannerText>
-          <StyledButton backgroundColor="white" color="gray_8" shape="circle">
-            <ForwardIcon width="1rem" height="1rem" />
-          </StyledButton>
-        </Banner>
-        <QuizStarter workbooks={workbooks} />
-        <section>
-          <WorkbookHeader>
-            <WorkbookTitle>학습 중</WorkbookTitle>
-            <Button shape="square" onClick={routeWorkbookAdd}>
-              문제집 추가
-            </Button>
-          </WorkbookHeader>
-          {workbooks.length === 0 ? (
-            <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
-          ) : (
-            <WorkbookList
-              workbooks={workbooks}
-              onClickWorkbook={async (id) => {
-                await setWorkbookId(id);
-                setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-                routeCards();
-              }}
-              editable={true}
-              deleteWorkbook={deleteWorkbook}
-            />
-          )}
-        </section>
-      </PageTemplate>
-    </>
+    <PageTemplate isScroll={true}>
+      <GreetingWrapper>
+        {userInfo && <span>안녕하세요, {userInfo.userName} 님!</span>}
+        <Guide onClick={routeGuide}>보고 또 보고 이용 방법</Guide>
+      </GreetingWrapper>
+      <Banner onClick={routePublicSearch}>
+        <BannerText>다양한 문제집 보러 가기</BannerText>
+        <StyledButton backgroundColor="white" color="gray_8" shape="circle">
+          <ForwardIcon width="1rem" height="1rem" />
+        </StyledButton>
+      </Banner>
+      <QuizStarter workbooks={workbooks} />
+      <section>
+        <WorkbookHeader>
+          <WorkbookTitle>학습 중</WorkbookTitle>
+          <Button shape="square" onClick={routeWorkbookAdd}>
+            문제집 추가
+          </Button>
+        </WorkbookHeader>
+        {workbooks.length === 0 ? (
+          <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
+        ) : (
+          <WorkbookList
+            workbooks={workbooks}
+            onClickWorkbook={async (id) => {
+              await setWorkbookId(id);
+              setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
+              routeCards();
+            }}
+            editable={true}
+            deleteWorkbook={deleteWorkbook}
+          />
+        )}
+      </section>
+    </PageTemplate>
   );
 };
 

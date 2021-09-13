@@ -3,27 +3,24 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import SearchIcon from '../assets/search.svg';
-import { CardSkeleton, HeaderSkeleton } from '../components';
+import { CardSkeleton } from '../components';
 import { Flex } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const PublicSearchResultLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <StyledPageTemplate isScroll={true}>
-      <SearchBar name="search" role="search">
-        <SearchInput />
-        <SearchButton>
-          <SearchIcon width="1.3rem" height="1.3rem" />
-        </SearchButton>
-      </SearchBar>
-      <StyledUl>
-        {[...Array(8)].map((_, index) => (
-          <StyledCardSkeleton key={index} />
-        ))}
-      </StyledUl>
-    </StyledPageTemplate>
-  </>
+  <StyledPageTemplate isScroll={true}>
+    <SearchBar name="search" role="search">
+      <SearchInput />
+      <SearchButton>
+        <SearchIcon width="1.3rem" height="1.3rem" />
+      </SearchButton>
+    </SearchBar>
+    <StyledUl>
+      {[...Array(8)].map((_, index) => (
+        <StyledCardSkeleton key={index} />
+      ))}
+    </StyledUl>
+  </StyledPageTemplate>
 );
 
 const StyledPageTemplate = styled(PageTemplate)`

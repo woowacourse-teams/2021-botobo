@@ -2,24 +2,21 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CardSkeletonList, HeaderSkeleton } from '../components';
+import { Button, CardSkeletonList } from '../components';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const PublicCardsLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <StyledPageTemplate isScroll={true}>
-      <Heading />
-      <Heading />
-      <CardSkeletonList count={6} />
-      <BottomContent>
-        <Button size="full" shape="rectangle" backgroundColor={'gray_4'}>
-          {' '}
-        </Button>
-      </BottomContent>
-    </StyledPageTemplate>
-  </>
+  <StyledPageTemplate isScroll={true}>
+    <Heading />
+    <Heading />
+    <CardSkeletonList count={6} />
+    <BottomContent>
+      <Button size="full" shape="rectangle" backgroundColor={'gray_4'}>
+        {' '}
+      </Button>
+    </BottomContent>
+  </StyledPageTemplate>
 );
 
 const StyledPageTemplate = styled(PageTemplate)`

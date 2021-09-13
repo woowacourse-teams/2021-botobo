@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import LeftArrowIcon from '../assets/arrow-left.svg';
 import RightArrowIcon from '../assets/arrow-right.svg';
-import { MainHeader, Quiz, Timer } from '../components';
+import { Quiz, Timer } from '../components';
 import { useInterval, useQuiz } from '../hooks';
 import { quizTimeState } from '../recoil';
 import { Flex } from '../styles';
@@ -81,134 +81,131 @@ const QuizPage = () => {
   }, []);
 
   return (
-    <>
-      <MainHeader />
-      <StyledPageTemplate isScroll={false}>
-        {hasQuizTime && (
-          <TimerWrapper>
-            <Timer time={quizTime} />
-          </TimerWrapper>
+    <StyledPageTemplate isScroll={false}>
+      {hasQuizTime && (
+        <TimerWrapper>
+          <Timer time={quizTime} />
+        </TimerWrapper>
+      )}
+      <QuizWrapper>
+        {currentQuizIndex === 0 && (
+          <Tooltip>카드를 클릭해 질문과 정답을 확인할 수 있어요.</Tooltip>
         )}
-        <QuizWrapper>
+        {quizzes && (
+          <QuizList
+            ref={quizListRef}
+            quizCount={quizzes.length}
+            currentIndex={currentQuizIndex}
+            style={{ transform: `translateX(calc(${xPosition}))` }}
+          >
+            {quizzes.map(
+              (
+                { id, question, answer, workbookName, encounterCount },
+                index
+              ) => (
+                <QuizItem key={id} quizIndex={index}>
+                  <Quiz
+                    question={question}
+                    answer={answer}
+                    workbookName={workbookName}
+                    encounterCount={encounterCount}
+                    isChanged={id === prevQuizId}
+                  />
+                </QuizItem>
+              )
+            )}
+          </QuizList>
+        )}
+      </QuizWrapper>
+      {isMobile ? (
+        <MobilePageNation>
+          <TouchBar
+            onTouchStart={(event) => {
+              setCardSlideInfo((prevValue) => ({
+                ...prevValue,
+                xPosition: event.touches[0].clientX,
+              }));
+            }}
+            onTouchMove={(event) => {
+              if (!quizListRef?.current) return;
+
+              const targetStyle = quizListRef.current.style;
+              const changedXPosition =
+                event.touches[0].clientX - cardSlideInfo.xPosition;
+
+              if (changedXPosition > cardSlideInfo.width) return;
+              if (changedXPosition < -cardSlideInfo.width) return;
+
+              window.requestAnimationFrame(() => {
+                targetStyle.transform = `translateX(calc(${xPosition} + ${changedXPosition}px))`;
+              });
+            }}
+            onTouchEnd={(event) => {
+              if (!quizListRef?.current) return;
+
+              const targetStyle = quizListRef?.current.style;
+              const changedXPosition =
+                event.changedTouches[0].clientX - cardSlideInfo.xPosition;
+
+              if (changedXPosition === 0) return;
+
+              if (changedXPosition < -cardSlideInfo.pointOfChange) {
+                window.requestAnimationFrame(showNextQuiz);
+
+                return;
+              }
+
+              if (
+                changedXPosition > cardSlideInfo.pointOfChange &&
+                currentQuizIndex !== 0
+              ) {
+                window.requestAnimationFrame(showPrevQuiz);
+
+                return;
+              }
+
+              window.requestAnimationFrame(() => {
+                targetStyle.transform = `translateX(calc(${xPosition}))`;
+              });
+            }}
+          >
+            {[...Array(quizzes.length)].map((_, index) => (
+              <QuizIndexButton
+                type="button"
+                onClick={() => setCurrentQuizIndex(index)}
+                key={index}
+                isSelected={currentQuizIndex === index}
+              >
+                {index + 1}
+              </QuizIndexButton>
+            ))}
+          </TouchBar>
           {currentQuizIndex === 0 && (
-            <Tooltip>카드를 클릭해 질문과 정답을 확인할 수 있어요.</Tooltip>
+            <SlideTooltip>상단 바를 좌우로 밀어보세요!</SlideTooltip>
           )}
-          {quizzes && (
-            <QuizList
-              ref={quizListRef}
-              quizCount={quizzes.length}
-              currentIndex={currentQuizIndex}
-              style={{ transform: `translateX(calc(${xPosition}))` }}
-            >
-              {quizzes.map(
-                (
-                  { id, question, answer, workbookName, encounterCount },
-                  index
-                ) => (
-                  <QuizItem key={id} quizIndex={index}>
-                    <Quiz
-                      question={question}
-                      answer={answer}
-                      workbookName={workbookName}
-                      encounterCount={encounterCount}
-                      isChanged={id === prevQuizId}
-                    />
-                  </QuizItem>
-                )
-              )}
-            </QuizList>
+          {currentQuizIndex !== 0 && (
+            <PrevButton type="button" onClick={showPrevQuiz}>
+              이전
+            </PrevButton>
           )}
-        </QuizWrapper>
-        {isMobile ? (
-          <MobilePageNation>
-            <TouchBar
-              onTouchStart={(event) => {
-                setCardSlideInfo((prevValue) => ({
-                  ...prevValue,
-                  xPosition: event.touches[0].clientX,
-                }));
-              }}
-              onTouchMove={(event) => {
-                if (!quizListRef?.current) return;
-
-                const targetStyle = quizListRef.current.style;
-                const changedXPosition =
-                  event.touches[0].clientX - cardSlideInfo.xPosition;
-
-                if (changedXPosition > cardSlideInfo.width) return;
-                if (changedXPosition < -cardSlideInfo.width) return;
-
-                window.requestAnimationFrame(() => {
-                  targetStyle.transform = `translateX(calc(${xPosition} + ${changedXPosition}px))`;
-                });
-              }}
-              onTouchEnd={(event) => {
-                if (!quizListRef?.current) return;
-
-                const targetStyle = quizListRef?.current.style;
-                const changedXPosition =
-                  event.changedTouches[0].clientX - cardSlideInfo.xPosition;
-
-                if (changedXPosition === 0) return;
-
-                if (changedXPosition < -cardSlideInfo.pointOfChange) {
-                  window.requestAnimationFrame(showNextQuiz);
-
-                  return;
-                }
-
-                if (
-                  changedXPosition > cardSlideInfo.pointOfChange &&
-                  currentQuizIndex !== 0
-                ) {
-                  window.requestAnimationFrame(showPrevQuiz);
-
-                  return;
-                }
-
-                window.requestAnimationFrame(() => {
-                  targetStyle.transform = `translateX(calc(${xPosition}))`;
-                });
-              }}
-            >
-              {[...Array(quizzes.length)].map((_, index) => (
-                <QuizIndexButton
-                  type="button"
-                  onClick={() => setCurrentQuizIndex(index)}
-                  key={index}
-                  isSelected={currentQuizIndex === index}
-                >
-                  {index + 1}
-                </QuizIndexButton>
-              ))}
-            </TouchBar>
-            {currentQuizIndex === 0 && (
-              <SlideTooltip>상단 바를 좌우로 밀어보세요!</SlideTooltip>
-            )}
-            {currentQuizIndex !== 0 && (
-              <PrevButton type="button" onClick={showPrevQuiz}>
-                이전
-              </PrevButton>
-            )}
-            <NextButton type="button" onClick={showNextQuiz}>
-              {currentQuizIndex === quizzes.length - 1 ? '결과확인' : '다음'}
-            </NextButton>
-          </MobilePageNation>
-        ) : (
-          <DesktopPageNation>
-            <ArrowButton type="button" onClick={showPrevQuiz}>
-              <LeftArrowIcon width="1rem" height="1rem" />
-            </ArrowButton>
-            <Page>
-              {currentQuizIndex + 1} / {quizzes.length}
-            </Page>
-            <ArrowButton type="button" onClick={showNextQuiz}>
-              <RightArrowIcon width="1rem" height="1rem" />
-            </ArrowButton>
-          </DesktopPageNation>
-        )}
-      </StyledPageTemplate>
-    </>
+          <NextButton type="button" onClick={showNextQuiz}>
+            {currentQuizIndex === quizzes.length - 1 ? '결과확인' : '다음'}
+          </NextButton>
+        </MobilePageNation>
+      ) : (
+        <DesktopPageNation>
+          <ArrowButton type="button" onClick={showPrevQuiz}>
+            <LeftArrowIcon width="1rem" height="1rem" />
+          </ArrowButton>
+          <Page>
+            {currentQuizIndex + 1} / {quizzes.length}
+          </Page>
+          <ArrowButton type="button" onClick={showNextQuiz}>
+            <RightArrowIcon width="1rem" height="1rem" />
+          </ArrowButton>
+        </DesktopPageNation>
+      )}
+    </StyledPageTemplate>
   );
 };
 

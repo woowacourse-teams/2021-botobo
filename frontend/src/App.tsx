@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import React from 'react';
 
-import { HeaderSkeleton, SsrSuspense } from './components';
+import { HeaderSkeleton, MainHeader, SsrSuspense } from './components';
 import { theme } from './constants';
 import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
@@ -13,6 +13,7 @@ const App = () => (
       <SnackbarProvider>
         <ModalProvider>
           <GlobalStyle />
+          <MainHeader />
           <Router />
         </ModalProvider>
       </SnackbarProvider>

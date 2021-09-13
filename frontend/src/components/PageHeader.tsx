@@ -27,7 +27,7 @@ const StyledHeader = styled.header`
 
   ${({ theme }) => css`
     background-color: ${theme.color.white};
-    box-shadow: ${theme.boxShadow.header};
+    border-bottom: 1px solid ${theme.color.gray_3};
   `};
 `;
 

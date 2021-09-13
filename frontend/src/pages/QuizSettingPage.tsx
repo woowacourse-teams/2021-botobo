@@ -1,13 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
-import {
-  Button,
-  Checkbox,
-  MainHeader,
-  SelectBox,
-  WorkbookList,
-} from '../components';
+import { Button, Checkbox, SelectBox, WorkbookList } from '../components';
 import { ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
 import PageTemplate from './PageTemplate';
@@ -23,43 +17,40 @@ const QuizSettingPage = () => {
   const [isTimeChecked, setIsTimeChecked] = useState(false);
 
   return (
-    <>
-      <MainHeader />
-      <PageTemplate isScroll={true}>
-        <Title>{ROUTE.QUIZ_SETTING.TITLE}</Title>
-        <span>어떤 문제를 풀어볼까요?</span>
-        <WorkbookWrapper>
-          <WorkbookList workbooks={workbooks} onClickWorkbook={checkWorkbook} />
-        </WorkbookWrapper>
-        <span>몇 문제를 풀어볼까요?</span>
-        <SelectBoxWrapper>
-          <SelectBox
-            optionValues={counts}
-            listHeight="8rem"
-            setSelectedId={(id) => setSelectedCountId(id)}
-          />
-        </SelectBoxWrapper>
-        <Checkbox
-          name="time-check"
-          labelText="시간도 확인하고 싶어요"
-          checked={isTimeChecked}
-          onChange={({ target }) => setIsTimeChecked(target.checked)}
+    <PageTemplate isScroll={true}>
+      <Title>{ROUTE.QUIZ_SETTING.TITLE}</Title>
+      <span>어떤 문제를 풀어볼까요?</span>
+      <WorkbookWrapper>
+        <WorkbookList workbooks={workbooks} onClickWorkbook={checkWorkbook} />
+      </WorkbookWrapper>
+      <span>몇 문제를 풀어볼까요?</span>
+      <SelectBoxWrapper>
+        <SelectBox
+          optionValues={counts}
+          listHeight="8rem"
+          setSelectedId={(id) => setSelectedCountId(id)}
         />
-        <StyleButton
-          onClick={() =>
-            startQuiz({
-              count:
-                counts.find((count) => count.id === selectedCountId)?.name ??
-                counts[0].name,
-              isTimeChecked,
-            })
-          }
-          size="full"
-        >
-          시작!
-        </StyleButton>
-      </PageTemplate>
-    </>
+      </SelectBoxWrapper>
+      <Checkbox
+        name="time-check"
+        labelText="시간도 확인하고 싶어요"
+        checked={isTimeChecked}
+        onChange={({ target }) => setIsTimeChecked(target.checked)}
+      />
+      <StyleButton
+        onClick={() =>
+          startQuiz({
+            count:
+              counts.find((count) => count.id === selectedCountId)?.name ??
+              counts[0].name,
+            isTimeChecked,
+          })
+        }
+        size="full"
+      >
+        시작!
+      </StyleButton>
+    </PageTemplate>
   );
 };
 

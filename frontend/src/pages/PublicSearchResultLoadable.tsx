@@ -1,36 +1,33 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-import { Button, CardSkeleton, HeaderSkeleton } from '../components';
+import { Button, CardSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const PublicSearchResultLoadable = () => (
-  <>
-    <HeaderSkeleton />
-    <StyledPageTemplate isScroll={true}>
-      <Title />
-      <Filter>
-        {[...Array(6)].map((_, index) => (
-          <Button
-            key={index}
-            shape="round"
-            backgroundColor={'gray_5'}
-            inversion={true}
-            disabled={true}
-          >
-            {''}
-          </Button>
-        ))}
-      </Filter>
+  <StyledPageTemplate isScroll={true}>
+    <Title />
+    <Filter>
+      {[...Array(6)].map((_, index) => (
+        <Button
+          key={index}
+          shape="round"
+          backgroundColor={'gray_5'}
+          inversion={true}
+          disabled={true}
+        >
+          {''}
+        </Button>
+      ))}
+    </Filter>
 
-      <StyledUl>
-        {[...Array(8)].map((_, index) => (
-          <StyledCardSkeleton key={index} />
-        ))}
-      </StyledUl>
-    </StyledPageTemplate>
-  </>
+    <StyledUl>
+      {[...Array(8)].map((_, index) => (
+        <StyledCardSkeleton key={index} />
+      ))}
+    </StyledUl>
+  </StyledPageTemplate>
 );
 
 const StyledPageTemplate = styled(PageTemplate)`
