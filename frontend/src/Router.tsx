@@ -106,7 +106,7 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.PUBLIC_CARDS.PATH,
+    path: `${ROUTE.PUBLIC_CARDS.PATH}/:id`,
     component: <PublicCardsPage />,
     isPublic: true,
   },

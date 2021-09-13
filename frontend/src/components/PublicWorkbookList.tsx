@@ -2,10 +2,8 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
-import { STORAGE_KEY } from '../constants';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
-import { setSessionStorage } from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
@@ -17,7 +15,7 @@ interface Props {
     { keyword, ...options }: PublicWorkbookAsync,
     isNew?: boolean
   ) => Promise<void>;
-  routePublicCards: () => void;
+  routePublicCards: (id: number) => void;
 }
 
 const MAX_COUNT_WORKBOOK_ONE_TIME = 20;
@@ -65,10 +63,7 @@ const PublicWorkbookList = ({
             name={name}
             cardCount={cardCount}
             author={author}
-            onClick={() => {
-              setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-              routePublicCards();
-            }}
+            onClick={() => routePublicCards(id)}
           />
         </li>
       ))}
