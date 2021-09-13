@@ -32,7 +32,8 @@ const useRouter = () => {
   const routePublicSearch = () => history.push(ROUTE.PUBLIC_SEARCH.PATH);
   const routePublicSearchResult = () =>
     history.push(ROUTE.PUBLIC_SEARCH_RESULT.PATH);
-  const routePublicCards = () => history.push(ROUTE.PUBLIC_CARDS.PATH);
+  const routePublicCards = (id: number) =>
+    history.push(`${ROUTE.PUBLIC_CARDS.PATH}/${id}`);
   const routeOAuthCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
   const routeGuide = () => history.push(ROUTE.GUIDE.PATH);
 
