@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { useSetRecoilState } from 'recoil';
 
 import {
@@ -9,10 +10,7 @@ import {
 import { shouldWorkbookUpdateState } from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
-import { getSessionStorage } from './../utils/storage';
-import { STORAGE_KEY } from '../constants';
 import useErrorHandler from './useErrorHandler';
-import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const cardsInitialState = {
@@ -37,9 +35,14 @@ interface PublicCardsInfo extends PublicCardsResponse {
   cards: PublicCard[];
 }
 
+interface IdParam {
+  id: string;
+}
+
 const usePublicCard = () => {
-  const publicWorkbookId =
-    getSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID) ?? -1;
+  const param: IdParam = useParams();
+  const publicWorkbookId = Number(param.id);
+
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
@@ -68,7 +71,6 @@ const usePublicCard = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
-  const { routeMain } = useRouter();
   const errorHandler = useErrorHandler();
 
   const getPublicCards = async () => {
@@ -150,12 +152,6 @@ const usePublicCard = () => {
   }, [checkedCardCount]);
 
   useEffect(() => {
-    if (publicWorkbookId === -1) {
-      routeMain();
-
-      return;
-    }
-
     getPublicCards();
   }, []);
 
