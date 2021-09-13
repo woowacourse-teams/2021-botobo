@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect } from 'react';
 import {
   Redirect,
   Route,
@@ -11,26 +11,29 @@ import { useRecoilValue } from 'recoil';
 import { SsrSuspense } from './components';
 import { ROUTE } from './constants';
 import {
-  CardsPage,
-  Guide,
-  LoginPage,
-  LogoutPage,
   MainLoadable,
   MainPage,
-  OAuthCallbackPage,
-  ProfilePage,
-  PublicCardsPage,
   PublicSearchLoadable,
-  PublicSearchPage,
-  PublicSearchResultPage,
-  QuizPage,
-  QuizResultPage,
   QuizSettingLoadable,
-  QuizSettingPage,
-  WorkbookAddPage,
-  WorkbookEditPage,
 } from './pages';
 import { userState } from './recoil';
+
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const LogoutPage = lazy(() => import('./pages/LogoutPage'));
+const WorkbookAddPage = lazy(() => import('./pages/WorkbookAddPage'));
+const WorkbookEditPage = lazy(() => import('./pages/WorkbookEditPage'));
+const QuizSettingPage = lazy(() => import('./pages/QuizSettingPage'));
+const QuizPage = lazy(() => import('./pages/QuizPage'));
+const QuizResultPage = lazy(() => import('./pages/QuizResultPage'));
+const CardsPage = lazy(() => import('./pages/CardsPage'));
+const PublicSearchPage = lazy(() => import('./pages/PublicSearchPage'));
+const PublicSearchResultPage = lazy(
+  () => import('./pages/PublicSearchResultPage')
+);
+const PublicCardsPage = lazy(() => import('./pages/PublicCardsPage'));
+const OAuthCallbackPage = lazy(() => import('./pages/OAuthCallbackPage'));
+const Guide = lazy(() => import('./pages/Guide'));
 
 const routes = [
   {
