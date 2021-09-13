@@ -179,10 +179,7 @@ const PublicSearchPage = () => {
                 name={name}
                 cardCount={cardCount}
                 author={author}
-                onClick={() => {
-                  setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-                  routePublicCards();
-                }}
+                onClick={() => routePublicCards(id)}
               />
             </li>
           ))}
