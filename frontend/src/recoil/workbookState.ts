@@ -1,4 +1,4 @@
-import { DefaultValue, atom, selector } from 'recoil';
+import { atom, selector } from 'recoil';
 
 import { getPublicWorkbookAsync, getWorkbooksAsync } from '../api';
 import { STORAGE_KEY } from '../constants';
@@ -60,16 +60,9 @@ export const editedWorkbookState = selector<WorkbookResponse>({
   },
 });
 
-const publicWorkbookUpdateTrigger = atom({
-  key: 'publicWorkbookUpdateTrigger',
-  default: 0,
-});
-
 export const publicWorkbookState = selector<PublicWorkbookState>({
   key: 'publicWorkbookState',
-  get: async ({ get }) => {
-    get(publicWorkbookUpdateTrigger);
-
+  get: async () => {
     try {
       return {
         data: await getPublicWorkbookAsync(),
@@ -78,13 +71,8 @@ export const publicWorkbookState = selector<PublicWorkbookState>({
     } catch (error) {
       return {
         data: [],
-        errorMessage: '문제집을 불러오지 못했습니다.',
+        errorMessage: '문제집을 불러오지 못했어요.',
       };
-    }
-  },
-  set: ({ set }, value) => {
-    if (value instanceof DefaultValue) {
-      set(publicWorkbookUpdateTrigger, (prevState) => prevState + 1);
     }
   },
 });
