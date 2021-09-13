@@ -354,13 +354,23 @@ public class WorkbookDocumentationTest extends DocumentationTest {
                         .id(1L)
                         .name("피케이의 Network 정복 모음집")
                         .cardCount(8)
+                        .heartCount(10)
                         .author("피케이")
+                        .tags(List.of(
+                                TagResponse.builder().id(1L).name("network").build(),
+                                TagResponse.builder().id(2L).name("네트워크").build()
+                        ))
                         .build(),
                 WorkbookResponse.builder()
                         .id(2L)
                         .name("오즈의 Network 정복 최종판")
                         .cardCount(20)
+                        .heartCount(5)
                         .author("오즈")
+                        .tags(List.of(
+                                TagResponse.builder().id(1L).name("network").build(),
+                                TagResponse.builder().id(3L).name("cs지식").build()
+                        ))
                         .build()
         );
     }

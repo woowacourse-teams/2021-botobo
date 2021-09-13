@@ -48,21 +48,6 @@ public class WorkbookResponse {
                 .build();
     }
 
-    private static WorkbookResponse simpleOf(Workbook workbook) {
-        return WorkbookResponse.builder()
-                .id(workbook.getId())
-                .name(workbook.getName())
-                .cardCount(workbook.cardCount())
-                .author(workbook.author())
-                .build();
-    }
-
-    public static List<WorkbookResponse> simpleListOf(List<Workbook> workbooks) {
-        return workbooks.stream()
-                .map(WorkbookResponse::simpleOf)
-                .collect(Collectors.toList());
-    }
-
     public static List<WorkbookResponse> authorListOf(List<Workbook> workbooks) {
         return workbooks.stream()
                 .map(WorkbookResponse::authorOf)
