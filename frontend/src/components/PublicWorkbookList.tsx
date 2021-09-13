@@ -57,16 +57,20 @@ const PublicWorkbookList = ({
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }, index) => (
-        <li ref={scrollTarget} key={index}>
-          <PublicWorkbook
-            name={name}
-            cardCount={cardCount}
-            author={author}
-            onClick={() => routePublicCards(id)}
-          />
-        </li>
-      ))}
+      {publicWorkbooks.map(
+        ({ id, name, cardCount, author, heartCount, tags }, index) => (
+          <li ref={scrollTarget} key={index}>
+            <PublicWorkbook
+              name={name}
+              cardCount={cardCount}
+              author={author}
+              heartCount={heartCount}
+              tags={tags}
+              onClick={() => routePublicCards(id)}
+            />
+          </li>
+        )
+      )}
       {isLoading && (
         <LoadingSpinnerWrapper>
           <LoadingSpinner />
