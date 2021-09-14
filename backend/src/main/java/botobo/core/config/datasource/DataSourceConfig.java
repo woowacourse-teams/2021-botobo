@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
@@ -74,14 +75,17 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         Map<String, Object> properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.getProperties(), new HibernateSettings()
         );
+        HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        EntityManagerFactoryBuilder entityManagerFactoryBuilder =
+                new EntityManagerFactoryBuilder(hibernateJpaVendorAdapter, properties, null);
 
-        return builder.dataSource(currentDataSource())
+        return entityManagerFactoryBuilder
+                .dataSource(currentDataSource())
                 .packages("botobo.core")
-                .properties(properties)
                 .build();
     }
 
