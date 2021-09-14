@@ -17,13 +17,6 @@ spring:
   flyway:
     enabled: false
 
-logging:
-  level:
-    com:
-      amazonaws:
-        util:
-          EC2MetadataUtils: error
-
 github:
   client:
     id: githubId
