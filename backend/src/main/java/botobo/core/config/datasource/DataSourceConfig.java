@@ -20,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
 
-@Profile("dev")
+@Profile("dev1, dev2, prod1, prod2")
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 @Configuration
 public class DataSourceConfig {
