@@ -20,7 +20,7 @@ const PageHeader = ({ title, rightContent }: Props) => (
 
 const StyledHeader = styled.header`
   position: sticky;
-  top: 0;
+  top: 3.75rem;
   height: 3rem;
   padding: 0 0.75rem;
   z-index: 1;
