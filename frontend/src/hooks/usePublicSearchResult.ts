@@ -15,8 +15,7 @@ interface SetSearchResult {
 }
 
 const usePublicSearchResult = () => {
-  const { routePrevPage, routePublicCards, routePublicSearchResultQuery } =
-    useRouter();
+  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
 
   const query = usePublicSearchQuery();
   const { keyword, criteria } = query;
@@ -186,7 +185,6 @@ const usePublicSearchResult = () => {
     setInitialMultiFilterValues,
     removeMultiFilterItem,
     resetFilterValues,
-    routePublicCards,
     routePrevPage,
   };
 };

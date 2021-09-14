@@ -28,12 +28,9 @@ const useRouter = () => {
   const routeQuizSetting = () => history.push(ROUTE.QUIZ_SETTING.PATH);
   const routeQuiz = () => history.push(ROUTE.QUIZ.PATH);
   const routeQuizResult = () => history.push(ROUTE.QUIZ_RESULT.PATH);
-  const routeCards = (id: number) => history.push(`${ROUTE.CARDS.PATH}/${id}`);
   const routePublicSearch = () => history.push(ROUTE.PUBLIC_SEARCH.PATH);
   const routePublicSearchResult = () =>
     history.push(ROUTE.PUBLIC_SEARCH_RESULT.PATH);
-  const routePublicCards = (id: number) =>
-    history.push(`${ROUTE.PUBLIC_CARDS.PATH}/${id}`);
   const routeOAuthCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
   const routeGuide = () => history.push(ROUTE.GUIDE.PATH);
 
@@ -63,10 +60,8 @@ const useRouter = () => {
     routeQuizSetting,
     routeQuiz,
     routeQuizResult,
-    routeCards,
     routePublicSearch,
     routePublicSearchResult,
-    routePublicCards,
     routeOAuthCallback,
     routePublicSearchResultQuery,
     routePrevPage,
