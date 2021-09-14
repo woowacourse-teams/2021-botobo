@@ -3,7 +3,7 @@ import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getGuestQuizzesAsync } from '../api';
-import { CLOUD_FRONT_DOMAIN, DEVICE, QUIZ_MODE } from '../constants';
+import { CLOUD_FRONT_DOMAIN, QUIZ_MODE } from '../constants';
 import { useErrorHandler, useRouter, useSnackbar } from '../hooks';
 import { quizState, userState } from '../recoil';
 import { quizModeState } from '../recoil/quizState';

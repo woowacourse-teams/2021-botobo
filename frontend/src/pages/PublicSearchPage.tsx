@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { useResetRecoilState } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { getPublicWorkbookAsync, getTagKeywordAsync } from '../api';
+import { getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { PublicWorkbook } from '../components';
@@ -14,7 +14,6 @@ import { Flex, scrollBarStyle } from '../styles';
 import { PublicWorkbookResponse, SearchKeywordResponse } from '../types';
 import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
-import { PublicSearchLoadable } from '.';
 
 interface SearchBarStyleProps {
   isFocus: boolean;
@@ -23,12 +22,9 @@ interface SearchBarStyleProps {
 }
 
 const PublicSearchPage = () => {
+  const { data: publicWorkbooks, errorMessage } =
+    useRecoilValue(publicWorkbookState);
   const resetSearchResult = useResetRecoilState(publicSearchResultState);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [publicWorkbooks, setPublicWorkbooks] = useState<
-    PublicWorkbookResponse[]
-  >([]);
 
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -40,7 +36,7 @@ const PublicSearchPage = () => {
   const [searchBarWidth, setSearchBarWidth] = useState(1);
 
   const { routePublicCards, routePublicSearchResultQuery } = useRouter();
-  const errorHandler = useErrorHandler();
+  const showSnackbar = useSnackbar();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -54,30 +50,10 @@ const PublicSearchPage = () => {
   };
 
   useEffect(() => {
-    let mounted = true;
-
-    const getPublicWorkbooks = async () => {
-      try {
-        const newPublicWorkbooks = await getPublicWorkbookAsync();
-
-        if (!mounted) return;
-
-        setIsLoading(false);
-        setPublicWorkbooks(newPublicWorkbooks);
-      } catch (error) {
-        if (!mounted) return;
-
-        errorHandler(error);
-        setIsLoading(false);
-      }
-    };
-
-    getPublicWorkbooks();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    if (errorMessage) {
+      showSnackbar({ message: errorMessage, type: 'error' });
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     if (!stickyTriggerRef.current) return;
@@ -98,7 +74,7 @@ const PublicSearchPage = () => {
     searchTabObserver.observe(stickyTriggerRef.current);
 
     return () => searchTabObserver.disconnect();
-  }, [isLoading]);
+  }, []);
 
   useEffect(() => {
     if (!searchInputRef.current || !isFocus) return;
@@ -138,8 +114,6 @@ const PublicSearchPage = () => {
 
     return () => window.removeEventListener('resize', calculateSearchBarWidth);
   }, [stickyTriggerRef.current]);
-
-  if (isLoading) return <PublicSearchLoadable />;
 
   return (
     <StyledPageTemplate isScroll={true}>

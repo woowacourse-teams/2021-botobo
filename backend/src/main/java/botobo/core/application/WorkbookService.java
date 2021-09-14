@@ -158,6 +158,6 @@ public class WorkbookService extends AbstractUserService {
 
     public List<WorkbookResponse> findPublicWorkbooks() {
         List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
-        return WorkbookResponse.simpleListOf(workbooks);
+        return WorkbookResponse.openedListOf(workbooks);
     }
 }

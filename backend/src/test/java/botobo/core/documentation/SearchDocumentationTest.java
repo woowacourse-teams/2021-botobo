@@ -33,6 +33,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .id(2L)
                         .name("피케이의 java 문제집")
                         .cardCount(15)
+                        .heartCount(5)
                         .author("pkeugine")
                         .tags(List.of(
                                 TagResponse.builder().id(1L).name("java").build(),
@@ -43,6 +44,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .id(1L)
                         .name("피케이의 javascript 문제집")
                         .cardCount(15)
+                        .heartCount(3)
                         .author("pkeugine")
                         .tags(List.of(
                                 TagResponse.builder().id(3L).name("javascript").build(),
