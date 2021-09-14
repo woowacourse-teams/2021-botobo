@@ -13,7 +13,7 @@ type ModalType = 'center' | 'bottom' | 'full';
 type CloseIconType = '' | 'back' | 'crossMark' | 'down';
 
 interface Props {
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 }
 
 interface BottomSheetProps {
