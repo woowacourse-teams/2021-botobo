@@ -45,46 +45,46 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     private void initializeWorkbooks() {
         // pk의 문제집 생성
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), pkToken),
+                유저_태그포함_문제집_등록되어_있음("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), pkToken),
                 2,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), pkToken),
+                유저_태그포함_문제집_등록되어_있음("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), pkToken),
                 5,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), pkToken),
+                유저_태그포함_문제집_등록되어_있음("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), pkToken),
                 10,
                 pkToken
         );
         카드도_함께_등록(
-                유저_문제집_등록되어_있음("피케이의 자바스크립트 문제집", true, makeJSTags(), pkToken),
+                유저_태그포함_문제집_등록되어_있음("피케이의 자바스크립트 문제집", true, makeJSTags(), pkToken),
                 1,
                 pkToken
         );
 
         // 중간곰의 문제집 생성
         카드와_좋아요도_함께_등록(
-                유저_문제집_등록되어_있음("중간곰의 자바 기초 문제집", true, makeJavaTags(), bearToken),
+                유저_태그포함_문제집_등록되어_있음("중간곰의 자바 기초 문제집", true, makeJavaTags(), bearToken),
                 1,
                 bearToken,
                 List.of(pkToken)
         );
         카드와_좋아요도_함께_등록(
-                유저_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken),
+                유저_태그포함_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken),
                 1,
                 bearToken,
                 List.of(pkToken, bearToken)
         );
         카드와_좋아요도_함께_등록(
-                유저_문제집_등록되어_있음("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), bearToken),
+                유저_태그포함_문제집_등록되어_있음("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), bearToken),
                 1,
                 bearToken,
                 List.of()
         );
-        유저_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeJavaTags(), bearToken);
+        유저_태그포함_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeJavaTags(), bearToken);
     }
 
     private List<TagRequest> makeJavaTags() {
