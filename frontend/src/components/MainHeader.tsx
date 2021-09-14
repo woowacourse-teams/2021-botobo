@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import LogoutIcon from '../assets/logout.svg';
@@ -18,7 +19,7 @@ interface MenuStyleProps {
 }
 
 const MainHeader = () => {
-  const { routeMain, routeLogin, routeLogout, routeProfile } = useRouter();
+  const { routeLogin, routeLogout, routeProfile } = useRouter();
   const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
@@ -26,14 +27,7 @@ const MainHeader = () => {
     <StyledHeader>
       <InnerContent>
         <h1>
-          <Logo
-            href="/"
-            onClick={(event) => {
-              event.preventDefault();
-              setIsMenuVisible(false);
-              routeMain();
-            }}
-          >
+          <Logo to="/" onClick={() => setIsMenuVisible(false)}>
             <span>보고 또 보고</span>
           </Logo>
         </h1>
@@ -107,7 +101,7 @@ const InnerContent = styled.div`
   `}
 `;
 
-const Logo = styled.a`
+const Logo = styled(Link)`
   position: relative;
   height: 1.5rem;
 
@@ -165,25 +159,23 @@ const Menu = styled.nav<MenuStyleProps>`
   top: 3.75rem;
   left: 0;
   width: 100%;
-  height: 0;
   padding: 0 0.75rem;
   overflow: hidden;
 
   ${({ theme, isMenuVisible }) => css`
     background-color: ${theme.color.white};
     box-shadow: ${theme.boxShadow.header};
-
-    ${isMenuVisible &&
-    css`
-      height: 6.25rem;
-    `}
+    display: ${isMenuVisible ? 'block' : 'none'};
 
     & > * {
       ${Flex({ items: 'center' })};
       width: 100%;
       height: 3rem;
-      border-top: 1px solid ${theme.color.gray_4};
       padding: 0.7rem 0;
+    }
+
+    & > *:not(:last-child) {
+      border-bottom: 1px solid ${theme.color.gray_4};
     }
   `}
 `;
