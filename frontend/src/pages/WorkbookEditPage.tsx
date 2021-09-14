@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useParams } from 'react-router';
 
 import {
   Hashtag,
@@ -11,9 +12,11 @@ import {
 } from '../components';
 import { ROUTE, WORKBOOK_NAME_MAXIMUM_LENGTH } from '../constants';
 import { FormProvider } from '../contexts';
-import { useWorkbook } from '../hooks';
+import { useRouter, useSnackbar, useWorkbook } from '../hooks';
+import { workbookInitialState } from '../recoil/initialState';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
+import { IdParam } from '../types/idParam';
 import PageTemplate from './PageTemplate';
 
 const validateWorkbookName = (value: string) => {
@@ -25,9 +28,26 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookEditPage = () => {
-  const { editedWorkbook, editWorkbook } = useWorkbook();
+  const param: IdParam = useParams();
+  const editedWorkbookId = Number(param.id);
+
+  const { workbooks, editWorkbook } = useWorkbook();
+
+  const editedWorkbook =
+    workbooks.find((workbook) => workbook.id === editedWorkbookId) ||
+    workbookInitialState;
+
+  const showSnackbar = useSnackbar();
+  const { routeMain } = useRouter();
+
   const [hashtags, setHashtags] = useState<TagResponse[]>(editedWorkbook.tags);
   const [isPublic, setIsPublic] = useState(editedWorkbook.opened);
+
+  if (editedWorkbook.id === -1) {
+    showSnackbar({ message: '해당 문제집을 찾을 수 없어요.' });
+
+    routeMain();
+  }
 
   return (
     <>

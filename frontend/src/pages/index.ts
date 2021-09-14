@@ -1,7 +1,6 @@
 export { default as MainPage } from './MainPage';
 export { default as MainLoadable } from './MainLoadable';
 export { default as LoginPage } from './LoginPage';
-export { default as LogoutPage } from './LogoutPage';
 export { default as WorkbookAddPage } from './WorkbookAddPage';
 export { default as WorkbookEditPage } from './WorkbookEditPage';
 export { default as QuizSettingPage } from './QuizSettingPage';

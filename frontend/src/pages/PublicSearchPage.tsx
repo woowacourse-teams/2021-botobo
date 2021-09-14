@@ -7,12 +7,12 @@ import { getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
-import { DEVICE, STORAGE_KEY } from '../constants';
+import { DEVICE } from '../constants';
 import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
-import { isMobile, setSessionStorage } from '../utils';
+import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface SearchBarStyleProps {

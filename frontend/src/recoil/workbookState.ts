@@ -1,10 +1,7 @@
 import { atom, selector } from 'recoil';
 
 import { getPublicWorkbookAsync, getWorkbooksAsync } from '../api';
-import { STORAGE_KEY } from '../constants';
 import { PublicWorkbookResponse, WorkbookResponse } from '../types';
-import { getSessionStorage } from '../utils';
-import { workbookInitialState } from './initialState';
 import { userState } from './userState';
 
 export interface WorkbookState {
@@ -20,11 +17,6 @@ interface PublicWorkbookState {
 export const shouldWorkbookUpdateState = atom({
   key: 'shouldWorkbookUpdateState',
   default: false,
-});
-
-export const workbookIdState = atom<number>({
-  key: 'workbookIdState',
-  default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,
 });
 
 export const workbookState = atom<WorkbookState>({
@@ -45,19 +37,6 @@ export const workbookState = atom<WorkbookState>({
       }
     },
   }),
-});
-
-export const editedWorkbookState = selector<WorkbookResponse>({
-  key: 'editedWorkbookState',
-  get: ({ get }) => {
-    const workbookId = get(workbookIdState);
-    const { data } = get(workbookState);
-
-    return (
-      data.find((workbook) => workbook.id === workbookId) ||
-      workbookInitialState
-    );
-  },
 });
 
 export const publicWorkbookState = selector<PublicWorkbookState>({

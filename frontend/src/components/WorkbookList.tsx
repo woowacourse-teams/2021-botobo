@@ -1,12 +1,9 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { useSetRecoilState } from 'recoil';
 
-import { DEVICE, STORAGE_KEY } from '../constants';
+import { DEVICE } from '../constants';
 import { useModal, useRouter } from '../hooks';
-import { workbookIdState } from '../recoil';
 import { WorkbookResponse } from '../types';
-import { setSessionStorage } from '../utils';
 import Confirm from './Confirm';
 import Workbook from './Workbook';
 
@@ -28,7 +25,6 @@ const WorkbookList = ({
   deleteWorkbook,
 }: Props) => {
   const { routeWorkbookEdit } = useRouter();
-  const setWorkbookId = useSetRecoilState(workbookIdState);
   const { openModal } = useModal();
 
   return (
@@ -41,12 +37,10 @@ const WorkbookList = ({
             isChecked={isChecked}
             onClick={() => onClickWorkbook(id)}
             editable={editable}
-            onClickEditButton={async (event) => {
+            onClickEditButton={(event) => {
               event.stopPropagation();
 
-              await setWorkbookId(id);
-              setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-              routeWorkbookEdit();
+              routeWorkbookEdit(id);
             }}
             onClickDeleteButton={(event) => {
               event.stopPropagation();

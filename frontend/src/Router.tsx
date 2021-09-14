@@ -14,7 +14,6 @@ import {
   CardsPage,
   Guide,
   LoginPage,
-  LogoutPage,
   MainLoadable,
   MainPage,
   OAuthCallbackPage,
@@ -53,17 +52,12 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.LOGOUT.PATH,
-    component: <LogoutPage />,
-    isPublic: false,
-  },
-  {
     path: ROUTE.WORKBOOK_ADD.PATH,
     component: <WorkbookAddPage />,
     isPublic: false,
   },
   {
-    path: ROUTE.WORKBOOK_EDIT.PATH,
+    path: `${ROUTE.WORKBOOK_EDIT.PATH}/:id`,
     component: <WorkbookEditPage />,
     isPublic: false,
   },
@@ -87,7 +81,7 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.CARDS.PATH,
+    path: `${ROUTE.CARDS.PATH}/:id`,
     component: <CardsPage />,
     isPublic: false,
   },

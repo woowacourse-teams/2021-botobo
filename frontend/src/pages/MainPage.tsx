@@ -5,17 +5,15 @@ import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
-import { DEVICE, STORAGE_KEY } from '../constants';
+import { DEVICE } from '../constants';
 import { useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
-import { setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
-    useWorkbook();
+  const { workbooks, deleteWorkbook, updateWorkbooks } = useWorkbook();
   const { routeWorkbookAdd, routeCards, routePublicSearch, routeGuide } =
     useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
@@ -53,11 +51,7 @@ const MainPage = () => {
           ) : (
             <WorkbookList
               workbooks={workbooks}
-              onClickWorkbook={async (id) => {
-                await setWorkbookId(id);
-                setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-                routeCards();
-              }}
+              onClickWorkbook={(id) => routeCards(id)}
               editable={true}
               deleteWorkbook={deleteWorkbook}
             />
