@@ -6,4 +6,3 @@ export { default as PublicCardsLoadable } from './PublicCardsLoadable';
 export { default as PublicSearchLoadable } from './PublicSearchLoadable';
 export { default as PublicSearchResultLoadable } from './PublicSearchResultLoadable';
 export { default as PageTemplate } from './PageTemplate';
-export { default as Guide } from './Guide';

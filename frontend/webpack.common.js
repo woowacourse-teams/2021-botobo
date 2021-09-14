@@ -7,7 +7,7 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main-106.js',
+    filename: '[name].[chunkhash].js',
     publicPath: '/',
   },
   plugins: [
