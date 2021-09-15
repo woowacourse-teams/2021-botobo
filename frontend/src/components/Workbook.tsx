@@ -37,6 +37,10 @@ const Workbook = ({
 );
 
 const Name = styled.div`
+  width: 15rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   margin: 0.3rem 0;
 
   ${({ theme }) => css`

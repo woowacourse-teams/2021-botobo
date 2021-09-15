@@ -22,19 +22,24 @@ const PublicWorkbook = ({
 }: Props) => (
   <Container onClick={onClick}>
     <TopContent>
-      <Name>{name}</Name>
-      <CardCount>{cardCount}개의 카드</CardCount>
-      <Author>{author}</Author>
+      <InnerLeftContent>
+        <Name>{name}</Name>
+        <CardCount>{cardCount}개의 카드</CardCount>
+        <Author>{author}</Author>
+      </InnerLeftContent>
+      <InnerRightContent>
+        <FillHeartIcon width="1rem" height="1rem" fill={theme.color.red} />
+        <span>{heartCount}</span>
+      </InnerRightContent>
     </TopContent>
     <BottomContent>
       {tags.map(({ id, name }) => (
-        <li key={id}>#{name}</li>
+        <li key={id}>
+          <Hash>#</Hash>
+          {name}
+        </li>
       ))}
     </BottomContent>
-    <HeartWrapper>
-      <FillHeartIcon width="1rem" height="1rem" fill={theme.color.red} />
-      <span>{heartCount}</span>
-    </HeartWrapper>
   </Container>
 );
 
@@ -45,12 +50,28 @@ const Container = styled(CardTemplate)`
 `;
 
 const TopContent = styled.div`
-  ${Flex({ direction: 'column', items: 'flex-start' })};
+  ${Flex({ justify: 'space-between', items: 'flex-start' })};
   margin-bottom: 1rem;
 `;
 
+const InnerLeftContent = styled.div`
+  ${Flex({ direction: 'column', items: 'flex-start' })};
+`;
+
+const InnerRightContent = styled.div`
+  ${Flex({ items: 'center' })};
+
+  & > svg {
+    margin-right: 0.3rem;
+  }
+`;
+
 const Name = styled.span`
+  width: 12.5rem;
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
@@ -75,6 +96,12 @@ const Author = styled.span`
 `;
 
 const BottomContent = styled.ul`
+  width: 15rem;
+  height: 1.25rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
   & > li {
     display: inline;
     margin-right: 0.2rem;
@@ -86,15 +113,8 @@ const BottomContent = styled.ul`
   }
 `;
 
-const HeartWrapper = styled.div`
-  ${Flex({ items: 'center' })};
-  position: absolute;
-  top: 1.3rem;
-  right: 1.3rem;
-
-  & > svg {
-    margin-right: 0.3rem;
-  }
+const Hash = styled.span`
+  margin-right: 0.1rem;
 `;
 
 export default PublicWorkbook;
