@@ -5,7 +5,7 @@ import React from 'react';
 import SearchIcon from '../assets/search.svg';
 import { CardSkeleton, HeaderSkeleton } from '../components';
 import { DEVICE } from '../constants';
-import { Flex } from '../styles';
+import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const PublicSearchResultLoadable = () => (
@@ -18,6 +18,8 @@ const PublicSearchResultLoadable = () => (
           <SearchIcon width="1.3rem" height="1.3rem" />
         </SearchButton>
       </SearchBar>
+      <Title />
+      <Description />
       <StyledUl>
         {[...Array(12)].map((_, index) => (
           <StyledCardSkeleton key={index} />
@@ -66,6 +68,21 @@ const SearchButton = styled.button`
       fill: ${theme.color.gray_3};
     }
   `};
+`;
+
+const Title = styled.div`
+  height: 2rem;
+  width: 20%;
+  margin-bottom: 1rem;
+
+  ${loadContent}
+`;
+
+const Description = styled.div`
+  height: 1rem;
+  width: 30%;
+
+  ${loadContent}
 `;
 
 const StyledUl = styled.ul`
