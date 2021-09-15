@@ -3,6 +3,7 @@
   "version": "1.0.6",
   "author": "Team Botobo",
   "license": "MIT",
+  "sideEffects": false,
   "scripts": {
     "start": "cp ../dev/env/.env.local ./.env && webpack serve --node-env development --config webpack.dev.js",
     "build:local": "cp ../dev/env/.env.local ./.env && webpack --node-env production --config webpack.prod.js",
