@@ -23,7 +23,9 @@ const QuizResult = ({
       <WorkbookName>{workbookName}</WorkbookName>
       <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
     </TopContent>
-    <Question>Q. {question}</Question>
+    <Question>
+      <span>Q.</span> {question}
+    </Question>
   </CardTemplate>
 );
 
@@ -47,7 +49,13 @@ const EncounterCount = styled.span`
 `;
 
 const Question = styled.div`
+  ${Flex()};
   margin-bottom: 1rem;
+  line-height: 1.5;
+
+  & > span {
+    margin-right: 0.3rem;
+  }
 `;
 
 export default QuizResult;
