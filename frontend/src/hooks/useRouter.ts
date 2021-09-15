@@ -20,20 +20,17 @@ const useRouter = () => {
     setSessionStorage(STORAGE_KEY.REDIRECTED_PATH, window.location.pathname);
     history.push(ROUTE.LOGIN.PATH);
   };
-  const routeLogout = () => history.push(ROUTE.LOGOUT.PATH);
   const routeMain = () => history.push(ROUTE.HOME.PATH);
   const routeProfile = () => history.push(ROUTE.PROFILE.PATH);
   const routeWorkbookAdd = () => history.push(ROUTE.WORKBOOK_ADD.PATH);
-  const routeWorkbookEdit = () => history.push(ROUTE.WORKBOOK_EDIT.PATH);
+  const routeWorkbookEdit = (id: number) =>
+    history.push(`${ROUTE.WORKBOOK_EDIT.PATH}/${id}`);
   const routeQuizSetting = () => history.push(ROUTE.QUIZ_SETTING.PATH);
   const routeQuiz = () => history.push(ROUTE.QUIZ.PATH);
   const routeQuizResult = () => history.push(ROUTE.QUIZ_RESULT.PATH);
-  const routeCards = () => history.push(ROUTE.CARDS.PATH);
   const routePublicSearch = () => history.push(ROUTE.PUBLIC_SEARCH.PATH);
   const routePublicSearchResult = () =>
     history.push(ROUTE.PUBLIC_SEARCH_RESULT.PATH);
-  const routePublicCards = (id: number) =>
-    history.push(`${ROUTE.PUBLIC_CARDS.PATH}/${id}`);
   const routeOAuthCallback = () => history.push(ROUTE.GITHUB_CALLBACK.PATH);
   const routeGuide = () => history.push(ROUTE.GUIDE.PATH);
 
@@ -57,17 +54,14 @@ const useRouter = () => {
   return {
     routeMain,
     routeLogin,
-    routeLogout,
     routeProfile,
     routeWorkbookAdd,
     routeWorkbookEdit,
     routeQuizSetting,
     routeQuiz,
     routeQuizResult,
-    routeCards,
     routePublicSearch,
     routePublicSearchResult,
-    routePublicCards,
     routeOAuthCallback,
     routePublicSearchResultQuery,
     routePrevPage,

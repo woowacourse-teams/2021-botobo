@@ -4,21 +4,27 @@ import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
-import { Button, MainHeader, QuizStarter, WorkbookList } from '../components';
-import { DEVICE, STORAGE_KEY } from '../constants';
-import { useRouter, useWorkbook } from '../hooks';
+import {
+  Button,
+  Confirm,
+  MainHeader,
+  QuizStarter,
+  Workbook,
+} from '../components';
+import { DEVICE, ROUTE } from '../constants';
+import { useModal, useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { Flex } from '../styles';
-import { setSessionStorage } from '../utils';
 import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, setWorkbookId, deleteWorkbook, updateWorkbooks } =
-    useWorkbook();
-  const { routeWorkbookAdd, routeCards, routePublicSearch, routeGuide } =
+  const { workbooks, deleteWorkbook, updateWorkbooks } = useWorkbook();
+  const { routeWorkbookAdd, routeWorkbookEdit, routePublicSearch, routeGuide } =
     useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
+
+  const { openModal } = useModal();
 
   useEffect(() => {
     if (!shouldWorkbookUpdate) return;
@@ -51,16 +57,29 @@ const MainPage = () => {
           {workbooks.length === 0 ? (
             <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
           ) : (
-            <WorkbookList
-              workbooks={workbooks}
-              onClickWorkbook={async (id) => {
-                await setWorkbookId(id);
-                setSessionStorage(STORAGE_KEY.WORKBOOK_ID, id);
-                routeCards();
-              }}
-              editable={true}
-              deleteWorkbook={deleteWorkbook}
-            />
+            <StyledUl>
+              {workbooks.map(({ id, name, cardCount }) => (
+                <li key={id}>
+                  <Workbook
+                    name={name}
+                    path={`${ROUTE.CARDS.PATH}/${id}`}
+                    cardCount={cardCount}
+                    editable={true}
+                    onClickEditButton={() => routeWorkbookEdit(id)}
+                    onClickDeleteButton={() =>
+                      openModal({
+                        content: (
+                          <Confirm onConfirm={() => deleteWorkbook(id)}>
+                            해당 문제집을 정말 삭제하시겠어요?
+                          </Confirm>
+                        ),
+                        type: 'center',
+                      })
+                    }
+                  />
+                </li>
+              ))}
+            </StyledUl>
           )}
         </section>
       </PageTemplate>
@@ -149,6 +168,17 @@ const WorkbookTitle = styled.h2`
 const NoWorkbook = styled.div`
   text-align: center;
   margin-top: 20vh;
+`;
+
+const StyledUl = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export default MainPage;

@@ -12,11 +12,11 @@ type PickedPublicWorkbook = Pick<
 >;
 
 interface Props extends PickedPublicWorkbook {
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  path: string;
 }
 
-const PublicWorkbook = ({ name, cardCount, author, onClick }: Props) => (
-  <Container onClick={onClick}>
+const PublicWorkbook = ({ name, cardCount, author, path }: Props) => (
+  <Container path={path}>
     <Name>{name}</Name>
     <CardCount>{cardCount}개의 카드</CardCount>
     <Author>{author}</Author>

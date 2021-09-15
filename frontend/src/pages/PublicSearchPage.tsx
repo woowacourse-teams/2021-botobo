@@ -7,12 +7,12 @@ import { getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
-import { DEVICE, STORAGE_KEY } from '../constants';
+import { DEVICE, ROUTE } from '../constants';
 import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
-import { isMobile, setSessionStorage } from '../utils';
+import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface SearchBarStyleProps {
@@ -35,7 +35,7 @@ const PublicSearchPage = () => {
 
   const [searchBarWidth, setSearchBarWidth] = useState(1);
 
-  const { routePublicCards, routePublicSearchResultQuery } = useRouter();
+  const { routePublicSearchResultQuery } = useRouter();
   const showSnackbar = useSnackbar();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
@@ -179,7 +179,7 @@ const PublicSearchPage = () => {
                 name={name}
                 cardCount={cardCount}
                 author={author}
-                onClick={() => routePublicCards(id)}
+                path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
               />
             </li>
           ))}

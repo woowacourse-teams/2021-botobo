@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useParams } from 'react-router';
+import { useSetRecoilState } from 'recoil';
 
 import { shouldWorkbookUpdateState } from './../recoil/workbookState';
 import {
@@ -8,11 +9,10 @@ import {
   postCardAsync,
   putCardAsync,
 } from '../api';
-import { workbookIdState } from '../recoil';
 import { CardResponse, CardsResponse } from '../types';
+import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useModal from './useModal';
-import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const cardsInitialState = {
@@ -22,7 +22,9 @@ const cardsInitialState = {
 };
 
 const useCard = () => {
-  const workbookId = useRecoilValue(workbookIdState);
+  const param: IdParam = useParams();
+  const workbookId = Number(param.id);
+
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
@@ -32,7 +34,6 @@ const useCard = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
-  const { routeMain } = useRouter();
   const { openModal, closeModal } = useModal();
   const errorHandler = useErrorHandler();
 
@@ -105,12 +106,6 @@ const useCard = () => {
   };
 
   useEffect(() => {
-    if (workbookId === -1) {
-      routeMain();
-
-      return;
-    }
-
     getCards();
   }, []);
 

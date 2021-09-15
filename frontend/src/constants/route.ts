@@ -6,9 +6,6 @@ const ROUTE = {
     PATH: '/login',
     TITLE: '로그인',
   },
-  LOGOUT: {
-    PATH: '/logout',
-  },
   PROFILE: {
     PATH: '/profile',
   },

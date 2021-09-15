@@ -10,6 +10,7 @@ import {
 import { shouldWorkbookUpdateState } from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
+import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
 
@@ -33,10 +34,6 @@ interface PublicCard extends CardResponse {
 
 interface PublicCardsInfo extends PublicCardsResponse {
   cards: PublicCard[];
-}
-
-interface IdParam {
-  id: string;
 }
 
 const usePublicCard = () => {
