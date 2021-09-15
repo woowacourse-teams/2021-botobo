@@ -12,7 +12,7 @@ import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
-import { isMobile } from '../utils';
+import { formatNewLine, isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface SearchBarStyleProps {
@@ -172,6 +172,8 @@ const PublicSearchPage = () => {
             </Autocomplete>
           )}
         </SearchBar>
+        <Title>다양한 문제집</Title>
+        <Description>공유된 문제집을 랜덤으로 제공해 드려요.</Description>
         <StyledUl>
           {publicWorkbooks.map(
             ({ id, name, cardCount, author, heartCount, tags }) => (
@@ -188,6 +190,11 @@ const PublicSearchPage = () => {
             )
           )}
         </StyledUl>
+        <Suggestion>
+          {formatNewLine(
+            '원하는 결과가 없으신가요? \n 검색을 통해 더 많은 문제집을 찾아보세요!'
+          )}
+        </Suggestion>
       </StyledPageTemplate>
     </>
   );
@@ -244,6 +251,14 @@ const SearchBar = styled.form<SearchBarStyleProps>`
       }
     `}
   `};
+`;
+
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const SearchInput = styled.input`
@@ -331,6 +346,11 @@ const StyledUl = styled.ul`
   @media ${DEVICE.TABLET} {
     grid-template-columns: repeat(2, 1fr);
   }
+`;
+
+const Suggestion = styled.div`
+  margin-top: 1rem;
+  text-align: center;
 `;
 
 export default PublicSearchPage;
