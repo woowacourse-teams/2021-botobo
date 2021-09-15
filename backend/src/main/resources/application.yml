@@ -1,3 +1,10 @@
 spring:
   profiles:
     active: local
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error

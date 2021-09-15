@@ -63,8 +63,12 @@ const QnACard = ({
           {isBookmark ? <FillStarIcon /> : <EmptyStarIcon />}
         </BookmarkButton>
       </Header>
-      <Question>Q. {cardInfo.question}</Question>
-      <Answer>A. {cardInfo.answer}</Answer>
+      <Question>
+        <span>Q.</span> {cardInfo.question}
+      </Question>
+      <Answer>
+        <span>A.</span> {cardInfo.answer}
+      </Answer>
     </CardTemplate>
   );
 };
@@ -89,7 +93,13 @@ const BookmarkButton = styled.button`
 `;
 
 const Question = styled.div`
+  ${Flex()};
   padding-bottom: 1rem;
+  line-height: 1.5;
+
+  & > span {
+    margin-right: 0.3rem;
+  }
 
   ${({ theme }) => css`
     border-bottom: 2px solid ${theme.color.gray_3};
@@ -97,7 +107,13 @@ const Question = styled.div`
 `;
 
 const Answer = styled.div`
+  ${Flex()};
   padding-top: 1.5rem;
+  line-height: 1.5;
+
+  & > span {
+    margin-right: 0.3rem;
+  }
 `;
 
 export default QnACard;
