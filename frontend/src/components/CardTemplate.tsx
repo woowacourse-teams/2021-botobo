@@ -16,7 +16,7 @@ interface Props {
 
 interface ContainerStyleProps extends React.HTMLAttributes<HTMLDivElement> {
   isChecked: boolean;
-  isCursor: boolean;
+  isClickable: boolean;
 }
 
 const CardTemplate = ({
@@ -31,7 +31,7 @@ const CardTemplate = ({
 }: Props) =>
   path ? (
     <LinkContainer to={path}>
-      <Container className={className} isChecked={isChecked} isCursor={true}>
+      <Container className={className} isChecked={isChecked} isClickable={true}>
         {children}
         {editable && (
           <Footer>
@@ -62,7 +62,7 @@ const CardTemplate = ({
       className={className}
       isChecked={isChecked}
       onClick={onClick}
-      isCursor={Boolean(onClick)}
+      isClickable={Boolean(onClick)}
     >
       {children}
       {editable && (
@@ -83,7 +83,7 @@ const Container = styled.div<ContainerStyleProps>`
   word-break: break-all;
   white-space: pre-wrap;
 
-  ${({ theme, isChecked, isCursor }) => css`
+  ${({ theme, isChecked, isClickable }) => css`
     background-color: ${theme.color.white};
     border-radius: ${theme.borderRadius.square};
     -webkit-box-shadow: ${isChecked
@@ -92,7 +92,7 @@ const Container = styled.div<ContainerStyleProps>`
     box-shadow: ${isChecked
       ? `${theme.boxShadow.card}, ${theme.boxShadow.inset} ${theme.color.green}`
       : theme.boxShadow.card};
-    cursor: ${isCursor ? 'pointer' : 'default'};
+    cursor: ${isClickable ? 'pointer' : 'default'};
   `};
 `;
 
