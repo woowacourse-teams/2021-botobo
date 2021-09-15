@@ -4,6 +4,7 @@ import React from 'react';
 
 import SearchIcon from '../assets/search.svg';
 import { CardSkeleton, HeaderSkeleton } from '../components';
+import { DEVICE } from '../constants';
 import { Flex } from '../styles';
 import PageTemplate from './PageTemplate';
 
@@ -18,7 +19,7 @@ const PublicSearchResultLoadable = () => (
         </SearchButton>
       </SearchBar>
       <StyledUl>
-        {[...Array(8)].map((_, index) => (
+        {[...Array(12)].map((_, index) => (
           <StyledCardSkeleton key={index} />
         ))}
       </StyledUl>
@@ -72,11 +73,15 @@ const StyledUl = styled.ul`
   grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
   margin: 1rem 0;
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const StyledCardSkeleton = styled(CardSkeleton)`
-  ${Flex({ direction: 'column', items: 'center' })};
-  height: 6rem;
+  ${Flex({ direction: 'column', items: 'flex-start' })};
+  height: 8.75rem;
 `;
 
 export default PublicSearchResultLoadable;

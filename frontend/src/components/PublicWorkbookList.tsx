@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
+import { DEVICE } from '../constants';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import LoadingSpinner from './LoadingSpinner';
@@ -88,6 +89,10 @@ const StyledUl = styled.ul`
 
   & > li:last-of-type {
     margin-bottom: 1rem;
+  }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 

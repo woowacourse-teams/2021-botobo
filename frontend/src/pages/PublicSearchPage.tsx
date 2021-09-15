@@ -327,6 +327,10 @@ const StyledUl = styled.ul`
   & > li:last-of-type {
     margin-bottom: 1rem;
   }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export default PublicSearchPage;
