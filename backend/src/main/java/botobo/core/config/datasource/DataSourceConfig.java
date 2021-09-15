@@ -91,8 +91,6 @@ public class DataSourceConfig {
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory);
-        return transactionManager;
+        return new JpaTransactionManager(entityManagerFactory);
     }
 }
