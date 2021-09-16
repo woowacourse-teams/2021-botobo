@@ -221,6 +221,7 @@ const TopContent = styled.div`
 
 const WorkbookName = styled.h2`
   margin-bottom: 0.5rem;
+  word-break: break-all;
 `;
 
 const CardCount = styled.div`
