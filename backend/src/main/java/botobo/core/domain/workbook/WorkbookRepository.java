@@ -22,7 +22,7 @@ public interface WorkbookRepository extends JpaRepository<Workbook, Long> {
     @Query(value = "select w.*, count(c.id) as cnt from workbook w right join card c on w.id = c.workbook_id " +
             "where w.opened = true " +
             "and w.deleted = false " +
-            "group by w.id having cnt > 0" +
+            "group by w.id having cnt > 0 " +
             "order by RAND() " +
             "limit 100", nativeQuery = true)
     List<Workbook> findRandomPublicWorkbooks();
