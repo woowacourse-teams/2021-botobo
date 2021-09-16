@@ -12,7 +12,7 @@ import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
-import { isMobile } from '../utils';
+import { formatNewLine, isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
 
 interface SearchBarStyleProps {
@@ -172,18 +172,29 @@ const PublicSearchPage = () => {
             </Autocomplete>
           )}
         </SearchBar>
+        <Title>다양한 문제집</Title>
+        <Description>공유된 문제집을 랜덤으로 제공해 드려요.</Description>
         <StyledUl>
-          {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-            <li key={id}>
-              <PublicWorkbook
-                name={name}
-                cardCount={cardCount}
-                author={author}
-                path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
-              />
-            </li>
-          ))}
+          {publicWorkbooks.map(
+            ({ id, name, cardCount, author, heartCount, tags }) => (
+              <li key={id}>
+                <PublicWorkbook
+                  name={name}
+                  cardCount={cardCount}
+                  author={author}
+                  heartCount={heartCount}
+                  tags={tags}
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+                />
+              </li>
+            )
+          )}
         </StyledUl>
+        <Suggestion>
+          {formatNewLine(
+            '원하는 결과가 없으신가요? \n 검색을 통해 더 많은 문제집을 찾아보세요!'
+          )}
+        </Suggestion>
       </StyledPageTemplate>
     </>
   );
@@ -240,6 +251,14 @@ const SearchBar = styled.form<SearchBarStyleProps>`
       }
     `}
   `};
+`;
+
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const SearchInput = styled.input`
@@ -317,12 +336,21 @@ const RecommendedKeyword = styled.li`
 const StyledUl = styled.ul`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
   gap: 1rem;
 
   & > li:last-of-type {
     margin-bottom: 1rem;
   }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
+  }
+`;
+
+const Suggestion = styled.div`
+  margin-top: 1rem;
+  text-align: center;
 `;
 
 export default PublicSearchPage;

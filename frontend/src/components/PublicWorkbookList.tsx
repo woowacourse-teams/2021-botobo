@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
-import { ROUTE } from '../constants';
+import { DEVICE, ROUTE } from '../constants';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import LoadingSpinner from './LoadingSpinner';
@@ -56,16 +56,20 @@ const PublicWorkbookList = ({
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }, index) => (
-        <li ref={scrollTarget} key={index}>
-          <PublicWorkbook
-            name={name}
-            cardCount={cardCount}
-            author={author}
-            path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
-          />
-        </li>
-      ))}
+      {publicWorkbooks.map(
+        ({ id, name, cardCount, author, heartCount, tags }, index) => (
+          <li ref={scrollTarget} key={index}>
+            <PublicWorkbook
+              name={name}
+              cardCount={cardCount}
+              author={author}
+              heartCount={heartCount}
+              tags={tags}
+              path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+            />
+          </li>
+        )
+      )}
       {isLoading && (
         <LoadingSpinnerWrapper>
           <LoadingSpinner />
@@ -78,11 +82,15 @@ const PublicWorkbookList = ({
 const StyledUl = styled.ul`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
   gap: 1rem;
 
   & > li:last-of-type {
     margin-bottom: 1rem;
+  }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 

@@ -110,9 +110,12 @@ const StyledOpenIcon = styled(OpenIcon)`
 
 const HiddenName = styled.div`
   display: none;
-  width: 100%;
+  width: calc(100% - 2rem);
   margin: 0;
   padding: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const HiddenInput = styled.input`
