@@ -100,7 +100,7 @@ const PublicSearchPage = () => {
 
   useEffect(() => {
     const calculateSearchBarWidth = () => {
-      if (!stickyTriggerRef.current) return;
+      if (!stickyTriggerRef.current || !isSticky) return;
 
       setSearchBarWidth(
         (stickyTriggerRef.current.offsetWidth + 40) /
@@ -113,7 +113,7 @@ const PublicSearchPage = () => {
     window.addEventListener('resize', calculateSearchBarWidth);
 
     return () => window.removeEventListener('resize', calculateSearchBarWidth);
-  }, [stickyTriggerRef.current]);
+  }, [isSticky]);
 
   return (
     <>
