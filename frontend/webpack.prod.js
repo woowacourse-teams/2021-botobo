@@ -10,9 +10,15 @@ module.exports = merge(common, {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          test: /[\\/]node_modules[\\/](react|react-dom|recoil)[\\/]/,
-          name: 'vendor',
           chunks: 'all',
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            const packageName = module.context.match(
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+            )[1];
+
+            return `npm.${packageName.replace('@', '')}`;
+          },
         },
       },
     },
