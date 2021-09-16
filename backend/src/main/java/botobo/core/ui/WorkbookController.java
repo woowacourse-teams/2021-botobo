@@ -93,4 +93,11 @@ public class WorkbookController {
                 workbookService.toggleHeart(workbookId, appUser)
         );
     }
+
+    @GetMapping("/public")
+    public ResponseEntity<List<WorkbookResponse>> findPublicWorkbooks() {
+        return ResponseEntity.ok(
+                workbookService.findPublicWorkbooks()
+        );
+    }
 }

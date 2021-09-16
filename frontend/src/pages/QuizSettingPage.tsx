@@ -6,9 +6,9 @@ import {
   Checkbox,
   MainHeader,
   SelectBox,
-  WorkbookList,
+  Workbook,
 } from '../components';
-import { ROUTE } from '../constants';
+import { DEVICE, ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
 import PageTemplate from './PageTemplate';
 
@@ -29,7 +29,18 @@ const QuizSettingPage = () => {
         <Title>{ROUTE.QUIZ_SETTING.TITLE}</Title>
         <span>어떤 문제를 풀어볼까요?</span>
         <WorkbookWrapper>
-          <WorkbookList workbooks={workbooks} onClickWorkbook={checkWorkbook} />
+          <StyledUl>
+            {workbooks.map(({ id, name, cardCount, isChecked }) => (
+              <li key={id}>
+                <Workbook
+                  name={name}
+                  cardCount={cardCount}
+                  isChecked={isChecked}
+                  onClick={() => checkWorkbook(id)}
+                />
+              </li>
+            ))}
+          </StyledUl>
         </WorkbookWrapper>
         <span>몇 문제를 풀어볼까요?</span>
         <SelectBoxWrapper>
@@ -75,6 +86,17 @@ const WorkbookWrapper = styled.div`
 const SelectBoxWrapper = styled.div`
   margin-top: 1rem;
   margin-bottom: 3.5rem;
+`;
+
+const StyledUl = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const StyleButton = styled(Button)`

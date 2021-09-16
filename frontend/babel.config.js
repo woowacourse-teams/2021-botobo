@@ -1,4 +1,5 @@
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const isWeb = typeof window !== 'undefined';
 
 module.exports = {
   presets: [
@@ -8,14 +9,7 @@ module.exports = {
         useBuiltIns: 'usage',
         corejs: 3,
         targets: {
-          browsers: [
-            'Chrome >= 60',
-            'Safari >= 10.1',
-            'iOS >= 10.3',
-            'Firefox >= 54',
-            'Edge >= 15',
-            'samsung >= 5',
-          ],
+          browsers: ['> 1% in KR', 'not ie <= 10'],
         },
       },
     ],
@@ -26,6 +20,6 @@ module.exports = {
     '@babel/proposal-class-properties',
     '@babel/proposal-object-rest-spread',
     '@emotion',
-    isDevelopment && require.resolve('react-refresh/babel'),
+    isDevelopment && isWeb && require.resolve('react-refresh/babel'),
   ].filter(Boolean),
 };

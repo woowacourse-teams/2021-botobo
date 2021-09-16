@@ -1,107 +1,203 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import { Button, MainHeader, PublicWorkbookList } from '../components';
-import { SEARCH_CRITERIA } from '../constants';
-import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
+import DownIcon from '../assets/chevron-down-solid.svg';
+import ResetIcon from '../assets/rotate-left-circular-arrow-interface-symbol.svg';
+import {
+  Button,
+  MainHeader,
+  MultiFilterSelector,
+  PublicWorkbookList,
+} from '../components';
+import { useModal, usePublicSearchResult } from '../hooks';
+import { publicSearchResultState } from '../recoil';
 import { Flex } from '../styles';
+import { MultiFilterValue } from '../types/filter';
+import { isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
-import PublicWorkbookLoadable from './PublicSearchResultLoadable';
+import PublicSearchResultLoadable from './PublicSearchResultLoadable';
 
-const filters = [
-  { id: 1, name: '최신순', criteria: SEARCH_CRITERIA.DATE },
-  { id: 2, name: '좋아요 순', criteria: SEARCH_CRITERIA.HEART },
-  { id: 3, name: '이름 순', criteria: SEARCH_CRITERIA.NAME },
-  { id: 4, name: '카드 개수 순', criteria: SEARCH_CRITERIA.COUNT },
-];
+const hasSelectedValueInMultiFilter = (values: MultiFilterValue[]) => {
+  return values.some(({ isSelected }) => isSelected);
+};
 
 const PublicSearchResultPage = () => {
   const {
-    workbookSearchResult,
+    query,
     isLoading,
-    isSearching,
-    setIsSearching,
+    currentFilterId,
+    singleFilters,
+    multiFilters,
     searchForPublicWorkbook,
-    resetSearchResult,
-  } = usePublicSearch();
-  const { keyword, type, criteria } = usePublicSearchQuery();
+    setFilteredPublicWorkbook,
+    setSingleFilterValues,
+    setInitialMultiFilterValues,
+    removeMultiFilterItem,
+    resetFilterValues,
+    routePrevPage,
+  } = usePublicSearchResult();
 
-  const { routePrevPage, routePublicSearchResultQuery } = useRouter();
-
-  const [currentFilterId, setCurrentFilterId] = useState(
-    filters.find((filter) => filter.criteria === criteria)?.id ?? filters[0].id
+  const { publicWorkbookResult, isInitialLoading } = useRecoilValue(
+    publicSearchResultState
   );
 
-  useEffect(() => {
-    setIsSearching(true);
-    searchForPublicWorkbook({ keyword, type, criteria });
-  }, []);
+  const { keyword } = query;
 
-  if (isSearching) {
-    return <PublicWorkbookLoadable />;
+  const { openModal } = useModal();
+
+  const hasSelectedMultiFilter = multiFilters.find(({ values }) =>
+    hasSelectedValueInMultiFilter(values)
+  );
+
+  const isFiltered =
+    currentFilterId !== singleFilters[0].id || hasSelectedMultiFilter;
+  const isNoSearchResult = !isLoading && publicWorkbookResult.length === 0;
+
+  useEffect(() => {
+    if (!isInitialLoading) return;
+
+    setInitialMultiFilterValues('tags');
+    setInitialMultiFilterValues('users');
+    searchForPublicWorkbook({ keyword, start: 0 });
+  }, [isInitialLoading]);
+
+  if (isInitialLoading) {
+    return <PublicSearchResultLoadable />;
   }
 
   return (
     <>
       <MainHeader />
       <StyledPageTemplate isScroll={true}>
-        {workbookSearchResult.length === 0 ? (
-          <NoSearchResult>
-            <div>검색 결과가 없어요.</div>
-            <Button
-              size="full"
-              backgroundColor="gray_6"
-              onClick={routePrevPage}
-            >
-              돌아가기
-            </Button>
-          </NoSearchResult>
-        ) : (
-          <>
-            <Title>{keyword} 검색 결과</Title>
+        <>
+          <Title>{keyword} 검색 결과</Title>
+          <FilterWrapper>
             <Filter>
-              {filters.map(({ id, name, criteria }) => (
-                <Button
+              {multiFilters.map(({ id, type, name }, index) => (
+                <MultiFilterButton
                   key={id}
                   shape="round"
-                  backgroundColor={currentFilterId === id ? 'green' : 'gray_5'}
+                  backgroundColor={
+                    hasSelectedValueInMultiFilter(multiFilters[index].values)
+                      ? 'green'
+                      : 'gray_5'
+                  }
                   inversion={true}
-                  onClick={() => {
-                    if (id === currentFilterId) return;
+                  disabled={isNoSearchResult}
+                  onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
 
-                    const resetValue = {
-                      keyword,
-                      type,
-                      start: 0,
-                      criteria,
-                    };
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                      block: 'nearest',
+                    });
 
-                    setCurrentFilterId(id);
-                    resetSearchResult();
-                    setIsSearching(true);
-                    routePublicSearchResultQuery(resetValue);
-                    searchForPublicWorkbook(resetValue);
+                    openModal({
+                      content: (
+                        <MultiFilterSelector
+                          type={type}
+                          name={name}
+                          values={multiFilters[index].values}
+                          query={query}
+                          setFilteredPublicWorkbook={setFilteredPublicWorkbook}
+                          setInitialValues={() =>
+                            setInitialMultiFilterValues(type)
+                          }
+                        />
+                      ),
+                    });
                   }}
                 >
                   {name}
+                  <DownIcon width="1rem" height="1rem" />
+                </MultiFilterButton>
+              ))}
+              {singleFilters.map(({ id, type, criteria }) => (
+                <Button
+                  key={id}
+                  shape="round"
+                  backgroundColor={
+                    !isNoSearchResult && currentFilterId === id
+                      ? 'green'
+                      : 'gray_5'
+                  }
+                  inversion={true}
+                  disabled={isNoSearchResult}
+                  onClick={({ currentTarget }) => {
+                    if (isNoSearchResult) return;
+
+                    if (id === currentFilterId) return;
+
+                    currentTarget.scrollIntoView({
+                      behavior: 'smooth',
+                      inline: 'center',
+                    });
+
+                    setSingleFilterValues(id, criteria);
+                  }}
+                >
+                  {type}
                 </Button>
               ))}
             </Filter>
+
+            {isFiltered && (
+              <SelectedMultiFilterWrapper>
+                <FilterResetButton onClick={resetFilterValues}>
+                  <span>초기화</span>
+                  <ResetIcon width="1rem" height="1rem" />
+                </FilterResetButton>
+                {multiFilters.map(({ type, values }) =>
+                  values
+                    .filter(({ isSelected }) => isSelected)
+                    .map(({ name, id }) => (
+                      <SelectedMultiFilterButton
+                        key={id}
+                        type="button"
+                        shape="round"
+                        backgroundColor={type === 'users' ? 'gray_2' : 'green'}
+                        color={type === 'users' ? 'gray_8' : 'white'}
+                        onClick={() => removeMultiFilterItem(type, id)}
+                      >
+                        {name}
+                      </SelectedMultiFilterButton>
+                    ))
+                )}
+              </SelectedMultiFilterWrapper>
+            )}
+          </FilterWrapper>
+          {isNoSearchResult ? (
+            <NoSearchResult>
+              <div>검색 결과가 없어요.</div>
+              {!hasSelectedMultiFilter && (
+                <Button
+                  size="full"
+                  backgroundColor="gray_6"
+                  onClick={routePrevPage}
+                >
+                  돌아가기
+                </Button>
+              )}
+            </NoSearchResult>
+          ) : (
             <PublicWorkbookList
+              query={query}
               isLoading={isLoading}
-              publicWorkbooks={workbookSearchResult}
+              publicWorkbooks={publicWorkbookResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
             />
-          </>
-        )}
+          )}
+        </>
       </StyledPageTemplate>
     </>
   );
 };
 
 const StyledPageTemplate = styled(PageTemplate)`
-  padding-top: 1rem;
+  padding-top: 2rem;
 `;
 
 const NoSearchResult = styled.div`
@@ -119,22 +215,110 @@ const NoSearchResult = styled.div`
 `;
 
 const Title = styled.h2`
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
   word-break: break-all;
+  text-align: center;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
   `}
 `;
 
+const FilterWrapper = styled.div`
+  position: sticky;
+  top: 3.75rem;
+  padding: 0.1rem 1.25rem 0.5rem 1.25rem;
+  z-index: 1;
+  transform: translateX(-1.25rem);
+  width: calc(100% + 2.5rem);
+  margin-bottom: 0.5rem;
+
+  ${({ theme }) => css`
+    background-color: ${theme.color.gray_0};
+  `}
+`;
+
+const MultiFilterButton = styled(Button)`
+  ${Flex({ items: 'center' })};
+  padding: 0.5rem 0.8rem;
+
+  & > svg {
+    margin-left: 0.3rem;
+  }
+`;
+
 const Filter = styled.div`
   ${Flex()};
-  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+
+  & > button {
+    flex-shrink: 0;
+  }
+
+  ${({ theme }) => css`
+    ${isMobile
+      ? css`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `
+      : css`
+          padding-bottom: 0.5rem;
+          ::-webkit-scrollbar {
+            height: 4px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: ${theme.color.gray_4};
+          }
+        `}
+  `}
+`;
+
+const SelectedMultiFilterWrapper = styled.div`
+  ${Flex({ items: 'center' })};
+  margin-top: 0.7rem;
+  margin-bottom: 0.3rem;
+  white-space: nowrap;
+  overflow-x: auto;
+
+  ${({ theme }) => css`
+    ${isMobile
+      ? css`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `
+      : css`
+          padding-bottom: 0.5rem;
+          ::-webkit-scrollbar {
+            height: 4px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: ${theme.color.gray_4};
+          }
+        `}
+  `}
+`;
+
+const SelectedMultiFilterButton = styled(Button)`
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+
+  &:not(:first-of-type) {
+    margin-left: 0.5rem;
+  }
+`;
+
+const FilterResetButton = styled.button`
+  ${Flex({ items: 'center' })};
+  height: 2rem;
+
+  & > svg {
+    margin-left: 0.3rem;
+    margin-bottom: 0.1rem;
+  }
 `;
 
 export default PublicSearchResultPage;

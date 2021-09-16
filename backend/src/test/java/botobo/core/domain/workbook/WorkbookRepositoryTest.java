@@ -235,9 +235,9 @@ public class WorkbookRepositoryTest {
         Workbook workbook = Workbook.builder()
                 .name("오즈의 Java")
                 .opened(true)
+                .user(user)
                 .deleted(false)
-                .build()
-                .createBy(user);
+                .build();
 
         workbookRepository.save(workbook);
 
@@ -288,7 +288,7 @@ public class WorkbookRepositoryTest {
                 .tags(tags)
                 .build();
 
-        Workbook savedWorkbook = workbookRepository.save(workbook);
+        workbookRepository.save(workbook);
         flushAndClear();
 
         // when
@@ -369,6 +369,133 @@ public class WorkbookRepositoryTest {
 
         // then
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
+    void findRandomPublicWorkbooks() {
+        saveWorkbooksWithOpenedSize(101, 0);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(100);
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 비공개 문제집은 조회하지 않는다.")
+    void findRandomPublicWorkbooksIncludePrivate() {
+        saveWorkbooksWithOpenedSize(90, 10);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(90);
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 카드의 개수가 0개인 문제집은 조회하지 않는다.")
+    void findRandomPublicWorkbooksIncludeNonZero() {
+        saveWorkbooksWithCard(100, 0);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(100);
+        for (Workbook workbook : workbooks) {
+            assertThat(workbook.cardCount()).isGreaterThan(0);
+        }
+    }
+
+    @Test
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 카드의 개수가 0개인 문제집은 조회하지 않는다.")
+    void findRandomPublicWorkbooksIncludeNonZero2() {
+        saveWorkbooksWithCard(90, 10);
+
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+
+        assertThat(workbooks).hasSize(90);
+        for (Workbook workbook : workbooks) {
+            assertThat(workbook.cardCount()).isGreaterThan(0);
+        }
+    }
+
+    private void saveWorkbooksWithOpenedSize(int publicSize, int privateSize) {
+        User user = User.builder()
+                .socialId("1")
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        for (int i = 0; i < publicSize; i++) {
+            final Workbook workbook = workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(true)
+                            .user(user)
+                            .build()
+            );
+
+            final Card card = Card.builder()
+                    .question("질문" + i)
+                    .answer("답변" + i)
+                    .build();
+
+            workbook.addCard(card);
+        }
+
+        for (int i = 0; i < privateSize; i++) {
+            final Workbook workbook = workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(false)
+                            .user(user)
+                            .build()
+            );
+
+            final Card card = Card.builder()
+                    .question("질문" + i)
+                    .answer("답변" + i)
+                    .build();
+
+            workbook.addCard(card);
+        }
+    }
+
+    private void saveWorkbooksWithCard(int includeCardWorkbookSize, int excludeCardWorkbookSize) {
+        User user = User.builder()
+                .socialId("1")
+                .userName("bear")
+                .profileUrl("github.io")
+                .role(Role.USER)
+                .build();
+        userRepository.save(user);
+
+        for (int i = 0; i < includeCardWorkbookSize; i++) {
+            final Workbook workbook = workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(true)
+                            .user(user)
+                            .build()
+            );
+
+            final Card card = Card.builder()
+                    .question("질문" + i)
+                    .answer("답변" + i)
+                    .build();
+
+            workbook.addCard(card);
+        }
+
+        for (int i = 0; i < excludeCardWorkbookSize; i++) {
+            workbookRepository.save(
+                    Workbook.builder()
+                            .name("Java 문제집" + i)
+                            .opened(true)
+                            .user(user)
+                            .build()
+            );
+        }
     }
 
     private void flushAndClear() {

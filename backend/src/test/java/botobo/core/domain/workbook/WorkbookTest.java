@@ -5,8 +5,8 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
+import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
-import botobo.core.exception.workbook.WorkbookNameNullException;
 import botobo.core.exception.workbook.WorkbookTagLimitException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ class WorkbookTest {
         assertThatThrownBy(() -> Workbook.builder()
                 .name(name)
                 .build())
-                .isInstanceOf(WorkbookNameNullException.class);
+                .isInstanceOf(WorkbookNameBlankException.class);
     }
 
     @Test
@@ -133,7 +133,7 @@ class WorkbookTest {
         Tags others = Tags.of(
                 Collections.singletonList(Tag.of("스프링"))
         );
-        workbook.addTags(others);
+        workbook.setTags(others);
 
         // then
         assertThat(workbook.getWorkbookTags()).hasSize(2);
@@ -153,8 +153,8 @@ class WorkbookTest {
     }
 
     @Test
-    @DisplayName("createBy를 하면 문제집의 author가 주어진 user로 바뀐다 - 성공")
-    void createByWithNewAuthor() {
+    @DisplayName("setUser를 하면 문제집의 author가 주어진 user로 바뀐다 - 성공")
+    void setUser() {
         // given
         User user = User.builder()
                 .id(1L)
@@ -176,7 +176,7 @@ class WorkbookTest {
                 .build();
 
         // when
-        workbook.createBy(newUser);
+        workbook.setUser(newUser);
 
         // then
         assertThat(workbook.author()).isEqualTo(newUser.getUserName());
@@ -250,9 +250,9 @@ class WorkbookTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
+                .user(user)
                 .tags(tags)
-                .build()
-                .createBy(user);
+                .build();
 
         // when
         workbook.delete();
@@ -280,8 +280,8 @@ class WorkbookTest {
                 .name("오즈의 Java")
                 .opened(true)
                 .deleted(false)
-                .build()
-                .createBy(user);
+                .user(user)
+                .build();
 
         Card card = Card.builder()
                 .id(1L)

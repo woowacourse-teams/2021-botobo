@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +46,9 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     private OauthManagerFactory oauthManagerFactory;
 
-    protected User admin;
+    protected User admin, admin1, admin2, admin3;
+
+    protected static final List<User> ADMINS = new ArrayList<>();
 
     @Override
     @BeforeEach
@@ -57,7 +60,30 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
+        admin1 = User.builder()
+                .socialId("2")
+                .userName("user1")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
+        admin2 = User.builder()
+                .socialId("3")
+                .userName("user2")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
+        admin3 = User.builder()
+                .socialId("4")
+                .userName("user3")
+                .profileUrl("github.io")
+                .role(Role.ADMIN)
+                .build();
         userRepository.save(admin);
+        userRepository.save(admin1);
+        userRepository.save(admin2);
+        userRepository.save(admin3);
+
+        ADMINS.addAll(List.of(admin1, admin2, admin3));
     }
 
     protected User anyUser() {
@@ -76,6 +102,22 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .auth(jwtTokenProvider.createToken(admin.getId()))
                 .build()
                 .extract();
+    }
+
+    public ExtractableResponse<Response> 서로_다른_관리자의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User admin) {
+        return request()
+                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .auth(jwtTokenProvider.createToken(admin.getId()))
+                .build()
+                .extract();
+    }
+
+    public void 서로_다른_관리자의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests, List<User> admins) {
+        int userSize = admins.size();
+        int i = 0;
+        for (AdminWorkbookRequest adminRequest : adminRequests) {
+            서로_다른_관리자의_문제집_생성_요청(adminRequest, admins.get(i++ % userSize));
+        }
     }
 
     public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
@@ -107,14 +149,24 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 유저_카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
     }
 
-    public HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
+    protected HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
         return request()
                 .post("/api/cards", cardRequest)
                 .auth(accessToken)
                 .build();
     }
 
-    protected WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+    protected void 유저_카드_포함_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .build();
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+    }
+
+
+    protected WorkbookResponse 유저_태그포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(name)
                 .opened(opened)
@@ -138,7 +190,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );
-        return 유저_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
+        return 유저_태그포함_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
     }
 
     protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {

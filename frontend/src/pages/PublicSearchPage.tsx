@@ -1,125 +1,59 @@
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
-import { getTagKeywordAsync, getUserKeywordAsync } from '../api';
-import SearchCloseIcon from '../assets/cross-mark.svg';
+import { getTagKeywordAsync } from '../api';
+import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import {
-  MainHeader,
-  PublicSearchList,
-  PublicWorkbookList,
-} from '../components';
-import { CLOUD_FRONT_DOMAIN, DEVICE, SEARCH_TYPE } from '../constants';
-import { usePublicSearch, usePublicSearchQuery, useRouter } from '../hooks';
-import { Flex } from '../styles';
+import { MainHeader, PublicWorkbook } from '../components';
+import { DEVICE, ROUTE } from '../constants';
+import { useRouter, useSnackbar } from '../hooks';
+import { publicSearchResultState, publicWorkbookState } from '../recoil';
+import { Flex, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
-import { debounce } from '../utils';
+import { formatNewLine, isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
-
-const loadSrc = `${CLOUD_FRONT_DOMAIN}/frog.png`;
 
 interface SearchBarStyleProps {
   isFocus: boolean;
   isSticky: boolean;
+  scaleX: number;
 }
-
-interface LoadImageStyleProps {
-  isSearching: boolean;
-  isFrogJumping: boolean;
-}
-
-const searchInfos = [
-  {
-    id: 1,
-    name: '문제집',
-    placeholder: '문제집을 검색해보세요',
-    type: SEARCH_TYPE.NAME,
-    searchForKeyword: null,
-  },
-  {
-    id: 2,
-    name: '태그',
-    placeholder: '태그를 검색해보세요',
-    type: SEARCH_TYPE.TAG,
-    searchForKeyword: getTagKeywordAsync,
-  },
-  {
-    id: 3,
-    name: '작성자',
-    placeholder: '작성자를 검색해보세요',
-    type: SEARCH_TYPE.USER,
-    searchForKeyword: getUserKeywordAsync,
-  },
-];
 
 const PublicSearchPage = () => {
-  const {
-    workbookSearchResult,
-    resetSearchResult,
-    isSearching,
-    isLoading,
-    setIsSearching,
-    searchForPublicWorkbook,
-  } = usePublicSearch();
-  const { keyword, type } = usePublicSearchQuery();
-
-  const { routePublicSearchQuery } = useRouter();
-
-  const stickyTriggerRef = useRef<HTMLDivElement>(null);
+  const { data: publicWorkbooks, errorMessage } =
+    useRecoilValue(publicWorkbookState);
+  const resetSearchResult = useResetRecoilState(publicSearchResultState);
 
   const [isFocus, setIsFocus] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  const [inputValue, setInputValue] = useState(keyword);
-  const [currentFocusTab, setCurrentFocusTab] = useState(
-    searchInfos.find((item) => item.type === type) ?? searchInfos[0]
-  );
-  const [keywordSearchResult, setKeywordSearchResult] = useState<
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [recommendedKeywords, setRecommendedKeywords] = useState<
     SearchKeywordResponse[]
   >([]);
 
-  const [isFrogJumping, setIsFrogJumping] = useState(false);
+  const [searchBarWidth, setSearchBarWidth] = useState(1);
 
-  const hasNoSearchResult =
-    inputValue &&
-    !isSearching &&
-    workbookSearchResult.length === 0 &&
-    keywordSearchResult.length === 0;
+  const { routePublicSearchResultQuery } = useRouter();
+  const showSnackbar = useSnackbar();
 
-  const searchForKeyword = async (keyword: string) => {
-    if (keyword === '') {
-      setIsSearching(false);
+  const stickyTriggerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-      return;
-    }
-
-    if (!currentFocusTab.searchForKeyword)
-      return searchForPublicWorkbook({ keyword, start: 0 });
-
-    try {
-      const data = await currentFocusTab.searchForKeyword(keyword);
-
-      setKeywordSearchResult(data);
-      setIsSearching(false);
-    } catch (error) {
-      console.error(error);
-      setIsSearching(false);
-    }
-  };
-
-  const resetSearch = () => {
+  const searchForWorkbook = (keyword: string) => {
     resetSearchResult();
-    setKeywordSearchResult([]);
+    routePublicSearchResultQuery({
+      keyword,
+      method: 'push',
+    });
   };
 
   useEffect(() => {
-    if (!keyword) return;
-
-    routePublicSearchQuery({ keyword, type });
-    searchForKeyword(keyword);
-    setIsSearching(true);
-    setIsFrogJumping(true);
-  }, []);
+    if (errorMessage) {
+      showSnackbar({ message: errorMessage, type: 'error' });
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     if (!stickyTriggerRef.current) return;
@@ -140,88 +74,127 @@ const PublicSearchPage = () => {
     searchTabObserver.observe(stickyTriggerRef.current);
 
     return () => searchTabObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!searchInputRef.current || !isFocus) return;
+
+    searchInputRef.current.focus();
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    if (!searchKeyword) {
+      setRecommendedKeywords([]);
+
+      return;
+    }
+
+    const getRecommendedKeywords = async () => {
+      const tagKeywords = await getTagKeywordAsync(searchKeyword);
+
+      setRecommendedKeywords(tagKeywords);
+    };
+
+    getRecommendedKeywords();
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    const calculateSearchBarWidth = () => {
+      if (!stickyTriggerRef.current) return;
+
+      setSearchBarWidth(
+        (stickyTriggerRef.current.offsetWidth + 40) /
+          stickyTriggerRef.current.offsetWidth
+      );
+    };
+
+    calculateSearchBarWidth();
+
+    window.addEventListener('resize', calculateSearchBarWidth);
+
+    return () => window.removeEventListener('resize', calculateSearchBarWidth);
   }, [stickyTriggerRef.current]);
 
   return (
     <>
       <MainHeader sticky={false} />
       <StyledPageTemplate isScroll={true}>
-        <SearchTabWrapper>
-          <SearchInfo>
-            {searchInfos.map(({ id, name, type }) => (
-              <SearchTabItem key={id} isFocus={currentFocusTab.id === id}>
-                <button
-                  onClick={() => {
-                    const currentTab =
-                      searchInfos.find((searchInfo) => searchInfo.id === id) ??
-                      searchInfos[0];
+        <div ref={stickyTriggerRef} />
+        <SearchBar
+          name="search"
+          role="search"
+          isSticky={isSticky}
+          isFocus={isFocus}
+          scaleX={searchBarWidth}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(isMobile ? true : false)}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!searchKeyword) return;
 
-                    setCurrentFocusTab(currentTab);
-                    setInputValue('');
-                    resetSearch();
-                    routePublicSearchQuery({ type });
-                  }}
-                >
-                  {name}
-                </button>
-              </SearchTabItem>
-            ))}
-          </SearchInfo>
-          <SearchHr />
-        </SearchTabWrapper>
-        <SearchBarStickyTrigger ref={stickyTriggerRef} />
-        <SearchBar isSticky={isSticky} isFocus={isFocus}>
-          <SearchIcon width="1.3rem" height="1.3rem" />
+            searchForWorkbook(searchKeyword);
+          }}
+        >
           <SearchInput
-            autoFocus={true}
-            value={inputValue}
-            onKeyDown={() => setIsFrogJumping(false)}
-            onKeyUp={() => setIsFrogJumping(true)}
-            onChange={({ target }) => {
-              setIsSearching(true);
-              setInputValue(target.value);
-              resetSearch();
-              debounce(() => {
-                routePublicSearchQuery({
-                  keyword: target.value,
-                  type: currentFocusTab.type,
-                });
-                searchForKeyword(target.value);
-              }, 400);
-            }}
-            placeholder={currentFocusTab.placeholder}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
+            value={searchKeyword}
+            onChange={({ target }) => setSearchKeyword(target.value)}
+            placeholder={'문제집을 검색해보세요.'}
+            ref={searchInputRef}
           />
-          {inputValue && (
-            <button
-              onClick={() => {
-                setInputValue('');
-                resetSearch();
-              }}
+          {searchKeyword && (
+            <KeywordResetButton
+              type="button"
+              onClick={() => setSearchKeyword('')}
             >
-              <SearchCloseIcon width="0.5rem" height="0.5rem" />
-            </button>
+              <KeywordResetIcon width="0.5rem" height="0.5rem" />
+            </KeywordResetButton>
+          )}
+          <SearchButton isFocus={isFocus}>
+            <SearchIcon width="1.3rem" height="1.3rem" />
+          </SearchButton>
+          {isFocus && searchKeyword && recommendedKeywords.length > 0 && (
+            <Autocomplete isSticky={isSticky}>
+              {recommendedKeywords.map(({ id, name }) => (
+                <RecommendedKeyword
+                  key={id}
+                  onTouchStart={() => {
+                    if (!isMobile) return;
+
+                    searchInputRef.current?.blur();
+                  }}
+                  onMouseDown={() => searchForWorkbook(name)}
+                >
+                  <SearchIcon width="0.8rem" height="0.8rem" />
+                  {name}
+                </RecommendedKeyword>
+              ))}
+              <button onClick={() => setIsFocus(false)}>닫기</button>
+            </Autocomplete>
           )}
         </SearchBar>
-        {currentFocusTab.type === 'name'
-          ? workbookSearchResult.length > 0 && (
-              <PublicWorkbookList
-                isLoading={isLoading}
-                publicWorkbooks={workbookSearchResult}
-                searchForPublicWorkbook={searchForPublicWorkbook}
-              />
+        <Title>다양한 문제집</Title>
+        <Description>공유된 문제집을 랜덤으로 제공해 드려요.</Description>
+        <StyledUl>
+          {publicWorkbooks.map(
+            ({ id, name, cardCount, author, heartCount, tags }) => (
+              <li key={id}>
+                <PublicWorkbook
+                  name={name}
+                  cardCount={cardCount}
+                  author={author}
+                  heartCount={heartCount}
+                  tags={tags}
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+                />
+              </li>
             )
-          : keywordSearchResult.length > 0 && (
-              <PublicSearchList
-                searchItems={keywordSearchResult}
-                type={currentFocusTab.type}
-              />
-            )}
-        {hasNoSearchResult && (
-          <NoSearchResult>검색 결과가 없어요.</NoSearchResult>
-        )}
-        <LoadImage isSearching={isSearching} isFrogJumping={isFrogJumping} />
+          )}
+        </StyledUl>
+        <Suggestion>
+          {formatNewLine(
+            '원하는 결과가 없으신가요? \n 검색을 통해 더 많은 문제집을 찾아보세요!'
+          )}
+        </Suggestion>
       </StyledPageTemplate>
     </>
   );
@@ -231,136 +204,152 @@ const StyledPageTemplate = styled(PageTemplate)`
   padding-top: 1rem;
 `;
 
-const SearchTabWrapper = styled.nav`
-  margin-bottom: 1rem;
-`;
-
-const SearchInfo = styled.ul`
-  ${Flex()};
-  margin-top: 0.5rem;
-  height: 2rem;
-`;
-
-const SearchTabItem = styled.li<Pick<SearchBarStyleProps, 'isFocus'>>`
-  margin-right: 2rem;
-
-  ${({ theme, isFocus }) => css`
-    ${isFocus
-      ? css`
-          color: ${theme.color.gray_9};
-          border-bottom: 2px solid ${theme.color.gray_9};
-          font-weight: ${theme.fontWeight.bold};
-        `
-      : css`
-          color: ${theme.color.gray_5};
-        `}
-  `}
-
-  & > button {
-    color: inherit;
-    font-weight: inherit;
-  }
-`;
-
-const SearchHr = styled.hr`
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  left: 50%;
-  border: none;
-  transform: translateX(-50%);
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.gray_4};
-    max-width: calc(${theme.responsive.maxWidth} - 2.5rem);
-  `}
-`;
-
-const SearchBarStickyTrigger = styled.div``;
-
-const SearchBar = styled.div<SearchBarStyleProps>`
+const SearchBar = styled.form<SearchBarStyleProps>`
   ${Flex({ justify: 'space-between', items: 'center' })};
+  position: relative;
   width: 100%;
   height: 3rem;
   margin-bottom: 1.5rem;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease;
+  z-index: 1;
 
-  ${({ theme, isFocus, isSticky }) => css`
+  ${({ theme, isFocus, isSticky, scaleX }) => css`
     background-color: ${theme.color.white};
     border: 1px solid ${isFocus ? theme.color.green : theme.color.gray_3};
 
     ${isSticky &&
     css`
       position: sticky;
-      z-index: 1;
-      top: 0;
-      transform: translateX(-1.25rem);
-      width: calc(100% + 2.5rem);
+      top: -1px;
       border: none;
       border-bottom: 1px solid
         ${isFocus ? theme.color.green : theme.color.gray_3};
+      transform: scaleX(${scaleX});
+
+      & > input {
+        transform: scaleX(${1 / scaleX}) translateX(-0.75rem);
+      }
+
+      & > button {
+        transform: scaleX(${1 / scaleX});
+      }
+
+      & > ul {
+        & > li {
+          transform: scaleX(${1 / scaleX}) translateX(-1rem);
+        }
+
+        & > button {
+          transform: scaleX(${1 / scaleX});
+        }
+      }
 
       @media ${DEVICE.TABLET} {
         border-left: 1px solid ${theme.color.gray_3};
         border-right: 1px solid ${theme.color.gray_3};
       }
     `}
-
-    & > svg {
-      transition: all 0.3s ease;
-      fill: ${isFocus ? theme.color.green : theme.color.gray_3};
-    }
   `};
+`;
 
-  & > img {
-    cursor: text;
-  }
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const SearchInput = styled.input`
-  width: 100%;
+  width: 80%;
   height: 100%;
   outline: none;
   border: none;
-  margin: 0 0.5rem;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.default};
   `}
 `;
 
-const jumpAnimation = keyframes`
-  0%{
-    transform: translateY(0);
-  }
-  50%{
-    transform:translateY(-100%);
-  }
-  100%{
-    transform:translateY(0);
-  }
+const KeywordResetButton = styled.button`
+  position: absolute;
+  right: 3rem;
 `;
 
-const LoadImage = styled.div<LoadImageStyleProps>`
-  width: 3.75rem;
-  height: 3.25rem;
-  background-image: url(${loadSrc});
-  background-repeat: no-repeat;
-  background-size: contain;
-  margin: 0 auto;
-  margin-top: 6rem;
+const SearchButton = styled.button<Pick<SearchBarStyleProps, 'isFocus'>>`
+  ${Flex({ items: 'center' })};
 
-  ${({ isSearching, isFrogJumping }) => css`
-    display: ${isSearching ? 'block' : 'none'};
-    ${isFrogJumping &&
-    css`
-      animation: ${jumpAnimation} 1s infinite ease-in-out;
+  ${({ theme, isFocus }) => css`
+    & > svg {
+      transition: all 0.3s ease;
+      fill: ${isFocus ? theme.color.green : theme.color.gray_3};
+    }
+  `};
+`;
+
+const Autocomplete = styled.ul<Pick<SearchBarStyleProps, 'isSticky'>>`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  max-height: calc(100vh - 3rem);
+  padding: 0.5rem 0;
+  overflow-y: auto;
+
+  ${scrollBarStyle}
+
+  ${({ theme, isSticky }) => css`
+    background-color: ${theme.color.white};
+    box-shadow: ${theme.boxShadow.card};
+    border-bottom-right-radius: ${theme.borderRadius.square};
+    border-bottom-left-radius: ${theme.borderRadius.square};
+    border-top: 0;
+
+    top: ${isSticky ? '3rem' : 'calc(3rem - 1px)'};
+
+    & > button {
+      float: right;
+      color: ${theme.color.gray_1}
+      font-size: ${theme.fontSize.small};
+      margin: 0.5rem 0;
+      margin-right: 1rem;
+    }
+  `};
+`;
+
+const RecommendedKeyword = styled.li`
+  ${Flex({ items: 'center' })};
+  cursor: pointer;
+  padding: 0.7rem 1rem;
+
+  & > svg {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    ${({ theme }) => css`
+      background-color: ${theme.color.gray_3};
     `}
-  `}
+  }
 `;
 
-const NoSearchResult = styled.div`
+const StyledUl = styled.ul`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
+  gap: 1rem;
+
+  & > li:last-of-type {
+    margin-bottom: 1rem;
+  }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
+  }
+`;
+
+const Suggestion = styled.div`
+  margin-top: 1rem;
   text-align: center;
 `;
 

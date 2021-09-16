@@ -1,4 +1,4 @@
-import { SEARCH_CRITERIA, SEARCH_ORDER, SEARCH_TYPE } from './../constants';
+import { SEARCH_CRITERIA } from './../constants';
 import {
   PublicWorkbookResponse,
   TagResponse,
@@ -15,9 +15,9 @@ interface PostWorkbookAsync {
 
 export interface PublicWorkbookAsync {
   keyword: string;
+  tags?: string | null;
+  users?: string | null;
   criteria?: ValueOf<typeof SEARCH_CRITERIA>;
-  order?: ValueOf<typeof SEARCH_ORDER>;
-  type?: ValueOf<typeof SEARCH_TYPE>;
   start?: number;
   size?: number;
 }
@@ -44,16 +44,9 @@ export const deleteWorkbookAsync = async (id: number) => {
   await request.delete(`/workbooks/${id}`);
 };
 
-export const getPublicWorkbookAsync = async ({
-  keyword,
-  criteria = 'date',
-  order = 'desc',
-  type = 'name',
-  start = 0,
-  size = 20,
-}: PublicWorkbookAsync) => {
+export const getPublicWorkbookAsync = async () => {
   const { data } = await request.get<PublicWorkbookResponse[]>(
-    `/search/workbooks?type=${type}&criteria=${criteria}&order=${order}&keyword=${keyword}&start=${start}&size=${size}`
+    '/workbooks/public'
   );
 
   return data;

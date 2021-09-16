@@ -40,17 +40,25 @@ const Quiz = ({
               <EncounterCount>풀어본 횟수: {encounterCount}</EncounterCount>
             )}
           </TopContent>
-          <Text>
-            <span>Q. {question}</span>
-          </Text>
+          <TextWrapper>
+            <Text>
+              <TextCenter>
+                <span>Q.</span> {question}
+              </TextCenter>
+            </Text>
+          </TextWrapper>
         </Question>
         <Answer>
           <TopContent>
             <WorkbookName>{workbookName}</WorkbookName>
           </TopContent>
-          <Text>
-            <span>A. {answer}</span>
-          </Text>
+          <TextWrapper>
+            <Text>
+              <TextCenter>
+                <span>A.</span> {answer}
+              </TextCenter>
+            </Text>
+          </TextWrapper>
         </Answer>
       </Card>
     </Container>
@@ -58,9 +66,9 @@ const Quiz = ({
 };
 
 const Container = styled.div`
-  height: 12.5rem;
+  height: 35vh;
   width: 100%;
-  perspective: 50rem;
+  perspective: 100rem;
 `;
 
 const Card = styled.div<CardStyleProps>`
@@ -84,11 +92,13 @@ const Card = styled.div<CardStyleProps>`
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    overflow-y: auto;
 
     ${({ theme }) =>
       css`
         box-shadow: ${theme.boxShadow.card};
         border-radius: ${theme.borderRadius.square};
+        background-color: ${theme.color.white};
       `}
   }
 `;
@@ -119,33 +129,31 @@ const EncounterCount = styled.span`
 
 const Question = styled.div`
   transform: rotateX(0deg);
-  overflow-y: auto;
-
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-  `}
 `;
 
 const Answer = styled.div`
   transform: rotateX(180deg);
-  overflow-y: auto;
+`;
 
-  ${({ theme }) => css`
-    background-color: ${theme.color.white};
-  `}
+const TextWrapper = styled.div`
+  overflow-y: auto;
+  height: 100%;
+  line-height: calc(35vh - 3.5rem);
+
+  ${scrollBarStyle};
 `;
 
 const Text = styled.div`
-  overflow-y: auto;
-  height: 9rem;
-  line-height: 9rem;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.5;
+`;
 
-  ${scrollBarStyle};
+const TextCenter = styled.div`
+  ${Flex()};
 
   & > span {
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 1.4rem;
+    margin-right: 0.3rem;
   }
 `;
 

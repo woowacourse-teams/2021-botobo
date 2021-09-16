@@ -15,22 +15,18 @@ public class FileNameGenerator {
     private static final String BASE_DIR = "users/";
     private static final String SLASH = "/";
 
-    public String generateFileName(MultipartFile multipartFile, String userName) {
-        return makeNewFileName(replaceWhiteSpace(userName)) + extension(multipartFile);
+    public String generateFileName(MultipartFile multipartFile, String userId) {
+        return makeNewFileName(userId) + extension(multipartFile);
     }
 
-    private String replaceWhiteSpace(String userName) {
-        return userName.replaceAll("\\s+", "_");
-    }
-
-    private String makeNewFileName(String userName) {
+    private String makeNewFileName(String userId) {
         String newlyCreatedFileName = UUID.randomUUID() + "_"
                 + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-        return insertDirectory(newlyCreatedFileName, userName);
+        return insertDirectory(newlyCreatedFileName, userId);
     }
 
-    private String insertDirectory(String fileName, String userName) {
-        return BASE_DIR + userName + SLASH + fileName;
+    private String insertDirectory(String fileName, String userId) {
+        return BASE_DIR + userId + SLASH + fileName;
     }
 
     private String extension(MultipartFile multipartFile) {

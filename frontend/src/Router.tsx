@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { lazy, useEffect } from 'react';
 import {
-  BrowserRouter,
   Redirect,
   Route,
   RouteProps,
@@ -9,35 +8,82 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
+import { SsrSuspense } from './components';
 import { ROUTE } from './constants';
 import {
-  CardsPage,
-  Guide,
-  LoginPage,
-  LogoutPage,
   MainLoadable,
   MainPage,
-  OAuthCallbackPage,
-  ProfilePage,
-  PublicCardsPage,
-  PublicSearchPage,
-  PublicSearchResultPage,
-  QuizPage,
-  QuizResultPage,
+  PublicSearchLoadable,
   QuizSettingLoadable,
-  QuizSettingPage,
-  WorkbookAddPage,
-  WorkbookEditPage,
 } from './pages';
 import { userState } from './recoil';
+
+const ProfilePage = lazy(
+  () => import(/* webpackChunkName: "ProfilePage" */ './pages/ProfilePage')
+);
+const LoginPage = lazy(
+  () => import(/* webpackChunkName: "LoginPage" */ './pages/LoginPage')
+);
+const LogoutPage = lazy(
+  () => import(/* webpackChunkName: "LoginPage" */ './pages/LogoutPage')
+);
+const WorkbookAddPage = lazy(
+  () =>
+    import(/* webpackChunkName: "WorkbookAddPage" */ './pages/WorkbookAddPage')
+);
+const WorkbookEditPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "WorkbookEditPage" */ './pages/WorkbookEditPage'
+    )
+);
+const QuizSettingPage = lazy(
+  () =>
+    import(/* webpackChunkName: "QuizSettingPage" */ './pages/QuizSettingPage')
+);
+const QuizPage = lazy(
+  () => import(/* webpackChunkName: "QuizPage" */ './pages/QuizPage')
+);
+const QuizResultPage = lazy(
+  () =>
+    import(/* webpackChunkName: "QuizResultPage" */ './pages/QuizResultPage')
+);
+const CardsPage = lazy(
+  () => import(/* webpackChunkName: "CardsPage" */ './pages/CardsPage')
+);
+const PublicSearchPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "PublicSearchPage" */ './pages/PublicSearchPage'
+    )
+);
+const PublicSearchResultPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "PublicSearchResultPage" */ './pages/PublicSearchResultPage'
+    )
+);
+const PublicCardsPage = lazy(
+  () =>
+    import(/* webpackChunkName: "PublicCardsPage" */ './pages/PublicCardsPage')
+);
+const OAuthCallbackPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "OAuthCallbackPage" */ './pages/OAuthCallbackPage'
+    )
+);
+const Guide = lazy(
+  () => import(/* webpackChunkName: "Guide" */ './pages/Guide')
+);
 
 const routes = [
   {
     path: ROUTE.HOME.PATH,
     component: (
-      <Suspense fallback={<MainLoadable />}>
+      <SsrSuspense fallback={<MainLoadable />}>
         <MainPage />
-      </Suspense>
+      </SsrSuspense>
     ),
     isPublic: true,
   },
@@ -62,16 +108,16 @@ const routes = [
     isPublic: false,
   },
   {
-    path: ROUTE.WORKBOOK_EDIT.PATH,
+    path: `${ROUTE.WORKBOOK_EDIT.PATH}/:id`,
     component: <WorkbookEditPage />,
     isPublic: false,
   },
   {
     path: ROUTE.QUIZ_SETTING.PATH,
     component: (
-      <Suspense fallback={<QuizSettingLoadable />}>
+      <SsrSuspense fallback={<QuizSettingLoadable />}>
         <QuizSettingPage />
-      </Suspense>
+      </SsrSuspense>
     ),
     isPublic: false,
   },
@@ -86,13 +132,17 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.CARDS.PATH,
+    path: `${ROUTE.CARDS.PATH}/:id`,
     component: <CardsPage />,
     isPublic: false,
   },
   {
     path: ROUTE.PUBLIC_SEARCH.PATH,
-    component: <PublicSearchPage />,
+    component: (
+      <SsrSuspense fallback={<PublicSearchLoadable />}>
+        <PublicSearchPage />
+      </SsrSuspense>
+    ),
     isPublic: true,
   },
   {
@@ -101,7 +151,7 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.PUBLIC_CARDS.PATH,
+    path: `${ROUTE.PUBLIC_CARDS.PATH}/:id`,
     component: <PublicCardsPage />,
     isPublic: true,
   },
@@ -125,6 +175,9 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (pathname.includes(ROUTE.PUBLIC_SEARCH.PATH)) return;
+    if (pathname.includes(ROUTE.PUBLIC_SEARCH_RESULT.PATH)) return;
+
     window.scrollTo(0, 0);
   }, [pathname]);
 
@@ -140,23 +193,21 @@ const PrivateRoute = ({ children, ...props }: PrivateRouteProps) => {
 };
 
 const Router = () => (
-  <BrowserRouter>
-    <Switch>
-      {routes.map(({ path, component, isPublic }, index) =>
-        isPublic ? (
-          <Route key={index} exact path={path}>
-            <ScrollToTop />
-            {component}
-          </Route>
-        ) : (
-          <PrivateRoute key={index} exact path={path}>
-            <ScrollToTop />
-            {component}
-          </PrivateRoute>
-        )
-      )}
-    </Switch>
-  </BrowserRouter>
+  <Switch>
+    {routes.map(({ path, component, isPublic }, index) =>
+      isPublic ? (
+        <Route key={index} exact path={path}>
+          <ScrollToTop />
+          {component}
+        </Route>
+      ) : (
+        <PrivateRoute key={index} exact path={path}>
+          <ScrollToTop />
+          {component}
+        </PrivateRoute>
+      )
+    )}
+  </Switch>
 );
 
 export default Router;

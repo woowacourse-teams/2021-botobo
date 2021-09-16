@@ -84,6 +84,7 @@ const LabelText = styled.span`
   vertical-align: middle;
   padding-left: 0.5rem;
   line-height: 1rem;
+  word-break: break-all;
 `;
 
 export default Checkbox;

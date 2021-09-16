@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 interface ButtonProps {
-  children: string | React.ReactElement;
+  children: React.ReactNode;
   hasShadow?: boolean;
   backgroundColor?: keyof Color;
   color?: keyof Color;

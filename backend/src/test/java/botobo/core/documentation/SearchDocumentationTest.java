@@ -2,10 +2,9 @@ package botobo.core.documentation;
 
 import botobo.core.application.SearchService;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchController;
-import botobo.core.ui.search.SearchKeyword;
+import botobo.core.ui.search.SearchRelated;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +33,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .id(2L)
                         .name("피케이의 java 문제집")
                         .cardCount(15)
+                        .heartCount(5)
                         .author("pkeugine")
                         .tags(List.of(
                                 TagResponse.builder().id(1L).name("java").build(),
@@ -42,21 +42,22 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .build(),
                 WorkbookResponse.builder()
                         .id(1L)
-                        .name("중간곰의 java 문제집")
+                        .name("피케이의 javascript 문제집")
                         .cardCount(15)
-                        .author("ggyool")
+                        .heartCount(3)
+                        .author("pkeugine")
                         .tags(List.of(
-                                TagResponse.builder().id(3L).name("자바").build(),
-                                TagResponse.builder().id(4L).name("백엔드").build()
+                                TagResponse.builder().id(3L).name("javascript").build(),
+                                TagResponse.builder().id(4L).name("frontend").build()
                         ))
                         .build()
         );
-        given(searchService.searchWorkbooks(any(WorkbookSearchParameter.class))).willReturn(workbookResponses);
+        given(searchService.searchWorkbooks(any(WorkbookSearchParameter.class), any(), any())).willReturn(workbookResponses);
 
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/search/workbooks?type=name&criteria=date&order=desc&keyword=java&start=0&size=10")
+                .get("/api/search/workbooks?keyword=java&tags=1,3&users=1&criteria=date&start=0&size=10")
                 .build()
                 .status(status().isOk())
                 .identifier("search-workbooks-get-success");
@@ -76,7 +77,7 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .name("javascript")
                         .build()
         );
-        given(searchService.searchTags(any(SearchKeyword.class))).willReturn(tagResponses);
+        given(searchService.findTagsIn(any(SearchRelated.class))).willReturn(tagResponses);
 
         // when, then
         document()
@@ -85,30 +86,5 @@ public class SearchDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("search-tags-get-success");
-    }
-
-    @Test
-    @DisplayName("태그 자동완성 - 성공")
-    void searchUsers() throws Exception {
-        // given
-        List<SimpleUserResponse> userResponses = List.of(
-                SimpleUserResponse.builder()
-                        .id(1L)
-                        .name("oz")
-                        .build(),
-                SimpleUserResponse.builder()
-                        .id(2L)
-                        .name("seozalue")
-                        .build()
-        );
-        given(searchService.searchUsers(any(SearchKeyword.class))).willReturn(userResponses);
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/api/search/users?keyword=oz")
-                .build()
-                .status(status().isOk())
-                .identifier("search-users-get-success");
     }
 }

@@ -51,3 +51,9 @@ include::{snippets}/workbooks-scrap-cards-success/http-response.adoc[]
 === 하트 토글하기
 ==== 응답
 include::{snippets}/workbooks-toggle-hearts-success/http-response.adoc[]
+
+=== 다양한 공유 문제집 가져오기
+==== 요청
+include::{snippets}/workbooks-random-public-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-random-public-get-success/http-response.adoc[]

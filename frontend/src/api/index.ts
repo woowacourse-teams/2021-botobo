@@ -34,4 +34,9 @@ export {
   putNextQuizAsync,
 } from './quiz';
 
-export { getUserKeywordAsync, getTagKeywordAsync } from './search';
+export {
+  getTagsFromWorkbookAsync,
+  getUsersFromWorkbookAsync,
+  getTagKeywordAsync,
+  getSearchResultAsync,
+} from './search';

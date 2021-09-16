@@ -1,8 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
-import React, { Suspense } from 'react';
-import { RecoilRoot } from 'recoil';
+import React from 'react';
 
-import { HeaderSkeleton } from './components';
+import { HeaderSkeleton, SsrSuspense } from './components';
 import { theme } from './constants';
 import { ModalProvider, SnackbarProvider } from './contexts';
 import GlobalStyle from './GlobalStyle';
@@ -10,16 +9,14 @@ import Router from './Router';
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <RecoilRoot>
+    <SsrSuspense fallback={<HeaderSkeleton />}>
       <SnackbarProvider>
         <ModalProvider>
-          <Suspense fallback={<HeaderSkeleton />}>
-            <GlobalStyle />
-            <Router />
-          </Suspense>
+          <GlobalStyle />
+          <Router />
         </ModalProvider>
       </SnackbarProvider>
-    </RecoilRoot>
+    </SsrSuspense>
   </ThemeProvider>
 );
 

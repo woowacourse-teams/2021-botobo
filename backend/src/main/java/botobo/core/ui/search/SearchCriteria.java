@@ -1,12 +1,8 @@
 package botobo.core.ui.search;
 
-import botobo.core.domain.workbook.Workbook;
 import botobo.core.exception.search.InvalidSearchCriteriaException;
 import lombok.Getter;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -31,18 +27,5 @@ public enum SearchCriteria {
                 .filter(searchCriteria -> searchCriteria.value.equalsIgnoreCase(value))
                 .findFirst()
                 .orElseThrow(InvalidSearchCriteriaException::new);
-    }
-
-    public Expression<?> toExpression(CriteriaBuilder builder, Root<Workbook> root) {
-        if (DATE.equals(this)) {
-            return root.get("createdAt");
-        }
-        if (NAME.equals(this)) {
-            return root.get("name");
-        }
-        if (COUNT.equals(this)) {
-            return builder.size(root.get("cards").get("cards"));
-        }
-        return builder.size(root.get("hearts").get("hearts"));
     }
 }

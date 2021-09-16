@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static botobo.core.utils.Fixture.bear;
+import static botobo.core.utils.Fixture.joanne;
 import static botobo.core.utils.Fixture.oz;
 import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
@@ -206,7 +207,94 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("문제집 전체 조회 - 성공")
+    @DisplayName("다양한 공개 문제집을 조회한다. - 성공, 최대 개수가 2개이면 2개를 보여준다.")
+    void findPublicWorkbooksWhenMaxIsTwo() {
+        // given
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+
+        // when
+        HttpResponse response = request()
+                .get("/api/workbooks/public")
+                .build();
+
+        // then
+        List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(publicWorkbookResponses).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("다양한 공개 문제집을 조회한다. - 성공")
+    void findPublicWorkbooks() {
+        // given
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        for (int i = 0; i < 100; i++) {
+            유저_카드_포함_문제집_등록되어_있음("Java 문제집" + i, true, ozToken);
+            유저_카드_포함_문제집_등록되어_있음("Spring 문제집" + i, true, joanneToken);
+        }
+
+        // when
+        HttpResponse response = request()
+                .get("/api/workbooks/public")
+                .build();
+
+        // then
+        List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(publicWorkbookResponses).hasSize(100);
+    }
+
+    @Test
+    @DisplayName("다양한 공개 문제집을 조회한다. - 성공, opened가 true인 문제집만 조회")
+    void findPublicWorkbooksWhenOpenedIsFalse() {
+        // given
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        유저_태그_포함_문제집_등록되어_있음("Java 문제집", false, ozToken);
+        유저_태그_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
+
+        // when
+        HttpResponse response = request()
+                .get("/api/workbooks/public")
+                .build();
+
+        // then
+        List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(publicWorkbookResponses).hasSize(0);
+    }
+
+    @Test
+    @DisplayName("다양한 공개 문제집을 조회한다. - 성공, 카드를 1개 이상 포함한 문제집만 조회")
+    void findPublicWorkbooksWhenNonZeroCard() {
+        // given
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        // 카드를 포함하지 않은 문제집을 등록한다.
+        유저_태그_포함_문제집_등록되어_있음("Java 문제집", false, ozToken);
+        유저_태그_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
+
+        // when
+        HttpResponse response = request()
+                .get("/api/workbooks/public")
+                .build();
+
+        // then
+        List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(publicWorkbookResponses).hasSize(0);
+    }
+
+    @Test
+    @DisplayName("유저의 문제집 전체 조회 - 성공")
     void findWorkbooksByUser() {
         // given
         final String accessToken = 소셜_로그인되어_있음(pk, SocialType.GITHUB);
@@ -334,7 +422,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(0L).name("잡아").build()
         );
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음("Java 문제집", true, tagRequests, accessToken);
+        final WorkbookResponse workbookResponse = 유저_태그포함_문제집_등록되어_있음("Java 문제집", true, tagRequests, accessToken);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );

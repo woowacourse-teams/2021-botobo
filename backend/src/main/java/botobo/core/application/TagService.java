@@ -4,7 +4,9 @@ import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagName;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
+import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.tag.TagResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +31,13 @@ public class TagService {
                 .map(tagName -> tagRepository.findByTagName(tagName).orElse(Tag.of(tagName)))
                 .collect(Collectors.toList());
         return Tags.of(tags);
+    }
+
+    public List<TagResponse> findAllTagsByWorkbookName(FilterCriteria filterCriteria) {
+        if (filterCriteria.isEmpty()) {
+            return TagResponse.listOf(Tags.empty());
+        }
+        Tags tags = Tags.of(tagRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()));
+        return TagResponse.listOf(tags);
     }
 }

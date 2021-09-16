@@ -317,9 +317,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(quizResponses.size()).isEqualTo(10);
-        assertThat(quizResponses.stream()
-                .map(QuizResponse::getId)
-                .collect(Collectors.toList()))
+        assertThat(quizResponses)
+                .extracting(QuizResponse::getId)
                 .containsAll(cardIds);
     }
 
@@ -377,8 +376,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
-                .get("/api/quizzes/{workbookId}", 1L)
-                .failAuth()
+                .get("/api/quizzes/1")
+                .auth(createToken(admin.getId()))
                 .build();
 
         // when
@@ -396,7 +395,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/api/quizzes/{workbookId}", 100L)
-                .failAuth()
+                .auth(createToken(admin.getId()))
                 .build();
 
         // when

@@ -2,7 +2,6 @@ package botobo.core.ui.search;
 
 import botobo.core.application.SearchService;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.SimpleUserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,22 +22,16 @@ public class SearchController {
     }
 
     @GetMapping("/workbooks")
-    public ResponseEntity<List<WorkbookResponse>> searchWorkbooks(@SearchParams WorkbookSearchParameter workbookSearchParameter) {
-        List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter);
+    public ResponseEntity<List<WorkbookResponse>> searchWorkbooks(@SearchParams WorkbookSearchParameter workbookSearchParameter,
+                                                                  @RequestParam(required = false) List<Long> tags,
+                                                                  @RequestParam(required = false) List<Long> users) {
+        List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter, tags, users);
         return ResponseEntity.ok(workbookResponses);
     }
 
     @GetMapping("/tags")
-    public ResponseEntity<List<TagResponse>> searchTags(@RequestParam String keyword) {
-        SearchKeyword searchKeyword = SearchKeyword.of(keyword);
-        List<TagResponse> tagResponses = searchService.searchTags(searchKeyword);
+    public ResponseEntity<List<TagResponse>> recommendRelatedTags(@RequestParam SearchRelated keyword) {
+        List<TagResponse> tagResponses = searchService.findTagsIn(keyword);
         return ResponseEntity.ok(tagResponses);
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<SimpleUserResponse>> searchUsers(@RequestParam String keyword) {
-        SearchKeyword searchKeyword = SearchKeyword.of(keyword);
-        List<SimpleUserResponse> userResponses = searchService.searchUsers(searchKeyword);
-        return ResponseEntity.ok(userResponses);
     }
 }

@@ -2,29 +2,31 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
-import { STORAGE_KEY } from '../constants';
-import { usePublicSearchQuery, useRouter } from '../hooks';
+import { DEVICE, ROUTE } from '../constants';
+import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
-import { setSessionStorage } from '../utils';
 import LoadingSpinner from './LoadingSpinner';
 import PublicWorkbook from './PublicWorkbook';
 
 interface Props {
+  query: PublicSearchQueryReturnType;
   isLoading: boolean;
   publicWorkbooks: PublicWorkbookResponse[];
-  searchForPublicWorkbook: ({
-    keyword,
-    ...options
-  }: PublicWorkbookAsync) => Promise<void>;
+  searchForPublicWorkbook: (
+    { keyword, ...options }: PublicWorkbookAsync,
+    isNew?: boolean
+  ) => Promise<void>;
 }
 
+const MAX_COUNT_WORKBOOK_ONE_TIME = 20;
+
 const PublicWorkbookList = ({
+  query,
   isLoading,
   publicWorkbooks,
   searchForPublicWorkbook,
 }: Props) => {
-  const { keyword, type } = usePublicSearchQuery();
-  const { routePublicCards } = useRouter();
+  const { tags, users, criteria } = query;
 
   const scrollTarget = useRef<HTMLLIElement>(null);
 
@@ -38,7 +40,9 @@ const PublicWorkbookList = ({
 
         observer.unobserve(entry.target);
 
-        await searchForPublicWorkbook({ keyword, type });
+        if (publicWorkbooks.length < MAX_COUNT_WORKBOOK_ONE_TIME) return;
+
+        await searchForPublicWorkbook(query, false);
       },
       {
         threshold: 0.1,
@@ -48,23 +52,24 @@ const PublicWorkbookList = ({
     scrollObserver.observe(scrollTarget.current);
 
     return () => scrollObserver.disconnect();
-  }, [scrollTarget.current]);
+  }, [scrollTarget.current, tags, users, criteria]);
 
   return (
     <StyledUl>
-      {publicWorkbooks.map(({ id, name, cardCount, author }) => (
-        <li ref={scrollTarget} key={id}>
-          <PublicWorkbook
-            name={name}
-            cardCount={cardCount}
-            author={author}
-            onClick={() => {
-              setSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID, id);
-              routePublicCards();
-            }}
-          />
-        </li>
-      ))}
+      {publicWorkbooks.map(
+        ({ id, name, cardCount, author, heartCount, tags }, index) => (
+          <li ref={scrollTarget} key={index}>
+            <PublicWorkbook
+              name={name}
+              cardCount={cardCount}
+              author={author}
+              heartCount={heartCount}
+              tags={tags}
+              path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+            />
+          </li>
+        )
+      )}
       {isLoading && (
         <LoadingSpinnerWrapper>
           <LoadingSpinner />
@@ -77,11 +82,15 @@ const PublicWorkbookList = ({
 const StyledUl = styled.ul`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
   gap: 1rem;
 
   & > li:last-of-type {
     margin-bottom: 1rem;
+  }
+
+  @media ${DEVICE.TABLET} {
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 

@@ -1,3 +1,4 @@
+export { publicSearchResultState } from './searchState';
 export {
   quizState,
   quizModeState,
@@ -7,7 +8,6 @@ export {
 export { userState } from './userState';
 export {
   shouldWorkbookUpdateState,
-  workbookIdState,
   workbookState,
-  editedWorkbookState,
+  publicWorkbookState,
 } from './workbookState';

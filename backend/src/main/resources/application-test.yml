@@ -8,6 +8,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
     hibernate:
       ddl-auto: create
   config:
@@ -15,13 +16,6 @@ spring:
       on-profile: test
   flyway:
     enabled: false
-
-logging:
-  level:
-    com:
-      amazonaws:
-        util:
-          EC2MetadataUtils: error
 
 github:
   client:

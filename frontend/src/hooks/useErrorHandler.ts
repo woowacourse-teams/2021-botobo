@@ -3,12 +3,16 @@ import axios, { AxiosError } from 'axios';
 import { ERROR_MESSAGE } from '../constants';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
+import { useLogout } from '.';
 
 const useErrorHandler = () => {
   const { routeLogin } = useRouter();
+  const { logout } = useLogout();
   const showSnackbar = useSnackbar();
 
-  const handler = (error: AxiosError | Error) => {
+  const handler = (error: AxiosError | Error | unknown) => {
+    if (!(error instanceof Error)) return;
+
     console.error(error.message);
 
     if (!axios.isAxiosError(error)) return;
@@ -16,6 +20,7 @@ const useErrorHandler = () => {
     const errorCode = error.response?.data.code as keyof typeof ERROR_MESSAGE;
 
     if (errorCode === 'A001' || errorCode === 'A002') {
+      logout();
       routeLogin();
 
       showSnackbar({ message: ERROR_MESSAGE[errorCode] });

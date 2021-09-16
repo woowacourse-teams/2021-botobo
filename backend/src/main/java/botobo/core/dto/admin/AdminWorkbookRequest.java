@@ -1,15 +1,23 @@
 package botobo.core.dto.admin;
 
-import botobo.core.domain.user.User;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.dto.tag.TagRequest;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Builder
 public class AdminWorkbookRequest {
 
     @NotBlank(message = "W002")
@@ -17,22 +25,25 @@ public class AdminWorkbookRequest {
     private String name;
     private boolean opened = true;
 
+    @Builder.Default
+    @Valid
+    private List<TagRequest> tags = new ArrayList<>();
+
     public AdminWorkbookRequest(String name) {
         this.name = name;
     }
 
-    public AdminWorkbookRequest(String name, boolean isPublic) {
+    public AdminWorkbookRequest(String name, boolean opened) {
         this.name = name;
-        this.opened = isPublic;
+        this.opened = opened;
     }
 
-    public Workbook toWorkbook(User user) {
+    public Workbook toWorkbook() {
         return Workbook.builder()
                 .name(name)
                 .opened(true)
                 .deleted(false)
                 .opened(opened)
-                .user(user)
                 .build();
     }
 }

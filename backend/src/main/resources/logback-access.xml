@@ -12,7 +12,7 @@
         <appender-ref ref="HTTP_CONSOLE"/>
     </springProfile>
 
-    <springProfile name="dev, prod">
+    <springProfile name="dev1, dev2, prod1, prod2">
         <include resource="logback/http-file-appender.xml"/>
         <appender-ref ref="HTTP_FILE"/>
     </springProfile>

@@ -1,14 +1,16 @@
-import { DefaultValue, atom, selector } from 'recoil';
+import { atom, selector } from 'recoil';
 
-import { getWorkbooksAsync } from '../api';
-import { STORAGE_KEY } from '../constants';
-import { WorkbookResponse } from '../types';
-import { getSessionStorage } from '../utils';
-import { workbookInitialState } from './initialState';
+import { getPublicWorkbookAsync, getWorkbooksAsync } from '../api';
+import { PublicWorkbookResponse, WorkbookResponse } from '../types';
 import { userState } from './userState';
 
-interface WorkbookState {
+export interface WorkbookState {
   data: WorkbookResponse[];
+  errorMessage: string | null;
+}
+
+interface PublicWorkbookState {
+  data: PublicWorkbookResponse[];
   errorMessage: string | null;
 }
 
@@ -17,50 +19,42 @@ export const shouldWorkbookUpdateState = atom({
   default: false,
 });
 
-const workbookUpdateTrigger = atom({
-  key: 'workbookUpdateTrigger',
-  default: 0,
-});
-
-export const workbookIdState = atom<number>({
-  key: 'workbookIdState',
-  default: getSessionStorage(STORAGE_KEY.WORKBOOK_ID) ?? -1,
-});
-
-export const workbookState = selector<WorkbookState>({
+export const workbookState = atom<WorkbookState>({
   key: 'workbookState',
-  get: async ({ get }) => {
-    get(workbookUpdateTrigger);
-
-    try {
-      return {
-        data: get(userState) ? await getWorkbooksAsync() : [],
-        errorMessage: null,
-      };
-    } catch (error) {
-      return {
-        data: [],
-        errorMessage: '문제집을 불러오지 못했습니다.',
-      };
-    }
-  },
-  set: ({ set }, value) => {
-    if (value instanceof DefaultValue) {
-      set(workbookUpdateTrigger, (prevState) => prevState + 1);
-      set(shouldWorkbookUpdateState, false);
-    }
-  },
+  default: selector({
+    key: 'workbookRequest',
+    get: async ({ get }) => {
+      try {
+        return {
+          data: get(userState) ? await getWorkbooksAsync() : [],
+          errorMessage: null,
+        };
+      } catch (error) {
+        return {
+          data: [],
+          errorMessage: '문제집을 불러오지 못했어요.',
+        };
+      }
+    },
+  }),
 });
 
-export const editedWorkbookState = selector<WorkbookResponse>({
-  key: 'editedWorkbookState',
-  get: ({ get }) => {
-    const workbookId = get(workbookIdState);
-    const { data } = get(workbookState);
-
-    return (
-      data.find((workbook) => workbook.id === workbookId) ||
-      workbookInitialState
-    );
-  },
+export const publicWorkbookState = atom<PublicWorkbookState>({
+  key: 'publicWorkbookState',
+  default: selector({
+    key: 'publicWorkbookRequest',
+    get: async () => {
+      try {
+        return {
+          data: await getPublicWorkbookAsync(),
+          errorMessage: null,
+        };
+      } catch (error) {
+        return {
+          data: [],
+          errorMessage: '문제집을 불러오지 못했어요.',
+        };
+      }
+    },
+  }),
 });

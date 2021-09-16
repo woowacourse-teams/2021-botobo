@@ -3,6 +3,7 @@ package botobo.core.infrastructure;
 import botobo.core.exception.user.s3.FileConvertFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
@@ -32,18 +35,30 @@ public class S3Uploader {
     @Value("${aws.user-default-image}")
     private String userDefaultImageName;
 
-    public String upload(MultipartFile multipartFile, String userName) throws IOException {
+    public String upload(MultipartFile multipartFile, String userId) throws IOException {
         if (isEmpty(multipartFile)) {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
+        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userId);
         uploadImageToS3(
                 makeUploadImageFile(multipartFile),
                 generatedFileName
         );
 
         return makeCloudFrontUrl(generatedFileName);
+    }
+
+    private void uploadImageToS3(File uploadImage, String fileName) {
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setCacheControl("max-age=31536000");
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, new FileInputStream(uploadImage), metadata));
+        } catch (FileNotFoundException e) {
+            log.info("{}의 파일을 찾을 수 없습니다.",uploadImage.getName());
+        } finally {
+            deleteTemporaryFile(uploadImage);
+        }
     }
 
     private File makeUploadImageFile(MultipartFile multipartFile) throws IOException {
@@ -57,7 +72,7 @@ public class S3Uploader {
                 ""
         );
         if (!Objects.equals(oldImageName, userDefaultImageName) && amazonS3Client.doesObjectExist(bucket, oldImageName)) {
-            log.info(String.format("S3Uploader, S3에서 이미지(이미지명: %s)를 삭제했습니다.", oldImageName));
+            log.info("S3Uploader, S3에서 이미지(이미지명: {})를 삭제했습니다.", oldImageName);
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, oldImageName));
         }
     }
@@ -83,14 +98,6 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
-    }
-
-    private void uploadImageToS3(File uploadImage, String fileName) {
-        try {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadImage));
-        } finally {
-            deleteTemporaryFile(uploadImage);
-        }
     }
 
     private void deleteTemporaryFile(File uploadImage) {

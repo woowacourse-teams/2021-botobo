@@ -47,9 +47,9 @@ public class WorkbookService extends AbstractUserService {
     public WorkbookResponse createWorkbookByUser(WorkbookRequest workbookRequest, AppUser appUser) {
         User user = findUser(appUser);
         Tags tags = tagService.convertTags(workbookRequest.getTags());
-        Workbook workbook = workbookRequest.toWorkbook()
-                .createBy(user)
-                .taggedBy(tags);
+        Workbook workbook = workbookRequest.toWorkbook();
+        workbook.setUser(user);
+        workbook.setTags(tags);
         Workbook savedWorkbook = workbookRepository.save(workbook);
         return WorkbookResponse.authorOf(savedWorkbook);
     }
@@ -154,5 +154,10 @@ public class WorkbookService extends AbstractUserService {
         return HeartResponse.of(
                 workbook.toggleHeart(heart)
         );
+    }
+
+    public List<WorkbookResponse> findPublicWorkbooks() {
+        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+        return WorkbookResponse.openedListOf(workbooks);
     }
 }

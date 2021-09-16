@@ -3,7 +3,9 @@ package botobo.core.application;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -14,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +47,7 @@ public class UserService extends AbstractUserService {
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
-        String newProfileUrl = s3Uploader.upload(multipartFile, user.getUserName());
+        String newProfileUrl = s3Uploader.upload(multipartFile, String.valueOf(user.getId()));
 
         user.updateProfileUrl(newProfileUrl);
 
@@ -64,5 +69,13 @@ public class UserService extends AbstractUserService {
                     }
                 }
         );
+    }
+
+    public List<UserFilterResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
+        if (filterCriteria.isEmpty()) {
+            return UserFilterResponse.listOf(emptyList());
+        }
+        List<User> users = userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+        return UserFilterResponse.listOf(users);
     }
 }

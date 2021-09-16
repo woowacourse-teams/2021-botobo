@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { useSetRecoilState } from 'recoil';
 
 import {
@@ -6,13 +7,15 @@ import {
   postPublicCardsAsync,
   putHeartAsync,
 } from './../api';
-import { shouldWorkbookUpdateState } from './../recoil';
+import {
+  publicSearchResultState,
+  publicWorkbookState,
+  shouldWorkbookUpdateState,
+} from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
-import { getSessionStorage } from './../utils/storage';
-import { STORAGE_KEY } from '../constants';
+import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
-import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const cardsInitialState = {
@@ -38,11 +41,14 @@ interface PublicCardsInfo extends PublicCardsResponse {
 }
 
 const usePublicCard = () => {
-  const publicWorkbookId =
-    getSessionStorage(STORAGE_KEY.PUBLIC_WORKBOOK_ID) ?? -1;
+  const param: IdParam = useParams();
+  const publicWorkbookId = Number(param.id);
+
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
+  const setPublicWorkbook = useSetRecoilState(publicWorkbookState);
+  const setPublicSearchResult = useSetRecoilState(publicSearchResultState);
 
   const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
     publicCardsInitialState
@@ -66,14 +72,12 @@ const usePublicCard = () => {
   const [isAllCardChecked, setIsAllCardChecked] = useState(false);
   const checkedCardCount = cards.filter(({ isChecked }) => isChecked).length;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
-  const { routeMain } = useRouter();
   const errorHandler = useErrorHandler();
 
   const getPublicCards = async () => {
     try {
-      setIsLoading(true);
       const newPublicCardInfo = await getPublicCardsAsync(publicWorkbookId);
       const { heart, heartCount } = newPublicCardInfo;
 
@@ -98,6 +102,34 @@ const usePublicCard = () => {
       const { heart } = await putHeartAsync(workbookId);
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
+
+      setPublicWorkbook((prevValue) => ({
+        ...prevValue,
+        data: prevValue.data.map((prevData) => {
+          if (prevData.id !== workbookId) return prevData;
+
+          return {
+            ...prevData,
+            heartCount: heart
+              ? prevData.heartCount + 1
+              : prevData.heartCount - 1,
+          };
+        }),
+      }));
+
+      setPublicSearchResult((prevValue) => ({
+        ...prevValue,
+        publicWorkbookResult: prevValue.publicWorkbookResult.map((prevData) => {
+          if (prevData.id !== workbookId) return prevData;
+
+          return {
+            ...prevData,
+            heartCount: heart
+              ? prevData.heartCount + 1
+              : prevData.heartCount - 1,
+          };
+        }),
+      }));
     } catch (error) {
       errorHandler(error);
     }
@@ -151,12 +183,6 @@ const usePublicCard = () => {
   }, [checkedCardCount]);
 
   useEffect(() => {
-    if (publicWorkbookId === -1) {
-      routeMain();
-
-      return;
-    }
-
     getPublicCards();
   }, []);
 

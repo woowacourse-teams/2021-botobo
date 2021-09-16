@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { getQuizzesAsync } from '../api';
 import EmptyHeartIcon from '../assets/heart-regular.svg';
@@ -16,7 +17,12 @@ import {
 } from '../components';
 import { QUIZ_MODE, ROUTE, theme } from '../constants';
 import { useModal, usePublicCard, useRouter, useWorkbook } from '../hooks';
-import { quizModeState, quizState, userState } from '../recoil';
+import {
+  publicSearchResultState,
+  quizModeState,
+  quizState,
+  userState,
+} from '../recoil';
 import { Flex } from '../styles';
 import { debounce } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -26,6 +32,8 @@ const PublicCardsPage = () => {
   const setQuiz = useSetRecoilState(quizState);
   const setQuizMode = useSetRecoilState(quizModeState);
   const isLogin = useRecoilValue(userState) ? true : false;
+
+  const resetSearchResult = useResetRecoilState(publicSearchResultState);
 
   const { workbooks } = useWorkbook();
   const {
@@ -45,9 +53,6 @@ const PublicCardsPage = () => {
     toggleHeart,
     showSnackbar,
   } = usePublicCard();
-
-  const { routePublicSearchQuery } = useRouter();
-
   const { openModal, closeModal } = useModal();
   const { routeQuiz } = useRouter();
 
@@ -121,14 +126,8 @@ const PublicCardsPage = () => {
             {tags.map(({ id, name }) => (
               <TagWrapper key={id}>
                 <Tag
-                  type="button"
-                  onClick={() =>
-                    routePublicSearchQuery({
-                      keyword: name,
-                      type: 'tag',
-                      method: 'push',
-                    })
-                  }
+                  to={`${ROUTE.PUBLIC_SEARCH_RESULT.PATH}?keyword=${name}`}
+                  onClick={resetSearchResult}
                 >
                   <span>#</span>
                   {name}
@@ -222,6 +221,7 @@ const TopContent = styled.div`
 
 const WorkbookName = styled.h2`
   margin-bottom: 0.5rem;
+  word-break: break-all;
 `;
 
 const CardCount = styled.div`
@@ -233,17 +233,20 @@ const CardCount = styled.div`
 `;
 
 const TagWrapper = styled.li`
-  display: inline-block;
+  display: inline;
   word-break: break-all;
 `;
 
-const Tag = styled.button`
+const Tag = styled(Link)`
   margin-right: 0.5rem;
-  text-align: left;
+  line-height: 1.5;
 
   ${({ theme }) => css`
     color: ${theme.color.blue};
-    font-size: ${theme.fontSize.default};
+
+    &:visited {
+      color: ${theme.color.blue};
+    }
   `};
 
   & > span {

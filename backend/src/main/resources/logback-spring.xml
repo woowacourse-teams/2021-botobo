@@ -7,18 +7,32 @@
     <property name="BOTOBO_FILE_LOG_PATTERN"
               value="%d{yy-MM-dd} %d{HH:mm:ss} %-5level [%-41logger{36}:%-4line] - %msg%n "/>
 
-    <springProfile name="local, test">
+    <springProfile name="test, local">
         <include resource="logback/console-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
-    <springProfile name="dev, prod">
+    <springProfile name="dev1, dev2">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>
-        <include resource="logback/query-file-appender.xml"/>
+        <include resource="logback/query-file-dev-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="QUERY_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod1, prod2">
+        <include resource="logback/info-file-appender.xml"/>
+        <include resource="logback/warn-file-appender.xml"/>
+        <include resource="logback/error-file-appender.xml"/>
+        <include resource="logback/query-file-prod-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="INFO_FILE"/>

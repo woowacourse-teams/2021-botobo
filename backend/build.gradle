@@ -5,6 +5,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'jacoco'
     id 'java'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'botobo'
@@ -65,6 +66,9 @@ dependencies {
 
     // Flyway
     implementation('org.flywaydb:flyway-core:6.4.2')
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa'
 }
 
 ext {
@@ -74,10 +78,16 @@ ext {
 processResources.dependsOn('copyDev')
 
 task copyDev(type: Copy) {
-    from '../dev/application-prod.yml'
+    from '../dev/application-prod1.yml'
     into './src/main/resources'
 
-    from '../dev/application-dev.yml'
+    from '../dev/application-prod2.yml'
+    into './src/main/resources'
+
+    from '../dev/application-dev1.yml'
+    into './src/main/resources'
+
+    from '../dev/application-dev2.yml'
     into './src/main/resources'
 
     from '../dev/application-local.yml'
@@ -109,6 +119,12 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+    def Qdomains = []
+
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -131,8 +147,9 @@ jacocoTestCoverageVerification {
                     'botobo.core.exception.**',
                     'botobo.core.dto.**',
                     'botobo.core.DataLoader',
-                    'botobo.core.BotoboApplication'
-            ]
+                    'botobo.core.BotoboApplication',
+                    'botobo.core.config.datasource.**'
+            ] + Qdomains
         }
     }
 }
@@ -174,4 +191,23 @@ task createDocument(type: Copy) {
 
 build {
     dependsOn createDocument
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }

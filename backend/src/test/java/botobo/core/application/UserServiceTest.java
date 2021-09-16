@@ -1,9 +1,14 @@
 package botobo.core.application;
 
 import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.Role;
+import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbook.Workbook;
+import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
+import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -15,12 +20,15 @@ import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +42,7 @@ import static org.mockito.Mockito.times;
 
 @DisplayName("유저 서비스 테스트")
 @MockitoSettings
-public class UserServiceTest {
+class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
     private static final String USER_DEFAULT_IMAGE = "imagesForS3Test/botobo-default-profile.png";
@@ -48,17 +56,37 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private User user;
+    private User user1, user2, user3;
     private AppUser appUser;
 
     @BeforeEach
     void setUp() {
         appUser = AppUser.user(1L);
-        user = User.builder()
+        user1 = User.builder()
                 .id(1L)
                 .socialId("1")
-                .userName("user")
+                .userName("user1")
                 .profileUrl("profile.io")
+                .role(Role.USER)
+                .socialType(SocialType.GITHUB)
+                .build();
+
+        user2 = User.builder()
+                .id(2L)
+                .socialId("2")
+                .userName("user2")
+                .profileUrl("profile.io")
+                .role(Role.USER)
+                .socialType(SocialType.GITHUB)
+                .build();
+
+        user3 = User.builder()
+                .id(3L)
+                .socialId("3")
+                .userName("user3")
+                .profileUrl("profile.io")
+                .role(Role.USER)
+                .socialType(SocialType.GITHUB)
                 .build();
     }
 
@@ -66,15 +94,15 @@ public class UserServiceTest {
     @DisplayName("유저 id에 해당하는 유저를 조회한다. - 성공")
     void findById() {
         // given
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
 
         // when
         UserResponse userResponse = userService.findById(appUser);
 
         // then
-        assertThat(userResponse.getId()).isEqualTo(user.getId());
-        assertThat(userResponse.getUserName()).isEqualTo(user.getUserName());
-        assertThat(userResponse.getProfileUrl()).isEqualTo(user.getProfileUrl());
+        assertThat(userResponse.getId()).isEqualTo(user1.getId());
+        assertThat(userResponse.getUserName()).isEqualTo(user1.getUserName());
+        assertThat(userResponse.getProfileUrl()).isEqualTo(user1.getProfileUrl());
 
         then(userRepository)
                 .should(times(1))
@@ -87,8 +115,8 @@ public class UserServiceTest {
         // given
         String profileUrl = "https://botobo.com/users/user/botobo.png";
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(profileUrl);
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
+        given(s3Uploader.upload(mockMultipartFile, String.valueOf(user1.getId()))).willReturn(profileUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -101,7 +129,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(times(1))
-                .upload(mockMultipartFile, user.getUserName());
+                .upload(mockMultipartFile, String.valueOf(user1.getId()));
     }
 
     @Test
@@ -111,8 +139,8 @@ public class UserServiceTest {
         String defaultImageUrl = String.format(CLOUDFRONT_URL_FORMAT, USER_DEFAULT_IMAGE);
         MockMultipartFile mockMultipartFile = null;
 
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(s3Uploader.upload(mockMultipartFile, user.getUserName())).willReturn(defaultImageUrl);
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
+        given(s3Uploader.upload(mockMultipartFile, String.valueOf(user1.getId()))).willReturn(defaultImageUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -138,7 +166,7 @@ public class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(never())
-                .upload(mockMultipartFile, user.getUserName());
+                .upload(mockMultipartFile, user1.getUserName());
     }
 
     @Test
@@ -151,8 +179,8 @@ public class UserServiceTest {
                 .bio("")
                 .build();
 
-        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.of(user));
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.of(user1));
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
 
         // when
         UserResponse userResponse = userService.update(userUpdateRequest, appUser);
@@ -181,7 +209,7 @@ public class UserServiceTest {
                 .build();
 
         given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
 
         // when
         UserResponse userResponse = userService.update(userUpdateRequest, appUser);
@@ -209,7 +237,7 @@ public class UserServiceTest {
                 .bio("수정된 bio")
                 .build();
         given(userRepository.findByUserName(userUpdateRequest.getUserName())).willReturn(Optional.empty());
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
 
         // when
         assertThatThrownBy(() -> userService.update(userUpdateRequest, appUser))
@@ -271,7 +299,7 @@ public class UserServiceTest {
                 .userName("user")
                 .build();
 
-        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.of(user));
+        given(userRepository.findByUserName(userNameRequest.getUserName())).willReturn(Optional.of(user1));
 
         assertThatCode(() -> userService.checkDuplicatedUserName(userNameRequest, appUser))
                 .doesNotThrowAnyException();
@@ -296,5 +324,47 @@ public class UserServiceTest {
         then(userRepository)
                 .should(times(1))
                 .findByUserName(userNameRequest.getUserName());
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 유저를 모두 가져온다. - 성공, 검색 조건에 맞지 않는 경우엔 빈 응답을 반환한다.")
+    @EmptySource
+    @ParameterizedTest
+    void findAllUsersByWorkbookNameEmpty(String workbook) {
+        // given
+        FilterCriteria filterCriteria = new FilterCriteria(workbook);
+
+        // when
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+
+        // then
+        assertThat(responses).isEmpty();
+        then(userRepository)
+                .should(never())
+                .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 유저를 모두 가져온다. - 성공")
+    @Test
+    void findAllUsersByWorkbookName() {
+        // given
+        FilterCriteria filterCriteria = new FilterCriteria("자바");
+        given(userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
+                .willReturn(List.of(user1, user2, user3));
+
+        // when
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+
+        // then
+        assertThat(responses).hasSize(3);
+        then(userRepository)
+                .should(times(1))
+                .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+    }
+
+    private Workbook makeWorkbookWithUser(String workbookName, User user) {
+        return Workbook.builder()
+                .name(workbookName)
+                .user(user)
+                .build();
     }
 }

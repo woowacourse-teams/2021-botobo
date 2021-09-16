@@ -1,25 +1,13 @@
-import { useSetRecoilState } from 'recoil';
+import { useEffect } from 'react';
 
-import { postLogoutAsync } from '../api';
-import { useRouter } from '../hooks';
-import { userState } from '../recoil';
+import { useLogout } from '../hooks';
 
 const LogoutPage = () => {
-  const { routeMain } = useRouter();
-  const setUserInfo = useSetRecoilState(userState);
+  const { logout } = useLogout();
 
-  const logout = async () => {
-    try {
-      await postLogoutAsync();
-      setUserInfo(null);
-      routeMain();
-    } catch (error) {
-      //TODO: 에러 바운더리로 보내기
-      console.error(error);
-    }
-  };
-
-  logout();
+  useEffect(() => {
+    logout({ isRouteMain: true });
+  }, []);
 
   return null;
 };
