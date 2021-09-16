@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import {
@@ -17,6 +17,8 @@ const useWorkbook = () => {
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
+
+  const deletedWorkbookId = useRef(-1);
 
   const updateWorkbooks = async () => {
     try {
@@ -62,8 +64,11 @@ const useWorkbook = () => {
   };
 
   const deleteWorkbook = async (id: number) => {
+    if (deletedWorkbookId.current === id) return;
+
     try {
       await deleteWorkbookAsync(id);
+      deletedWorkbookId.current = id;
       showSnackbar({ message: '문제집이 삭제되었어요.' });
       updateWorkbooks();
     } catch (error) {

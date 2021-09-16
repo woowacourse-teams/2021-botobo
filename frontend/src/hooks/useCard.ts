@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSetRecoilState } from 'recoil';
 
@@ -31,6 +31,8 @@ const useCard = () => {
 
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
   const { workbookName, cards } = cardInfo;
+
+  const deletedCardId = useRef(-1);
 
   const [isLoading, setIsLoading] = useState(true);
   const showSnackbar = useSnackbar();
@@ -82,9 +84,11 @@ const useCard = () => {
   };
 
   const deleteCard = async (id: number) => {
+    if (deletedCardId.current === id) return;
+
     try {
       await deleteCardAsync(id);
-
+      deletedCardId.current = id;
       setCardInfo({
         ...cardInfo,
         cards: cards.filter((card) => card.id !== id),
