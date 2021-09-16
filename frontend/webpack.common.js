@@ -9,6 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[chunkhash].js',
     publicPath: '/',
+    clean: true,
   },
   plugins: [
     new Dotenv(),

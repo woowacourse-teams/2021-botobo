@@ -40,7 +40,7 @@ const { extractCriticalToChunks, constructStyleTagsFromChunks } =
   createEmotionServer(cache);
 
 app.get('/', async (req, res) => {
-  const indexFile = path.resolve(__dirname, '../index.html');
+  const indexFile = path.resolve(__dirname, '../dist/index.html');
 
   try {
     const userInfo = await getUserInfo(req.headers.cookie);
@@ -118,7 +118,7 @@ app.get('/', async (req, res) => {
 app.use(history());
 
 app.use(
-  express.static(path.resolve(__dirname, '../'), {
+  express.static(path.resolve(__dirname, '../dist'), {
     setHeaders: (res, path) => {
       if (/index.html/.test(path)) {
         setHeaders({ res, isIndexHtml: true });

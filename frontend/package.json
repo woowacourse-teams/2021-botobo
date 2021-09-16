@@ -13,7 +13,7 @@
     "build-server:local": "cp ../dev/env/.env.local ./.env && webpack --node-env production --config webpack.server.js",
     "build-server:dev": "cp ../dev/env/.env.dev ./.env && webpack --node-env production --config webpack.server.js",
     "build-server:prod": "cp ../dev/env/.env.prod ./.env && webpack --node-env production --config webpack.server.js",
-    "start-server": "node ./dist/dist-server/index.js",
+    "start-server": "node ./dist-server/index.js",
     "build-concurrently:local": "concurrently \"yarn build:local\" \"yarn build-server:local\"",
     "build-concurrently:dev": "concurrently \"yarn build:dev\" \"yarn build-server:dev\"",
     "build-concurrently:prod": "concurrently \"yarn build:prod\" \"yarn build-server:prod\""

@@ -12,8 +12,10 @@ module.exports = {
   externals: [nodeExternals()],
 
   output: {
-    path: path.resolve(__dirname, 'dist/dist-server'),
+    path: path.resolve(__dirname, 'dist-server'),
     filename: 'index.js',
+    chunkFilename: '[name].[chunkhash].js',
+    clean: true,
   },
 
   plugins: [
@@ -22,7 +24,7 @@ module.exports = {
       patterns: [
         {
           from: './package.json',
-          to: path.resolve(__dirname, 'dist/dist-server'),
+          to: path.resolve(__dirname, 'dist-server'),
         },
       ],
     }),
