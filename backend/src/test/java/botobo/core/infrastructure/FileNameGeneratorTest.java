@@ -22,49 +22,34 @@ class FileNameGeneratorTest {
     @ParameterizedTest
     @DisplayName("파일 이름을 생성한다. - 성공")
     @MethodSource("createTestFiles")
-    void generateFileName(MultipartFile multipartFile, String userName) {
-        assertThat(fileNameGenerator.generateFileName(multipartFile, userName))
-                .contains("users/조앤/")
-                .contains(getDate());
-    }
-
-    @ParameterizedTest
-    @DisplayName("파일 이름을 생성한다. - 성공, userName에 공백이 포함되어있으면 _로 대체한다.")
-    @MethodSource("createTestFilesWithWhiteSpaceUserName")
-    void generateFileNameWithUserNameIncludeWhiteSpace(MultipartFile multipartFile, String userName) {
-        assertThat(fileNameGenerator.generateFileName(multipartFile, userName))
-                .contains("users/박사_조앤/")
+    void generateFileName(MultipartFile multipartFile, String userId) {
+        assertThat(fileNameGenerator.generateFileName(multipartFile, userId))
+                .contains("users/1/")
                 .contains(getDate());
     }
 
     @ParameterizedTest
     @DisplayName("파일 이름을 생성한다. - 실패, 허용하지 않는 파일 확장자")
     @MethodSource("createTestFilesWithNowAllowedExtension")
-    void generateFileNameWithNotAllowedExtension(MultipartFile multipartFile, String userName) {
-        assertThatThrownBy(() -> fileNameGenerator.generateFileName(multipartFile, userName))
+    void generateFileNameWithNotAllowedExtension(MultipartFile multipartFile, String userId) {
+        assertThatThrownBy(() -> fileNameGenerator.generateFileName(multipartFile, userId))
                 .isInstanceOf(ImageExtensionNotAllowedException.class);
     }
 
     private static Stream<Arguments> createTestFiles() {
         return Stream.of(
-                Arguments.of(FileFactory.testFile("png"), "조앤"),
-                Arguments.of(FileFactory.testFile("jpg"), "조앤"),
-                Arguments.of(FileFactory.testFile("jpeg"), "조앤")
-        );
-    }
-
-    private static Stream<Arguments> createTestFilesWithWhiteSpaceUserName() {
-        return Stream.of(
-                Arguments.of(FileFactory.testFile("png"), "박사 조앤")
+                Arguments.of(FileFactory.testFile("png"), "1"),
+                Arguments.of(FileFactory.testFile("jpg"), "1"),
+                Arguments.of(FileFactory.testFile("jpeg"), "1")
         );
     }
 
     private static Stream<Arguments> createTestFilesWithNowAllowedExtension() {
         return Stream.of(
-                Arguments.of(FileFactory.testFile("txt"), "조앤"),
-                Arguments.of(FileFactory.testFile("gif"), "조앤"),
-                Arguments.of(FileFactory.testFile("mov"), "조앤"),
-                Arguments.of(FileFactory.testFile("tiff"), "조앤")
+                Arguments.of(FileFactory.testFile("txt"), "1"),
+                Arguments.of(FileFactory.testFile("gif"), "1"),
+                Arguments.of(FileFactory.testFile("mov"), "1"),
+                Arguments.of(FileFactory.testFile("tiff"), "1")
         );
     }
 

@@ -35,12 +35,12 @@ public class S3Uploader {
     @Value("${aws.user-default-image}")
     private String userDefaultImageName;
 
-    public String upload(MultipartFile multipartFile, String userName) throws IOException {
+    public String upload(MultipartFile multipartFile, String userId) throws IOException {
         if (isEmpty(multipartFile)) {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userName);
+        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userId);
         uploadImageToS3(
                 makeUploadImageFile(multipartFile),
                 generatedFileName
