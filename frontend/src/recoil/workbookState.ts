@@ -39,19 +39,22 @@ export const workbookState = atom<WorkbookState>({
   }),
 });
 
-export const publicWorkbookState = selector<PublicWorkbookState>({
+export const publicWorkbookState = atom<PublicWorkbookState>({
   key: 'publicWorkbookState',
-  get: async () => {
-    try {
-      return {
-        data: await getPublicWorkbookAsync(),
-        errorMessage: null,
-      };
-    } catch (error) {
-      return {
-        data: [],
-        errorMessage: '문제집을 불러오지 못했어요.',
-      };
-    }
-  },
+  default: selector({
+    key: 'publicWorkbookRequest',
+    get: async () => {
+      try {
+        return {
+          data: await getPublicWorkbookAsync(),
+          errorMessage: null,
+        };
+      } catch (error) {
+        return {
+          data: [],
+          errorMessage: '문제집을 불러오지 못했어요.',
+        };
+      }
+    },
+  }),
 });

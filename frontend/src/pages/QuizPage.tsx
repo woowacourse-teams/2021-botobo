@@ -182,9 +182,7 @@ const QuizPage = () => {
                 </QuizIndexButton>
               ))}
             </TouchBar>
-            {currentQuizIndex === 0 && (
-              <SlideTooltip>상단 바를 좌우로 밀어보세요!</SlideTooltip>
-            )}
+            {currentQuizIndex === 0 && <SlideTooltip>↑ 슬라이드!</SlideTooltip>}
             {currentQuizIndex !== 0 && (
               <PrevButton type="button" onClick={showPrevQuiz}>
                 이전
@@ -287,7 +285,7 @@ const SlideTooltip = styled.div`
   width: max-content;
   transform: translateX(-50%);
   left: 50%;
-  bottom: -1.25rem;
+  bottom: -1.5rem;
 
   ${({ theme }) => css`
     color: ${theme.color.gray_7};

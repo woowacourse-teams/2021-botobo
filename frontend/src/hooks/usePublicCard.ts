@@ -7,7 +7,11 @@ import {
   postPublicCardsAsync,
   putHeartAsync,
 } from './../api';
-import { shouldWorkbookUpdateState } from './../recoil';
+import {
+  publicSearchResultState,
+  publicWorkbookState,
+  shouldWorkbookUpdateState,
+} from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
 import { IdParam } from '../types/idParam';
@@ -43,6 +47,8 @@ const usePublicCard = () => {
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
+  const setPublicWorkbook = useSetRecoilState(publicWorkbookState);
+  const setPublicSearchResult = useSetRecoilState(publicSearchResultState);
 
   const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
     publicCardsInitialState
@@ -96,6 +102,34 @@ const usePublicCard = () => {
       const { heart } = await putHeartAsync(workbookId);
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
+
+      setPublicWorkbook((prevValue) => ({
+        ...prevValue,
+        data: prevValue.data.map((prevData) => {
+          if (prevData.id !== workbookId) return prevData;
+
+          return {
+            ...prevData,
+            heartCount: heart
+              ? prevData.heartCount + 1
+              : prevData.heartCount - 1,
+          };
+        }),
+      }));
+
+      setPublicSearchResult((prevValue) => ({
+        ...prevValue,
+        publicWorkbookResult: prevValue.publicWorkbookResult.map((prevData) => {
+          if (prevData.id !== workbookId) return prevData;
+
+          return {
+            ...prevData,
+            heartCount: heart
+              ? prevData.heartCount + 1
+              : prevData.heartCount - 1,
+          };
+        }),
+      }));
     } catch (error) {
       errorHandler(error);
     }
