@@ -6,6 +6,7 @@ module.exports = merge(common, {
   mode: 'production',
   devtool: false,
   optimization: {
+    moduleIds: 'deterministic',
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
