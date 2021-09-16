@@ -149,14 +149,24 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 유저_카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
     }
 
-    public HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
+    protected HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
         return request()
                 .post("/api/cards", cardRequest)
                 .auth(accessToken)
                 .build();
     }
 
-    protected WorkbookResponse 유저_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+    protected void 유저_카드_포함_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .build();
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+    }
+
+
+    protected WorkbookResponse 유저_태그포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(name)
                 .opened(opened)
@@ -180,7 +190,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );
-        return 유저_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
+        return 유저_태그포함_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
     }
 
     protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
