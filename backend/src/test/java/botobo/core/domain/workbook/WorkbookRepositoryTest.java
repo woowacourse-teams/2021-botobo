@@ -413,7 +413,7 @@ public class WorkbookRepositoryTest {
 
         assertThat(workbooks).hasSize(90);
         for (Workbook workbook : workbooks) {
-            assertThat(workbook.cardCount()).isGreaterThan(0);
+            assertThat(workbook.cardCount()).isPositive();
         }
     }
 
