@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
-public class WorkbookRepositoryTest {
+class WorkbookRepositoryTest {
 
     @Autowired
     private WorkbookRepository workbookRepository;
