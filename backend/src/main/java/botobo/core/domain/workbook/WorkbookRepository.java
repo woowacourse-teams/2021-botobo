@@ -19,9 +19,10 @@ public interface WorkbookRepository extends JpaRepository<Workbook, Long> {
 
     boolean existsById(Long id);
 
-    @Query(value = "select * from workbook w " +
-            "where (select count(*) from card c where c.workbook_id = w.id group by workbook_id) " +
-            "and opened = true " +
+    @Query(value = "select w.*, count(c.id) as cnt from workbook w right join card c on w.id = c.workbook_id " +
+            "where w.opened = true " +
+            "and w.deleted = false " +
+            "group by w.id having cnt > 0" +
             "order by RAND() " +
             "limit 100", nativeQuery = true)
     List<Workbook> findRandomPublicWorkbooks();
