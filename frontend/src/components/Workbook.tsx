@@ -37,7 +37,7 @@ const Workbook = ({
 );
 
 const Name = styled.div`
-  width: 15rem;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

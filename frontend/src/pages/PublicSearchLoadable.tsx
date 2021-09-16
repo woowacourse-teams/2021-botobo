@@ -8,7 +8,7 @@ import { DEVICE } from '../constants';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
-const PublicSearchResultLoadable = () => (
+const PublicSearchLoadable = () => (
   <>
     <HeaderSkeleton />
     <StyledPageTemplate isScroll={true}>
@@ -101,4 +101,4 @@ const StyledCardSkeleton = styled(CardSkeleton)`
   height: 8.75rem;
 `;
 
-export default PublicSearchResultLoadable;
+export default PublicSearchLoadable;

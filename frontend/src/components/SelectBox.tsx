@@ -113,6 +113,9 @@ const HiddenName = styled.div`
   width: 100%;
   margin: 0;
   padding: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const HiddenInput = styled.input`

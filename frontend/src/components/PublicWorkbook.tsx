@@ -55,6 +55,7 @@ const TopContent = styled.div`
 `;
 
 const InnerLeftContent = styled.div`
+  width: calc(100% - 3rem);
   ${Flex({ direction: 'column', items: 'flex-start' })};
 `;
 
@@ -67,7 +68,7 @@ const InnerRightContent = styled.div`
 `;
 
 const Name = styled.span`
-  width: 12.5rem;
+  width: 100%;
   margin-bottom: 0.5rem;
   overflow: hidden;
   white-space: nowrap;
@@ -96,7 +97,7 @@ const Author = styled.span`
 `;
 
 const BottomContent = styled.ul`
-  width: 15rem;
+  width: 100%;
   height: 1.25rem;
   overflow: hidden;
   white-space: nowrap;

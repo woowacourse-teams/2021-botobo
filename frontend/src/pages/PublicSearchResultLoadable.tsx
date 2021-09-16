@@ -12,7 +12,7 @@ const PublicSearchResultLoadable = () => (
     <StyledPageTemplate isScroll={true}>
       <Title />
       <Filter>
-        {[...Array(12)].map((_, index) => (
+        {[...Array(6)].map((_, index) => (
           <Button
             key={index}
             shape="round"
@@ -26,7 +26,7 @@ const PublicSearchResultLoadable = () => (
       </Filter>
 
       <StyledUl>
-        {[...Array(8)].map((_, index) => (
+        {[...Array(12)].map((_, index) => (
           <StyledCardSkeleton key={index} />
         ))}
       </StyledUl>

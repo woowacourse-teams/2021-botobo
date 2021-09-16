@@ -336,7 +336,7 @@ const RecommendedKeyword = styled.li`
 const StyledUl = styled.ul`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
   gap: 1rem;
 
   & > li:last-of-type {
@@ -344,7 +344,7 @@ const StyledUl = styled.ul`
   }
 
   @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 

@@ -69,12 +69,12 @@ const WorkbookList = ({
 
 const StyledUl = styled.ul`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
   gap: 1rem;
   margin: 1rem 0;
 
   @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 
