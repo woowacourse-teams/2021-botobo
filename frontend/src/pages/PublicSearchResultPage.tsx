@@ -197,7 +197,7 @@ const PublicSearchResultPage = () => {
 };
 
 const StyledPageTemplate = styled(PageTemplate)`
-  padding-top: 1rem;
+  padding-top: 2rem;
 `;
 
 const NoSearchResult = styled.div`
