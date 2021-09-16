@@ -147,7 +147,8 @@ jacocoTestCoverageVerification {
                     'botobo.core.exception.**',
                     'botobo.core.dto.**',
                     'botobo.core.DataLoader',
-                    'botobo.core.BotoboApplication'
+                    'botobo.core.BotoboApplication',
+                    'botobo.core.config.datasource.**'
             ] + Qdomains
         }
     }

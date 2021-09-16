@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect } from 'react';
 import {
   Redirect,
   Route,
@@ -11,26 +11,68 @@ import { useRecoilValue } from 'recoil';
 import { SsrSuspense } from './components';
 import { ROUTE } from './constants';
 import {
-  CardsPage,
-  Guide,
-  LoginPage,
-  LogoutPage,
   MainLoadable,
   MainPage,
-  OAuthCallbackPage,
-  ProfilePage,
-  PublicCardsPage,
   PublicSearchLoadable,
-  PublicSearchPage,
-  PublicSearchResultPage,
-  QuizPage,
-  QuizResultPage,
   QuizSettingLoadable,
-  QuizSettingPage,
-  WorkbookAddPage,
-  WorkbookEditPage,
 } from './pages';
 import { userState } from './recoil';
+
+const ProfilePage = lazy(
+  () => import(/* webpackChunkName: "ProfilePage" */ './pages/ProfilePage')
+);
+const LoginPage = lazy(
+  () => import(/* webpackChunkName: "LoginPage" */ './pages/LoginPage')
+);
+const WorkbookAddPage = lazy(
+  () =>
+    import(/* webpackChunkName: "WorkbookAddPage" */ './pages/WorkbookAddPage')
+);
+const WorkbookEditPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "WorkbookEditPage" */ './pages/WorkbookEditPage'
+    )
+);
+const QuizSettingPage = lazy(
+  () =>
+    import(/* webpackChunkName: "QuizSettingPage" */ './pages/QuizSettingPage')
+);
+const QuizPage = lazy(
+  () => import(/* webpackChunkName: "QuizPage" */ './pages/QuizPage')
+);
+const QuizResultPage = lazy(
+  () =>
+    import(/* webpackChunkName: "QuizResultPage" */ './pages/QuizResultPage')
+);
+const CardsPage = lazy(
+  () => import(/* webpackChunkName: "CardsPage" */ './pages/CardsPage')
+);
+const PublicSearchPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "PublicSearchPage" */ './pages/PublicSearchPage'
+    )
+);
+const PublicSearchResultPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "PublicSearchResultPage" */ './pages/PublicSearchResultPage'
+    )
+);
+const PublicCardsPage = lazy(
+  () =>
+    import(/* webpackChunkName: "PublicCardsPage" */ './pages/PublicCardsPage')
+);
+const OAuthCallbackPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "OAuthCallbackPage" */ './pages/OAuthCallbackPage'
+    )
+);
+const Guide = lazy(
+  () => import(/* webpackChunkName: "Guide" */ './pages/Guide')
+);
 
 const routes = [
   {
@@ -53,17 +95,12 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.LOGOUT.PATH,
-    component: <LogoutPage />,
-    isPublic: false,
-  },
-  {
     path: ROUTE.WORKBOOK_ADD.PATH,
     component: <WorkbookAddPage />,
     isPublic: false,
   },
   {
-    path: ROUTE.WORKBOOK_EDIT.PATH,
+    path: `${ROUTE.WORKBOOK_EDIT.PATH}/:id`,
     component: <WorkbookEditPage />,
     isPublic: false,
   },
@@ -87,7 +124,7 @@ const routes = [
     isPublic: true,
   },
   {
-    path: ROUTE.CARDS.PATH,
+    path: `${ROUTE.CARDS.PATH}/:id`,
     component: <CardsPage />,
     isPublic: false,
   },

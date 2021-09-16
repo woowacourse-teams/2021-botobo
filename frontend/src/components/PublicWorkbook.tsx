@@ -9,7 +9,7 @@ import { PublicWorkbookResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
 interface Props extends Omit<PublicWorkbookResponse, 'id'> {
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  path: string;
 }
 
 const PublicWorkbook = ({
@@ -18,9 +18,9 @@ const PublicWorkbook = ({
   author,
   heartCount,
   tags,
-  onClick,
+  path,
 }: Props) => (
-  <Container onClick={onClick}>
+  <Container path={path}>
     <TopContent>
       <InnerLeftContent>
         <Name>{name}</Name>

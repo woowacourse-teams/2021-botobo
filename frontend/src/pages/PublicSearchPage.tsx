@@ -7,7 +7,7 @@ import { getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
 import { MainHeader, PublicWorkbook } from '../components';
-import { DEVICE } from '../constants';
+import { DEVICE, ROUTE } from '../constants';
 import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
 import { Flex, scrollBarStyle } from '../styles';
@@ -35,7 +35,7 @@ const PublicSearchPage = () => {
 
   const [searchBarWidth, setSearchBarWidth] = useState(1);
 
-  const { routePublicCards, routePublicSearchResultQuery } = useRouter();
+  const { routePublicSearchResultQuery } = useRouter();
   const showSnackbar = useSnackbar();
 
   const stickyTriggerRef = useRef<HTMLDivElement>(null);
@@ -184,7 +184,7 @@ const PublicSearchPage = () => {
                   author={author}
                   heartCount={heartCount}
                   tags={tags}
-                  onClick={() => routePublicCards(id)}
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
                 />
               </li>
             )

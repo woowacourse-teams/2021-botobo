@@ -36,7 +36,6 @@ const PublicSearchResultPage = () => {
     setInitialMultiFilterValues,
     removeMultiFilterItem,
     resetFilterValues,
-    routePublicCards,
     routePrevPage,
   } = usePublicSearchResult();
 
@@ -189,7 +188,6 @@ const PublicSearchResultPage = () => {
               isLoading={isLoading}
               publicWorkbooks={publicWorkbookResult}
               searchForPublicWorkbook={searchForPublicWorkbook}
-              routePublicCards={routePublicCards}
             />
           )}
         </>
@@ -199,7 +197,7 @@ const PublicSearchResultPage = () => {
 };
 
 const StyledPageTemplate = styled(PageTemplate)`
-  padding-top: 1rem;
+  padding-top: 2rem;
 `;
 
 const NoSearchResult = styled.div`

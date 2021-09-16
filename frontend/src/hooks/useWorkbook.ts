@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import {
   deleteWorkbookAsync,
@@ -7,12 +7,7 @@ import {
   postWorkbookAsync,
   putWorkbookAsync,
 } from '../api';
-import {
-  editedWorkbookState,
-  shouldWorkbookUpdateState,
-  workbookIdState,
-  workbookState,
-} from '../recoil';
+import { shouldWorkbookUpdateState, workbookState } from '../recoil';
 import { TagResponse, WorkbookResponse } from '../types';
 import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
@@ -21,8 +16,6 @@ import useSnackbar from './useSnackbar';
 const useWorkbook = () => {
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
-  const editedWorkbook = useRecoilValue(editedWorkbookState);
-  const setWorkbookId = useSetRecoilState(workbookIdState);
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
 
   const updateWorkbooks = async () => {
@@ -86,8 +79,6 @@ const useWorkbook = () => {
 
   return {
     workbooks,
-    editedWorkbook,
-    setWorkbookId,
     createWorkbook,
     editWorkbook,
     deleteWorkbook,

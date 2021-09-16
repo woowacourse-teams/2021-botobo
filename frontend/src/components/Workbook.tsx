@@ -9,17 +9,19 @@ type PickedWorkbook = Pick<WorkbookResponse, 'name' | 'cardCount'>;
 
 interface Props extends PickedWorkbook {
   isChecked?: boolean;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-  onClickEditButton: React.MouseEventHandler<HTMLButtonElement>;
-  onClickDeleteButton: React.MouseEventHandler<HTMLButtonElement>;
-  editable: boolean;
+  path?: string;
+  editable?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
+  onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Workbook = ({
   name,
   cardCount,
   isChecked,
-  editable,
+  path,
+  editable = false,
   onClick,
   onClickEditButton,
   onClickDeleteButton,
@@ -27,6 +29,7 @@ const Workbook = ({
   <CardTemplate
     editable={editable}
     isChecked={isChecked}
+    path={path}
     onClick={onClick}
     onClickEditButton={onClickEditButton}
     onClickDeleteButton={onClickDeleteButton}

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
-import { DEVICE } from '../constants';
+import { DEVICE, ROUTE } from '../constants';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
 import { PublicWorkbookResponse } from '../types';
 import LoadingSpinner from './LoadingSpinner';
@@ -16,7 +16,6 @@ interface Props {
     { keyword, ...options }: PublicWorkbookAsync,
     isNew?: boolean
   ) => Promise<void>;
-  routePublicCards: (id: number) => void;
 }
 
 const MAX_COUNT_WORKBOOK_ONE_TIME = 20;
@@ -26,7 +25,6 @@ const PublicWorkbookList = ({
   isLoading,
   publicWorkbooks,
   searchForPublicWorkbook,
-  routePublicCards,
 }: Props) => {
   const { tags, users, criteria } = query;
 
@@ -67,7 +65,7 @@ const PublicWorkbookList = ({
               author={author}
               heartCount={heartCount}
               tags={tags}
-              onClick={() => routePublicCards(id)}
+              path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
             />
           </li>
         )
