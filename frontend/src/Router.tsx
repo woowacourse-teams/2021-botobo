@@ -175,6 +175,9 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (pathname.includes(ROUTE.PUBLIC_SEARCH.PATH)) return;
+    if (pathname.includes(ROUTE.PUBLIC_SEARCH_RESULT.PATH)) return;
+
     window.scrollTo(0, 0);
   }, [pathname]);
 
