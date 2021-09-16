@@ -24,6 +24,9 @@ const ProfilePage = lazy(
 const LoginPage = lazy(
   () => import(/* webpackChunkName: "LoginPage" */ './pages/LoginPage')
 );
+const LogoutPage = lazy(
+  () => import(/* webpackChunkName: "LoginPage" */ './pages/LogoutPage')
+);
 const WorkbookAddPage = lazy(
   () =>
     import(/* webpackChunkName: "WorkbookAddPage" */ './pages/WorkbookAddPage')
@@ -93,6 +96,11 @@ const routes = [
     path: ROUTE.LOGIN.PATH,
     component: <LoginPage />,
     isPublic: true,
+  },
+  {
+    path: ROUTE.LOGOUT.PATH,
+    component: <LogoutPage />,
+    isPublic: false,
   },
   {
     path: ROUTE.WORKBOOK_ADD.PATH,

@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import LogoutIcon from '../assets/logout.svg';
 import MenuIcon from '../assets/menu.svg';
 import { CLOUD_FRONT_DOMAIN, DEVICE } from '../constants';
-import { useLogout, useRouter } from '../hooks';
+import { useRouter } from '../hooks';
 import { userState } from '../recoil';
 import { Flex } from '../styles';
 
@@ -23,8 +23,7 @@ interface MenuStyleProps {
 }
 
 const MainHeader = ({ sticky = true, shadow = true }: Props) => {
-  const { routeMain, routeLogin, routeProfile } = useRouter();
-  const { logout } = useLogout();
+  const { routeMain, routeLogin, routeLogout, routeProfile } = useRouter();
   const userInfo = useRecoilValue(userState);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
@@ -53,11 +52,7 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
               <button role="profile-link" onClick={routeProfile}>
                 <Avatar src={userInfo?.profileUrl ?? userSrc} />
               </button>
-              <button
-                type="button"
-                role="logout-button"
-                onClick={() => logout({ isRouteMain: true })}
-              >
+              <button type="button" role="logout-button" onClick={routeLogout}>
                 <div>로그아웃</div>
               </button>
             </Navigation>
@@ -70,11 +65,7 @@ const MainHeader = ({ sticky = true, shadow = true }: Props) => {
             <Avatar src={userInfo?.profileUrl ?? userSrc} />
             <div>{userInfo?.userName ?? 'Unknown User'}</div>
           </button>
-          <button
-            type="button"
-            role="logout-button"
-            onClick={() => logout({ isRouteMain: true })}
-          >
+          <button type="button" role="logout-button" onClick={routeLogout}>
             <StyledLogoutIcon width={'1rem'} height={'1rem'} />
             <div>로그아웃</div>
           </button>
