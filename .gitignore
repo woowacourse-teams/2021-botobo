@@ -54,4 +54,6 @@ backend/src/main/resources/application-prod.yml
 backend/src/main/resources/application-prod1.yml
 backend/src/main/resources/application-prod2.yml
 backend/src/main/resources/aws-s3.yml
+backend/src/main/resources/aws-s3-dev.yml
+backend/src/main/resources/aws-s3-prod.yml
 backend/src/apis/**
