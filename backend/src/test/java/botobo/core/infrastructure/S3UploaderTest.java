@@ -1,6 +1,7 @@
 package botobo.core.infrastructure;
 
 import botobo.core.config.LocalStackS3Config;
+import botobo.core.infrastructure.s3.S3Uploader;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;

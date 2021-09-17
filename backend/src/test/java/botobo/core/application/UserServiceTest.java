@@ -15,7 +15,7 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.S3Uploader;
+import botobo.core.infrastructure.s3.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

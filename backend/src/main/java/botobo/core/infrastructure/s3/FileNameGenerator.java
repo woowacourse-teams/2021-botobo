@@ -1,4 +1,4 @@
-package botobo.core.infrastructure;
+package botobo.core.infrastructure.s3;
 
 import botobo.core.domain.user.s3.ImageExtension;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
