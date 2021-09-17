@@ -1,5 +1,6 @@
 package botobo.core.infrastructure.s3;
 
+import botobo.core.domain.user.User;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-@Profile("!local")
+@Profile({"dev1", "dev2", "prod1", "prod2"})
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -34,12 +35,12 @@ public class S3Uploader implements FileUploader {
     private String userDefaultImageName;
 
     @Override
-    public String upload(MultipartFile multipartFile, String userId) {
+    public String upload(MultipartFile multipartFile, User user) {
         if (isEmpty(multipartFile)) {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, userId);
+        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, String.valueOf(user.getId()));
 //        uploadImageToS3(
 //                makeUploadImageFile(multipartFile),
 //                generatedFileName
