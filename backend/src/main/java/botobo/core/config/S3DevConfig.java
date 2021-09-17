@@ -6,11 +6,13 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
+@Profile({"dev1","dev2"})
 @Configuration
-@PropertySource(value = "classpath:aws-s3.yml", factory = YamlPropertySourceFactory.class)
-public class S3Config {
+@PropertySource(value = "classpath:aws-s3-dev.yml", factory = YamlPropertySourceFactory.class)
+public class S3DevConfig {
     @Value("${cloud.aws.region.static}")
     private String region;
 
