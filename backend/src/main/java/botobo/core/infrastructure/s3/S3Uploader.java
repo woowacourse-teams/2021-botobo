@@ -1,6 +1,7 @@
 package botobo.core.infrastructure.s3;
 
 import botobo.core.domain.user.User;
+import botobo.core.exception.user.s3.S3UploadFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -41,10 +42,6 @@ public class S3Uploader implements FileUploader {
         }
 
         String generatedFileName = fileNameGenerator.generateFileName(multipartFile, String.valueOf(user.getId()));
-//        uploadImageToS3(
-//                makeUploadImageFile(multipartFile),
-//                generatedFileName
-//        );
 
         uploadImageToS3(
                 multipartFile,
@@ -54,33 +51,19 @@ public class S3Uploader implements FileUploader {
         return makeCloudFrontUrl(generatedFileName);
     }
 
-//    private void uploadImageToS3(File uploadImage, String fileName) {
-//        try {
-//            ObjectMetadata metadata = new ObjectMetadata();
-//            metadata.setCacheControl("max-age=31536000");
-//            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, new FileInputStream(uploadImage), metadata));
-//        } catch (FileNotFoundException e) {
-//            log.info("{}의 파일을 찾을 수 없습니다.",uploadImage.getName());
-//        } finally {
-//            deleteTemporaryFile(uploadImage);
-//        }
-//    }
-
     private void uploadImageToS3(MultipartFile uploadImageFile, String fileName) {
         ObjectMetadata metadata = new ObjectMetadata();
+
         metadata.setContentType(String.valueOf(MediaType.ANY_IMAGE_TYPE));
         metadata.setContentLength(uploadImageFile.getSize());
+        metadata.setCacheControl("max-age=31536000");
+
         try (final InputStream uploadImageFileInputStream = uploadImageFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadImageFileInputStream, metadata));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new S3UploadFailedException();
         }
     }
-
-//    private File makeUploadImageFile(MultipartFile multipartFile) throws IOException {
-//        return convert(multipartFile)
-//                .orElseThrow(FileConvertFailedException::new);
-//    }
 
     @Override
     public void deleteFromS3(String oldImageUrl) {
@@ -105,21 +88,4 @@ public class S3Uploader implements FileUploader {
     private String makeCloudFrontUrl(String uploadImageUrl) {
         return String.format(cloudfrontUrlFormat, uploadImageUrl);
     }
-
-//    private Optional<File> convert(MultipartFile multipartFile) throws IOException {
-//        File convertFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-//        if (convertFile.createNewFile()) {
-//            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-//                fos.write(multipartFile.getBytes());
-//            }
-//            return Optional.of(convertFile);
-//        }
-//        return Optional.empty();
-//    }
-//
-//    private void deleteTemporaryFile(File uploadImage) {
-//        if (!uploadImage.delete()) {
-//            log.info("업로드용 파일이 제대로 삭제되지 않았습니다.");
-//        }
-//    }
 }

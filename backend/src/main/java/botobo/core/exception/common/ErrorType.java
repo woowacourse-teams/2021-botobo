@@ -29,6 +29,7 @@ import botobo.core.exception.user.SocialTypeNotFoundException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
+import botobo.core.exception.user.s3.S3UploadFailedException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
@@ -65,6 +66,7 @@ public enum ErrorType {
     U010("U010", "10MB 이하의 파일만 업로드할 수 있습니다.", ExternalException.class),
     U011("U011", "요청할 수 있는 최대 파일 크기는 100MB 입니다.", ExternalException.class),
     U012("U012", "허용되지 않는 파일 확장자입니다.", ImageExtensionNotAllowedException.class),
+    U013("U013", "S3로 파일 업로드를 실패했습니다.", S3UploadFailedException.class),
 
     W001("W001", "문제집 이름은 30자 이하여야 합니다.", WorkbookNameLengthException.class),
     W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameBlankException.class),
@@ -112,7 +114,8 @@ public enum ErrorType {
 
     E001("E001", "서버에러", InternalServerErrorException.class),
     E002("E002", "파라미터를 입력해야 합니다.", ExternalException.class),
-    X001("X001", "정의되지 않은 에러", UndefinedException.class);
+    X001("X001", "정의되지 않은 에러", UndefinedException.class),
+    ;
 
     private final String code;
     private final String message;

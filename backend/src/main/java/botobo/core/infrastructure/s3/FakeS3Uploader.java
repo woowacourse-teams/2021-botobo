@@ -19,5 +19,6 @@ public class FakeS3Uploader implements FileUploader {
 
     @Override
     public void deleteFromS3(String oldImageUrl) {
+        // nothing to do
     }
 }
