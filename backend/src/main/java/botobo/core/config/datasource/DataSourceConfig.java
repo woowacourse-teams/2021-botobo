@@ -11,7 +11,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -23,35 +22,21 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
 
-@Profile({"dev1", "dev2", "prod1", "prod2"})
+
+@Profile("!test & !local")
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 @Configuration
 public class DataSourceConfig {
 
     private final JpaProperties jpaProperties;
-    private final HibernateProperties hibernateProperties;
 
-    public DataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
+    public DataSourceConfig(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
-        this.hibernateProperties = hibernateProperties;
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "datasource.master")
-    public DataSource masterDataSource() {
-        return DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .build();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "datasource.slave")
-    public DataSource slaveDataSource() {
-        HikariDataSource dataSource = DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .build();
-        dataSource.setReadOnly(true);
-        return dataSource;
+    public DataSource dataSource() {
+        return new LazyConnectionDataSourceProxy(routingDataSource());
     }
 
     @Bean
@@ -68,14 +53,25 @@ public class DataSourceConfig {
         return routingDataSource;
     }
 
-    @Primary
     @Bean
-    public DataSource currentDataSource() {
-        return new LazyConnectionDataSourceProxy(routingDataSource());
+    @ConfigurationProperties(prefix = "datasource.master")
+    public DataSource masterDataSource() {
+        return DataSourceBuilder.create()
+                .type(HikariDataSource.class)
+                .build();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "datasource.slave")
+    public DataSource slaveDataSource() {
+        return DataSourceBuilder.create()
+                .type(HikariDataSource.class)
+                .build();
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        HibernateProperties hibernateProperties = new HibernateProperties();
         Map<String, Object> properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.getProperties(), new HibernateSettings()
         );
@@ -84,7 +80,7 @@ public class DataSourceConfig {
                 new EntityManagerFactoryBuilder(hibernateJpaVendorAdapter, properties, null);
 
         return entityManagerFactoryBuilder
-                .dataSource(currentDataSource())
+                .dataSource(dataSource())
                 .packages("botobo.core")
                 .build();
     }
