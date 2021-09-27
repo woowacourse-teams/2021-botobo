@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-@Profile({"dev1", "dev2", "prod1", "prod2"})
+@Profile({"dev", "prod"})
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -41,7 +41,7 @@ public class S3Uploader implements FileUploader {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        String generatedFileName = fileNameGenerator.generateFileName(multipartFile, String.valueOf(user.getId()));
+        String generatedFileName = fileNameGenerator.generateUploadFile(multipartFile, String.valueOf(user.getId()));
 
         uploadImageToS3(
                 multipartFile,

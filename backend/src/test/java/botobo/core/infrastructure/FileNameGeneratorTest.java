@@ -24,7 +24,7 @@ class FileNameGeneratorTest {
     @DisplayName("파일 이름을 생성한다. - 성공")
     @MethodSource("createTestFiles")
     void generateFileName(MultipartFile multipartFile, String userId) {
-        assertThat(fileNameGenerator.generateFileName(multipartFile, userId))
+        assertThat(fileNameGenerator.generateUploadFile(multipartFile, userId))
                 .contains("users/1/")
                 .contains(getDate());
     }
@@ -33,7 +33,7 @@ class FileNameGeneratorTest {
     @DisplayName("파일 이름을 생성한다. - 실패, 허용하지 않는 파일 확장자")
     @MethodSource("createTestFilesWithNowAllowedExtension")
     void generateFileNameWithNotAllowedExtension(MultipartFile multipartFile, String userId) {
-        assertThatThrownBy(() -> fileNameGenerator.generateFileName(multipartFile, userId))
+        assertThatThrownBy(() -> fileNameGenerator.generateUploadFile(multipartFile, userId))
                 .isInstanceOf(ImageExtensionNotAllowedException.class);
     }
 

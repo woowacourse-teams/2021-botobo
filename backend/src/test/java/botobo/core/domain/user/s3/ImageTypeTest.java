@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ImageExtensionTest {
+class ImageTypeTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"JPG", "jpg", "JPEG", "jpeg", "PNG", "png", "BMP", "bmp"})
     @DisplayName("허용되는 확장자이면 True를 반환한다. - 성공")
     void isAllowedExtension(String ext) {
-        assertThat(ImageExtension.isAllowedExtension(ext))
+        assertThat(ImageType.isAllowedExtension(ext))
                 .isTrue();
     }
 
@@ -20,7 +20,7 @@ class ImageExtensionTest {
     @ValueSource(strings = {"TIFF", "GIF", "gif", "MOV", "mov", "tiff", "txt", "TXT"})
     @DisplayName("허용되지 않는 확장자이면 False를 반환한다. - 성공")
     void isNotAllowedExtension(String ext) {
-        assertThat(ImageExtension.isAllowedExtension(ext))
+        assertThat(ImageType.isAllowedExtension(ext))
                 .isFalse();
     }
 }
