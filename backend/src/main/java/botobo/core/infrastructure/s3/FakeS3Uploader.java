@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FakeS3Uploader implements FileUploader {
     @Override
     public String upload(MultipartFile multipartFile, User user) {
-        return user.getProfileUrl();
+        return "http://localhost:8080/botobo-default-profile.png";
     }
 
     @Override

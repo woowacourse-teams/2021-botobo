@@ -27,10 +27,6 @@ public class FileNameGenerator {
                 contentType
         );
     }
-//
-//    public String generateUploadFile(MultipartFile multipartFile, String userId) {
-//        return makeNewFileName(userId) + extension(multipartFile);
-//    }
 
     private String makeNewFileName(String userId) {
         String newlyCreatedFileName = UUID.randomUUID() + "_"
