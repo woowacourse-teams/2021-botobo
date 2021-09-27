@@ -3,7 +3,7 @@ package botobo.core.infrastructure;
 import botobo.core.config.LocalStackS3Config;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
-import botobo.core.infrastructure.s3.S3Uploader;
+import botobo.core.infrastructure.s3.FileUploader;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Disabled
+@ActiveProfiles("s3")
 @DisplayName("S3 Uploader 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalStackS3Config.class)
 class S3UploaderTest {
@@ -44,7 +46,7 @@ class S3UploaderTest {
     private AmazonS3 amazonS3;
 
     @Autowired
-    private S3Uploader s3Uploader;
+    private FileUploader s3Uploader;
 
     private User user;
 
@@ -52,7 +54,7 @@ class S3UploaderTest {
     void setUp() {
         amazonS3.createBucket(bucket);
         amazonS3.putObject(bucket,
-                "images/botobo-default-profile.png",
+                "botobo-default-profile.png",
                 new File(new File("").getAbsolutePath() + FILE_PATH + USER_DEFAULT_IMAGE_NAME)
         );
         user = User.builder()
@@ -117,7 +119,7 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 null인 경우에는 디폴트 이미지로 대체")
-    void uploadWithNull() throws IOException {
+    void uploadWithNull() {
         MultipartFile multipartFile = null;
         String uploadUrl = s3Uploader.upload(multipartFile, user);
         String cloudfrontUrl = cloudfrontUrl();

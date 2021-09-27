@@ -2,16 +2,11 @@ spring:
   profiles:
     active: local
 
+---
+
 cloud:
   aws:
     region:
       static: ap-northeast-2
     stack:
       auto: false
-
-logging:
-  level:
-    com:
-      amazonaws:
-        util:
-          EC2MetadataUtils: error

@@ -7,7 +7,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.google.common.net.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-@Profile({"dev", "prod"})
+@Profile({"dev", "prod", "s3"})
 @Slf4j
 @RequiredArgsConstructor
 @Component
