@@ -66,7 +66,6 @@ public enum ErrorType {
     U010("U010", "10MB 이하의 파일만 업로드할 수 있습니다.", ExternalException.class),
     U011("U011", "요청할 수 있는 최대 파일 크기는 100MB 입니다.", ExternalException.class),
     U012("U012", "허용되지 않는 파일 확장자입니다.", ImageExtensionNotAllowedException.class),
-    U013("U013", "S3로 파일 업로드를 실패했습니다.", S3UploadFailedException.class),
 
     W001("W001", "문제집 이름은 30자 이하여야 합니다.", WorkbookNameLengthException.class),
     W002("W002", "문제집 이름은 필수 입력값입니다.", WorkbookNameBlankException.class),
