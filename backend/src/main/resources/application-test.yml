@@ -43,9 +43,9 @@ security:
 
 aws:
   cloudfront:
-    url-format: https://d1mlkr1uzdb8as.cloudfront.net/%s
+    url-format: http://localhost:8080/%s
   s3:
-    bucket: s3-botobo-storage
+    bucket: s3-test-storage
   user-default-image: botobo-default-profile.png
 
 cloud:
