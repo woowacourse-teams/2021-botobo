@@ -1,5 +1,6 @@
 package botobo.core.infrastructure;
 
+import botobo.core.domain.user.s3.UploadFileDto;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import botobo.core.infrastructure.s3.FileNameGenerator;
 import botobo.core.utils.FileFactory;
@@ -21,12 +22,12 @@ class FileNameGeneratorTest {
     private final FileNameGenerator fileNameGenerator = new FileNameGenerator();
 
     @ParameterizedTest
-    @DisplayName("파일 이름을 생성한다. - 성공")
+    @DisplayName("UploadFileDto를 생성한다. - 성공")
     @MethodSource("createTestFiles")
-    void generateFileName(MultipartFile multipartFile, String userId) {
-//        assertThat(fileNameGenerator.generateUploadFile(multipartFile, userId))
-//                .contains("users/1/")
-//                .contains(getDate());
+    void generateUploadFile(MultipartFile multipartFile, String userId, String expectedContentType) {
+        UploadFileDto uploadFileDto = fileNameGenerator.generateUploadFile(multipartFile, userId);
+        assertThat(uploadFileDto.getFileName()).contains("users/1/").contains(getDate());
+        assertThat(uploadFileDto.getContentType()).isEqualTo(expectedContentType);
     }
 
     @ParameterizedTest
@@ -39,9 +40,9 @@ class FileNameGeneratorTest {
 
     private static Stream<Arguments> createTestFiles() {
         return Stream.of(
-                Arguments.of(FileFactory.testFile("png"), "1"),
-                Arguments.of(FileFactory.testFile("jpg"), "1"),
-                Arguments.of(FileFactory.testFile("jpeg"), "1")
+                Arguments.of(FileFactory.testFile("png"), "1", "image/png"),
+                Arguments.of(FileFactory.testFile("jpg"), "1", "image/jpeg"),
+                Arguments.of(FileFactory.testFile("jpeg"), "1", "image/jpeg")
         );
     }
 
