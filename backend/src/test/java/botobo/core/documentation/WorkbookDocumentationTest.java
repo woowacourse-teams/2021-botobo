@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("문제집 문서화 테스트")
 @WebMvcTest(WorkbookController.class)
-public class WorkbookDocumentationTest extends DocumentationTest {
+class WorkbookDocumentationTest extends DocumentationTest {
 
     @MockBean
     private WorkbookService workbookService;
@@ -332,6 +332,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
+                .heartCount(10)
+                .tags(generateTagResponses())
                 .cards(generateCardResponses())
                 .build();
     }

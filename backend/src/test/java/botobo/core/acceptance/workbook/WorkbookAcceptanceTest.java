@@ -32,7 +32,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Workbook 인수 테스트")
-public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
+class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
     @Test
     @DisplayName("유저가 문제집 추가 - 성공")
@@ -59,7 +59,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(workbookResponse.getTags()).hasSize(1);
         assertThat(workbookResponse.getTags().get(0).getId()).isNotZero();
         assertThat(workbookResponse.getTags().get(0).getName()).isEqualTo("자바");
-        assertThat(workbookResponse.getHeartCount()).isEqualTo(0);
+        assertThat(workbookResponse.getHeartCount()).isZero();
     }
 
     @Test
@@ -268,7 +268,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(publicWorkbookResponses).hasSize(0);
+        assertThat(publicWorkbookResponses).isEmpty();
     }
 
     @Test
@@ -290,7 +290,7 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // then
         List<WorkbookResponse> publicWorkbookResponses = response.convertBodyToList(WorkbookResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(publicWorkbookResponses).hasSize(0);
+        assertThat(publicWorkbookResponses).isEmpty();
     }
 
     @Test
@@ -348,6 +348,8 @@ public class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbookResponse.getName());
         assertThat(workbookCardResponse.getCards()).hasSize(3);
+        assertThat(workbookCardResponse.getTags()).hasSize(1);
+        assertThat(workbookCardResponse.getHeartCount()).isZero();
     }
 
     @Test
