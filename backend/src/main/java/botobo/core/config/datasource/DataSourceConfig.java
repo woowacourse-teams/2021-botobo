@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.util.Map;
 
 
-@Profile("!test & !local")
+@Profile({"dev", "prod"})
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 @Configuration
 public class DataSourceConfig {
