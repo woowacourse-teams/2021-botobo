@@ -12,7 +12,6 @@ export { default as CardSkeleton } from './CardSkeleton';
 export { default as CardSkeletonList } from './CardSkeletonList';
 export { default as HeaderSkeleton } from './HeaderSkeleton';
 export { default as PublicWorkbookList } from './PublicWorkbookList';
-export { default as PublicWorkbook } from './PublicWorkbook';
 export { default as PublicQnACard } from './PublicQnACard';
 export { default as PublicCardsSelectBox } from './PublicCardsSelectBox';
 export { default as Checkbox } from './Checkbox';

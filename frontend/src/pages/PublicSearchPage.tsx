@@ -6,11 +6,11 @@ import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { getTagKeywordAsync } from '../api';
 import KeywordResetIcon from '../assets/cross-mark.svg';
 import SearchIcon from '../assets/search.svg';
-import { MainHeader, PublicWorkbook } from '../components';
+import { MainHeader, Workbook } from '../components';
 import { DEVICE, ROUTE } from '../constants';
 import { useRouter, useSnackbar } from '../hooks';
 import { publicSearchResultState, publicWorkbookState } from '../recoil';
-import { Flex, scrollBarStyle } from '../styles';
+import { Flex, WorkbookListStyle, scrollBarStyle } from '../styles';
 import { SearchKeywordResponse } from '../types';
 import { formatNewLine, isMobile } from '../utils';
 import PageTemplate from './PageTemplate';
@@ -178,7 +178,7 @@ const PublicSearchPage = () => {
           {publicWorkbooks.map(
             ({ id, name, cardCount, author, heartCount, tags }) => (
               <li key={id}>
-                <PublicWorkbook
+                <Workbook
                   name={name}
                   cardCount={cardCount}
                   author={author}
@@ -334,17 +334,11 @@ const RecommendedKeyword = styled.li`
 `;
 
 const StyledUl = styled.ul`
+  ${WorkbookListStyle};
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
-  gap: 1rem;
 
   & > li:last-of-type {
     margin-bottom: 1rem;
-  }
-
-  @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 

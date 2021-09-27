@@ -97,7 +97,7 @@ const Container = styled.div<ContainerStyleProps>`
 `;
 
 const Footer = styled.div`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   text-align: right;
 
   ${({ theme }) => css`
