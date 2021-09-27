@@ -10,3 +10,10 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
