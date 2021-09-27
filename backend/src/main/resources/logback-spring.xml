@@ -28,7 +28,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod1, prod2">
+    <springProfile name="prod">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>
