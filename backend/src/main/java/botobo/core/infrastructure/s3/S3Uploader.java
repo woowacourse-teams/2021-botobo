@@ -1,6 +1,7 @@
 package botobo.core.infrastructure.s3;
 
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.s3.UploadFileDto;
 import botobo.core.exception.user.s3.S3UploadFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -41,25 +42,30 @@ public class S3Uploader implements FileUploader {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        String generatedFileName = fileNameGenerator.generateUploadFile(multipartFile, String.valueOf(user.getId()));
-
-        uploadImageToS3(
-                multipartFile,
-                generatedFileName
+        UploadFileDto uploadFileDto = fileNameGenerator.generateUploadFile(
+                multipartFile, String.valueOf(user.getId())
         );
 
-        return makeCloudFrontUrl(generatedFileName);
+        uploadImageToS3(uploadFileDto);
+
+        return makeCloudFrontUrl(uploadFileDto.getFileName());
     }
 
-    private void uploadImageToS3(MultipartFile uploadImageFile, String fileName) {
-        ObjectMetadata metadata = new ObjectMetadata();
+    private void uploadImageToS3(UploadFileDto uploadFileDto) {
+        MultipartFile uploadMultipartFile = uploadFileDto.getMultipartFile();
 
-        metadata.setContentType(String.valueOf(MediaType.ANY_IMAGE_TYPE));
-        metadata.setContentLength(uploadImageFile.getSize());
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(uploadFileDto.getContentType());
+        metadata.setContentLength(uploadMultipartFile.getSize());
         metadata.setCacheControl("max-age=31536000");
 
-        try (final InputStream uploadImageFileInputStream = uploadImageFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadImageFileInputStream, metadata));
+        try (final InputStream uploadImageFileInputStream = uploadMultipartFile.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(
+                    bucket,
+                    uploadFileDto.getFileName(),
+                    uploadImageFileInputStream,
+                    metadata
+            ));
         } catch (IOException e) {
             throw new S3UploadFailedException();
         }
