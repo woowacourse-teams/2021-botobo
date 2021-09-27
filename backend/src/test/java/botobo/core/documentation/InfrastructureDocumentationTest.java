@@ -12,11 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class InfrastructureDocumentationTest extends DocumentationTest {
 
     @Test
-    @DisplayName("현재 애플리케이션에서 사용하는 profile 이름 반환 - 성공")
-    void profileTest() throws Exception {
+    @DisplayName("현재 애플리케이션에서 사용하는 port 번호 반환 - 성공")
+    void portTest() throws Exception {
         document()
                 .mockMvc(mockMvc)
-                .get("/api/infra/profile")
+                .get("/api/infra/port")
                 .build()
                 .status(status().isOk())
                 .identifier("infra-profile-get-success");
