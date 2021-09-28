@@ -24,8 +24,8 @@ const CardSkeleton = ({
     {hasTag && <TagList />}
     {hasFooter && (
       <Footer>
-        <Edit></Edit>
-        <Delete></Delete>
+        <Edit />
+        <Delete />
       </Footer>
     )}
   </Container>
