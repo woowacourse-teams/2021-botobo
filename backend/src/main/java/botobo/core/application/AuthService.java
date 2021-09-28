@@ -10,9 +10,9 @@ import botobo.core.dto.auth.TokenResponse;
 import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.JwtTokenProvider;
-import botobo.core.infrastructure.OauthManager;
-import botobo.core.infrastructure.OauthManagerFactory;
+import botobo.core.infrastructure.auth.JwtTokenProvider;
+import botobo.core.infrastructure.auth.OauthManager;
+import botobo.core.infrastructure.auth.OauthManagerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

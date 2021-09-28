@@ -2,7 +2,7 @@ package botobo.core.acceptance;
 
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.acceptance.utils.RequestBuilder.HttpFunction;
-import botobo.core.infrastructure.JwtTokenProvider;
+import botobo.core.infrastructure.auth.JwtTokenProvider;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

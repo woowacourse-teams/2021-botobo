@@ -1,4 +1,4 @@
-package botobo.core.infrastructure;
+package botobo.core.infrastructure.auth;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

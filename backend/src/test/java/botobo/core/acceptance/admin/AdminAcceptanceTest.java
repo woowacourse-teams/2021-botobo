@@ -9,7 +9,7 @@ import botobo.core.dto.admin.AdminCardResponse;
 import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.admin.AdminWorkbookResponse;
 import botobo.core.exception.common.ErrorResponse;
-import botobo.core.infrastructure.JwtTokenProvider;
+import botobo.core.infrastructure.auth.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends DomainAcceptanceTest {
+class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_WORKBOOK_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");

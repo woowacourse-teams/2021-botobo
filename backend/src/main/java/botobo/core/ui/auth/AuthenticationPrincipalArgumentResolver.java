@@ -1,7 +1,7 @@
 package botobo.core.ui.auth;
 
 import botobo.core.application.AuthService;
-import botobo.core.infrastructure.AuthorizationExtractor;
+import botobo.core.infrastructure.auth.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

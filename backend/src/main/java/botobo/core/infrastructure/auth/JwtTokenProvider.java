@@ -1,4 +1,4 @@
-package botobo.core.infrastructure;
+package botobo.core.infrastructure.auth;
 
 import botobo.core.exception.auth.TokenExpirationException;
 import io.jsonwebtoken.Claims;
