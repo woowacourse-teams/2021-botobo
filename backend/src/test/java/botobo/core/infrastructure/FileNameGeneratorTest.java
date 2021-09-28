@@ -1,6 +1,6 @@
 package botobo.core.infrastructure;
 
-import botobo.core.domain.user.s3.UploadFileDto;
+import botobo.core.infrastructure.s3.UploadFile;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import botobo.core.infrastructure.s3.FileNameGenerator;
 import botobo.core.utils.FileFactory;
@@ -25,9 +25,9 @@ class FileNameGeneratorTest {
     @DisplayName("UploadFileDto를 생성한다. - 성공")
     @MethodSource("createTestFiles")
     void generateUploadFile(MultipartFile multipartFile, String userId, String expectedContentType) {
-        UploadFileDto uploadFileDto = fileNameGenerator.generateUploadFile(multipartFile, userId);
-        assertThat(uploadFileDto.getFileName()).contains("users/1/").contains(getDate());
-        assertThat(uploadFileDto.getContentType()).isEqualTo(expectedContentType);
+        UploadFile uploadFile = fileNameGenerator.generateUploadFile(multipartFile, userId);
+        assertThat(uploadFile.getFileName()).contains("users/1/").contains(getDate());
+        assertThat(uploadFile.getContentType()).isEqualTo(expectedContentType);
     }
 
     @ParameterizedTest

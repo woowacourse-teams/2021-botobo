@@ -1,7 +1,6 @@
 package botobo.core.infrastructure.s3;
 
 import botobo.core.domain.user.User;
-import botobo.core.domain.user.s3.UploadFileDto;
 import botobo.core.exception.user.s3.S3UploadFailedException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -41,27 +40,27 @@ public class S3Uploader implements FileUploader {
             return makeCloudFrontUrl(userDefaultImageName);
         }
 
-        UploadFileDto uploadFileDto = fileNameGenerator.generateUploadFile(
+        UploadFile uploadFile = fileNameGenerator.generateUploadFile(
                 multipartFile, String.valueOf(user.getId())
         );
 
-        uploadImageToS3(uploadFileDto);
+        uploadImageToS3(uploadFile);
 
-        return makeCloudFrontUrl(uploadFileDto.getFileName());
+        return makeCloudFrontUrl(uploadFile.getFileName());
     }
 
-    private void uploadImageToS3(UploadFileDto uploadFileDto) {
-        MultipartFile uploadMultipartFile = uploadFileDto.getMultipartFile();
+    private void uploadImageToS3(UploadFile uploadFile) {
+        MultipartFile uploadMultipartFile = uploadFile.getMultipartFile();
 
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(uploadFileDto.getContentType());
+        metadata.setContentType(uploadFile.getContentType());
         metadata.setContentLength(uploadMultipartFile.getSize());
         metadata.setCacheControl("max-age=31536000");
 
         try (final InputStream uploadImageFileInputStream = uploadMultipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(
                     bucket,
-                    uploadFileDto.getFileName(),
+                    uploadFile.getFileName(),
                     uploadImageFileInputStream,
                     metadata
             ));

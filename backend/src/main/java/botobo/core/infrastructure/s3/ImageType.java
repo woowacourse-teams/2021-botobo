@@ -1,4 +1,4 @@
-package botobo.core.domain.user.s3;
+package botobo.core.infrastructure.s3;
 
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import org.springframework.http.MediaType;
@@ -19,9 +19,9 @@ public enum ImageType {
         this.contentType = contentType;
     }
 
-    public static boolean isAllowedExtension(String ext) {
+    public static boolean isAllowedExtension(String extension) {
         return Arrays.stream(values())
-                .anyMatch(imageExtension -> ext.equalsIgnoreCase(imageExtension.extension));
+                .anyMatch(imageExtension -> extension.equalsIgnoreCase(imageExtension.extension));
 
     }
 
