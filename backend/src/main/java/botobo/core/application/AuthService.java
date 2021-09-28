@@ -11,6 +11,7 @@ import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.infrastructure.auth.JwtTokenProvider;
+import botobo.core.infrastructure.auth.JwtTokenType;
 import botobo.core.infrastructure.auth.OauthManager;
 import botobo.core.infrastructure.auth.OauthManagerFactory;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class AuthService {
             return AppUser.anonymous();
         }
         validateToken(credentials);
-        Long userId = jwtTokenProvider.getIdFromPayLoad(credentials);
+        Long userId = jwtTokenProvider.getIdFromPayLoad(credentials, JwtTokenType.ACCESS_TOKEN);
         if (userRepository.existsByIdAndRole(userId, Role.ADMIN)) {
             return AppUser.admin(userId);
         }
@@ -59,7 +60,7 @@ public class AuthService {
 
     public void validateAdmin(String credentials) {
         validateToken(credentials);
-        User user = userRepository.findById(jwtTokenProvider.getIdFromPayLoad(credentials))
+        User user = userRepository.findById(jwtTokenProvider.getIdFromPayLoad(credentials, JwtTokenType.ACCESS_TOKEN))
                 .orElseThrow(UserNotFoundException::new);
         if (!user.isAdmin()) {
             throw new NotAdminException();
@@ -67,7 +68,7 @@ public class AuthService {
     }
 
     public void validateToken(String credentials) {
-        if (credentials == null || !jwtTokenProvider.isValidToken(credentials)) {
+        if (credentials == null || !jwtTokenProvider.isValidToken(credentials, JwtTokenType.ACCESS_TOKEN)) {
             throw new TokenNotValidException();
         }
     }

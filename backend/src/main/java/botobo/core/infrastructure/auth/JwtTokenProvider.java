@@ -6,7 +6,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,22 +13,22 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${security.jwt.access-token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.access-token.expire-length}")
-    private Long accessValidityInMilliseconds;
-    @Value("${security.jwt.refresh-token.expire-length}")
-    private Long refreshValidityInMilliseconds;
+    private final JwtTokenInfo jwtAccessTokenInfo, jwtRefreshTokenInfo;
+
+    public JwtTokenProvider(JwtAccessTokenInfo jwtAccessTokenInfo, JwtRefreshTokenInfo jwtRefreshTokenInfo) {
+        this.jwtAccessTokenInfo = jwtAccessTokenInfo;
+        this.jwtRefreshTokenInfo = jwtRefreshTokenInfo;
+    }
 
     public String createAccessToken(Long id) {
-        return createToken(id, accessValidityInMilliseconds);
+        return createToken(id, jwtAccessTokenInfo.getValidityInMilliseconds(), jwtAccessTokenInfo.getSecretKey());
     }
 
     public String createRefreshToken(Long id) {
-        return createToken(id, refreshValidityInMilliseconds);
+        return createToken(id, jwtRefreshTokenInfo.getValidityInMilliseconds(), jwtRefreshTokenInfo.getSecretKey());
     }
 
-    private String createToken(Long id, Long validityTime) {
+    private String createToken(Long id, Long validityTime, String secretKey) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityTime);
 
@@ -41,19 +40,26 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getIdFromPayLoad(String token) {
+    public Long getIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
+                .setSigningKey(secretKey(jwtTokenType))
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.get("id", Long.class);
     }
 
-    public boolean isValidToken(String token) {
+    public String secretKey(JwtTokenType jwtTokenType) {
+        if (jwtAccessTokenInfo.supports(jwtTokenType)) {
+            return jwtAccessTokenInfo.getSecretKey();
+        }
+        return jwtRefreshTokenInfo.getSecretKey();
+    }
+
+    public boolean isValidToken(String token, JwtTokenType jwtTokenType) {
         try {
             Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(secretKey(jwtTokenType))
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
