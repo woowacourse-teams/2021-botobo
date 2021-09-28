@@ -6,6 +6,7 @@ import botobo.core.ui.search.WorkbookSearchParameter;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,9 +18,11 @@ import java.util.List;
 
 import static botobo.core.domain.card.QCard.card;
 import static botobo.core.domain.heart.QHeart.heart;
+import static botobo.core.domain.tag.QTag.tag;
 import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
 import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
+
 
 @RequiredArgsConstructor
 @Repository
@@ -33,6 +36,7 @@ public class WorkbookSearchRepository {
                 .innerJoin(workbook.user, user).fetchJoin()
                 .innerJoin(workbook.cards.cards, card)
                 .leftJoin(workbook.workbookTags, workbookTag)
+                .leftJoin(workbookTag.tag, tag)
                 .leftJoin(workbook.hearts.hearts, heart)
                 .where(containKeyword(parameter.getSearchKeyword()),
                         containTags(tags),
@@ -50,10 +54,18 @@ public class WorkbookSearchRepository {
         if (searchKeyword == null) {
             return null;
         }
-        return workbook
-                .name
-                .lower()
-                .contains(searchKeyword.getValue().toLowerCase());
+        String keyword = searchKeyword.getValue();
+        return containsKeywordInWorkbookName(keyword)
+                .or(containsKeywordInWorkbookTag(keyword));
+    }
+
+    private BooleanExpression containsKeywordInWorkbookName(String keyword) {
+        return workbook.name.lower().contains(keyword);
+    }
+
+    private BooleanExpression containsKeywordInWorkbookTag(String keyword) {
+        StringPath tagName = workbookTag.tag.tagName.value;
+        return tagName.eq(keyword);
     }
 
     private BooleanExpression containTags(List<Long> tags) {

@@ -5,10 +5,12 @@ import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.heart.Heart;
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.TagName;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,7 @@ class WorkbookSearchRepositoryTest {
     @Autowired
     private WorkbookSearchRepository workbookSearchRepository;
 
-    private Tag javaTag, javascriptTag;
+    private Tag javaTag, javascriptTag, joanneTag;
     private User bear, oz;
 
     @BeforeEach
@@ -47,7 +49,7 @@ class WorkbookSearchRepositoryTest {
     }
 
     @Test
-    @DisplayName("검색어를 입력하면 문제집 이름에서 검색어가 포함된 것들을 가져온다.")
+    @DisplayName("검색어를 입력하면 문제집 이름 또는 태그에서 검색어가 포함된 것들을 가져온다. - 성공, 문제집 명에 포함")
     void searchAllFromKeyword() {
         // given
         WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
@@ -65,6 +67,33 @@ class WorkbookSearchRepositoryTest {
     }
 
     @Test
+    @DisplayName("검색어를 입력하면 문제집 이름에서 검색어가 포함된 것들을 가져온다. - 성공, 태그와 일치")
+    void searchAllFromKeywordWhenEqualsTagName() {
+        // given
+        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+                .searchKeyword("Joanne")
+                .build();
+
+        // when
+        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        List<Workbook> workbookList = workbooks.toList();
+
+
+        // then
+        assertThat(workbookList).hasSize(3);
+        for (Workbook workbook : workbookList) {
+            List<WorkbookTag> workbookTags = workbook.getWorkbookTags();
+            assertThat(workbookTags).
+                    extracting(WorkbookTag::getTag)
+                    .extracting(Tag::getTagName)
+                    .extracting(TagName::getValue)
+                    .contains(parameter.getSearchKeyword().getValue());
+        }
+
+    }
+
+
+    @Test
     @DisplayName("검색어와 태그 id를 입력하면 검색어 및 태그 id가 포함된 것들을 가져온다.")
     void searchAllFromKeywordAndTags() {
         // given
@@ -73,8 +102,12 @@ class WorkbookSearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter,
-                Arrays.asList(javaTag.getId()), null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+                parameter,
+                List.of(javaTag.getId()),
+                null,
+                parameter.toPageRequest()
+        );
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -94,8 +127,12 @@ class WorkbookSearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null,
-                List.of(bear.getId()), parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+                parameter,
+                null,
+                List.of(bear.getId()),
+                parameter.toPageRequest()
+        );
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -115,9 +152,12 @@ class WorkbookSearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter,
+        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+                parameter,
+                List.of(javaTag.getId()),
                 Arrays.asList(bear.getId(), oz.getId()),
-                List.of(javaTag.getId()), parameter.toPageRequest());
+                parameter.toPageRequest()
+        );
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -251,6 +291,7 @@ class WorkbookSearchRepositoryTest {
         initUser();
 
         javaTag = Tag.of("Java");
+        joanneTag = Tag.of("Joanne");
         javascriptTag = Tag.of("Javascript");
 
         for (int i = 0; i < publicWorkbookSize; i++) {
@@ -270,7 +311,7 @@ class WorkbookSearchRepositoryTest {
                     .name("Java 문제집" + i)
                     .opened(true)
                     .user(bear)
-                    .tags(Tags.of(List.of(javaTag)))
+                    .tags(Tags.of(List.of(javaTag, joanneTag)))
                     .build();
             workbook1.addCards(cards1);
             workbookRepository.save(workbook1);
