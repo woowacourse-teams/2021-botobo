@@ -82,7 +82,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).extracting(Workbook::getName)
                 .allMatch(name -> name.contains("문제집"));
         assertThat(workbookList).extracting(Workbook::tags)
-                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1);
+                .allMatch(tags -> tags.countSameTagName(Tags.of(List.of(javaTag))) == 1);
     }
 
     @Test
@@ -95,7 +95,7 @@ class WorkbookSearchRepositoryTest {
 
         // when
         Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null,
-                Arrays.asList(bear.getId()), parameter.toPageRequest());
+                List.of(bear.getId()), parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -117,7 +117,7 @@ class WorkbookSearchRepositoryTest {
         // when
         Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter,
                 Arrays.asList(bear.getId(), oz.getId()),
-                Arrays.asList(javaTag.getId()), parameter.toPageRequest());
+                List.of(javaTag.getId()), parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -125,7 +125,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).extracting(Workbook::getName)
                 .allMatch(name -> name.contains("문제집"));
         assertThat(workbookList).extracting(Workbook::tags)
-                .allMatch(tags -> tags.countSameTagName(Tags.of(Arrays.asList(javaTag))) == 1);
+                .allMatch(tags -> tags.countSameTagName(Tags.of(List.of(javaTag))) == 1);
         assertThat(workbookList).extracting(Workbook::author)
                 .allMatch(name -> name.equals("bear"));
     }
@@ -147,7 +147,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집2",
-                "Javascript 문제집1", "Javascript 문제집0");
+                        "Javascript 문제집1", "Javascript 문제집0");
     }
 
     @Test
@@ -167,7 +167,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집0",
-                "Javascript 문제집1", "Javascript 문제집2");
+                        "Javascript 문제집1", "Javascript 문제집2");
     }
 
     @Test
@@ -187,7 +187,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집0",
-                "Javascript 문제집1", "Javascript 문제집2");
+                        "Javascript 문제집1", "Javascript 문제집2");
     }
 
     @Test
@@ -207,12 +207,12 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(7);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("좋아요가 많아 문제다.",
-                "Java 문제집0",
-                "Javascript 문제집0",
-                "Java 문제집1",
-                "Javascript 문제집1",
-                "Java 문제집2",
-                "Javascript 문제집2");
+                        "Java 문제집0",
+                        "Javascript 문제집0",
+                        "Java 문제집1",
+                        "Javascript 문제집1",
+                        "Java 문제집2",
+                        "Javascript 문제집2");
     }
 
     @Test
@@ -231,14 +231,32 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).isEmpty();
     }
 
-    private void initWorkbook(int workbookSize) {
+    @Test
+    @DisplayName("검색어와 일치해도 공개 문제집이 아니면 조회되지 않는다.")
+    void searchAllFromKeywordWhenPrivate() {
+        // given
+        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+                .searchKeyword("비공개")
+                .build();
+
+        // when
+        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        List<Workbook> workbookList = workbooks.toList();
+
+        // then
+        assertThat(workbookList).isEmpty();
+    }
+
+    private void initWorkbook(int publicWorkbookSize) {
         initUser();
+
         javaTag = Tag.of("Java");
         javascriptTag = Tag.of("Javascript");
-        for (int i = 0; i < workbookSize; i++) {
+
+        for (int i = 0; i < publicWorkbookSize; i++) {
             Cards cards1 = new Cards();
             Cards cards2 = new Cards();
-            for (int j = workbookSize; j > i; j--) {
+            for (int j = publicWorkbookSize; j > i; j--) {
                 cards1.addCard(Card.builder()
                         .question("질문")
                         .answer("답변")
@@ -252,7 +270,7 @@ class WorkbookSearchRepositoryTest {
                     .name("Java 문제집" + i)
                     .opened(true)
                     .user(bear)
-                    .tags(Tags.of(Arrays.asList(javaTag)))
+                    .tags(Tags.of(List.of(javaTag)))
                     .build();
             workbook1.addCards(cards1);
             workbookRepository.save(workbook1);
@@ -261,11 +279,24 @@ class WorkbookSearchRepositoryTest {
                     .name("Javascript 문제집" + i)
                     .opened(true)
                     .user(oz)
-                    .tags(Tags.of(Arrays.asList(javascriptTag)))
+                    .tags(Tags.of(List.of(javascriptTag)))
                     .build();
             workbook2.addCards(cards2);
             workbookRepository.save(workbook2);
         }
+
+        Workbook privateWorkbook = Workbook.builder()
+                .name("비공개 문제집")
+                .opened(false)
+                .user(bear)
+                .build();
+        privateWorkbook.addCard(Card.builder()
+                .question("질문")
+                .answer("답변")
+                .build());
+        workbookRepository.save(privateWorkbook);
+
+
         workbookRepository.save(Workbook.builder()
                 .name("카드가 없다")
                 .opened(true)

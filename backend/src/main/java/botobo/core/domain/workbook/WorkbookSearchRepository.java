@@ -34,8 +34,10 @@ public class WorkbookSearchRepository {
                 .innerJoin(workbook.cards.cards, card)
                 .leftJoin(workbook.workbookTags, workbookTag)
                 .leftJoin(workbook.hearts.hearts, heart)
-                .where(containKeyword(parameter.getSearchKeyword()), containTags(tags),
-                        containUsers(users))
+                .where(containKeyword(parameter.getSearchKeyword()),
+                        containTags(tags),
+                        containUsers(users),
+                        openedTrue())
                 .groupBy(workbook.id)
                 .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
                 .offset(pageable.getOffset())
@@ -71,6 +73,10 @@ public class WorkbookSearchRepository {
         return user
                 .id
                 .in(users);
+    }
+
+    private BooleanExpression openedTrue() {
+        return workbook.opened.isTrue();
     }
 
     private OrderSpecifier<?> findCriteria(SearchCriteria searchCriteria) {
