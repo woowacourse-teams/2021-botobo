@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { SsrSuspense } from './components';
+import { HeaderSkeleton, SsrSuspense } from './components';
 import { ROUTE } from './constants';
 import {
   MainLoadable,
@@ -152,7 +152,11 @@ const routes = [
   },
   {
     path: `${ROUTE.PUBLIC_CARDS.PATH}/:id`,
-    component: <PublicCardsPage />,
+    component: (
+      <SsrSuspense fallback={<HeaderSkeleton hasPageHeader={true} />}>
+        <PublicCardsPage />
+      </SsrSuspense>
+    ),
     isPublic: true,
   },
   {

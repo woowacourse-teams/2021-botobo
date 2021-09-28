@@ -1,27 +1,26 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
 import { Flex, loadContent } from '../styles';
-import CardTemplate from './CardTemplate';
+import { CardTemplate } from '.';
 
 interface Props {
-  hasAuthor?: boolean;
-  hasTag?: boolean;
+  hasHeader?: boolean;
   hasFooter?: boolean;
   className?: string;
 }
 
-const CardSkeleton = ({
-  hasAuthor = false,
-  hasTag = false,
+const QnACardSkeleton = ({
+  hasHeader = false,
   hasFooter = false,
   className,
 }: Props) => (
   <Container className={className}>
-    <Name />
-    <Description />
-    {hasAuthor && <Author />}
-    {hasTag && <TagList />}
+    {hasHeader && <Header />}
+    <Question />
+    <Border />
+    <Answer />
     {hasFooter && (
       <Footer>
         <Edit></Edit>
@@ -33,44 +32,41 @@ const CardSkeleton = ({
 
 const Container = styled(CardTemplate)`
   ${Flex({ direction: 'column' })};
-  padding: 1.2rem;
   position: relative;
 `;
 
-const Name = styled.span`
-  width: 70%;
-  height: 1.5rem;
-  margin-bottom: 0.5rem;
-
-  ${loadContent}
-`;
-
-const Description = styled.span`
-  width: 30%;
-  height: 1rem;
-  margin-bottom: 0.2rem;
-
-  ${loadContent}
-`;
-
-const Author = styled.span`
-  height: 1rem;
+const Header = styled.div`
+  height: 1.25rem;
   width: 20%;
 
   ${loadContent}
 `;
 
-const TagList = styled.div`
-  height: 1rem;
-  width: 90%;
-  margin-top: 0.5rem;
+const Question = styled.div`
+  margin: 1rem 0;
+  height: 1.5rem;
+  width: 50%;
+
+  ${loadContent}
+`;
+
+const Border = styled.div`
+  ${({ theme }) => css`
+    border-bottom: 2px solid ${theme.color.gray_3};
+  `}
+`;
+
+const Answer = styled.div`
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  height: 1.5rem;
+  width: 80%;
 
   ${loadContent}
 `;
 
 const Footer = styled.div`
   ${Flex()};
-  margin-top: 0.5rem;
   margin-left: auto;
 `;
 
@@ -89,4 +85,4 @@ const Delete = styled.span`
   ${loadContent}
 `;
 
-export default CardSkeleton;
+export default QnACardSkeleton;

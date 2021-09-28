@@ -11,7 +11,7 @@ interface Props {
   onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 }
 
 interface ContainerStyleProps extends React.HTMLAttributes<HTMLDivElement> {
