@@ -29,7 +29,6 @@ import botobo.core.exception.user.SocialTypeNotFoundException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
-import botobo.core.exception.user.s3.S3UploadFailedException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;

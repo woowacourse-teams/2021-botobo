@@ -147,7 +147,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집2",
-                "Javascript 문제집1", "Javascript 문제집0");
+                        "Javascript 문제집1", "Javascript 문제집0");
     }
 
     @Test
@@ -167,7 +167,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집0",
-                "Javascript 문제집1", "Javascript 문제집2");
+                        "Javascript 문제집1", "Javascript 문제집2");
     }
 
     @Test
@@ -187,7 +187,7 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("Javascript 문제집0",
-                "Javascript 문제집1", "Javascript 문제집2");
+                        "Javascript 문제집1", "Javascript 문제집2");
     }
 
     @Test
@@ -207,12 +207,12 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).hasSize(7);
         assertThat(workbookList).extracting(Workbook::getName)
                 .containsExactly("좋아요가 많아 문제다.",
-                "Java 문제집0",
-                "Javascript 문제집0",
-                "Java 문제집1",
-                "Javascript 문제집1",
-                "Java 문제집2",
-                "Javascript 문제집2");
+                        "Java 문제집0",
+                        "Javascript 문제집0",
+                        "Java 문제집1",
+                        "Javascript 문제집1",
+                        "Java 문제집2",
+                        "Javascript 문제집2");
     }
 
     @Test

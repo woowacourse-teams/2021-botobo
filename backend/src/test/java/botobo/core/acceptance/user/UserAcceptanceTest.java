@@ -22,6 +22,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.List;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
+import static botobo.core.utils.Fixture.joanne;
+import static botobo.core.utils.Fixture.oz;
 import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -527,9 +529,9 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
     }
 
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
     @Test
-    void findAllUsersByWorkbookName() {
+    void findAllUsersByWorkbookNameWhenCardIsEmpty() {
         서로_다른_관리자의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         // given
@@ -542,10 +544,31 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
 
         // then
-        assertThat(userResponses).hasSize(3);
+        assertThat(userResponses).isEmpty();
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
+    @Test
+    void findAllUsersByWorkbookName() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+
+        // given
+        final String workbookName = "Java";
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
         assertThat(userResponses)
                 .extracting(UserFilterResponse::getName)
-                .containsExactlyInAnyOrder("user1", "user2", "user3");
+                .containsExactlyInAnyOrder("oz");
     }
 
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")

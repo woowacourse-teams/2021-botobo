@@ -15,7 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findBySocialIdAndSocialType(String socialId, SocialType socialType);
 
-    @Query("select distinct u from User u join fetch u.workbooks w " +
-            "where lower(w.name) like %:workbookName%")
+    @Query("select distinct u from User u join fetch u.workbooks w where lower(w.name) like %:workbookName% ")
     List<User> findAllByContainsWorkbookName(@Param("workbookName") String workbook);
 }

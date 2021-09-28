@@ -1,5 +1,6 @@
 package botobo.core.application;
 
+import botobo.core.domain.card.Card;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
@@ -173,9 +174,18 @@ class TagServiceTest {
     }
 
     private Workbook makeWorkbookWithTwoTags(String workbookName, Tag tag) {
-        return Workbook.builder()
+        Workbook workbook = Workbook.builder()
                 .name(workbookName)
                 .tags(Tags.of(List.of(tag)))
+                .build();
+        workbook.addCard(makeCard());
+        return workbook;
+    }
+
+    private Card makeCard() {
+        return Card.builder()
+                .question("질문")
+                .answer("답변")
                 .build();
     }
 }
