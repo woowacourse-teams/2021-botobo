@@ -10,7 +10,7 @@ import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
-import botobo.core.infrastructure.S3Uploader;
+import botobo.core.infrastructure.s3.FileUploader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +24,11 @@ import static java.util.Collections.emptyList;
 @Transactional(readOnly = true)
 public class UserService extends AbstractUserService {
 
-    private final S3Uploader s3Uploader;
+    private final FileUploader fileUploader;
 
-    public UserService(UserRepository userRepository, S3Uploader s3Uploader) {
+    public UserService(UserRepository userRepository, FileUploader fileUploader) {
         super(userRepository);
-        this.s3Uploader = s3Uploader;
+        this.fileUploader = fileUploader;
     }
 
     public UserResponse findById(AppUser appUser) {
@@ -47,11 +47,11 @@ public class UserService extends AbstractUserService {
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
-        String newProfileUrl = s3Uploader.upload(multipartFile, String.valueOf(user.getId()));
+        String newProfileUrl = fileUploader.upload(multipartFile, user);
 
         user.updateProfileUrl(newProfileUrl);
 
-        s3Uploader.deleteFromS3(oldProfileUrl);
+        fileUploader.deleteFromS3(oldProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(newProfileUrl)
                 .build();

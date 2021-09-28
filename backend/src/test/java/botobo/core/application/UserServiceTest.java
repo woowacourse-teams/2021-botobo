@@ -15,7 +15,7 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.S3Uploader;
+import botobo.core.infrastructure.s3.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -116,7 +116,7 @@ class UserServiceTest {
         String profileUrl = "https://botobo.com/users/user/botobo.png";
         MockMultipartFile mockMultipartFile = FileFactory.testFile("png");
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
-        given(s3Uploader.upload(mockMultipartFile, String.valueOf(user1.getId()))).willReturn(profileUrl);
+        given(s3Uploader.upload(mockMultipartFile, user1)).willReturn(profileUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -129,7 +129,7 @@ class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(times(1))
-                .upload(mockMultipartFile, String.valueOf(user1.getId()));
+                .upload(mockMultipartFile, user1);
     }
 
     @Test
@@ -140,7 +140,7 @@ class UserServiceTest {
         MockMultipartFile mockMultipartFile = null;
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user1));
-        given(s3Uploader.upload(mockMultipartFile, String.valueOf(user1.getId()))).willReturn(defaultImageUrl);
+        given(s3Uploader.upload(mockMultipartFile, user1)).willReturn(defaultImageUrl);
 
         // when
         ProfileResponse profileResponse = userService.updateProfile(mockMultipartFile, appUser);
@@ -166,7 +166,7 @@ class UserServiceTest {
                 .findById(anyLong());
         then(s3Uploader)
                 .should(never())
-                .upload(mockMultipartFile, user1.getUserName());
+                .upload(mockMultipartFile, user1);
     }
 
     @Test

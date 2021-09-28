@@ -29,6 +29,7 @@ import botobo.core.exception.user.SocialTypeNotFoundException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
+import botobo.core.exception.user.s3.S3UploadFailedException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNameBlankException;
 import botobo.core.exception.workbook.WorkbookNameLengthException;
@@ -112,7 +113,8 @@ public enum ErrorType {
 
     E001("E001", "서버에러", InternalServerErrorException.class),
     E002("E002", "파라미터를 입력해야 합니다.", ExternalException.class),
-    X001("X001", "정의되지 않은 에러", UndefinedException.class);
+    X001("X001", "정의되지 않은 에러", UndefinedException.class),
+    ;
 
     private final String code;
     private final String message;
