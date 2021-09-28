@@ -99,7 +99,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return request()
                 .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth(jwtTokenProvider.createToken(admin.getId()))
+                .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                 .build()
                 .extract();
     }
@@ -107,7 +107,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     public ExtractableResponse<Response> 서로_다른_관리자의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User admin) {
         return request()
                 .post("/api/admin/workbooks", adminWorkbookRequest)
-                .auth(jwtTokenProvider.createToken(admin.getId()))
+                .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                 .build()
                 .extract();
     }
@@ -130,7 +130,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         for (AdminCardRequest adminCardRequest : adminCardRequests) {
             request()
                     .post("/api/admin/cards", adminCardRequest)
-                    .auth(jwtTokenProvider.createToken(admin.getId()))
+                    .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                     .build()
                     .extract();
         }
@@ -202,7 +202,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     }
 
     protected String createToken(Long id) {
-        return jwtTokenProvider.createToken(id);
+        return jwtTokenProvider.createAccessToken(id);
     }
 
     protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {

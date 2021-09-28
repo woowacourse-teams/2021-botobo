@@ -33,7 +33,7 @@ public class AcceptanceTest {
             databaseCleaner.afterPropertiesSet();
         }
         databaseCleaner.execute();
-        String defaultToken = jwtTokenProvider.createToken(100L);
+        String defaultToken = jwtTokenProvider.createAccessToken(100L);
         requestBuilder = new RequestBuilder(defaultToken);
     }
 

@@ -16,3 +16,12 @@ spring:
       on-profile: test
   flyway:
     enabled: false
+
+security:
+  jwt:
+    access-token:
+      secret-key: accesstokentestkey
+      expire-length: 60
+    refresh-token:
+      secret-key: refreshtokentestkey
+      expire-length: 120

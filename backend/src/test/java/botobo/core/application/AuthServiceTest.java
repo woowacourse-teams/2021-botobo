@@ -67,7 +67,7 @@ class AuthServiceTest {
         given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
         given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.of(user));
-        given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
+        given(jwtTokenProvider.createAccessToken(user.getId())).willReturn(accessToken);
 
         // when
         TokenResponse tokenResponse = authService.createToken("github", loginRequest);
@@ -86,7 +86,7 @@ class AuthServiceTest {
                 .findBySocialIdAndSocialType(any(), any());
         then(jwtTokenProvider)
                 .should(times(1))
-                .createToken(anyLong());
+                .createAccessToken(anyLong());
     }
 
     @Test
@@ -112,7 +112,7 @@ class AuthServiceTest {
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
         given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willReturn(user);
-        given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
+        given(jwtTokenProvider.createAccessToken(user.getId())).willReturn(accessToken);
 
         // when
         TokenResponse tokenResponse = authService.createToken("github", loginRequest);
@@ -134,6 +134,6 @@ class AuthServiceTest {
                 .save(any(User.class));
         then(jwtTokenProvider)
                 .should(times(1))
-                .createToken(anyLong());
+                .createAccessToken(anyLong());
     }
 }

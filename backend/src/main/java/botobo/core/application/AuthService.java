@@ -39,10 +39,10 @@ public class AuthService {
         User userInfo = oauthManager.getUserInfo(loginRequest.getCode());
         Optional<User> user = userRepository.findBySocialIdAndSocialType(userInfo.getSocialId(), socialLoginType);
         if (user.isPresent()) {
-            return TokenResponse.of(jwtTokenProvider.createToken(user.get().getId()));
+            return TokenResponse.of(jwtTokenProvider.createAccessToken(user.get().getId()));
         }
         User savedUser = userRepository.save(userInfo);
-        return TokenResponse.of(jwtTokenProvider.createToken(savedUser.getId()));
+        return TokenResponse.of(jwtTokenProvider.createAccessToken(savedUser.getId()));
     }
 
     public AppUser findAppUserByToken(String credentials) {

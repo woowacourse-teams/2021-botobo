@@ -5,9 +5,9 @@ import java.util.Enumeration;
 
 public class AuthorizationExtractor {
 
-    public static final String AUTHORIZATION = "Authorization";
-    public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
-    public static final String BEARER_TYPE = "Bearer";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
+    private static final String BEARER_TYPE = "Bearer";
 
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
