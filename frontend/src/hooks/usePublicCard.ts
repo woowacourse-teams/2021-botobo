@@ -130,6 +130,8 @@ const usePublicCard = () => {
           };
         }),
       }));
+
+      setShouldWorkbookUpdateState(true);
     } catch (error) {
       errorHandler(error);
     }
