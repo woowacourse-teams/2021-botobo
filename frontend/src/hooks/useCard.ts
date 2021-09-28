@@ -18,6 +18,8 @@ import useSnackbar from './useSnackbar';
 const cardsInitialState = {
   workbookId: -1,
   workbookName: '',
+  heartCount: 0,
+  tags: [],
   cards: [],
 };
 
@@ -30,7 +32,7 @@ const useCard = () => {
   );
 
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
-  const { workbookName, cards } = cardInfo;
+  const { workbookName, cards, heartCount, tags } = cardInfo;
 
   const deletedCardId = useRef(-1);
 
@@ -117,6 +119,8 @@ const useCard = () => {
     workbookId,
     workbookName,
     cards,
+    heartCount,
+    tags,
     getCards,
     createCard,
     editCard,
