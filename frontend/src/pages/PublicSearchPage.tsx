@@ -34,6 +34,7 @@ const PublicSearchPage = () => {
   >([]);
 
   const [searchBarWidth, setSearchBarWidth] = useState(1);
+  const mountedRef = useRef(true);
 
   const { routePublicSearchResultQuery } = useRouter();
   const showSnackbar = useSnackbar();
@@ -42,6 +43,7 @@ const PublicSearchPage = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const searchForWorkbook = (keyword: string) => {
+    mountedRef.current = false;
     resetSearchResult();
     routePublicSearchResultQuery({
       keyword,
@@ -90,9 +92,15 @@ const PublicSearchPage = () => {
     }
 
     const getRecommendedKeywords = async () => {
-      const tagKeywords = await getTagKeywordAsync(searchKeyword);
+      try {
+        const tagKeywords = await getTagKeywordAsync(searchKeyword);
+        if (!mountedRef.current) return;
 
-      setRecommendedKeywords(tagKeywords);
+        setRecommendedKeywords(tagKeywords);
+      } catch (error) {
+        console.error(error);
+        showSnackbar({ message: '검색어를 불러오지 못했어요.' });
+      }
     };
 
     getRecommendedKeywords();
