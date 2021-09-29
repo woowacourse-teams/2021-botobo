@@ -14,7 +14,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev1, dev2">
+    <springProfile name="dev">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>
@@ -28,7 +28,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod1, prod2">
+    <springProfile name="prod">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>

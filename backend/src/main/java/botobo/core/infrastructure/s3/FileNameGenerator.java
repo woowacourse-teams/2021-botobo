@@ -1,6 +1,5 @@
-package botobo.core.infrastructure;
+package botobo.core.infrastructure.s3;
 
-import botobo.core.domain.user.s3.ImageExtension;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
@@ -15,8 +14,16 @@ public class FileNameGenerator {
     private static final String BASE_DIR = "users/";
     private static final String SLASH = "/";
 
-    public String generateFileName(MultipartFile multipartFile, String userId) {
-        return makeNewFileName(userId) + extension(multipartFile);
+    public UploadFile generateUploadFile(MultipartFile multipartFile, String userId) {
+        String fileName = makeNewFileName(userId);
+        String extension = extension(multipartFile);
+        String contentType = contentType(extension);
+
+        return UploadFile.of(
+                multipartFile,
+                fileName + insertDot(extension),
+                contentType
+        );
     }
 
     private String makeNewFileName(String userId) {
@@ -31,10 +38,14 @@ public class FileNameGenerator {
 
     private String extension(MultipartFile multipartFile) {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-        if (!ImageExtension.isAllowedExtension(extension)) {
+        if (!ImageType.isAllowedExtension(extension)) {
             throw new ImageExtensionNotAllowedException();
         }
-        return insertDot(extension);
+        return extension;
+    }
+
+    private String contentType(String extension) {
+        return ImageType.contentType(extension);
     }
 
     private String insertDot(String extension) {
