@@ -9,7 +9,7 @@
     <appender name="CONSOLE_DB" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>utf8</charset>
-            <pattern>${BOTOBO_DB_LOG_PATTERN}</pattern>
+            <pattern>${BOTOBO_BINDER_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 

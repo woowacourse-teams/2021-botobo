@@ -11,7 +11,7 @@
 
         <encoder>
             <charset>utf8</charset>
-            <pattern>${BOTOBO_LOG_PATTERN}</pattern>
+            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
