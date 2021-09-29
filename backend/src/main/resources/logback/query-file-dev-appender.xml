@@ -1,9 +1,7 @@
 <included>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type" level="TRACE"/>
-
     <property name="QUERY_LOG_PATH" value="logs/query"/>
     <property name="QUERY_LOG_FILE_NAME" value="query"/>
+    <property name="QUERY_BINDER_FILE_NAME" value="binder"/>
 
     <appender name="QUERY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -11,7 +9,8 @@
         </filter>
 
         <encoder>
-            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+            <pattern>${BOTOBO_DB_LOG_PATTERN}</pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -20,4 +19,15 @@
             <maxHistory>100</maxHistory>
         </rollingPolicy>
     </appender>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="QUERY_FILE"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+        <appender-ref ref="QUERY_FILE"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+        <appender-ref ref="QUERY_FILE"/>
+    </logger>
+
 </included>
