@@ -11,14 +11,14 @@
     <property name="BOTOBO_FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss}:%-4relative [%C.%M]:%L] %n    > %msg%n"/>
 
-    <springProfile name="test">
+    <springProfile name="test, local">
         <include resource="logback/console-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
-    <springProfile name="dev, local">
+    <springProfile name="dev">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>
