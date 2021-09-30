@@ -1,12 +1,15 @@
 package botobo.core.domain.tag;
 
+import botobo.core.config.QuerydslConfig;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.domain.workbook.WorkbookSearchRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -18,10 +21,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
+@Import({TagFilterRepository.class, QuerydslConfig.class})
 class TagRepositoryTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private TagFilterRepository tagFilterRepository;
 
     @Autowired
     private WorkbookRepository workbookRepository;
@@ -98,7 +105,7 @@ class TagRepositoryTest {
         initWorkbooks();
 
         // when
-        List<Tag> tags = tagRepository.findAllByContainsWorkbookName("java");
+        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName("java");
         // then
         assertThat(tags).hasSize(6);
         assertThat(tags)
