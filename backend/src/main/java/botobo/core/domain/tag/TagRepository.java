@@ -14,7 +14,4 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("select t from Tag t where t.tagName.value like %:keyword%")
     List<Tag> findAllTagContaining(@Param("keyword") String keyword);
 
-    @Query("select distinct t from Tag t join fetch t.workbookTags wt " +
-            "where lower(wt.workbook.name) like %:workbookName%")
-    List<Tag> findAllByContainsWorkbookName(@Param("workbookName") String workbookName);
 }

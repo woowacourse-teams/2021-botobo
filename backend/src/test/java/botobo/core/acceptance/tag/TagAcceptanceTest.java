@@ -28,6 +28,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
                 TagRequest.builder().id(0L).name("js").build()
         );
         유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
+        유저_태그_카드_포함_문제집_등록되어_있음("Js 비공개 문제집", false, jsTags, joanneToken);
     }
 
     @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공")
@@ -93,5 +94,21 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 태그들을 가져온다. - 성공, 비공개 문제집이면 가져오지 않는다.")
+    @Test
+    void findAllTagsByWorkbookNameWhenPrivateWorkbook() {
+        // given
+        final String workbookName = "비공개";
+        final HttpResponse response = request()
+                .get("/api/tags?workbook=" + workbookName)
+                .build();
+
+        // when
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+
+        // then
+        assertThat(tagResponses).hasSize(0);
     }
 }
