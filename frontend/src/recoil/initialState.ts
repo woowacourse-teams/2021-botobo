@@ -7,6 +7,7 @@ export const workbookInitialState = {
   id: -1,
   name: '',
   cardCount: -1,
+  heartCount: 0,
   opened: true,
   tags: [tagInitialState],
 };
