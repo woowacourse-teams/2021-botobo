@@ -147,6 +147,47 @@ class TagServiceTest {
         assertThat(tagResponses).hasSize(2);
     }
 
+    @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 카드가 0개면 가져오지 않는다.")
+    @Test
+    void findAllTagsByWorkbookNameWithCardZero() {
+        // given
+        Tag java = Tag.of("java");
+
+        Workbook workbook = Workbook.builder()
+                .name("카드 없는 문제집")
+                .tags(Tags.of(List.of(java)))
+                .build();
+        workbookRepository.save(workbook);
+
+        FilterCriteria filterCriteria = new FilterCriteria("문제집");
+
+        // when - then
+        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
+
+        assertThat(tagResponses).hasSize(0);
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 비공개 문제집이면 가져오지 않는다.")
+    @Test
+    void findAllTagsByWorkbookNameWithPrivateWorkbook() {
+        // given
+        Tag java = Tag.of("java");
+
+        Workbook workbook = Workbook.builder()
+                .name("비공개 문제집")
+                .opened(false)
+                .tags(Tags.of(List.of(java)))
+                .build();
+        workbookRepository.save(workbook);
+
+        FilterCriteria filterCriteria = new FilterCriteria("문제집");
+
+        // when - then
+        List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
+
+        assertThat(tagResponses).hasSize(0);
+    }
+
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 빈 문자열일 경우 빈 리스트를 응답한다.")
     @Test
     void findAllTagsByWorkbookNameEmpty() {
@@ -176,6 +217,7 @@ class TagServiceTest {
     private Workbook makeWorkbookWithTwoTags(String workbookName, Tag tag) {
         Workbook workbook = Workbook.builder()
                 .name(workbookName)
+                .opened(true)
                 .tags(Tags.of(List.of(tag)))
                 .build();
         workbook.addCard(makeCard());

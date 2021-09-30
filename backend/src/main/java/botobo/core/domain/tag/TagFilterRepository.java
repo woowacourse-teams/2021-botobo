@@ -30,7 +30,7 @@ public class TagFilterRepository {
                 .innerJoin(tag.workbookTags, workbookTag).fetchJoin()
                 .innerJoin(workbookTag.workbook, workbook)
                 .innerJoin(workbook.cards.cards, card)
-                .where(containWorkbookName(workbookName), 
+                .where(containWorkbookName(workbookName),
                         openedTrue())
                 .fetch();
     }
