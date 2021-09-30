@@ -2,8 +2,8 @@ package botobo.core.application;
 
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserFilterRepository;
 import botobo.core.domain.user.UserRepository;
-import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserFilterResponse;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -26,10 +25,14 @@ import static java.util.Collections.emptyList;
 @Transactional(readOnly = true)
 public class UserService extends AbstractUserService {
 
+    private final UserFilterRepository userFilterRepository;
     private final FileUploader fileUploader;
 
-    public UserService(UserRepository userRepository, FileUploader fileUploader) {
+    public UserService(UserRepository userRepository,
+                       UserFilterRepository userFilterRepository,
+                       FileUploader fileUploader) {
         super(userRepository);
+        this.userFilterRepository = userFilterRepository;
         this.fileUploader = fileUploader;
     }
 
@@ -77,20 +80,7 @@ public class UserService extends AbstractUserService {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());
         }
-        List<User> allUsers = userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
-
-        List<User> users = new ArrayList<>();
-        for (User user : allUsers) {
-            List<Workbook> userWorkbooks = user.getWorkbooks();
-            filterUserHavingNonZeroCards(users, user, userWorkbooks);
-        }
+        List<User> users = userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         return UserFilterResponse.listOf(users);
-    }
-
-    private void filterUserHavingNonZeroCards(List<User> users, User user, List<Workbook> userWorkbooks) {
-        userWorkbooks.stream()
-                .filter(workbook -> workbook.cardCount() > 0)
-                .map(workbook -> user)
-                .forEach(users::add);
     }
 }

@@ -571,6 +571,30 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .containsExactlyInAnyOrder("oz");
     }
 
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")
+    @Test
+    void findAllUsersByWorkbookNameWhenOpened() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
+
+        // given
+        final String workbookName = "문제집";
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
+        assertThat(userResponses)
+                .extracting(UserFilterResponse::getName)
+                .containsExactlyInAnyOrder("oz");
+    }
+
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
     @Test
     void findAllUsersByWorkbookNameIsEmpty() {

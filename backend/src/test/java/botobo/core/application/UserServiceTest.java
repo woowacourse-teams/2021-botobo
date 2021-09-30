@@ -1,11 +1,13 @@
 package botobo.core.application;
 
+import botobo.core.config.QuerydslConfig;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserFilterRepository;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.FilterCriteria;
@@ -27,6 +29,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
@@ -44,6 +47,7 @@ import static org.mockito.Mockito.times;
 
 @DisplayName("유저 서비스 테스트")
 @MockitoSettings
+@Import({UserFilterRepository.class, QuerydslConfig.class})
 class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
@@ -51,6 +55,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserFilterRepository userFilterRepository;
 
     @Mock
     private S3Uploader s3Uploader;
@@ -351,7 +358,7 @@ class UserServiceTest {
 
         // then
         assertThat(responses).isEmpty();
-        then(userRepository)
+        then(userFilterRepository)
                 .should(never())
                 .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
     }
@@ -361,33 +368,15 @@ class UserServiceTest {
     void findAllUsersByWorkbookName() {
         // given
         FilterCriteria filterCriteria = new FilterCriteria("자바");
-        given(userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
+        given(userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
                 .willReturn(List.of(userHasCard, user1, user2));
 
         // when
         List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
 
         // then
-        assertThat(responses).hasSize(1);
-        then(userRepository)
-                .should(times(1))
-                .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 유저를 모두 가져온다. - 성공, 카드가 존재하지 않는 경우 가져오지 않는다.")
-    @Test
-    void findAllUsersByWorkbookNameWhenEmptyCards() {
-        // given
-        FilterCriteria filterCriteria = new FilterCriteria("자바");
-        given(userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
-                .willReturn(List.of(user1, user2));
-
-        // when
-        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
-
-        // then
-        assertThat(responses).hasSize(0);
-        then(userRepository)
+        assertThat(responses).hasSize(3);
+        then(userFilterRepository)
                 .should(times(1))
                 .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
     }
