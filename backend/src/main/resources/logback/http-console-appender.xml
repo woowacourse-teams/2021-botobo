@@ -1,7 +1,6 @@
 <inclded>
     <appender name="HTTP_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <charset>utf8</charset>
             <pattern>${BOTOBO_HTTP_CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>

@@ -8,7 +8,6 @@
         </filter>
 
         <encoder>
-            <charset>utf8</charset>
             <pattern>
                 %d{yyyy-MM-dd HH:mm:ss} %n    > %msg%n
             </pattern>

@@ -10,7 +10,6 @@
         </filter>
 
         <encoder>
-            <charset>utf8</charset>
             <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
         </encoder>
 

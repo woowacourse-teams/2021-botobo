@@ -4,7 +4,6 @@
 
     <appender name="HTTP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
-            <charset>utf8</charset>
             <pattern>${BOTOBO_HTTP_FILE_LOG_PATTERN}</pattern>
         </encoder>
 
