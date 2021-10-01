@@ -97,4 +97,14 @@ class TagSearchRepositoryTest extends FilterRepositoryTest {
         // then
         assertThat(tags).isEmpty();
     }
+
+    @Test
+    @DisplayName("keyword에 포함된 태그 조회 - keyword가 null인 경우 빈 리스트를 응답한다.")
+    void findAllTagsContainingWhenKeywordIsNull() {
+        // when
+        List<Tag> tags = tagSearchRepository.findAllTagContaining(null);
+
+        // then
+        assertThat(tags).isEmpty();
+    }
 }
