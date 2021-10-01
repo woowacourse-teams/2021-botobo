@@ -56,7 +56,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "javascript";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when

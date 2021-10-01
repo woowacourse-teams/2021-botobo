@@ -591,7 +591,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "Js";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
