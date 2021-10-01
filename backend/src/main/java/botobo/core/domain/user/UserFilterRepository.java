@@ -10,8 +10,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static botobo.core.domain.card.QCard.card;
+import static botobo.core.domain.tag.QTag.tag;
 import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
+import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
@@ -29,9 +31,16 @@ public class UserFilterRepository {
                 .distinct()
                 .innerJoin(user.workbooks, workbook)
                 .innerJoin(workbook.cards.cards, card)
-                .where(containsWorkbookName(workbookName),
-                        isOpened())
+                .leftJoin(workbook.workbookTags, workbookTag)
+                .leftJoin(workbookTag.tag, tag)
+                .where(containsKeyword(workbookName),
+                        openedTrue())
                 .fetch();
+    }
+
+    private BooleanExpression containsKeyword(String keyword) {
+        return containsWorkbookName(keyword)
+                .or(equalsKeywordInWorkbookTag(keyword));
     }
 
     private BooleanExpression containsWorkbookName(String workbookName) {
@@ -41,7 +50,12 @@ public class UserFilterRepository {
                 .contains(workbookName.toLowerCase(Locale.ROOT));
     }
 
-    private BooleanExpression isOpened() {
+    private BooleanExpression equalsKeywordInWorkbookTag(String workbookName) {
+        return workbookTag.tag.tagName.value
+                .eq(workbookName);
+    }
+
+    private BooleanExpression openedTrue() {
         return workbook
                 .opened
                 .isTrue();

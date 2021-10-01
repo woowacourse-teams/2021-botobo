@@ -18,7 +18,7 @@ import static botobo.core.utils.Fixture.joanne;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TagAcceptanceTest extends DomainAcceptanceTest {
+class TagAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -36,6 +36,25 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookName() {
         // given
         final String workbookName = "Js";
+        final HttpResponse response = request()
+                .get("/api/tags?workbook=" + workbookName)
+                .build();
+
+        // when
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+
+        // then
+        assertThat(tagResponses).hasSize(2);
+        assertThat(tagResponses)
+                .extracting(TagResponse::getName)
+                .containsExactly("javascript", "js");
+    }
+
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 태그에만 포함된 문제집도 가져온다.")
+    @Test
+    void findAllTagsByWorkbookNameEqTag() {
+        // given
+        final String workbookName = "javascript";
         final HttpResponse response = request()
                 .get("/api/tags?workbook=" + workbookName)
                 .build();

@@ -5,6 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
+import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
@@ -569,6 +571,37 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         assertThat(userResponses)
                 .extracting(UserFilterResponse::getName)
                 .containsExactlyInAnyOrder("oz");
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 태그에 포함됨")
+    @Test
+    void findAllUsersByWorkbookNameEqualsTag() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        List<TagRequest> jsTags = Arrays.asList(
+                TagRequest.builder().id(0L).name("javascript").build(),
+                TagRequest.builder().id(0L).name("js").build()
+        );
+
+        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+
+        // given
+        final String workbookName = "Js";
+        final HttpResponse response = request()
+                .get("/api/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
+        assertThat(userResponses)
+                .extracting(UserFilterResponse::getName)
+                .containsExactlyInAnyOrder("joanne");
     }
 
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")

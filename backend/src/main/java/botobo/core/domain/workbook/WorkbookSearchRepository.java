@@ -6,7 +6,6 @@ import botobo.core.ui.search.WorkbookSearchParameter;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -56,16 +55,15 @@ public class WorkbookSearchRepository {
         }
         String keyword = searchKeyword.getValue();
         return containsKeywordInWorkbookName(keyword)
-                .or(containsKeywordInWorkbookTag(keyword));
+                .or(equalsKeywordInWorkbookTag(keyword));
     }
 
     private BooleanExpression containsKeywordInWorkbookName(String keyword) {
         return workbook.name.lower().contains(keyword);
     }
 
-    private BooleanExpression containsKeywordInWorkbookTag(String keyword) {
-        StringPath tagName = workbookTag.tag.tagName.value;
-        return tagName.eq(keyword);
+    private BooleanExpression equalsKeywordInWorkbookTag(String keyword) {
+        return workbookTag.tag.tagName.value.eq(keyword);
     }
 
     private BooleanExpression containTags(List<Long> tags) {
