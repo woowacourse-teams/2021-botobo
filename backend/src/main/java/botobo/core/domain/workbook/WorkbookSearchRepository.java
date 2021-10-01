@@ -63,7 +63,7 @@ public class WorkbookSearchRepository {
     }
 
     private BooleanExpression equalsKeywordInWorkbookTag(String keyword) {
-        return workbookTag.tag.tagName.value.eq(keyword);
+        return workbook.workbookTags.any().tag.tagName.value.eq(keyword);
     }
 
     private BooleanExpression containTags(List<Long> tags) {
