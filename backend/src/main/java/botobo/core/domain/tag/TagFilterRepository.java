@@ -26,21 +26,6 @@ public class TagFilterRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-//    public List<Tag> findAllByContainsWorkbookName(String workbookName) {
-//        if (Objects.isNull(workbookName)) {
-//            return Collections.emptyL
-//        return jpaQueryFactory.selectFrom(tag)
-//                .distinct()
-//                .innerJoin(tag.workbookTags, workbookTag).fetchJoin()
-//                .innerJoin(workbookTag.workbook, workbook)
-//                .innerJoin(workbook.workbookTags, workbookTag)
-//                .innerJoin(workbookTag.tag, tag)
-//                .innerJoin(workbook.cards.cards, card)
-//                .where(containKeyword(workbookName),
-//                        openedTrue())
-//                .fetch();
-//    }
-
     public List<Tag> findAllByContainsWorkbookName(String workbookName) {
         if (Objects.isNull(workbookName)) {
             return Collections.emptyList();
