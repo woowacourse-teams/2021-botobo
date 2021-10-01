@@ -510,7 +510,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_요청">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/workbooks HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /workbooks HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -539,7 +539,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/workbooks/1/cards
+Location: /workbooks/1/cards
 Content-Type: application/json
 Content-Length: 200
 
@@ -567,7 +567,7 @@ Content-Length: 200
 <h4 id="_요청_2">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/workbooks HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /workbooks HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -631,7 +631,7 @@ Content-Length: 656
 <h4 id="_요청_3">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/workbooks HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /workbooks HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -658,7 +658,7 @@ Content-Length: 3
 <h4 id="_요청_4">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/workbooks/1/cards HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /workbooks/1/cards HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -673,11 +673,19 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 662
+Content-Length: 782
 
 {
   "workbookId" : 1,
   "workbookName" : "Java",
+  "heartCount" : 10,
+  "tags" : [ {
+    "id" : 1,
+    "name" : "java"
+  }, {
+    "id" : 2,
+    "name" : "spring"
+  } ],
   "cards" : [ {
     "id" : 1,
     "question" : "Java에는 a가 몇 개 들어갈까요?",
@@ -714,7 +722,7 @@ Content-Length: 662
 <h4 id="_요청_5">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/workbooks/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /workbooks/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -778,7 +786,7 @@ Content-Length: 250
 <h4 id="_요청_6">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/workbooks/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /workbooks/1 HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -802,7 +810,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_요청_7">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/workbooks/public/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /workbooks/public/1 HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -868,7 +876,7 @@ Content-Length: 832
 <h4 id="_요청_8">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/workbooks/1/cards HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /workbooks/1/cards HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -889,7 +897,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/workbooks/1/cards</code></pre>
+Location: /workbooks/1/cards</code></pre>
 </div>
 </div>
 </div>
@@ -920,7 +928,7 @@ Content-Length: 20
 <h4 id="_요청_9">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/workbooks/public HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /workbooks/public HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -934,18 +942,34 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 223
+Content-Length: 476
 
 [ {
   "id" : 1,
   "name" : "피케이의 Network 정복 모음집",
   "cardCount" : 8,
-  "author" : "피케이"
+  "heartCount" : 10,
+  "author" : "피케이",
+  "tags" : [ {
+    "id" : 1,
+    "name" : "network"
+  }, {
+    "id" : 2,
+    "name" : "네트워크"
+  } ]
 }, {
   "id" : 2,
   "name" : "오즈의 Network 정복 최종판",
   "cardCount" : 20,
-  "author" : "오즈"
+  "heartCount" : 5,
+  "author" : "오즈",
+  "tags" : [ {
+    "id" : 1,
+    "name" : "network"
+  }, {
+    "id" : 3,
+    "name" : "cs지식"
+  } ]
 } ]</code></pre>
 </div>
 </div>
@@ -962,7 +986,7 @@ Content-Length: 223
 <h4 id="_요청_10">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/cards HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /cards HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -985,7 +1009,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/cards/1
+Location: /cards/1
 Content-Type: application/json
 Content-Length: 190
 
@@ -1008,7 +1032,7 @@ Content-Length: 190
 <h4 id="_요청_11">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/cards/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /cards/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1056,7 +1080,7 @@ Content-Length: 198
 <h4 id="_요청_12">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/cards/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /cards/1 HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -1080,7 +1104,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_요청_13">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/cards/next-quiz HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /cards/next-quiz HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1116,7 +1140,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_요청_14">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/quizzes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /quizzes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1212,7 +1236,7 @@ Content-Length: 1353
 <h4 id="_요청_15">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/quizzes/guest HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /quizzes/guest HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -1304,7 +1328,7 @@ Content-Length: 1353
 <h4 id="_요청_16">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/search/workbooks?keyword=java&amp;tags=1,3&amp;users=1&amp;criteria=date&amp;start=0&amp;size=10 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/workbooks?keyword=java&amp;tags=1,3&amp;users=1&amp;criteria=date&amp;start=0&amp;size=10 HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -1318,12 +1342,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 421
+Content-Length: 461
 
 [ {
   "id" : 2,
   "name" : "피케이의 java 문제집",
   "cardCount" : 15,
+  "heartCount" : 5,
   "author" : "pkeugine",
   "tags" : [ {
     "id" : 1,
@@ -1336,6 +1361,7 @@ Content-Length: 421
   "id" : 1,
   "name" : "피케이의 javascript 문제집",
   "cardCount" : 15,
+  "heartCount" : 3,
   "author" : "pkeugine",
   "tags" : [ {
     "id" : 3,
@@ -1435,7 +1461,7 @@ Content-Length: 421
 <h4 id="_요청_17">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/search/tags?keyword=Java HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/tags?keyword=Java HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -1486,7 +1512,7 @@ Content-Length: 78
 <h4 id="_요청_18">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/admin/workbooks HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /admin/workbooks HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1509,7 +1535,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/admin/workbooks/1
+Location: /admin/workbooks/1
 Content-Type: application/json
 Content-Length: 33
 
@@ -1527,7 +1553,7 @@ Content-Length: 33
 <h4 id="_요청_19">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/admin/cards HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /admin/cards HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1550,7 +1576,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/admin/cards/1
+Location: /admin/cards/1
 Content-Type: application/json
 Content-Length: 103
 
@@ -1576,7 +1602,7 @@ Content-Length: 103
 <h4 id="_요청_20">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login/github HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/github HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Content-Length: 25
@@ -1635,7 +1661,7 @@ Content-Length: 43
 <h4 id="_요청_21">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/tags?workbook=java HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /tags?workbook=java HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -1676,7 +1702,7 @@ Content-Length: 120
 <h4 id="_요청_22">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/users/me HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users/me HTTP/1.1
 Authorization: Bearer botobo.access.token
 Host: botobo.kr</code></pre>
 </div>
@@ -1709,7 +1735,7 @@ Content-Length: 93
 <h4 id="_요청_23">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/users/profile HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/profile HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Authorization: Bearer botobo.access.token
 Host: botobo.kr
@@ -1746,7 +1772,7 @@ Content-Length: 77
 <h4 id="_요청_24">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/users/me HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /users/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1788,7 +1814,7 @@ Content-Length: 113
 <h4 id="_요청_25">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/users/name-check HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/name-check HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer botobo.access.token
@@ -1838,7 +1864,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_요청_26">요청</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/users?workbook=java HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users?workbook=java HTTP/1.1
 Host: botobo.kr</code></pre>
 </div>
 </div>
@@ -1992,6 +2018,12 @@ Content-Length: 76
 <td class="tableblock halign-center valign-top"></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">011</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">요청할 수 있는 최대 파일 크기는 100MB 입니다.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">프로필 이미지 수정</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">012</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">허용되지 않는 파일 확장자입니다.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">프로필 이미지 수정</p></td>
 </tr>
 <tr>
@@ -2259,7 +2291,7 @@ Content-Length: 76
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-10 15:21:02 +0900
+Last updated 2021-09-16 21:31:09 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

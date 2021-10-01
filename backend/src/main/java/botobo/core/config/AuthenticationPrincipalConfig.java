@@ -53,6 +53,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public PathMatcherInterceptor authPathMatcherInterceptor() {
         return new PathMatcherInterceptor(authorizationInterceptor())
                 .addPathPatterns("/**", PathMethod.ANY)
+                .excludePathPatterns("/*", PathMethod.GET)
                 .excludePathPatterns("/**", PathMethod.OPTIONS)
                 .excludePathPatterns("/infra/**", PathMethod.GET)
                 .excludePathPatterns("/workbooks", PathMethod.GET)
