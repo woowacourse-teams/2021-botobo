@@ -3,8 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 import SearchIcon from '../assets/search.svg';
-import { CardSkeleton, HeaderSkeleton } from '../components';
-import { DEVICE } from '../constants';
+import { CardSkeletonList, HeaderSkeleton } from '../components';
 import { Flex, loadContent } from '../styles';
 import PageTemplate from './PageTemplate';
 
@@ -20,11 +19,7 @@ const PublicSearchLoadable = () => (
       </SearchBar>
       <Title />
       <Description />
-      <StyledUl>
-        {[...Array(12)].map((_, index) => (
-          <StyledCardSkeleton key={index} />
-        ))}
-      </StyledUl>
+      <CardSkeletonList count={12} hasAuthor={true} hasTag={true} />
     </StyledPageTemplate>
   </>
 );
@@ -83,22 +78,6 @@ const Description = styled.div`
   width: 30%;
 
   ${loadContent}
-`;
-
-const StyledUl = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
-  margin: 1rem 0;
-
-  @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`;
-
-const StyledCardSkeleton = styled(CardSkeleton)`
-  ${Flex({ direction: 'column', items: 'flex-start' })};
-  height: 8.75rem;
 `;
 
 export default PublicSearchLoadable;

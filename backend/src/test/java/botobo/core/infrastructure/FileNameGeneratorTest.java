@@ -1,8 +1,8 @@
 package botobo.core.infrastructure;
 
-import botobo.core.infrastructure.s3.UploadFile;
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import botobo.core.infrastructure.s3.FileNameGenerator;
+import botobo.core.infrastructure.s3.UploadFile;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

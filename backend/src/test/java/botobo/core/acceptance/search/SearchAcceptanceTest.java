@@ -151,6 +151,59 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
+    @DisplayName("문제집 검색 - 성공, 문제집 이름과 태그 이름에 전부 포함되어 있을 경우")
+    void searchFromKeywordInWorkbookNameOrTagName() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(7);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바스크립트 고급 문제집",
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "피케이의 자바스크립트 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 문제집 이름에 포함되어 있지는 않으나 태그 이름에는 포함되어 있을 경우")
+    void searchFromKeywordInTagName() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "java");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(5);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+
+    @Test
     @DisplayName("문제집 검색 - 성공, 시간 기준 최신 순 정렬")
     void searchFromDateDesc() {
         // given

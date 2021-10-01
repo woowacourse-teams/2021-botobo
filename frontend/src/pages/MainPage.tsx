@@ -14,7 +14,7 @@ import {
 import { DEVICE, ROUTE } from '../constants';
 import { useModal, useRouter, useWorkbook } from '../hooks';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
-import { Flex } from '../styles';
+import { Flex, WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
@@ -58,9 +58,11 @@ const MainPage = () => {
             <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
           ) : (
             <StyledUl>
-              {workbooks.map(({ id, name, cardCount }) => (
+              {workbooks.map(({ id, name, cardCount, heartCount, tags }) => (
                 <li key={id}>
                   <Workbook
+                    heartCount={heartCount}
+                    tags={tags}
                     name={name}
                     path={`${ROUTE.CARDS.PATH}/${id}`}
                     cardCount={cardCount}
@@ -171,14 +173,8 @@ const NoWorkbook = styled.div`
 `;
 
 const StyledUl = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
+  ${WorkbookListStyle};
   margin: 1rem 0;
-
-  @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, 1fr);
-  }
 `;
 
 export default MainPage;
