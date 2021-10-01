@@ -5,7 +5,6 @@ import botobo.core.exception.search.LongSearchKeywordException;
 import botobo.core.exception.search.SearchKeywordNullException;
 import botobo.core.exception.search.ShortSearchKeywordException;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 import java.util.Objects;
 
