@@ -1,11 +1,12 @@
 package botobo.core.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import botobo.core.ui.search.SearchArgumentResolver;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,12 +15,6 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    private final Environment environment;
-
-    public WebConfig(Environment environment) {
-        this.environment = environment;
-    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -30,22 +25,13 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        if (isLocal() || isTest()) {
-            for (HttpMessageConverter<?> converter : converters) {
-                if (converter instanceof MappingJackson2HttpMessageConverter) {
-                    MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter) converter;
-                    jacksonConverter.setPrettyPrint(true);
-                }
-            }
-        }
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(searchArgumentResolver());
     }
 
-    private boolean isLocal() {
-        return Arrays.asList(environment.getActiveProfiles()).contains("local");
+    @Bean
+    public SearchArgumentResolver searchArgumentResolver() {
+        return new SearchArgumentResolver();
     }
 
-    private boolean isTest() {
-        return Arrays.asList(environment.getActiveProfiles()).contains("test");
-    }
 }
