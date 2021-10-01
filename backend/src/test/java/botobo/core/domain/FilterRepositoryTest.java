@@ -97,10 +97,12 @@ public class FilterRepositoryTest {
         Tag js = Tag.of("js");
         Tag javascript = Tag.of("javascript");
         Tag spring = Tag.of("Spring");
+        Tag notOpened = Tag.of("private");
+        Tag empty = Tag.of("empty");
 
         Workbook workbookWithCardZero = Workbook.builder()
                 .name("카드가 없는 문제집")
-                .tags(Tags.of(List.of(java)))
+                .tags(Tags.of(List.of(empty)))
                 .user(USER1)
                 .build();
 
@@ -110,7 +112,7 @@ public class FilterRepositoryTest {
                 makeWorkbookWithTwoTagsAndUser("오즈의 Java 문제집", java, jdk, true, USER3),
                 makeWorkbookWithTwoTagsAndUser("Javascript", javascript, js, true, USER4),
                 makeWorkbookWithTwoTagsAndUser("Spring", spring, java, true, USER5),
-                makeWorkbookWithTwoTagsAndUser("비공개 문제집", spring, java, false, USER6),
+                makeWorkbookWithTwoTagsAndUser("비공개 문제집", notOpened, java, false, USER6),
                 workbookWithCardZero
         );
         workbookRepository.saveAll(workbooks);

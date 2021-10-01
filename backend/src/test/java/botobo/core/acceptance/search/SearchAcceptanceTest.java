@@ -25,7 +25,7 @@ import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SearchAcceptanceTest extends DomainAcceptanceTest {
+class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     private String pkToken, bearToken;
 
@@ -64,6 +64,11 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 1,
                 pkToken
         );
+        카드도_함께_등록(
+                유저_태그포함_문제집_등록되어_있음("피케이의 자바스크립트 문제집", false, makeFailTags(), pkToken),
+                1,
+                pkToken
+        );
 
         // 중간곰의 문제집 생성
         카드와_좋아요도_함께_등록(
@@ -84,7 +89,13 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 bearToken,
                 List.of()
         );
-        유저_태그포함_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeJavaTags(), bearToken);
+        유저_태그포함_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeFailTags(), bearToken);
+    }
+
+    private List<TagRequest> makeFailTags() {
+        return List.of(
+                TagRequest.builder().id(0L).name("실패").build()
+        );
     }
 
     private List<TagRequest> makeJavaTags() {
@@ -682,13 +693,13 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("태그 검색 - 성공")
+    @DisplayName("연관 태그 검색 - 성공")
     void recommendRelatedTags() {
         // given
         String keyword = "j";
 
         // when
-        HttpResponse response = 추천_태그_검색_요청(keyword);
+        HttpResponse response = 연관_태그_검색_요청(keyword);
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
@@ -700,18 +711,33 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("태그 검색 - 성공")
+    @DisplayName("연관 태그 검색 - 성공")
     void recommendRelatedTagsWhenKeywordIsEmpty() {
         // given
         String keyword = "";
 
         // when
-        HttpResponse response = 추천_태그_검색_요청(keyword);
+        HttpResponse response = 연관_태그_검색_요청(keyword);
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(tagResponses).hasSize(0);
+        assertThat(tagResponses).isEmpty();
+    }
+
+    @Test
+    @DisplayName("연관 태그 검색 - 성공, 문제집이 비공개이거나, 카드가 없을 땐 조회하지 않는다.")
+    void recommendRelatedTagsWhenWorkbookIsNotValid() {
+        // given
+        String keyword = "실패";
+
+        // when
+        HttpResponse response = 연관_태그_검색_요청(keyword);
+
+        // then
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tagResponses).isEmpty();
     }
 
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
@@ -721,7 +747,7 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 .build();
     }
 
-    private HttpResponse 추천_태그_검색_요청(String keyword) {
+    private HttpResponse 연관_태그_검색_요청(String keyword) {
         return request()
                 .get("/search/tags")
                 .queryParam("keyword", keyword)
