@@ -2,11 +2,12 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 
 import { PublicWorkbookAsync } from '../api';
-import { DEVICE, ROUTE } from '../constants';
+import { ROUTE } from '../constants';
 import { PublicSearchQueryReturnType } from '../hooks/usePublicSearchQuery';
+import { WorkbookListStyle } from '../styles';
 import { PublicWorkbookResponse } from '../types';
 import LoadingSpinner from './LoadingSpinner';
-import PublicWorkbook from './PublicWorkbook';
+import Workbook from './Workbook';
 
 interface Props {
   query: PublicSearchQueryReturnType;
@@ -59,7 +60,7 @@ const PublicWorkbookList = ({
       {publicWorkbooks.map(
         ({ id, name, cardCount, author, heartCount, tags }, index) => (
           <li ref={scrollTarget} key={index}>
-            <PublicWorkbook
+            <Workbook
               name={name}
               cardCount={cardCount}
               author={author}
@@ -80,17 +81,11 @@ const PublicWorkbookList = ({
 };
 
 const StyledUl = styled.ul`
+  ${WorkbookListStyle};
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(1, minmax(15rem, 44.25rem));
-  gap: 1rem;
 
   & > li:last-of-type {
     margin-bottom: 1rem;
-  }
-
-  @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, minmax(20rem, 22.25rem));
   }
 `;
 

@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/workbooks")
+@RequestMapping("/workbooks")
 public class WorkbookController {
 
     private final WorkbookService workbookService;
@@ -37,7 +37,7 @@ public class WorkbookController {
     public ResponseEntity<WorkbookResponse> createWorkbook(@RequestBody @Valid WorkbookRequest workbookRequest,
                                                            @AuthenticationPrincipal AppUser appUser) {
         WorkbookResponse workbookResponse = workbookService.createWorkbookByUser(workbookRequest, appUser);
-        return ResponseEntity.created(URI.create("/api/workbooks/" + workbookResponse.getId() + "/cards")).body(workbookResponse);
+        return ResponseEntity.created(URI.create("/workbooks/" + workbookResponse.getId() + "/cards")).body(workbookResponse);
     }
 
     @GetMapping
@@ -84,7 +84,7 @@ public class WorkbookController {
                                                              @Valid @RequestBody ScrapCardRequest scrapCardRequest,
                                                              @AuthenticationPrincipal AppUser appUser) {
         workbookService.scrapSelectedCardsToWorkbook(workbookId, scrapCardRequest, appUser);
-        return ResponseEntity.created(URI.create(String.format("/api/workbooks/%d/cards", workbookId))).build();
+        return ResponseEntity.created(URI.create(String.format("/workbooks/%d/cards", workbookId))).build();
     }
 
     @PutMapping("/{workbookId}/hearts")

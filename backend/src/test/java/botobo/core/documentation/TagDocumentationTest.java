@@ -41,7 +41,7 @@ public class TagDocumentationTest extends DocumentationTest {
         // when - then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/tags?workbook=java")
+                .get("/tags?workbook=java")
                 .build()
                 .status(status().isOk())
                 .identifier("tags-get-success");

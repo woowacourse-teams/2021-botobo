@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("문제집 문서화 테스트")
 @WebMvcTest(WorkbookController.class)
-public class WorkbookDocumentationTest extends DocumentationTest {
+class WorkbookDocumentationTest extends DocumentationTest {
 
     @MockBean
     private WorkbookService workbookService;
@@ -62,7 +62,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/workbooks", workbookRequest)
+                .post("/workbooks", workbookRequest)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isCreated())
@@ -78,7 +78,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -94,7 +94,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-anonymous-success");
@@ -109,7 +109,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/{id}/cards", 1)
+                .get("/workbooks/{id}/cards", 1)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -149,7 +149,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .put("/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -165,7 +165,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/public/{id}", 1)
+                .get("/workbooks/public/{id}", 1)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -187,7 +187,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .delete("/api/workbooks/{id}", workbookResponse.getId())
+                .delete("/workbooks/{id}", workbookResponse.getId())
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
@@ -206,9 +206,9 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(authenticatedToken())
-                .locationHeader("/api/workbooks/1/cards")
+                .locationHeader("/workbooks/1/cards")
                 .build()
                 .status(status().isCreated())
                 .identifier("workbooks-scrap-cards-success");
@@ -225,7 +225,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .putWithoutBody("/api/workbooks/{id}/hearts", 1L)
+                .putWithoutBody("/workbooks/{id}/hearts", 1L)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -241,7 +241,7 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-random-public-get-success");
@@ -332,6 +332,8 @@ public class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
+                .heartCount(10)
+                .tags(generateTagResponses())
                 .cards(generateCardResponses())
                 .build();
     }

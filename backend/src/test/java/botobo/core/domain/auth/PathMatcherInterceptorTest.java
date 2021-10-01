@@ -33,12 +33,12 @@ public class PathMatcherInterceptorTest {
     void preHandle() throws Exception {
         // given
         given(httpServletRequest.getRequestURI())
-                .willReturn("/api/**");
+                .willReturn("/**");
         given(httpServletRequest.getMethod())
                 .willReturn(HttpMethod.GET.name());
         given(handlerInterceptor.preHandle(any(), any(), any()))
                 .willReturn(true);
-        pathMatcherInterceptor.addPathPatterns("/api/**", PathMethod.GET);
+        pathMatcherInterceptor.addPathPatterns("/**", PathMethod.GET);
 
         // when, then
         assertThat(pathMatcherInterceptor.preHandle(httpServletRequest, null, null)).isEqualTo(
@@ -51,10 +51,10 @@ public class PathMatcherInterceptorTest {
     void preHandleWithOptions() throws Exception {
         // given
         given(httpServletRequest.getRequestURI())
-                .willReturn("/api/workbooks");
+                .willReturn("/workbooks");
         given(httpServletRequest.getMethod())
                 .willReturn(HttpMethod.OPTIONS.toString());
-        pathMatcherInterceptor.excludePathPatterns("/api/**", PathMethod.OPTIONS);
+        pathMatcherInterceptor.excludePathPatterns("/**", PathMethod.OPTIONS);
 
         // when, then
         assertThat(pathMatcherInterceptor.preHandle(httpServletRequest, null, null)).isTrue();

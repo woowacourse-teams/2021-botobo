@@ -34,6 +34,9 @@ interface MultiFilterItemStyleProps {
   isSelected: boolean;
 }
 
+const escapeRegExp = (keyword: string) =>
+  keyword.replace(/[-[\]/{}()*+?.^$|\\]/g, '\\$&');
+
 const MultiFilterSelector = ({
   type,
   name,
@@ -51,7 +54,10 @@ const MultiFilterSelector = ({
 
   const setPublicWorkbookState = useSetRecoilState(publicSearchResultState);
 
-  const regExpKeyword = new RegExp(filterKeyword.replace(/\s+/g, ''), 'i');
+  const regExpKeyword = new RegExp(
+    escapeRegExp(filterKeyword).replace(/\s+/g, ''),
+    'i'
+  );
 
   const checkFilterItem = (name: string) => {
     setValues((prevValue) =>
@@ -85,15 +91,18 @@ const MultiFilterSelector = ({
   };
 
   useEffect(() => {
+    setValues(data);
+
     if (!isLoading) return;
 
     const getValues = async () => {
-      await setInitialValues();
+      const response = await setInitialValues();
+      setValues(response);
       setIsLoading(false);
     };
 
     getValues();
-  }, []);
+  }, [data]);
 
   return (
     <>

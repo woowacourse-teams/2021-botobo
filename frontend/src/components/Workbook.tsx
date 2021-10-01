@@ -2,16 +2,16 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import FillHeartIcon from '../assets/heart-solid.svg';
+import { theme } from '../constants';
+import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
 import CardTemplate from './CardTemplate';
 
-type PickedWorkbook = Pick<WorkbookResponse, 'name' | 'cardCount'>;
-
-interface Props extends PickedWorkbook {
-  isChecked?: boolean;
+interface Props extends Omit<WorkbookResponse, 'id' | 'opened'> {
   path?: string;
   editable?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  author?: string;
   onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
 }
@@ -19,32 +19,72 @@ interface Props extends PickedWorkbook {
 const Workbook = ({
   name,
   cardCount,
-  isChecked,
+  author,
+  heartCount,
+  tags,
   path,
-  editable = false,
-  onClick,
+  editable,
   onClickEditButton,
   onClickDeleteButton,
 }: Props) => (
-  <CardTemplate
-    editable={editable}
-    isChecked={isChecked}
+  <Container
     path={path}
-    onClick={onClick}
+    editable={editable}
     onClickEditButton={onClickEditButton}
     onClickDeleteButton={onClickDeleteButton}
   >
-    <Name>{name}</Name>
-    <CardCount>{cardCount}개의 카드</CardCount>
-  </CardTemplate>
+    <TopContent>
+      <InnerLeftContent>
+        <Name>{name}</Name>
+        <CardCount>{cardCount}개의 카드</CardCount>
+        {author && <Author>{author}</Author>}
+      </InnerLeftContent>
+      <InnerRightContent>
+        <FillHeartIcon width="1rem" height="1rem" fill={theme.color.red} />
+        <span>{heartCount}</span>
+      </InnerRightContent>
+    </TopContent>
+    <BottomContent>
+      {tags.map(({ id, name }) => (
+        <li key={id}>
+          <Hash>#</Hash>
+          {name}
+        </li>
+      ))}
+    </BottomContent>
+  </Container>
 );
 
-const Name = styled.div`
+const Container = styled(CardTemplate)`
+  ${Flex({ direction: 'column' })};
+  position: relative;
+  padding: 1.2rem;
+`;
+
+const TopContent = styled.div`
+  ${Flex({ justify: 'space-between', items: 'flex-start' })};
+  margin-bottom: 0.5rem;
+`;
+
+const InnerLeftContent = styled.div`
+  width: calc(100% - 3rem);
+  ${Flex({ direction: 'column', items: 'flex-start' })};
+`;
+
+const InnerRightContent = styled.div`
+  ${Flex({ items: 'center' })};
+
+  & > svg {
+    margin-right: 0.3rem;
+  }
+`;
+
+const Name = styled.span`
   width: 100%;
+  margin-bottom: 0.5rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  margin: 0.3rem 0;
 
   ${({ theme }) => css`
     font-size: ${theme.fontSize.medium};
@@ -52,13 +92,42 @@ const Name = styled.div`
   `};
 `;
 
-const CardCount = styled.div`
-  margin-bottom: 1rem;
+const CardCount = styled.span`
+  margin-bottom: 0.2rem;
 
   ${({ theme }) => css`
     color: ${theme.color.gray_6};
     font-size: ${theme.fontSize.small};
   `};
+`;
+
+const Author = styled.span`
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
+  `};
+`;
+
+const BottomContent = styled.ul`
+  width: 100%;
+  height: 1.25rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  & > li {
+    display: inline;
+    margin-right: 0.2rem;
+
+    ${({ theme }) => css`
+      color: ${theme.color.gray_8};
+      font-size: ${theme.fontSize.small};
+    `};
+  }
+`;
+
+const Hash = styled.span`
+  margin-right: 0.1rem;
 `;
 
 export default Workbook;

@@ -12,13 +12,13 @@ export interface WorkbookResponse {
   name: string;
   cardCount: number;
   opened: boolean;
+  heartCount: number;
   tags: TagResponse[];
 }
 
 export interface PublicWorkbookResponse
   extends Omit<WorkbookResponse, 'opened'> {
   author: string;
-  heartCount: number;
 }
 
 export interface QuizResponse {
@@ -42,6 +42,8 @@ export interface CardResponse {
 export interface CardsResponse {
   workbookId: number;
   workbookName: string;
+  heartCount: number;
+  tags: TagResponse[];
   cards: CardResponse[];
 }
 

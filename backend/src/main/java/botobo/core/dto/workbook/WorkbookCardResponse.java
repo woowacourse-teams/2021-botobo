@@ -32,9 +32,12 @@ public class WorkbookCardResponse {
 
     public static WorkbookCardResponse ofUserWorkbook(Workbook workbook) {
         List<CardResponse> cardResponses = CardResponse.listOf(workbook.getCards());
+        List<TagResponse> tagResponses = TagResponse.listOf(workbook.tags());
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
+                .heartCount(workbook.heartCount())
+                .tags(tagResponses)
                 .cards(cardResponses)
                 .build();
     }

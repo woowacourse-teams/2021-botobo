@@ -25,7 +25,7 @@ import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SearchAcceptanceTest extends DomainAcceptanceTest {
+class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     private String pkToken, bearToken;
 
@@ -64,6 +64,11 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 1,
                 pkToken
         );
+        카드도_함께_등록(
+                유저_태그포함_문제집_등록되어_있음("피케이의 자바스크립트 문제집", false, makeFailTags(), pkToken),
+                1,
+                pkToken
+        );
 
         // 중간곰의 문제집 생성
         카드와_좋아요도_함께_등록(
@@ -84,7 +89,13 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 bearToken,
                 List.of()
         );
-        유저_태그포함_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeJavaTags(), bearToken);
+        유저_태그포함_문제집_등록되어_있음("너도 중간곰과 함께 자바 할 수 있어", true, makeFailTags(), bearToken);
+    }
+
+    private List<TagRequest> makeFailTags() {
+        return List.of(
+                TagRequest.builder().id(0L).name("실패").build()
+        );
     }
 
     private List<TagRequest> makeJavaTags() {
@@ -149,6 +160,59 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
                 .extracting(WorkbookResponse::getName)
                 .allMatch(name -> name.contains("기초"));
     }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 문제집 이름과 태그 이름에 전부 포함되어 있을 경우")
+    void searchFromKeywordInWorkbookNameOrTagName() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "자바");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(7);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바스크립트 고급 문제집",
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "피케이의 자바스크립트 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
+    @Test
+    @DisplayName("문제집 검색 - 성공, 문제집 이름에 포함되어 있지는 않으나 태그 이름에는 포함되어 있을 경우")
+    void searchFromKeywordInTagName() {
+        // given
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("keyword", "java");
+
+        // when
+        HttpResponse response = 문제집_검색_요청(parameters);
+
+        // then
+        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookResponses).hasSize(5);
+        assertThat(workbookResponses)
+                .extracting(WorkbookResponse::getName)
+                .containsExactly(
+                        "중간곰의 자바 중급 문제집",
+                        "중간곰의 자바 기초 문제집",
+                        "다들 피케이의 자바 고급 문제집을 봐",
+                        "나는 피케이의 자바 중급 문제집",
+                        "가장 멋진 피케이의 자바 기초 문제집"
+                );
+    }
+
 
     @Test
     @DisplayName("문제집 검색 - 성공, 시간 기준 최신 순 정렬")
@@ -629,13 +693,13 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("태그 검색 - 성공")
+    @DisplayName("연관 태그 검색 - 성공")
     void recommendRelatedTags() {
         // given
         String keyword = "j";
 
         // when
-        HttpResponse response = 추천_태그_검색_요청(keyword);
+        HttpResponse response = 연관_태그_검색_요청(keyword);
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
@@ -647,30 +711,45 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("태그 검색 - 성공")
+    @DisplayName("연관 태그 검색 - 성공")
     void recommendRelatedTagsWhenKeywordIsEmpty() {
         // given
         String keyword = "";
 
         // when
-        HttpResponse response = 추천_태그_검색_요청(keyword);
+        HttpResponse response = 연관_태그_검색_요청(keyword);
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(tagResponses).hasSize(0);
+        assertThat(tagResponses).isEmpty();
+    }
+
+    @Test
+    @DisplayName("연관 태그 검색 - 성공, 문제집이 비공개이거나, 카드가 없을 땐 조회하지 않는다.")
+    void recommendRelatedTagsWhenWorkbookIsNotValid() {
+        // given
+        String keyword = "실패";
+
+        // when
+        HttpResponse response = 연관_태그_검색_요청(keyword);
+
+        // then
+        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tagResponses).isEmpty();
     }
 
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
         return request()
-                .get("/api/search/workbooks")
+                .get("/search/workbooks")
                 .queryParams(parameters)
                 .build();
     }
 
-    private HttpResponse 추천_태그_검색_요청(String keyword) {
+    private HttpResponse 연관_태그_검색_요청(String keyword) {
         return request()
-                .get("/api/search/tags")
+                .get("/search/tags")
                 .queryParam("keyword", keyword)
                 .build();
     }

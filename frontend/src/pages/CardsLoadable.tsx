@@ -11,6 +11,7 @@ const CardsLoadable = () => (
     <PageTemplate isScroll={true}>
       <WorkbookName />
       <Description />
+      <TagList />
       <Filter>
         {[...Array(2)].map((_, index) => (
           <Button
@@ -27,24 +28,37 @@ const CardsLoadable = () => (
       <Button size="full" backgroundColor="blue" disabled={true}>
         {''}
       </Button>
-      <CardSkeletonList count={6} />
+      <CardSkeletonList
+        count={6}
+        hasHeader={true}
+        hasFooter={true}
+        type="QnA"
+      />
     </PageTemplate>
   </>
 );
 
 const WorkbookName = styled.div`
-  width: 40%;
-  height: 2rem;
+  width: 30%;
+  height: 1.75rem;
   margin-bottom: 1rem;
 
   ${loadContent};
 `;
 
 const Description = styled.div`
-  width: 60%;
+  width: 50%;
   height: 1.25rem;
 
   ${loadContent};
+`;
+
+const TagList = styled.div`
+  height: 1rem;
+  width: 70%;
+  margin-top: 0.5rem;
+
+  ${loadContent}
 `;
 
 const Filter = styled.div`

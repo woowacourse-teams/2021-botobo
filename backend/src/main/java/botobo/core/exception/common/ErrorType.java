@@ -112,7 +112,8 @@ public enum ErrorType {
 
     E001("E001", "서버에러", InternalServerErrorException.class),
     E002("E002", "파라미터를 입력해야 합니다.", ExternalException.class),
-    X001("X001", "정의되지 않은 에러", UndefinedException.class);
+    X001("X001", "정의되지 않은 에러", UndefinedException.class),
+    ;
 
     private final String code;
     private final String message;

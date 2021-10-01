@@ -1,0 +1,10 @@
+spring:
+  config:
+    activate:
+      on-profile: s3
+  flyway:
+    enabled: false
+
+aws:
+  s3:
+    bucket: s3-test-storage
