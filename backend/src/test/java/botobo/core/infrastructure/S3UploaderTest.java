@@ -1,6 +1,9 @@
 package botobo.core.infrastructure;
 
 import botobo.core.config.LocalStackS3Config;
+import botobo.core.domain.user.Role;
+import botobo.core.domain.user.User;
+import botobo.core.infrastructure.s3.FileUploader;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Disabled
+@ActiveProfiles("s3")
 @DisplayName("S3 Uploader 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalStackS3Config.class)
 class S3UploaderTest {
@@ -41,7 +46,9 @@ class S3UploaderTest {
     private AmazonS3 amazonS3;
 
     @Autowired
-    private S3Uploader s3Uploader;
+    private FileUploader s3Uploader;
+
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +57,13 @@ class S3UploaderTest {
                 "botobo-default-profile.png",
                 new File(new File("").getAbsolutePath() + FILE_PATH + USER_DEFAULT_IMAGE_NAME)
         );
+        user = User.builder()
+                .id(1L)
+                .socialId("1")
+                .userName("조앤")
+                .profileUrl("https://avatars.githubusercontent.com/u/48412963?v=4")
+                .role(Role.USER)
+                .build();
     }
 
     @Test
@@ -57,7 +71,7 @@ class S3UploaderTest {
     void upload() throws IOException {
         MultipartFile multipartFile = getMultipartFile(UPLOAD_IMAGE_NAME);
 
-        String uploadUrl = s3Uploader.upload(multipartFile, "user");
+        String uploadUrl = s3Uploader.upload(multipartFile, user);
         String uploadImageName = uploadUrl.replace(cloudfrontUrl(), "");
 
         assertAll(
@@ -70,7 +84,7 @@ class S3UploaderTest {
     @DisplayName("이미지를 제거한다. - 성공, 기본 이미지가 아닌 경우")
     void deletePreviousFile() throws IOException {
         // given
-        String imageUrl = s3Uploader.upload(getMultipartFile(UPLOAD_IMAGE_NAME), "user");
+        String imageUrl = s3Uploader.upload(getMultipartFile(UPLOAD_IMAGE_NAME), user);
         String imageName = imageUrl.replace(cloudfrontUrl(), "");
 
         // when
@@ -105,9 +119,9 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 null인 경우에는 디폴트 이미지로 대체")
-    void uploadWithNull() throws IOException {
+    void uploadWithNull() {
         MultipartFile multipartFile = null;
-        String uploadUrl = s3Uploader.upload(multipartFile, "user");
+        String uploadUrl = s3Uploader.upload(multipartFile, user);
         String cloudfrontUrl = cloudfrontUrl();
         String defaultImageName = uploadUrl.replace(cloudfrontUrl, "");
 
@@ -122,7 +136,7 @@ class S3UploaderTest {
     @DisplayName("이미지를 S3에 업로드한다. - 성공, multipartFile이 empty인 경우에는 디폴트 이미지로 대체")
     void uploadWithEmpty() throws IOException {
         MultipartFile multipartFile = getMultipartFile(EMPTY_IMAGE_NAME);
-        String uploadUrl = s3Uploader.upload(multipartFile, "user");
+        String uploadUrl = s3Uploader.upload(multipartFile, user);
         String cloudfrontUrl = cloudfrontUrl();
         String defaultImageName = uploadUrl.replace(cloudfrontUrl, "");
 

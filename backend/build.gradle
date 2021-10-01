@@ -87,7 +87,10 @@ task copyDev(type: Copy) {
     from '../dev/application-local.yml'
     into './src/main/resources'
 
-    from '../dev/aws-s3.yml'
+    from '../dev/aws-s3-dev.yml'
+    into './src/main/resources'
+
+    from '../dev/aws-s3-prod.yml'
     into './src/main/resources'
 }
 
@@ -142,7 +145,7 @@ jacocoTestCoverageVerification {
                     'botobo.core.dto.**',
                     'botobo.core.DataLoader',
                     'botobo.core.BotoboApplication',
-                    'botobo.core.config.datasource.**'
+                    'botobo.core.config.**'
             ] + Qdomains
         }
     }

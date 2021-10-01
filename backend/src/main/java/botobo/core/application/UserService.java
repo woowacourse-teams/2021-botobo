@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
+import botobo.core.domain.user.UserFilterRepository;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
@@ -10,7 +11,7 @@ import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
-import botobo.core.infrastructure.S3Uploader;
+import botobo.core.infrastructure.s3.FileUploader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +25,15 @@ import static java.util.Collections.emptyList;
 @Transactional(readOnly = true)
 public class UserService extends AbstractUserService {
 
-    private final S3Uploader s3Uploader;
+    private final UserFilterRepository userFilterRepository;
+    private final FileUploader fileUploader;
 
-    public UserService(UserRepository userRepository, S3Uploader s3Uploader) {
+    public UserService(UserRepository userRepository,
+                       UserFilterRepository userFilterRepository,
+                       FileUploader fileUploader) {
         super(userRepository);
-        this.s3Uploader = s3Uploader;
+        this.userFilterRepository = userFilterRepository;
+        this.fileUploader = fileUploader;
     }
 
     public UserResponse findById(AppUser appUser) {
@@ -47,11 +52,11 @@ public class UserService extends AbstractUserService {
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
-        String newProfileUrl = s3Uploader.upload(multipartFile, String.valueOf(user.getId()));
+        String newProfileUrl = fileUploader.upload(multipartFile, user);
 
         user.updateProfileUrl(newProfileUrl);
 
-        s3Uploader.deleteFromS3(oldProfileUrl);
+        fileUploader.deleteFromS3(oldProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(newProfileUrl)
                 .build();
@@ -75,7 +80,7 @@ public class UserService extends AbstractUserService {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());
         }
-        List<User> users = userRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+        List<User> users = userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         return UserFilterResponse.listOf(users);
     }
 }

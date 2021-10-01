@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-    <property name="BOTOBO_CONSOLE_LOG_PATTERN"
-              value="%cyan(%d{yy-MM-dd}) %magenta(%d{HH:mm:ss}) %highlight(%-5level) [%yellow(%-41logger{36}):%white(%-4line)] - %msg%n "/>
+
+    <property name="BOTOBO_LOG_PATTERN"
+              value="%cyan(%d{yyyy-MM-dd HH:mm:ss}:%-4relative) %highlight(%-5level) %yellow([%C.%M]:%boldWhite(%L)]) %n    > %msg%n"/>
+
+    <property name="BOTOBO_BINDER_LOG_PATTERN"
+              value="%green(    > %msg%n) "/>
 
     <property name="BOTOBO_FILE_LOG_PATTERN"
-              value="%d{yy-MM-dd} %d{HH:mm:ss} %-5level [%-41logger{36}:%-4line] - %msg%n "/>
+              value="%d{yyyy-MM-dd HH:mm:ss}:%-4relative [%C.%M]:%L] %n    > %msg%n"/>
 
     <springProfile name="test, local">
         <include resource="logback/console-appender.xml"/>
@@ -28,7 +32,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod1, prod2">
+    <springProfile name="prod">
         <include resource="logback/info-file-appender.xml"/>
         <include resource="logback/warn-file-appender.xml"/>
         <include resource="logback/error-file-appender.xml"/>

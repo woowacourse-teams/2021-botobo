@@ -4,11 +4,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.S3;
 
+@ActiveProfiles("s3")
 @TestConfiguration
 public class LocalStackS3Config {
     private final DockerImageName localstackImage = DockerImageName.parse("localstack/localstack");
