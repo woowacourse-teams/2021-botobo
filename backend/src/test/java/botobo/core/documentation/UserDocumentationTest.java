@@ -45,7 +45,7 @@ class UserDocumentationTest extends DocumentationTest {
 
         document()
                 .mockMvc(mockMvc)
-                .get("/api/users/me")
+                .get("/users/me")
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -63,7 +63,7 @@ class UserDocumentationTest extends DocumentationTest {
 
         document()
                 .mockMvc(mockMvc)
-                .multipart("/api/users/profile", "botobo", "profile")
+                .multipart("/users/profile", "botobo", "profile")
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -90,7 +90,7 @@ class UserDocumentationTest extends DocumentationTest {
 
         document()
                 .mockMvc(mockMvc)
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -115,7 +115,7 @@ class UserDocumentationTest extends DocumentationTest {
 
         document()
                 .mockMvc(mockMvc)
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -142,7 +142,7 @@ class UserDocumentationTest extends DocumentationTest {
         // when - then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/users?workbook=java")
+                .get("/users?workbook=java")
                 .build()
                 .status(status().isOk())
                 .identifier("users-get-success");

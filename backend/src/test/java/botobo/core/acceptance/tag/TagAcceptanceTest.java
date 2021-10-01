@@ -37,7 +37,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "Js";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when
@@ -56,7 +56,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "javascript";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when
@@ -77,7 +77,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
 
         final String workbookName = "Java";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when
@@ -93,7 +93,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenEmpty() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook=")
+                .get("/tags?workbook=")
                 .build();
 
         // when
@@ -108,7 +108,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenInvalidLength() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + stringGenerator(31))
+                .get("/tags?workbook=" + stringGenerator(31))
                 .build();
 
         // then
@@ -121,7 +121,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "비공개";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when

@@ -59,7 +59,7 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final RequestBuilder.HttpResponse response = request()
-                .post("/api/login/{socialType}", loginRequest, "kakao")
+                .post("/login/{socialType}", loginRequest, "kakao")
                 .build();
 
         // then

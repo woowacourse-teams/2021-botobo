@@ -51,7 +51,7 @@ public class CardDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/cards", request)
+                .post("/cards", request)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isCreated())
@@ -85,7 +85,7 @@ public class CardDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/cards/1", request)
+                .put("/cards/1", request)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -98,7 +98,7 @@ public class CardDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .delete("/api/cards/1")
+                .delete("/cards/1")
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
@@ -116,7 +116,7 @@ public class CardDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())

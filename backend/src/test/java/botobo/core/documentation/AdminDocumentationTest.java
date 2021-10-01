@@ -37,9 +37,9 @@ public class AdminDocumentationTest extends DocumentationTest {
 
         document()
                 .mockMvc(mockMvc)
-                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .post("/admin/workbooks", adminWorkbookRequest)
                 .auth(authenticatedToken())
-                .locationHeader("/api/admin/workbooks/1")
+                .locationHeader("/admin/workbooks/1")
                 .build()
                 .status(status().isCreated())
                 .identifier("admin-workbooks-post-success");
@@ -61,9 +61,9 @@ public class AdminDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/admin/cards", adminCardRequest)
+                .post("/admin/cards", adminCardRequest)
                 .auth(authenticatedToken())
-                .locationHeader("/api/admin/cards/1")
+                .locationHeader("/admin/cards/1")
                 .build()
                 .status(status().isCreated())
                 .identifier("admin-cards-post-success");

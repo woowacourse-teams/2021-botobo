@@ -52,25 +52,25 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Bean
     public PathMatcherInterceptor authPathMatcherInterceptor() {
         return new PathMatcherInterceptor(authorizationInterceptor())
-                .addPathPatterns("/api/**", PathMethod.ANY)
-                .excludePathPatterns("/api/**", PathMethod.OPTIONS)
-                .excludePathPatterns("/api/infra/**", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks", PathMethod.GET)
-                .excludePathPatterns("/api/quizzes/**", PathMethod.GET)
-                .excludePathPatterns("/api/login/**", PathMethod.POST)
-                .excludePathPatterns("/api/docs/**", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks/public", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks/public/**", PathMethod.GET)
-                .excludePathPatterns("/api/tags", PathMethod.GET)
-                .excludePathPatterns("/api/users", PathMethod.GET)
-                .excludePathPatterns("/api/search/**", PathMethod.GET);
+                .addPathPatterns("/**", PathMethod.ANY)
+                .excludePathPatterns("/**", PathMethod.OPTIONS)
+                .excludePathPatterns("/infra/**", PathMethod.GET)
+                .excludePathPatterns("/workbooks", PathMethod.GET)
+                .excludePathPatterns("/quizzes/**", PathMethod.GET)
+                .excludePathPatterns("/login/**", PathMethod.POST)
+                .excludePathPatterns("/docs/**", PathMethod.GET)
+                .excludePathPatterns("/workbooks/public", PathMethod.GET)
+                .excludePathPatterns("/workbooks/public/**", PathMethod.GET)
+                .excludePathPatterns("/tags", PathMethod.GET)
+                .excludePathPatterns("/users", PathMethod.GET)
+                .excludePathPatterns("/search/**", PathMethod.GET);
     }
 
     @Bean
     public PathMatcherInterceptor adminPathMatcherInterceptor() {
         return new PathMatcherInterceptor(adminInterceptor())
-                .addPathPatterns("/api/admin/workbooks", PathMethod.POST)
-                .addPathPatterns("/api/admin/cards", PathMethod.POST)
-                .excludePathPatterns("/api/**", PathMethod.OPTIONS);
+                .addPathPatterns("/admin/workbooks", PathMethod.POST)
+                .addPathPatterns("/admin/cards", PathMethod.POST)
+                .excludePathPatterns("/**", PathMethod.OPTIONS);
     }
 }

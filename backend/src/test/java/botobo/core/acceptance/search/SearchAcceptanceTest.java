@@ -716,14 +716,14 @@ public class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     private HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
         return request()
-                .get("/api/search/workbooks")
+                .get("/search/workbooks")
                 .queryParams(parameters)
                 .build();
     }
 
     private HttpResponse 추천_태그_검색_요청(String keyword) {
         return request()
-                .get("/api/search/tags")
+                .get("/search/tags")
                 .queryParam("keyword", keyword)
                 .build();
     }
