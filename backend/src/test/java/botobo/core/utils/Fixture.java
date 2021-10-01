@@ -116,11 +116,6 @@ public class Fixture {
     private static final AdminCardRequest CARD_REQUEST_29 = new AdminCardRequest("29", "answer", 3L);
     private static final AdminCardRequest CARD_REQUEST_30 = new AdminCardRequest("30", "answer", 3L);
 
-    public static final List<AdminCardRequest> ADMIN_CARD_REQUESTS_OF_15_CARDS =
-            Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
-                    CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
-                    CARD_REQUEST_11, CARD_REQUEST_12, CARD_REQUEST_13, CARD_REQUEST_14, CARD_REQUEST_15);
-
     public static final List<AdminCardRequest> ADMIN_CARD_REQUESTS_OF_30_CARDS =
             Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
                     CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
@@ -128,7 +123,4 @@ public class Fixture {
                     CARD_REQUEST_17, CARD_REQUEST_18, CARD_REQUEST_19, CARD_REQUEST_20, CARD_REQUEST_21, CARD_REQUEST_22,
                     CARD_REQUEST_23, CARD_REQUEST_24, CARD_REQUEST_25, CARD_REQUEST_26, CARD_REQUEST_27, CARD_REQUEST_28,
                     CARD_REQUEST_29, CARD_REQUEST_30);
-
-    public static final List<AdminCardRequest> ADMIN_CARD_REQUESTS_IN_ONE_WORKBOOK =
-            Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3);
 }
