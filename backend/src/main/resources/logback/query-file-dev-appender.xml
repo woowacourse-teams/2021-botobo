@@ -22,11 +22,11 @@
 
     <appender name="QUERY_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="QUERY_FILE" />
-        <queueSize>256</queueSize>
-        <discardingThreshold>20</discardingThreshold>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
         <includeCallerData>false</includeCallerData>
         <neverBlock>true</neverBlock>
-        <maxFlushTime>3000</maxFlushTime>
+        <maxFlushTime>1000</maxFlushTime>
     </appender>
 
     <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
