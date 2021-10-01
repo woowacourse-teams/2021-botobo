@@ -16,7 +16,7 @@ class InfrastructureDocumentationTest extends DocumentationTest {
     void portTest() throws Exception {
         document()
                 .mockMvc(mockMvc)
-                .get("/api/infra/port")
+                .get("/infra/port")
                 .build()
                 .status(status().isOk())
                 .identifier("infra-profile-get-success");

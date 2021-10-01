@@ -17,3 +17,5 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error

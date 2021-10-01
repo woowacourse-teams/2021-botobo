@@ -28,7 +28,7 @@ public class LoginDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/login/github", loginRequest)
+                .post("/login/github", loginRequest)
                 .build()
                 .status(status().isOk())
                 .identifier("login-success");

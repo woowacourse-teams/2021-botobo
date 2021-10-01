@@ -18,7 +18,7 @@ import static botobo.core.utils.Fixture.joanne;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TagAcceptanceTest extends DomainAcceptanceTest {
+class TagAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
@@ -37,7 +37,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "Js";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when
@@ -58,7 +58,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
 
         final String workbookName = "Java";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when
@@ -74,7 +74,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenEmpty() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook=")
+                .get("/tags?workbook=")
                 .build();
 
         // when
@@ -89,7 +89,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
     void findAllTagsByWorkbookNameWhenInvalidLength() {
         // given
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + stringGenerator(31))
+                .get("/tags?workbook=" + stringGenerator(31))
                 .build();
 
         // then
@@ -102,7 +102,7 @@ public class TagAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "비공개";
         final HttpResponse response = request()
-                .get("/api/tags?workbook=" + workbookName)
+                .get("/tags?workbook=" + workbookName)
                 .build();
 
         // when

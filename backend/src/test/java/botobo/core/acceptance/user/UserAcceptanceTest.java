@@ -41,7 +41,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findByUserOfMine() {
         // given, when
         final HttpResponse response = request()
-                .get("/api/users/me")
+                .get("/users/me")
                 .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
                 .build();
 
@@ -59,7 +59,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findByUserOfMineWhenNotExistToken() {
         //when
         final HttpResponse response = request()
-                .get("/api/users/me")
+                .get("/users/me")
                 .build();
         final ErrorResponse errorResponse = response.convertToErrorResponse();
 
@@ -82,7 +82,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //when
         final HttpResponse response = request()
-                .post("/api/users/profile", mockMultipartFile)
+                .post("/users/profile", mockMultipartFile)
                 .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
                 .build();
 
@@ -104,7 +104,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -128,7 +128,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -150,7 +150,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -172,7 +172,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -194,7 +194,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -216,7 +216,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -238,7 +238,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -260,7 +260,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -282,7 +282,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -305,7 +305,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(id))
                 .build();
 
@@ -327,7 +327,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -353,7 +353,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -375,7 +375,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -398,7 +398,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -415,7 +415,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -433,7 +433,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(id))
                 .build();
 
@@ -453,7 +453,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -474,7 +474,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -495,7 +495,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -517,7 +517,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -537,7 +537,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "Java";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
@@ -558,7 +558,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "Java";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
@@ -582,7 +582,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "문제집";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
@@ -603,7 +603,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
@@ -618,7 +618,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findAllUsersByWorkbookNameIsLong() {
         // given
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + stringGenerator(31))
+                .get("/users?workbook=" + stringGenerator(31))
                 .build();
 
         // when - then
