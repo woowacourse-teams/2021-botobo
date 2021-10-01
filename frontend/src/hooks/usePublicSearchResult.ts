@@ -74,6 +74,8 @@ const usePublicSearchResult = () => {
         ...options,
       });
 
+      if (!searchResult) return;
+
       setSearchResult({ searchResult, isReset });
       setIsLoading(false);
       routePublicSearchResultQuery({ keyword, criteria, ...options });

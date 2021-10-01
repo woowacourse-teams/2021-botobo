@@ -1,5 +1,7 @@
+import axios from 'axios';
+
 import { PublicWorkbookResponse, SearchKeywordResponse } from './../types';
-import { request } from './request';
+import { cancelController, request } from './request';
 import { PublicWorkbookAsync } from './workbook';
 
 export const getTagsFromWorkbookAsync = async (keyword: string) => {
@@ -25,14 +27,28 @@ export const getUsersFromWorkbookAsync = async (keyword: string) => {
 };
 
 export const getTagKeywordAsync = async (keyword: string) => {
-  const params = new URLSearchParams();
-  params.append('keyword', keyword);
+  try {
+    cancelController.searchCancel?.();
 
-  const { data } = await request.get<SearchKeywordResponse[]>('/search/tags', {
-    params,
-  });
+    const params = new URLSearchParams();
+    params.append('keyword', keyword);
 
-  return data;
+    const { data } = await request.get<SearchKeywordResponse[]>(
+      '/search/tags',
+      {
+        params,
+        cancelToken: new axios.CancelToken((token) => {
+          cancelController.searchCancel = token;
+        }),
+      }
+    );
+
+    return data;
+  } catch (error) {
+    if (axios.isCancel(error)) return [];
+
+    throw error;
+  }
 };
 
 export const getSearchResultAsync = async ({
@@ -43,18 +59,31 @@ export const getSearchResultAsync = async ({
   start = 0,
   size = 20,
 }: PublicWorkbookAsync) => {
-  const params = new URLSearchParams();
-  params.append('keyword', keyword);
-  params.append('criteria', criteria);
-  params.append('start', String(start));
-  params.append('size', String(size));
-  tags && params.append('tags', tags);
-  users && params.append('users', users);
+  try {
+    cancelController.tagCancel?.();
 
-  const { data } = await request.get<PublicWorkbookResponse[]>(
-    '/search/workbooks',
-    { params }
-  );
+    const params = new URLSearchParams();
+    params.append('keyword', keyword);
+    params.append('criteria', criteria);
+    params.append('start', String(start));
+    params.append('size', String(size));
+    tags && params.append('tags', tags);
+    users && params.append('users', users);
 
-  return data;
+    const { data } = await request.get<PublicWorkbookResponse[]>(
+      '/search/workbooks',
+      {
+        params,
+        cancelToken: new axios.CancelToken((token) => {
+          cancelController.tagCancel = token;
+        }),
+      }
+    );
+
+    return data;
+  } catch (error) {
+    if (axios.isCancel(error)) return null;
+
+    throw error;
+  }
 };
