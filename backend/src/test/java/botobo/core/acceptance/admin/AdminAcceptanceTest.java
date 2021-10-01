@@ -22,7 +22,7 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Admin 인수 테스트")
-public class AdminAcceptanceTest extends DomainAcceptanceTest {
+class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     private static final AdminWorkbookRequest ADMIN_WORKBOOK_REQUEST =
             new AdminWorkbookRequest("관리자의 문제집");
@@ -229,7 +229,7 @@ public class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User user) {
         return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .post("/admin/workbooks", adminWorkbookRequest)
                 .auth(jwtTokenProvider.createToken(user.getId()))
                 .build()
                 .extract();
@@ -237,7 +237,7 @@ public class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest, User user) {
         return request()
-                .post("/api/admin/cards", adminCardRequest)
+                .post("/admin/cards", adminCardRequest)
                 .auth(jwtTokenProvider.createToken(user.getId()))
                 .build()
                 .extract();

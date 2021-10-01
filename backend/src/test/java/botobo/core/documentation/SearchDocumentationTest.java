@@ -57,7 +57,7 @@ public class SearchDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/search/workbooks?keyword=java&tags=1,3&users=1&criteria=date&start=0&size=10")
+                .get("/search/workbooks?keyword=java&tags=1,3&users=1&criteria=date&start=0&size=10")
                 .build()
                 .status(status().isOk())
                 .identifier("search-workbooks-get-success");
@@ -82,7 +82,7 @@ public class SearchDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/search/tags?keyword=Java")
+                .get("/search/tags?keyword=Java")
                 .build()
                 .status(status().isOk())
                 .identifier("search-tags-get-success");
