@@ -112,6 +112,18 @@ class UserFilterRepositoryTest {
         assertThat(users).hasSize(2);
     }
 
+
+    @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공, 문제집 명이 null일 때 빈 리스트를 반환한다.")
+    @Test
+    void findAllByWorkbookNameNull() {
+        // given - when
+        List<User> users = userFilterRepository.findAllByContainsWorkbookName(null);
+
+        // then
+        assertThat(users).isEmpty();
+    }
+
+
     private void initWorkbooks() {
         userRepository.save(user1);
         userRepository.save(user2);
