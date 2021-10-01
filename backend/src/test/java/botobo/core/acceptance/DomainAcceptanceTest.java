@@ -175,6 +175,16 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
     }
 
+    protected void 유저_태그_카드_포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tags)
+                .build();
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+    }
+
     protected WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, String accessToken) {
         return 유저_문제집_생성_요청(workbookRequest, accessToken).convertBody(WorkbookResponse.class);
     }
