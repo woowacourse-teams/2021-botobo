@@ -11,17 +11,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import({TagFilterRepository.class, QuerydslConfig.class})
-class TagFilterRepositoryTest extends FilterRepositoryTest {
+@Import({TagSearchRepository.class, QuerydslConfig.class})
+class TagSearchRepositoryTest extends FilterRepositoryTest {
 
     @Autowired
-    private TagFilterRepository tagFilterRepository;
+    private TagSearchRepository tagSearchRepository;
 
     @DisplayName("문제집명을 포함하고 태그명이 문제집명과 일치하는 문제집의 태그를 모두 가져온다. - 성공")
     @Test
     void findAllByWorkbookName() {
         // given, when
-        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName("java");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("java");
 
         // then
         assertThat(tags).hasSize(7);
@@ -34,17 +34,17 @@ class TagFilterRepositoryTest extends FilterRepositoryTest {
     @Test
     void findAllByWorkbookNameWithCardZero() {
         // given, when
-        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName("카드가 없는");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("카드가 없는");
 
         // then
-        assertThat(tags).hasSize(0);
+        assertThat(tags).isEmpty();
     }
 
     @DisplayName("문제집명을 포함하는 문제집의 태그를 모두 가져온다. - 비공개 문제집은 가져오지 않는다.")
     @Test
     void findAllByWorkbookNamePrivateWorkbook() {
         // given, when
-        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName("비공개");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("비공개");
 
         // then
         assertThat(tags).isEmpty();
@@ -54,7 +54,7 @@ class TagFilterRepositoryTest extends FilterRepositoryTest {
     @Test
     void findAllByWorkbookNameEmpty() {
         // given, when
-        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName("babo");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("babo");
         // then
         assertThat(tags).isEmpty();
     }
@@ -63,7 +63,37 @@ class TagFilterRepositoryTest extends FilterRepositoryTest {
     @Test
     void findAllByWorkbookNameNull() {
         // given, when
-        List<Tag> tags = tagFilterRepository.findAllByContainsWorkbookName(null);
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName(null);
+        // then
+        assertThat(tags).isEmpty();
+    }
+
+    @Test
+    @DisplayName("keyword에 포함된 태그 조회 - 성공")
+    void findAllTagsIn() {
+        // when
+        List<Tag> tags = tagSearchRepository.findAllTagContaining("자바");
+
+        // then
+        assertThat(tags).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("keyword에 포함된 태그 조회 - 성공, 비공개 문제집에 포함된 태그는 포함되지 않는다.")
+    void findAllTagsWhenIncludeInPrivateWorkbook() {
+        // when
+        List<Tag> tags = tagSearchRepository.findAllTagContaining("private");
+
+        // then
+        assertThat(tags).isEmpty();
+    }
+
+    @Test
+    @DisplayName("keyword에 포함된 태그 조회 - 성공, 카드가 0개인 문제집은 포함되지 않는다.")
+    void findAllTagsWhenEmptyCards() {
+        // when
+        List<Tag> tags = tagSearchRepository.findAllTagContaining("empty");
+
         // then
         assertThat(tags).isEmpty();
     }

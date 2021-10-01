@@ -1,7 +1,7 @@
 package botobo.core.application;
 
 import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagRepository;
+import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookSearchRepository;
@@ -24,11 +24,11 @@ public class SearchService {
     private static final int SIZE_LIMIT = 10;
 
     private final WorkbookSearchRepository workbookSearchRepository;
-    private final TagRepository tagRepository;
+    private final TagSearchRepository tagSearchRepository;
 
-    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagRepository tagRepository) {
+    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagSearchRepository tagSearchRepository) {
         this.workbookSearchRepository = workbookSearchRepository;
-        this.tagRepository = tagRepository;
+        this.tagSearchRepository = tagSearchRepository;
     }
 
     public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter,
@@ -46,7 +46,7 @@ public class SearchService {
         if (target.isBlank()) {
             return TagResponse.listOf(Tags.empty());
         }
-        List<Tag> tags = tagRepository.findAllTagContaining(target);
+        List<Tag> tags = tagSearchRepository.findAllTagContaining(target);
         List<Tag> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);
         return TagResponse.listOf(Tags.of(sortedTags));
     }

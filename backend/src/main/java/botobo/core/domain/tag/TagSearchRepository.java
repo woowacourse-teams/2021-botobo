@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,9 +23,29 @@ import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 
 @RequiredArgsConstructor
 @Repository
-public class TagFilterRepository {
+public class TagSearchRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public List<Tag> findAllTagContaining(String keyword) {
+        if (Objects.isNull(keyword)) {
+            return Collections.emptyList();
+        }
+
+        return jpaQueryFactory.selectFrom(tag)
+                .distinct()
+                .innerJoin(tag.workbookTags, workbookTag)
+                .innerJoin(workbookTag.workbook, workbook)
+                .innerJoin(workbook.cards.cards, card)
+                .where(containsTagName(keyword),
+                        openedTrue())
+                .fetch();
+    }
+
+    private BooleanExpression containsTagName(String keyword) {
+        return tag.tagName.value.lower()
+                .contains(keyword.toLowerCase(Locale.ROOT));
+    }
 
     public List<Tag> findAllByContainsWorkbookName(String workbookName) {
         if (Objects.isNull(workbookName)) {
