@@ -1,10 +1,25 @@
 <included>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type" level="TRACE"/>
-
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${BOTOBO_CONSOLE_LOG_PATTERN}</pattern>
+            <pattern>${BOTOBO_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
+
+    <appender name="CONSOLE_DB" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${BOTOBO_BINDER_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+        <appender-ref ref="CONSOLE_DB"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+        <appender-ref ref="CONSOLE_DB"/>
+    </logger>
+
+
 </included>

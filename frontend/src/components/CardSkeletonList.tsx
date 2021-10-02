@@ -1,26 +1,62 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import { WorkbookListStyle } from '../styles';
 import CardSkeleton from './CardSkeleton';
+import QnACardSkeleton from './QnACardSkeleton';
+
+type CardType = 'workbook' | 'QnA';
 
 interface Props {
   count: number;
-  className?: string;
+  type?: CardType;
+  hasHeader?: boolean;
+  hasAuthor?: boolean;
+  hasTag?: boolean;
+  hasFooter?: boolean;
 }
 
-const CardSkeletonList = ({ count, className }: Props) => (
-  <StyledUl className={className}>
+interface UlStyleProps {
+  isResponsive: boolean;
+}
+
+const CardSkeletonList = ({
+  count,
+  type = 'workbook',
+  hasHeader,
+  hasAuthor,
+  hasTag,
+  hasFooter,
+}: Props) => (
+  <StyledUl isResponsive={type === 'workbook'}>
     {[...Array(count)].map((_, index) => (
-      <CardSkeleton key={index} />
+      <li key={index}>
+        {type === 'workbook' && (
+          <CardSkeleton
+            hasAuthor={hasAuthor}
+            hasTag={hasTag}
+            hasFooter={hasFooter}
+          />
+        )}
+        {type === 'QnA' && (
+          <QnACardSkeleton hasHeader={hasHeader} hasFooter={hasFooter} />
+        )}
+      </li>
     ))}
   </StyledUl>
 );
 
-const StyledUl = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
+const StyledUl = styled.ul<UlStyleProps>`
   margin: 1rem 0;
+
+  ${({ isResponsive }) =>
+    isResponsive
+      ? WorkbookListStyle
+      : css`
+          display: grid;
+          gap: 1rem;
+        `}
 `;
 
 export default CardSkeletonList;

@@ -1,7 +1,7 @@
 package botobo.core.application;
 
 import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagRepository;
+import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.ui.search.SearchRelated;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 class SearchServiceTest {
 
     @Mock
-    private TagRepository tagRepository;
+    private TagSearchRepository tagRepository;
 
     @InjectMocks
     private SearchService searchService;

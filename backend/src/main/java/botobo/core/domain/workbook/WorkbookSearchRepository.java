@@ -17,9 +17,11 @@ import java.util.List;
 
 import static botobo.core.domain.card.QCard.card;
 import static botobo.core.domain.heart.QHeart.heart;
+import static botobo.core.domain.tag.QTag.tag;
 import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
 import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
+
 
 @RequiredArgsConstructor
 @Repository
@@ -33,9 +35,12 @@ public class WorkbookSearchRepository {
                 .innerJoin(workbook.user, user).fetchJoin()
                 .innerJoin(workbook.cards.cards, card)
                 .leftJoin(workbook.workbookTags, workbookTag)
+                .leftJoin(workbookTag.tag, tag)
                 .leftJoin(workbook.hearts.hearts, heart)
-                .where(containKeyword(parameter.getSearchKeyword()), containTags(tags),
-                        containUsers(users))
+                .where(containKeyword(parameter.getSearchKeyword()),
+                        containTags(tags),
+                        containUsers(users),
+                        openedTrue())
                 .groupBy(workbook.id)
                 .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
                 .offset(pageable.getOffset())
@@ -48,10 +53,17 @@ public class WorkbookSearchRepository {
         if (searchKeyword == null) {
             return null;
         }
-        return workbook
-                .name
-                .lower()
-                .contains(searchKeyword.getValue().toLowerCase());
+        String keyword = searchKeyword.getValue();
+        return containsKeywordInWorkbookName(keyword)
+                .or(equalsKeywordInWorkbookTag(keyword));
+    }
+
+    private BooleanExpression containsKeywordInWorkbookName(String keyword) {
+        return workbook.name.lower().contains(keyword);
+    }
+
+    private BooleanExpression equalsKeywordInWorkbookTag(String keyword) {
+        return workbook.workbookTags.any().tag.tagName.value.eq(keyword);
     }
 
     private BooleanExpression containTags(List<Long> tags) {
@@ -71,6 +83,10 @@ public class WorkbookSearchRepository {
         return user
                 .id
                 .in(users);
+    }
+
+    private BooleanExpression openedTrue() {
+        return workbook.opened.isTrue();
     }
 
     private OrderSpecifier<?> findCriteria(SearchCriteria searchCriteria) {

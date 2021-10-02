@@ -44,13 +44,19 @@ const useRouter = () => {
     keyword = '',
     size = 20,
     method = 'replace',
-  }: PublicSearchResultQuery = {}) =>
+  }: PublicSearchResultQuery = {}) => {
+    const params = new URLSearchParams();
+    params.append('criteria', criteria);
+    params.append('keyword', keyword);
+    params.append('size', String(size));
+    tags && params.append('tags', tags);
+    users && params.append('users', users);
+
     history[method]({
       pathname: ROUTE.PUBLIC_SEARCH_RESULT.PATH,
-      search: `?keyword=${keyword}&criteria=${criteria}&size=${size}${
-        tags ? `&tags=${tags}` : ''
-      }${users ? `&users=${users}` : ''}`,
+      search: params.toString(),
     });
+  };
 
   const routePrevPage = () => history.goBack();
 

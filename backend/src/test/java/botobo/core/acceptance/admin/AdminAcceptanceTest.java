@@ -229,7 +229,7 @@ class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User user) {
         return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .post("/admin/workbooks", adminWorkbookRequest)
                 .auth(jwtTokenProvider.createAccessToken(user.getId()))
                 .build()
                 .extract();
@@ -237,7 +237,7 @@ class AdminAcceptanceTest extends DomainAcceptanceTest {
 
     public ExtractableResponse<Response> 카드_생성_요청(AdminCardRequest adminCardRequest, User user) {
         return request()
-                .post("/api/admin/cards", adminCardRequest)
+                .post("/admin/cards", adminCardRequest)
                 .auth(jwtTokenProvider.createAccessToken(user.getId()))
                 .build()
                 .extract();

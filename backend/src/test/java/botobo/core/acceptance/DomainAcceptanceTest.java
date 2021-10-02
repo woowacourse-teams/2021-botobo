@@ -98,7 +98,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
         return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .post("/admin/workbooks", adminWorkbookRequest)
                 .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                 .build()
                 .extract();
@@ -106,7 +106,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     public ExtractableResponse<Response> 서로_다른_관리자의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User admin) {
         return request()
-                .post("/api/admin/workbooks", adminWorkbookRequest)
+                .post("/admin/workbooks", adminWorkbookRequest)
                 .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                 .build()
                 .extract();
@@ -129,7 +129,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
         for (AdminCardRequest adminCardRequest : adminCardRequests) {
             request()
-                    .post("/api/admin/cards", adminCardRequest)
+                    .post("/admin/cards", adminCardRequest)
                     .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                     .build()
                     .extract();
@@ -151,7 +151,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
         return request()
-                .post("/api/cards", cardRequest)
+                .post("/cards", cardRequest)
                 .auth(accessToken)
                 .build();
     }
@@ -175,13 +175,23 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
     }
 
+    protected void 유저_태그_카드_포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tags)
+                .build();
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
+        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+    }
+
     protected WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, String accessToken) {
         return 유저_문제집_생성_요청(workbookRequest, accessToken).convertBody(WorkbookResponse.class);
     }
 
     protected HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, String accessToken) {
         return request()
-                .post("/api/workbooks", workbookRequest)
+                .post("/workbooks", workbookRequest)
                 .auth(accessToken)
                 .build();
     }
@@ -195,7 +205,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
         HttpResponse response = request()
-                .get("/api/workbooks/{id}/cards", workbookId)
+                .get("/workbooks/{id}/cards", workbookId)
                 .auth(createToken(1L))
                 .build();
         return response.convertBody(WorkbookCardResponse.class);
@@ -207,7 +217,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
         return request()
-                .putWithoutBody("/api/workbooks/{workbookId}/hearts", workbookId)
+                .putWithoutBody("/workbooks/{workbookId}/hearts", workbookId)
                 .auth(accessToken)
                 .build();
     }
@@ -229,7 +239,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         }
 
         return request()
-                .post("/api/login/{socialType}", loginRequest, socialType)
+                .post("/login/{socialType}", loginRequest, socialType)
                 .build()
                 .extract();
     }

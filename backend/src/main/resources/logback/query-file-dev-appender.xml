@@ -1,7 +1,4 @@
 <included>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type" level="TRACE"/>
-
     <property name="QUERY_LOG_PATH" value="logs/query"/>
     <property name="QUERY_LOG_FILE_NAME" value="query"/>
 
@@ -11,7 +8,9 @@
         </filter>
 
         <encoder>
-            <pattern>${BOTOBO_FILE_LOG_PATTERN}</pattern>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} %n    > %msg%n
+            </pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -20,4 +19,24 @@
             <maxHistory>100</maxHistory>
         </rollingPolicy>
     </appender>
+
+    <appender name="QUERY_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="QUERY_FILE" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>true</neverBlock>
+        <maxFlushTime>1000</maxFlushTime>
+    </appender>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="QUERY_FILE_ASYNC"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+        <appender-ref ref="QUERY_FILE_ASYNC"/>
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+        <appender-ref ref="QUERY_FILE_ASYNC"/>
+    </logger>
+
 </included>

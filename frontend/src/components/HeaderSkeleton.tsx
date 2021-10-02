@@ -6,23 +6,49 @@ import MenuIcon from '../assets/menu.svg';
 import { CLOUD_FRONT_DOMAIN } from '../constants';
 import { Flex } from '../styles';
 
+interface Props {
+  hasPageHeader?: boolean;
+}
+
+interface ContainerStyleProps {
+  hasPageHeader: boolean;
+}
+
 const logoSrc = `${CLOUD_FRONT_DOMAIN}/logo.png`;
 
-const HeaderSkeleton = () => (
-  <Container>
-    <InnerContent>
-      <h1>
-        <Logo>
-          <span>보고 또 보고</span>
-        </Logo>
-      </h1>
-      <StyleMenuIcon width="1.3rem" height="1.3rem" />
-    </InnerContent>
-  </Container>
+const HeaderSkeleton = ({ hasPageHeader = false }: Props) => (
+  <>
+    <Container hasPageHeader={hasPageHeader}>
+      <InnerContent>
+        <h1>
+          <Logo>
+            <span>보고 또 보고</span>
+          </Logo>
+        </h1>
+        <StyleMenuIcon width="1.3rem" height="1.3rem" />
+      </InnerContent>
+    </Container>
+    {hasPageHeader && <PageHeaderContainer />}
+  </>
 );
 
-const Container = styled.div`
+const Container = styled.div<ContainerStyleProps>`
+  position: relative;
   height: 3.75rem;
+  padding: 0 0.75rem;
+
+  ${({ theme, hasPageHeader }) => css`
+    background-color: ${theme.color.white};
+
+    ${!hasPageHeader &&
+    css`
+      box-shadow: ${theme.boxShadow.header};
+    `};
+  `};
+`;
+
+const PageHeaderContainer = styled.div`
+  height: 3rem;
   padding: 0 0.75rem;
 
   ${({ theme }) => css`

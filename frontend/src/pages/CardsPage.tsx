@@ -1,8 +1,12 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
+import FillHeartIcon from '../assets/heart-solid.svg';
 import { Button, CardAddForm, MainHeader, QnACard } from '../components';
+import { theme } from '../constants';
 import { useCard } from '../hooks';
+import { Flex } from '../styles';
 import { CardResponse } from '../types';
 import CardsLoadable from './CardsLoadable';
 import PageTemplate from './PageTemplate';
@@ -32,6 +36,8 @@ const CardsPage = () => {
   const {
     workbookName,
     cards,
+    heartCount,
+    tags,
     getCards,
     createCard,
     editCard,
@@ -49,9 +55,31 @@ const CardsPage = () => {
   return (
     <>
       <MainHeader />
-      <PageTemplate isScroll={true}>
-        <WorkbookName>{workbookName}</WorkbookName>
-        <span>{cards.length}개의 카드를 학습 중이에요.</span>
+      <StyledPageTemplate isScroll={true}>
+        <Heart>
+          <FillHeartIcon
+            width="1.5rem"
+            height="1.5rem"
+            fill={theme.color.red}
+          />
+          <span>{heartCount}</span>
+        </Heart>
+        <TopContent>
+          <WorkbookName>{workbookName}</WorkbookName>
+          <WorkbookCards>
+            {cards.length}개의 카드를 학습 중이에요.
+          </WorkbookCards>
+          <TagList>
+            {tags.map(({ id, name }) => (
+              <TagWrapper key={id}>
+                <Tag>
+                  <span>#</span>
+                  {name}
+                </Tag>
+              </TagWrapper>
+            ))}
+          </TagList>
+        </TopContent>
         <Filter>
           {filters.map(({ id, name }) => (
             <Button
@@ -97,14 +125,61 @@ const CardsPage = () => {
             </li>
           ))}
         </CardList>
-      </PageTemplate>
+      </StyledPageTemplate>
     </>
   );
 };
 
+const StyledPageTemplate = styled(PageTemplate)`
+  position: relative;
+`;
+
+const Heart = styled.div`
+  ${Flex({ direction: 'column', items: 'center' })};
+  position: absolute;
+  top: 3.5rem;
+  right: 1.25rem;
+
+  & > span {
+    margin-top: 0.25rem;
+  }
+`;
+
+const TopContent = styled.div`
+  width: calc(100% - 2rem);
+`;
+
 const WorkbookName = styled.h2`
   word-break: break-all;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+`;
+
+const WorkbookCards = styled.span`
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+  `}
+`;
+
+const TagList = styled.ul`
+  margin-top: 0.5rem;
+`;
+
+const TagWrapper = styled.li`
+  display: inline;
+  word-break: break-all;
+`;
+
+const Tag = styled.span`
+  margin-right: 0.5rem;
+  line-height: 1.5;
+
+  ${({ theme }) => css`
+    color: ${theme.color.gray_8};
+  `};
+
+  & > span {
+    margin-right: 0.1rem;
+  }
 `;
 
 const Filter = styled.div`

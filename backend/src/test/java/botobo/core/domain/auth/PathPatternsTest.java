@@ -14,13 +14,13 @@ public class PathPatternsTest {
     void isExcludedPath() {
         // given
         PathPatterns pathPatterns = new PathPatterns();
-        pathPatterns.excludePathPatterns("/api/login", PathMethod.POST);
-        pathPatterns.addPathPatterns("/api/workbooks", PathMethod.GET);
+        pathPatterns.excludePathPatterns("/login", PathMethod.POST);
+        pathPatterns.addPathPatterns("/workbooks", PathMethod.GET);
 
         // when, then
-        assertThat(pathPatterns.isExcludedPath("/api/login", PathMethod.POST)).isTrue();
-        assertThat(pathPatterns.isExcludedPath("/api/workbooks", PathMethod.PATCH)).isTrue();
-        assertThat(pathPatterns.isExcludedPath("/api/workbooks", PathMethod.GET)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/login", PathMethod.POST)).isTrue();
+        assertThat(pathPatterns.isExcludedPath("/workbooks", PathMethod.PATCH)).isTrue();
+        assertThat(pathPatterns.isExcludedPath("/workbooks", PathMethod.GET)).isFalse();
     }
 
     @Test
@@ -28,16 +28,16 @@ public class PathPatternsTest {
     void isExcludedPathWithPathMethodAny() {
         // given
         PathPatterns pathPatterns = new PathPatterns();
-        pathPatterns.addPathPatterns("/api/**", PathMethod.ANY);
+        pathPatterns.addPathPatterns("/**", PathMethod.ANY);
 
         // when, then
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.POST)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.GET)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.PUT)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.HEAD)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.PATCH)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.TRACE)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.DELETE)).isFalse();
-        assertThat(pathPatterns.isExcludedPath("/api/**", PathMethod.OPTIONS)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.POST)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.GET)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.PUT)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.HEAD)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.PATCH)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.TRACE)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.DELETE)).isFalse();
+        assertThat(pathPatterns.isExcludedPath("/**", PathMethod.OPTIONS)).isFalse();
     }
 }

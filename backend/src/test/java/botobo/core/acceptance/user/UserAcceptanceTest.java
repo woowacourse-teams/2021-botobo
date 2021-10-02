@@ -5,6 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
+import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.user.ProfileResponse;
 import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
@@ -19,9 +20,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
+import static botobo.core.utils.Fixture.joanne;
+import static botobo.core.utils.Fixture.oz;
 import static botobo.core.utils.Fixture.pk;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +43,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findByUserOfMine() {
         // given, when
         final HttpResponse response = request()
-                .get("/api/users/me")
+                .get("/users/me")
                 .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
                 .build();
 
@@ -57,7 +61,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findByUserOfMineWhenNotExistToken() {
         //when
         final HttpResponse response = request()
-                .get("/api/users/me")
+                .get("/users/me")
                 .build();
         final ErrorResponse errorResponse = response.convertToErrorResponse();
 
@@ -80,7 +84,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //when
         final HttpResponse response = request()
-                .post("/api/users/profile", mockMultipartFile)
+                .post("/users/profile", mockMultipartFile)
                 .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
                 .build();
 
@@ -102,7 +106,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -126,7 +130,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -148,7 +152,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -170,7 +174,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -192,7 +196,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -214,7 +218,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -236,7 +240,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -258,7 +262,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -280,7 +284,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -303,7 +307,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(id))
                 .build();
 
@@ -325,7 +329,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -351,7 +355,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -373,7 +377,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .put("/api/users/me", userUpdateRequest)
+                .put("/users/me", userUpdateRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -396,7 +400,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -413,7 +417,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -431,7 +435,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(id))
                 .build();
 
@@ -451,7 +455,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -472,7 +476,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -493,7 +497,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -515,7 +519,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .build();
         //when
         final HttpResponse response = request()
-                .post("/api/users/name-check", userNameRequest)
+                .post("/users/name-check", userNameRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -527,25 +531,101 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
     }
 
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
     @Test
-    void findAllUsersByWorkbookName() {
+    void findAllUsersByWorkbookNameWhenCardIsEmpty() {
         서로_다른_관리자의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         // given
         final String workbookName = "Java";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
         final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
 
         // then
-        assertThat(userResponses).hasSize(3);
+        assertThat(userResponses).isEmpty();
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
+    @Test
+    void findAllUsersByWorkbookName() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+
+        // given
+        final String workbookName = "Java";
+        final HttpResponse response = request()
+                .get("/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
         assertThat(userResponses)
                 .extracting(UserFilterResponse::getName)
-                .containsExactlyInAnyOrder("user1", "user2", "user3");
+                .containsExactlyInAnyOrder("oz");
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 태그에 포함됨")
+    @Test
+    void findAllUsersByWorkbookNameEqualsTag() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+
+        List<TagRequest> jsTags = Arrays.asList(
+                TagRequest.builder().id(0L).name("javascript").build(),
+                TagRequest.builder().id(0L).name("js").build()
+        );
+
+        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+
+        // given
+        final String workbookName = "Js";
+        final HttpResponse response = request()
+                .get("/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
+        assertThat(userResponses)
+                .extracting(UserFilterResponse::getName)
+                .containsExactlyInAnyOrder("joanne");
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")
+    @Test
+    void findAllUsersByWorkbookNameWhenOpened() {
+        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
+        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
+
+        // given
+        final String workbookName = "문제집";
+        final HttpResponse response = request()
+                .get("/users?workbook=" + workbookName)
+                .build();
+
+        // when
+        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
+
+        // then
+        assertThat(userResponses).hasSize(1);
+        assertThat(userResponses)
+                .extracting(UserFilterResponse::getName)
+                .containsExactlyInAnyOrder("oz");
     }
 
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
@@ -556,7 +636,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given
         final String workbookName = "";
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + workbookName)
+                .get("/users?workbook=" + workbookName)
                 .build();
 
         // when
@@ -571,7 +651,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     void findAllUsersByWorkbookNameIsLong() {
         // given
         final HttpResponse response = request()
-                .get("/api/users?workbook=" + stringGenerator(31))
+                .get("/users?workbook=" + stringGenerator(31))
                 .build();
 
         // when - then
