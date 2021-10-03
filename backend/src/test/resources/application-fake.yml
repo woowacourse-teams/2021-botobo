@@ -1,0 +1,8 @@
+# fake
+# for PropertiesLoaderTest. No usage for application
+# PropertiesLoaderTest 에서 사용되는 yaml 파일로, 그 외 사용되지 않습니다.
+
+github:
+  client:
+    id: githubId
+    secret:
