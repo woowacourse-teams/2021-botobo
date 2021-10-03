@@ -6,9 +6,27 @@ include::{snippets}/login-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/login-success/http-response.adoc[]
 |===
-| Parameter | 설명
+| 파라미터 | 설명
 
-| SocialType
-| 소셜 로그인 종류 (github, google)
+| SocialType | 소셜 로그인 종류 (github, google)
 
 |===
+
+=== access token과 refresh token 재발급
+==== 요청
+include::{snippets}/token-get-success/http-request.adoc[]
+
+==== 응답
+include::{snippets}/token-get-success/http-response.adoc[]
+|===
+| 파라미터 | 설명
+
+| BTOKEN_REFRESH | Refresh Token. (필수)
+
+|===
+
+=== 로그아웃
+==== 요청
+include::{snippets}/logout-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/logout-get-success/http-response.adoc[]
