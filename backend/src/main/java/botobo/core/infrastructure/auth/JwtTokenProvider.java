@@ -1,6 +1,8 @@
 package botobo.core.infrastructure.auth;
 
 import botobo.core.exception.auth.TokenExpirationException;
+import botobo.core.exception.auth.TokenNotValidException;
+import botobo.core.exception.http.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -9,11 +11,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class JwtTokenProvider {
 
-    private final JwtTokenInfo jwtAccessTokenInfo, jwtRefreshTokenInfo;
+    private final JwtTokenInfo jwtAccessTokenInfo;
+    private final JwtTokenInfo jwtRefreshTokenInfo;
 
     public JwtTokenProvider(JwtAccessTokenInfo jwtAccessTokenInfo, JwtRefreshTokenInfo jwtRefreshTokenInfo) {
         this.jwtAccessTokenInfo = jwtAccessTokenInfo;
@@ -26,6 +30,10 @@ public class JwtTokenProvider {
 
     public String createRefreshToken(Long id) {
         return createToken(id, jwtRefreshTokenInfo.getValidityInMilliseconds(), jwtRefreshTokenInfo.getSecretKey());
+    }
+
+    public String createRefreshToken(Long id, Long validityInMilliseconds) {
+        return createToken(id, validityInMilliseconds, jwtRefreshTokenInfo.getSecretKey());
     }
 
     private String createToken(Long id, Long validityTime, String secretKey) {
@@ -41,12 +49,20 @@ public class JwtTokenProvider {
     }
 
     public Long getIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
-        Claims claims = Jwts.parser()
+        Claims claims = getClaims(token, jwtTokenType);
+
+        return claims.get("id", Long.class);
+    }
+
+    public String getStringIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
+        return getIdFromPayLoad(token, jwtTokenType).toString();
+    }
+
+    private Claims getClaims(String token, JwtTokenType jwtTokenType) {
+        return Jwts.parser()
                 .setSigningKey(secretKey(jwtTokenType))
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.get("id", Long.class);
     }
 
     public String secretKey(JwtTokenType jwtTokenType) {
@@ -56,16 +72,29 @@ public class JwtTokenProvider {
         return jwtRefreshTokenInfo.getSecretKey();
     }
 
-    public boolean isValidToken(String token, JwtTokenType jwtTokenType) {
+    public boolean isValidAccessToken(String accessToken) throws TokenExpirationException {
         try {
+            validateToken(accessToken, JwtTokenType.ACCESS_TOKEN);
+            return true;
+        } catch (UnAuthorizedException e) {
+            return false;
+        }
+    }
+
+    public void validateToken(String token, JwtTokenType jwtTokenType) {
+        try {
+            Objects.requireNonNull(token);
             Jwts.parser()
                     .setSigningKey(secretKey(jwtTokenType))
                     .parseClaimsJws(token);
-            return true;
         } catch (ExpiredJwtException e) {
             throw new TokenExpirationException();
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (NullPointerException | JwtException | IllegalArgumentException e) {
+            throw new TokenNotValidException();
         }
+    }
+
+    public Long getJwtRefreshTokenTimeToLive() {
+        return jwtRefreshTokenInfo.getValidityInMilliseconds() / 1000;
     }
 }
