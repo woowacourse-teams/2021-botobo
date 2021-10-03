@@ -43,7 +43,7 @@ public class AcceptanceTest {
      * request()
      * .get(path, params)   http method type
      * .queryParam(name, value)     optional
-     * .auth(createToken(1L))         default: false
+     * .auth(renewAccessToken(1L))         default: false
      * .log()          default: false
      * .build();
      * <로그인이 필요하지 않은 경우>
