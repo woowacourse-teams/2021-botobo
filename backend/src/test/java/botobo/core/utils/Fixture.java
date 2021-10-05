@@ -65,7 +65,7 @@ public class Fixture {
             )
     );
 
-    public static final List<WorkbookRequest> ADMIN_WORKBOOK_REQUESTS_WITH_TAG =
+    public static final List<WorkbookRequest> WORKBOOK_REQUESTS_WITH_TAG =
             문제집명과_태그_요청이_포함된_문제집_요청_만들기(
                     List.of(
                             Map.of("Java", true),
@@ -138,6 +138,11 @@ public class Fixture {
         return results;
     }
 
+    /**
+     * 주의, questionAndAnswerAndWorkbookIds에 담기는 String은 "질문 답변 문제집ID"가 띄어쓰기로 구분된 형태의 String입니다.
+     * @param questionAndAnswerAndWorkbookIds
+     * @return
+     */
     private static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청_만들기(List<String> questionAndAnswerAndWorkbookIds) {
         List<CardRequest> requests = new ArrayList<>();
 

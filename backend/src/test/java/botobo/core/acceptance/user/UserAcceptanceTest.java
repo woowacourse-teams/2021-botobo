@@ -23,7 +23,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS_WITH_TAG;
 import static botobo.core.utils.Fixture.joanne;
 import static botobo.core.utils.Fixture.oz;
 import static botobo.core.utils.Fixture.pk;
@@ -534,7 +534,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
     @Test
     void findAllUsersByWorkbookNameWhenCardIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         // given
         final String workbookName = "Java";
@@ -631,7 +631,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
     @Test
     void findAllUsersByWorkbookNameIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         // given
         final String workbookName = "";
