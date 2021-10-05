@@ -5,5 +5,7 @@ public interface JwtTokenInfo {
 
     Long getValidityInMilliseconds();
 
+    Long getValidityInSeconds();
+
     boolean supports(JwtTokenType jwtTokenType);
 }

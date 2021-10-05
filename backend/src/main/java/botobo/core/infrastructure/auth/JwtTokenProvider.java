@@ -95,6 +95,6 @@ public class JwtTokenProvider {
     }
 
     public Long getJwtRefreshTokenTimeToLive() {
-        return jwtRefreshTokenInfo.getValidityInMilliseconds() / 1000;
+        return jwtRefreshTokenInfo.getValidityInSeconds();
     }
 }

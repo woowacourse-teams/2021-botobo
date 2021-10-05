@@ -23,6 +23,11 @@ public class JwtRefreshTokenInfo implements JwtTokenInfo {
     }
 
     @Override
+    public Long getValidityInSeconds() {
+        return validityInMilliseconds / 1000L;
+    }
+
+    @Override
     public boolean supports(JwtTokenType jwtTokenType) {
         return jwtTokenType.equals(JwtTokenType.REFRESH_TOKEN);
     }

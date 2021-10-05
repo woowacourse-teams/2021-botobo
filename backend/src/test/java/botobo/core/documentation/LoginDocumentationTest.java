@@ -35,7 +35,7 @@ class LoginDocumentationTest extends DocumentationTest {
                 TokenResponse.of(authenticatedToken())
         );
         given(authService.createRefreshToken(id)).willReturn(refreshToken);
-        given(jwtRefreshTokenInfo.getValidityInMilliseconds()).willReturn(1000L);
+        given(jwtRefreshTokenInfo.getValidityInSeconds()).willReturn(1000L);
 
         // when, then
         MvcResult mvcResult = document()
@@ -67,7 +67,7 @@ class LoginDocumentationTest extends DocumentationTest {
                 TokenResponse.of(renewedAccessToken)
         );
         given(authService.createRefreshToken(id)).willReturn(renewedRefreshToken);
-        given(jwtRefreshTokenInfo.getValidityInMilliseconds()).willReturn(1000L);
+        given(jwtRefreshTokenInfo.getValidityInSeconds()).willReturn(1000L);
 
         // when, then
         MvcResult mvcResult = document()

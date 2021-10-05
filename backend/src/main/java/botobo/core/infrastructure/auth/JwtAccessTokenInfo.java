@@ -23,6 +23,11 @@ public class JwtAccessTokenInfo implements JwtTokenInfo {
     }
 
     @Override
+    public Long getValidityInSeconds() {
+        return validityInMilliseconds / 1000;
+    }
+
+    @Override
     public boolean supports(JwtTokenType jwtTokenType) {
         return jwtTokenType.equals(JwtTokenType.ACCESS_TOKEN);
     }

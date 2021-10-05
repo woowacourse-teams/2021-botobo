@@ -5,6 +5,7 @@ import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.infrastructure.auth.JwtRefreshTokenInfo;
 import botobo.core.infrastructure.auth.JwtTokenType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class AuthController {
 
+    private static final String SET_COOKIE = "Set-Cookie";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
 
     private final AuthService authService;
@@ -33,8 +34,8 @@ public class AuthController {
     public ResponseEntity<TokenResponse> login(@PathVariable String socialType, @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         TokenResponse tokenResponse = authService.createAccessToken(socialType, loginRequest);
         Long id = authService.extractIdByToken(tokenResponse.getAccessToken(), JwtTokenType.ACCESS_TOKEN);
-        Cookie cookie = createRefreshTokenCookie(id);
-        response.addCookie(cookie);
+        ResponseCookie responseCookie =createRefreshTokenCookie(id);
+        response.addHeader(SET_COOKIE, responseCookie.toString());
         return ResponseEntity.ok(tokenResponse);
     }
 
@@ -43,19 +44,20 @@ public class AuthController {
         authService.validateRefreshToken(refreshToken);
         Long id = authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
         TokenResponse tokenResponse = authService.renewAccessToken(id);
-        Cookie cookie = createRefreshTokenCookie(id);
-        response.addCookie(cookie);
+        ResponseCookie responseCookie =createRefreshTokenCookie(id);
+        response.addHeader(SET_COOKIE, responseCookie.toString());
         return ResponseEntity.ok(tokenResponse);
     }
 
-    private Cookie createRefreshTokenCookie(Long id) {
+    private ResponseCookie createRefreshTokenCookie(Long id) {
         String refreshToken = authService.createRefreshToken(id);
-        Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(jwtRefreshTokenInfo.getValidityInMilliseconds().intValue());
-        return cookie;
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
+                .sameSite("Lax")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(jwtRefreshTokenInfo.getValidityInSeconds().intValue())
+                .build();
     }
 
     @GetMapping("/logout")
@@ -68,11 +70,13 @@ public class AuthController {
     }
 
     private void expireRefreshTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, "")
+                .sameSite("Lax")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+        response.addHeader(SET_COOKIE, responseCookie.toString());
     }
 }
