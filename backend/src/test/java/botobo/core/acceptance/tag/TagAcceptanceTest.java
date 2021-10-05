@@ -73,7 +73,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
     @Test
     void findAllTagsByWorkbookNameWhenCardCountsZero() {
         // given
-        서로_다른_관리자의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         final String workbookName = "Java";
         final HttpResponse response = request()

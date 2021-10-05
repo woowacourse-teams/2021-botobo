@@ -5,8 +5,6 @@ import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
-import botobo.core.dto.admin.AdminCardRequest;
-import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
@@ -96,40 +94,40 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return userRepository.save(anyUser);
     }
 
-    public ExtractableResponse<Response> 문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest) {
+    public ExtractableResponse<Response> 문제집_생성_요청(WorkbookRequest workbookRequest) {
         return request()
-                .post("/admin/workbooks", adminWorkbookRequest)
+                .post("/workbooks", workbookRequest)
                 .auth(jwtTokenProvider.createToken(admin.getId()))
                 .build()
                 .extract();
     }
 
-    public ExtractableResponse<Response> 서로_다른_관리자의_문제집_생성_요청(AdminWorkbookRequest adminWorkbookRequest, User admin) {
-        return request()
-                .post("/admin/workbooks", adminWorkbookRequest)
-                .auth(jwtTokenProvider.createToken(admin.getId()))
-                .build()
-                .extract();
+    public void 여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests) {
+        for (WorkbookRequest workbookRequest : workbookRequests) {
+            문제집_생성_요청(workbookRequest);
+        }
     }
 
-    public void 서로_다른_관리자의_여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests, List<User> admins) {
+    public void 서로_다른_유저의_여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests, List<User> admins) {
         int userSize = admins.size();
         int i = 0;
-        for (AdminWorkbookRequest adminRequest : adminRequests) {
-            서로_다른_관리자의_문제집_생성_요청(adminRequest, admins.get(i++ % userSize));
+        for (WorkbookRequest workbookRequest : workbookRequests) {
+            문제집_생성_요청(workbookRequest, admins.get(i++ % userSize));
         }
     }
 
-    public void 여러개_문제집_생성_요청(List<AdminWorkbookRequest> adminRequests) {
-        for (AdminWorkbookRequest adminRequest : adminRequests) {
-            문제집_생성_요청(adminRequest);
-        }
+    private void 문제집_생성_요청(WorkbookRequest workbookRequest, User user) {
+        request()
+                .post("/workbooks", workbookRequest)
+                .auth(jwtTokenProvider.createToken(user.getId()))
+                .build()
+                .extract();
     }
 
-    public void 여러개_카드_생성_요청(List<AdminCardRequest> adminCardRequests) {
-        for (AdminCardRequest adminCardRequest : adminCardRequests) {
+    public void 여러개_카드_생성_요청(List<CardRequest> cardRequests) {
+        for (CardRequest cardRequest : cardRequests) {
             request()
-                    .post("/admin/cards", adminCardRequest)
+                    .post("/cards", cardRequest)
                     .auth(jwtTokenProvider.createToken(admin.getId()))
                     .build()
                     .extract();
