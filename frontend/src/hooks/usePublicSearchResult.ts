@@ -74,9 +74,10 @@ const usePublicSearchResult = () => {
         ...options,
       });
 
+      if (!searchResult) return;
+
       setSearchResult({ searchResult, isReset });
       setIsLoading(false);
-
       routePublicSearchResultQuery({ keyword, criteria, ...options });
     } catch (error) {
       console.error(error);
@@ -104,8 +105,12 @@ const usePublicSearchResult = () => {
   };
 
   const setInitialMultiFilterValues = async (type: MultiFilterType) => {
+    const selectedIds = query[type]?.split(',');
     const response = await getMultiFilterValues(type);
-    const values = response.map((value) => ({ ...value, isSelected: false }));
+    const values = response.map((value) => ({
+      ...value,
+      isSelected: Boolean(selectedIds?.includes(String(value.id))),
+    }));
 
     setPublicWorkbookState((prevValue) => ({
       ...prevValue,

@@ -26,6 +26,10 @@ public class RequestBuilder {
         return new HttpFunction();
     }
 
+    interface RestAssuredRequest {
+        ValidatableResponse action(RequestSpecification specification);
+    }
+
     public static class HttpFunction {
         public Options get(String path, Object... params) {
             return new Options(new GetRequest(path, params));
@@ -151,10 +155,6 @@ public class RequestBuilder {
         public String header(String name) {
             return response.header(name);
         }
-    }
-
-    interface RestAssuredRequest {
-        ValidatableResponse action(RequestSpecification specification);
     }
 
     private static class GetRequest implements RestAssuredRequest {

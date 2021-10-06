@@ -8,11 +8,12 @@ import PageTemplate from './PageTemplate';
 
 const PublicCardsLoadable = () => (
   <>
-    <HeaderSkeleton />
+    <HeaderSkeleton hasPageHeader={true} />
     <StyledPageTemplate isScroll={true}>
       <Heading />
-      <Heading />
-      <CardSkeletonList count={6} />
+      <Description />
+      <TagList />
+      <CardSkeletonList count={6} type="QnA" />
       <BottomContent>
         <Button size="full" shape="rectangle" backgroundColor={'gray_4'}>
           {' '}
@@ -28,9 +29,24 @@ const StyledPageTemplate = styled(PageTemplate)`
 `;
 
 const Heading = styled.div`
-  height: 1.5rem;
+  height: 1.875rem;
   width: 50%;
   margin-bottom: 0.5rem;
+
+  ${loadContent}
+`;
+
+const Description = styled.div`
+  height: 1.25rem;
+  width: 20%;
+  margin-bottom: 0.5rem;
+
+  ${loadContent}
+`;
+
+const TagList = styled.div`
+  height: 1.5rem;
+  width: 70%;
 
   ${loadContent}
 `;

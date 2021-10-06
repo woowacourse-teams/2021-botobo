@@ -218,7 +218,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         HttpResponse response = request()
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build();
 
         // then
@@ -241,7 +241,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         HttpResponse response = request()
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build();
 
         // then
@@ -262,7 +262,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         HttpResponse response = request()
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build();
 
         // then
@@ -284,7 +284,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         HttpResponse response = request()
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build();
 
         // then
@@ -304,7 +304,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .auth(accessToken)
                 .build();
 
@@ -319,7 +319,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     void findWorkbooksByAnonymous() {
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .build();
 
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -339,7 +339,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks/{id}/cards", workbookResponse.getId())
+                .get("/workbooks/{id}/cards", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
 
@@ -361,7 +361,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks/{id}/cards", workbookResponse.getId())
+                .get("/workbooks/{id}/cards", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
 
@@ -384,7 +384,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks/{id}/cards", workbookResponse.getId())
+                .get("/workbooks/{id}/cards", workbookResponse.getId())
                 .auth(otherAccessToken)
                 .build();
 
@@ -405,7 +405,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .get("/api/workbooks/public/{id}", workbookResponse.getId())
+                .get("/workbooks/public/{id}", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
         // then
@@ -768,13 +768,13 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(accessToken)
                 .build();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.header("Location")).isEqualTo(String.format("/api/workbooks/%d/cards", workbookId));
+        assertThat(response.header("Location")).isEqualTo(String.format("/workbooks/%d/cards", workbookId));
     }
 
     @Test
@@ -794,7 +794,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(소셜_로그인되어_있음(oz, SocialType.GITHUB))
                 .build();
 
@@ -816,7 +816,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
                 .build();
 
@@ -844,7 +844,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .failAuth()
                 .build();
 
@@ -872,7 +872,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(otherAccessToken)
                 .build();
 
@@ -893,7 +893,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
                 .build();
 
@@ -914,7 +914,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .failAuth()
                 .build();
 
@@ -937,7 +937,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(accessToken)
                 .build();
 
@@ -965,7 +965,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(accessToken)
                 .build();
 
@@ -1001,14 +1001,14 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                                       WorkbookResponse workbookResponse,
                                       String accessToken) {
         return request()
-                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .put("/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
                 .auth(accessToken)
                 .build();
     }
 
     private HttpResponse 유저_문제집_삭제_요청(WorkbookResponse workbookResponse, String accessToken) {
         return request()
-                .delete("/api/workbooks/{id}", workbookResponse.getId())
+                .delete("/workbooks/{id}", workbookResponse.getId())
                 .auth(accessToken)
                 .build();
     }

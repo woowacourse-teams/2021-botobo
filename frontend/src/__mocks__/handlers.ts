@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 
-const baseURL = `${process.env.REACT_APP_SERVER_URL}/api`;
+const baseURL = `${process.env.REACT_APP_SERVER_URL}`;
 
 const handlers = [
   rest.get(`${baseURL}/workbooks`, (req, res, ctx) => {
@@ -11,6 +11,8 @@ const handlers = [
           id: 1,
           name: 'Java',
           cardCount: 1,
+          heartCount: 1,
+          tags: [],
         },
       ])
     );

@@ -1,7 +1,6 @@
 package botobo.core.config;
 
 import botobo.core.application.AuthService;
-import botobo.core.ui.auth.AdminInterceptor;
 import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
 import botobo.core.ui.auth.AuthorizationInterceptor;
 import botobo.core.ui.auth.PathMatcherInterceptor;
@@ -29,11 +28,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AdminInterceptor adminInterceptor() {
-        return new AdminInterceptor(authService);
-    }
-
-    @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
     }
@@ -46,31 +40,23 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authPathMatcherInterceptor());
-        registry.addInterceptor(adminPathMatcherInterceptor());
     }
 
     @Bean
     public PathMatcherInterceptor authPathMatcherInterceptor() {
         return new PathMatcherInterceptor(authorizationInterceptor())
-                .addPathPatterns("/api/**", PathMethod.ANY)
-                .excludePathPatterns("/api/**", PathMethod.OPTIONS)
-                .excludePathPatterns("/api/infra/**", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks", PathMethod.GET)
-                .excludePathPatterns("/api/quizzes/**", PathMethod.GET)
-                .excludePathPatterns("/api/login/**", PathMethod.POST)
-                .excludePathPatterns("/api/docs/**", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks/public", PathMethod.GET)
-                .excludePathPatterns("/api/workbooks/public/**", PathMethod.GET)
-                .excludePathPatterns("/api/tags", PathMethod.GET)
-                .excludePathPatterns("/api/users", PathMethod.GET)
-                .excludePathPatterns("/api/search/**", PathMethod.GET);
-    }
-
-    @Bean
-    public PathMatcherInterceptor adminPathMatcherInterceptor() {
-        return new PathMatcherInterceptor(adminInterceptor())
-                .addPathPatterns("/api/admin/workbooks", PathMethod.POST)
-                .addPathPatterns("/api/admin/cards", PathMethod.POST)
-                .excludePathPatterns("/api/**", PathMethod.OPTIONS);
+                .addPathPatterns("/**", PathMethod.ANY)
+                .excludePathPatterns("/*", PathMethod.GET)
+                .excludePathPatterns("/**", PathMethod.OPTIONS)
+                .excludePathPatterns("/infra/**", PathMethod.GET)
+                .excludePathPatterns("/workbooks", PathMethod.GET)
+                .excludePathPatterns("/quizzes/**", PathMethod.GET)
+                .excludePathPatterns("/login/**", PathMethod.POST)
+                .excludePathPatterns("/docs/**", PathMethod.GET)
+                .excludePathPatterns("/workbooks/public", PathMethod.GET)
+                .excludePathPatterns("/workbooks/public/**", PathMethod.GET)
+                .excludePathPatterns("/tags", PathMethod.GET)
+                .excludePathPatterns("/users", PathMethod.GET)
+                .excludePathPatterns("/search/**", PathMethod.GET);
     }
 }

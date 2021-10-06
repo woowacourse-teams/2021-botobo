@@ -5,12 +5,10 @@ import botobo.core.exception.search.LongSearchKeywordException;
 import botobo.core.exception.search.SearchKeywordNullException;
 import botobo.core.exception.search.ShortSearchKeywordException;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 import java.util.Objects;
 
 @EqualsAndHashCode
-@Getter
 public class SearchKeyword {
 
     private static final int KEYWORD_MIN_LENGTH = 1;
@@ -55,7 +53,7 @@ public class SearchKeyword {
         }
     }
 
-    public String toLowercase() {
+    public String getValue() {
         return value.toLowerCase();
     }
 }

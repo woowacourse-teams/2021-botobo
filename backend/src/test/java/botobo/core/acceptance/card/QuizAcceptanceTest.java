@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_OF_30_CARDS;
-import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
+import static botobo.core.utils.Fixture.CARD_REQUESTS_OF_30_CARDS;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Quiz 인수 테스트")
@@ -31,8 +31,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS);
-        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_OF_30_CARDS);
+        여러개_문제집_생성_요청(WORKBOOK_REQUESTS);
+        여러개_카드_생성_요청(CARD_REQUESTS_OF_30_CARDS);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -69,7 +69,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .build();
 
         // when
@@ -91,7 +91,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(100L))
                 .build();
 
@@ -115,7 +115,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         User anyUser = anyUser();
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(anyUser.getId()))
                 .build();
 
@@ -139,7 +139,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -165,7 +165,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -189,7 +189,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -212,7 +212,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -238,7 +238,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -259,7 +259,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -280,7 +280,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -307,7 +307,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         final HttpResponse response = request()
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(createToken(1L))
                 .build();
 
@@ -328,7 +328,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         return request()
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .auth(createToken(admin.getId()))
                 .build()
                 .extract();
@@ -338,7 +338,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("비회원용 퀴즈 생성 - 성공")
     void createQuizForGuest() {
         final HttpResponse response = request()
-                .get("/api/quizzes/guest")
+                .get("/quizzes/guest")
                 .build();
 
         final List<QuizResponse> quizResponses = response.convertBodyToList(QuizResponse.class);
@@ -353,12 +353,12 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizForGuestMultipleRequest() {
         // given
         final HttpResponse firstResponse = request()
-                .get("/api/quizzes/guest")
+                .get("/quizzes/guest")
                 .build();
         List<QuizResponse> firstQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
         final HttpResponse secondResponse = request()
-                .get("/api/quizzes/guest")
+                .get("/quizzes/guest")
                 .build();
         List<QuizResponse> secondQuizResponses = firstResponse.convertBodyToList(QuizResponse.class);
 
@@ -376,7 +376,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
-                .get("/api/quizzes/1")
+                .get("/quizzes/1")
                 .auth(createToken(admin.getId()))
                 .build();
 
@@ -394,7 +394,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
-                .get("/api/quizzes/{workbookId}", 100L)
+                .get("/quizzes/{workbookId}", 100L)
                 .auth(createToken(admin.getId()))
                 .build();
 
@@ -412,7 +412,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
-                .get("/api/quizzes/{workbookId}", 5L)
+                .get("/quizzes/{workbookId}", 5L)
                 .failAuth()
                 .build();
 
@@ -431,7 +431,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 4번 문제집에는 카드가 존재하지 않는다.
         // 4번 문제집은 isPublic = true
         final HttpResponse response = request()
-                .get("/api/quizzes/{workbookId}", 4L)
+                .get("/quizzes/{workbookId}", 4L)
                 .failAuth()
                 .build();
 

@@ -194,7 +194,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .post("/api/cards", cardRequest)
+                .post("/cards", cardRequest)
                 .failAuth() // 100L
                 .build();
 
@@ -373,7 +373,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .put("/api/cards/{id}", cardUpdateRequest, cardResponse.getId())
+                .put("/cards/{id}", cardUpdateRequest, cardResponse.getId())
                 .failAuth() // 100L
                 .build();
 
@@ -430,7 +430,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .delete("/api/cards/" + cardResponse.getId())
+                .delete("/cards/" + cardResponse.getId())
                 .failAuth()
                 .build();
 
@@ -486,7 +486,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .failAuth()
                 .build();
 
@@ -510,7 +510,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .build();
 
         // then
@@ -533,7 +533,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
         // when
         final HttpResponse response = request()
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .failAuth() // 100L
                 .build();
 
@@ -570,21 +570,21 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
                                      CardResponse cardResponse,
                                      String accessToken) {
         return request()
-                .put("/api/cards/{id}", cardUpdateRequest, cardResponse.getId())
+                .put("/cards/{id}", cardUpdateRequest, cardResponse.getId())
                 .auth(accessToken)
                 .build();
     }
 
     private HttpResponse 유저_카드_삭제_요청(CardResponse cardResponse, String accessToken) {
         return request()
-                .delete("/api/cards/{id}", cardResponse.getId())
+                .delete("/cards/{id}", cardResponse.getId())
                 .auth(accessToken)
                 .build();
     }
 
     private HttpResponse 카드_또_보기_요청(NextQuizCardsRequest request, String accessToken) {
         return request()
-                .put("/api/cards/next-quiz", request)
+                .put("/cards/next-quiz", request)
                 .auth(accessToken)
                 .build();
     }

@@ -34,7 +34,7 @@ public class QuizDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/quizzes", quizRequest)
+                .post("/quizzes", quizRequest)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -51,7 +51,7 @@ public class QuizDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/quizzes/{workbookId}", workbookId)
+                .get("/quizzes/{workbookId}", workbookId)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -67,7 +67,7 @@ public class QuizDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/quizzes/guest")
+                .get("/quizzes/guest")
                 .build()
                 .status(status().isOk())
                 .identifier("quizzes-guest-get-success");

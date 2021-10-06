@@ -1,15 +1,17 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import {
   Button,
+  CardTemplate,
   Checkbox,
   MainHeader,
   SelectBox,
-  Workbook,
 } from '../components';
-import { DEVICE, ROUTE } from '../constants';
+import { ROUTE } from '../constants';
 import { useQuizSetting } from '../hooks';
+import { WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const counts = [10, 15, 20, 25, 30].map((count, index) => ({
@@ -32,12 +34,13 @@ const QuizSettingPage = () => {
           <StyledUl>
             {workbooks.map(({ id, name, cardCount, isChecked }) => (
               <li key={id}>
-                <Workbook
-                  name={name}
-                  cardCount={cardCount}
+                <CardTemplate
                   isChecked={isChecked}
                   onClick={() => checkWorkbook(id)}
-                />
+                >
+                  <Name>{name}</Name>
+                  <CardCount>{cardCount}개의 카드</CardCount>
+                </CardTemplate>
               </li>
             ))}
           </StyledUl>
@@ -89,18 +92,34 @@ const SelectBoxWrapper = styled.div`
 `;
 
 const StyledUl = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
+  ${WorkbookListStyle};
   margin: 1rem 0;
-
-  @media ${DEVICE.TABLET} {
-    grid-template-columns: repeat(2, 1fr);
-  }
 `;
 
 const StyleButton = styled(Button)`
   margin-top: 3.5rem;
+`;
+
+const Name = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0.3rem 0;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+    font-weight: ${theme.fontWeight.bold};
+  `};
+`;
+
+const CardCount = styled.div`
+  margin-bottom: 1rem;
+
+  ${({ theme }) => css`
+    color: ${theme.color.gray_6};
+    font-size: ${theme.fontSize.small};
+  `};
 `;
 
 export default QuizSettingPage;

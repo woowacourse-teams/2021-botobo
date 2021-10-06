@@ -62,7 +62,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/workbooks", workbookRequest)
+                .post("/workbooks", workbookRequest)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isCreated())
@@ -78,7 +78,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -94,7 +94,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks")
+                .get("/workbooks")
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-anonymous-success");
@@ -109,7 +109,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/{id}/cards", 1)
+                .get("/workbooks/{id}/cards", 1)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -149,7 +149,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .put("/api/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
+                .put("/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -165,7 +165,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/public/{id}", 1)
+                .get("/workbooks/public/{id}", 1)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -187,7 +187,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .delete("/api/workbooks/{id}", workbookResponse.getId())
+                .delete("/workbooks/{id}", workbookResponse.getId())
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isNoContent())
@@ -206,9 +206,9 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .post("/api/workbooks/{id}/cards", scrapCardRequest, workbookId)
+                .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
                 .auth(authenticatedToken())
-                .locationHeader("/api/workbooks/1/cards")
+                .locationHeader("/workbooks/1/cards")
                 .build()
                 .status(status().isCreated())
                 .identifier("workbooks-scrap-cards-success");
@@ -225,7 +225,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .putWithoutBody("/api/workbooks/{id}/hearts", 1L)
+                .putWithoutBody("/workbooks/{id}/hearts", 1L)
                 .auth(authenticatedToken())
                 .build()
                 .status(status().isOk())
@@ -241,7 +241,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         // when, then
         document()
                 .mockMvc(mockMvc)
-                .get("/api/workbooks/public")
+                .get("/workbooks/public")
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-random-public-get-success");

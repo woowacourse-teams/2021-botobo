@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/cards")
+@RequestMapping("/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -34,7 +34,7 @@ public class CardController {
     public ResponseEntity<CardResponse> createCard(@Valid @RequestBody CardRequest cardRequest,
                                                    @AuthenticationPrincipal AppUser appUser) {
         CardResponse cardResponse = cardService.createCard(cardRequest, appUser);
-        return ResponseEntity.created(URI.create("/api/cards/" + cardResponse.getId())).body(cardResponse);
+        return ResponseEntity.created(URI.create("/cards/" + cardResponse.getId())).body(cardResponse);
     }
 
     @PutMapping("/{id}")

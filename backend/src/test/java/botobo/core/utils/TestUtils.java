@@ -7,7 +7,7 @@ public class TestUtils {
 
     public static Long extractId(ExtractableResponse<Response> response) {
         final String location = response.header("Location");
-        return Long.parseLong(location.split("/")[4]);
+        return Long.parseLong(location.split("/")[3]);
     }
 
     public static String stringGenerator(int max) {

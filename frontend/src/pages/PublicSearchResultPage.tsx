@@ -43,7 +43,7 @@ const PublicSearchResultPage = () => {
     publicSearchResultState
   );
 
-  const { keyword } = query;
+  const { keyword, tags, users } = query;
 
   const { openModal } = useModal();
 
@@ -60,7 +60,7 @@ const PublicSearchResultPage = () => {
 
     setInitialMultiFilterValues('tags');
     setInitialMultiFilterValues('users');
-    searchForPublicWorkbook({ keyword, start: 0 });
+    searchForPublicWorkbook({ keyword, tags, users, start: 0 });
   }, [isInitialLoading]);
 
   if (isInitialLoading) {
@@ -134,6 +134,7 @@ const PublicSearchResultPage = () => {
                     currentTarget.scrollIntoView({
                       behavior: 'smooth',
                       inline: 'center',
+                      block: 'nearest',
                     });
 
                     setSingleFilterValues(id, criteria);

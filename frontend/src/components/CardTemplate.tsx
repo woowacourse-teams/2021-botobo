@@ -11,7 +11,7 @@ interface Props {
   onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 }
 
 interface ContainerStyleProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -97,7 +97,7 @@ const Container = styled.div<ContainerStyleProps>`
 `;
 
 const Footer = styled.div`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   text-align: right;
 
   ${({ theme }) => css`
