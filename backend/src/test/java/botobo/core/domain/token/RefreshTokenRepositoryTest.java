@@ -1,19 +1,17 @@
 package botobo.core.domain.token;
 
 import botobo.core.config.EmbeddedRedisConfig;
-import botobo.core.utils.YamlLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,20 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(EmbeddedRedisConfig.class)
 class RefreshTokenRepositoryTest {
 
-    private static final String RESOURCE_FILE_NAME = "application-test.yml";
-    private static final String FULL_KEY = "security.jwt.refresh-token.expire-length";
-    private static final Long TIME_TO_LIVE = Long.valueOf(
-            (Integer) Objects.requireNonNull(YamlLoader.extractValue(RESOURCE_FILE_NAME, FULL_KEY))
-    );
+    @Value("${security.jwt.refresh-token.expire-length}")
+    private long timeToLive;
 
     @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
-    RefreshToken savedRefreshToken;
+    private RefreshToken savedRefreshToken;
 
     @BeforeEach
     void setUp() {
-        savedRefreshToken = refreshTokenRepository.save(new RefreshToken("1", "tokenValue", TIME_TO_LIVE));
+        savedRefreshToken = refreshTokenRepository.save(new RefreshToken("1", "tokenValue", timeToLive));
     }
 
     @AfterEach
@@ -50,7 +45,7 @@ class RefreshTokenRepositoryTest {
         // given
         String tokenId = "2";
         String tokenValue = "middleBearPK";
-        RefreshToken refreshToken = new RefreshToken(tokenId, tokenValue, TIME_TO_LIVE);
+        RefreshToken refreshToken = new RefreshToken(tokenId, tokenValue, timeToLive);
 
         // when
         RefreshToken savedRefreshToken = refreshTokenRepository.save(refreshToken);
@@ -79,7 +74,7 @@ class RefreshTokenRepositoryTest {
         // given
         String id = savedRefreshToken.getId();
         String updateTokenValue = "updatedTokenValue";
-        RefreshToken updateToken = new RefreshToken(id, updateTokenValue, TIME_TO_LIVE);
+        RefreshToken updateToken = new RefreshToken(id, updateTokenValue, timeToLive);
 
         // when
         refreshTokenRepository.save(updateToken);
