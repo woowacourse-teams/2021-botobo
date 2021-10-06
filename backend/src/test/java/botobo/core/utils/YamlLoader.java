@@ -7,7 +7,8 @@ import java.util.Map;
 
 public class YamlLoader {
 
-    private YamlLoader() {}
+    private YamlLoader() {
+    }
 
     public static Object extractValue(String resourceFileName, String fullKey) {
         Map<String, Object> map = loadYaml(resourceFileName);

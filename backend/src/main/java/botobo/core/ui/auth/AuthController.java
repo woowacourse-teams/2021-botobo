@@ -34,7 +34,7 @@ public class AuthController {
     public ResponseEntity<TokenResponse> login(@PathVariable String socialType, @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         TokenResponse tokenResponse = authService.createAccessToken(socialType, loginRequest);
         Long id = authService.extractIdByToken(tokenResponse.getAccessToken(), JwtTokenType.ACCESS_TOKEN);
-        ResponseCookie responseCookie =createRefreshTokenCookie(id);
+        ResponseCookie responseCookie = createRefreshTokenCookie(id);
         response.addHeader(SET_COOKIE, responseCookie.toString());
         return ResponseEntity.ok(tokenResponse);
     }
@@ -44,7 +44,7 @@ public class AuthController {
         authService.validateRefreshToken(refreshToken);
         Long id = authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
         TokenResponse tokenResponse = authService.renewAccessToken(id);
-        ResponseCookie responseCookie =createRefreshTokenCookie(id);
+        ResponseCookie responseCookie = createRefreshTokenCookie(id);
         response.addHeader(SET_COOKIE, responseCookie.toString());
         return ResponseEntity.ok(tokenResponse);
     }
