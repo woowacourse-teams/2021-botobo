@@ -57,15 +57,6 @@ public class AuthService {
         return AppUser.user(userId);
     }
 
-    public void validateAdmin(String credentials) {
-        validateToken(credentials);
-        User user = userRepository.findById(jwtTokenProvider.getIdFromPayLoad(credentials))
-                .orElseThrow(UserNotFoundException::new);
-        if (!user.isAdmin()) {
-            throw new NotAdminException();
-        }
-    }
-
     public void validateToken(String credentials) {
         if (credentials == null || !jwtTokenProvider.isValidToken(credentials)) {
             throw new TokenNotValidException();
