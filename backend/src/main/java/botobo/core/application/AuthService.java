@@ -63,6 +63,17 @@ public class AuthService {
         return saveRefreshToken.getTokenValue();
     }
 
+    @Transactional
+    public void removeRefreshToken(String refreshToken) {
+        try {
+            validateRefreshToken(refreshToken);
+        } catch (UnAuthorizedException e) {
+            return;
+        }
+        String id = jwtTokenProvider.getStringIdFromPayLoad(refreshToken, JwtTokenType.REFRESH_TOKEN);
+        refreshTokenRepository.deleteById(id);
+    }
+
     public Long extractIdByToken(String token, JwtTokenType tokenType) {
         return jwtTokenProvider.getIdFromPayLoad(token, tokenType);
     }
@@ -104,19 +115,5 @@ public class AuthService {
         if (!refreshToken.equals(storedRefreshToken.getTokenValue())) {
             throw new TokenNotValidException();
         }
-    }
-
-    public boolean isValidAccessToken(String accessToken) {
-        return jwtTokenProvider.isValidAccessToken(accessToken);
-    }
-
-    public void removeRefreshToken(String refreshToken) {
-        try {
-            validateRefreshToken(refreshToken);
-        } catch (UnAuthorizedException e) {
-            return;
-        }
-        String id = jwtTokenProvider.getStringIdFromPayLoad(refreshToken, JwtTokenType.REFRESH_TOKEN);
-        refreshTokenRepository.deleteById(id);
     }
 }

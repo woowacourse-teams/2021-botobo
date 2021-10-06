@@ -37,7 +37,6 @@ public class DocumentationTest {
         documentRequestBuilder = new DocumentRequestBuilder();
         given(authService.findAppUserByToken(null)).willReturn(AppUser.anonymous());
         given(authService.findAppUserByToken(authenticatedToken)).willReturn(authenticatedUser);
-        given(authService.isValidAccessToken(authenticatedToken)).willReturn(true);
     }
 
     protected AppUser authenticatedUser() {

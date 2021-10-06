@@ -2,7 +2,6 @@ package botobo.core.infrastructure.auth;
 
 import botobo.core.exception.auth.TokenExpirationException;
 import botobo.core.exception.auth.TokenNotValidException;
-import botobo.core.exception.http.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -48,14 +47,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
-        Claims claims = getClaims(token, jwtTokenType);
-
-        return claims.get("id", Long.class);
-    }
-
     public String getStringIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
         return getIdFromPayLoad(token, jwtTokenType).toString();
+    }
+
+    public Long getIdFromPayLoad(String token, JwtTokenType jwtTokenType) {
+        Claims claims = getClaims(token, jwtTokenType);
+        return claims.get("id", Long.class);
     }
 
     private Claims getClaims(String token, JwtTokenType jwtTokenType) {
@@ -70,15 +68,6 @@ public class JwtTokenProvider {
             return jwtAccessTokenInfo.getSecretKey();
         }
         return jwtRefreshTokenInfo.getSecretKey();
-    }
-
-    public boolean isValidAccessToken(String accessToken) throws TokenExpirationException {
-        try {
-            validateToken(accessToken, JwtTokenType.ACCESS_TOKEN);
-            return true;
-        } catch (UnAuthorizedException e) {
-            return false;
-        }
     }
 
     public void validateToken(String token, JwtTokenType jwtTokenType) {

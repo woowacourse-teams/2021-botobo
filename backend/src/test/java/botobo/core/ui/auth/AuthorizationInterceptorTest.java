@@ -61,9 +61,6 @@ class AuthorizationInterceptorTest {
     @Test
     @DisplayName("올바른 액세스 토큰이면 요청한 api를 실행한다 - 성공")
     void requestWithValidAccessToken() {
-        // given
-        given(authService.isValidAccessToken(accessToken)).willReturn(true);
-
         // when
         boolean result = authorizationInterceptor.preHandle(request, response, handler);
 
@@ -76,14 +73,14 @@ class AuthorizationInterceptorTest {
     void requestWithInValidAccessTokenAndInvalidRefreshToken() {
         // given
         givenRefreshToken();
-        given(authService.isValidAccessToken(accessToken)).willReturn(false);
+        willThrow(TokenNotValidException.class).given(authService).validateAccessToken(accessToken);
         willThrow(TokenNotValidException.class).given(authService).validateRefreshToken(refreshToken);
 
         // when, then
         assertThatThrownBy(() -> authorizationInterceptor.preHandle(request, response, handler))
                 .isInstanceOf(TokenNotValidException.class);
 
-        then(authService).should(times(1)).isValidAccessToken(accessToken);
+        then(authService).should(times(1)).validateAccessToken(accessToken);
         then(authService).should(times(1)).validateRefreshToken(refreshToken);
     }
 
@@ -93,13 +90,13 @@ class AuthorizationInterceptorTest {
     void requestWithInValidAccessTokenAndValidRefreshToken() {
         // given
         givenRefreshToken();
-        given(authService.isValidAccessToken(accessToken)).willReturn(false);
+        willThrow(TokenNotValidException.class).given(authService).validateAccessToken(accessToken);
 
         // when, then
         assertThatThrownBy(() -> authorizationInterceptor.preHandle(request, response, handler))
                 .isInstanceOf(AccessTokenRenewalException.class);
 
-        then(authService).should(times(1)).isValidAccessToken(accessToken);
+        then(authService).should(times(1)).validateAccessToken(accessToken);
         then(authService).should(times(1)).validateRefreshToken(refreshToken);
     }
 

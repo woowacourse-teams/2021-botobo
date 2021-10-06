@@ -44,7 +44,7 @@ public class EmbeddedRedisConfig {
     /**
      * 현재 PC/서버에서 사용가능한 포트 조회
      */
-    public int findAvailablePort() throws IOException {
+    private int findAvailablePort() throws IOException {
 
         for (int port = 10000; port <= 65535; port++) {
             Process process = executeGrepProcessCommand(port);
