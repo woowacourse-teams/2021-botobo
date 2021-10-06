@@ -2,6 +2,8 @@ package botobo.core.application;
 
 import botobo.core.domain.token.RefreshToken;
 import botobo.core.domain.token.RefreshTokenRepository;
+import botobo.core.domain.user.AppUser;
+import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
@@ -10,6 +12,7 @@ import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.exception.auth.TokenNotValidException;
+import botobo.core.exception.user.AnonymousHasNotIdException;
 import botobo.core.infrastructure.auth.GithubOauthManager;
 import botobo.core.infrastructure.auth.JwtTokenProvider;
 import botobo.core.infrastructure.auth.JwtTokenType;
@@ -31,6 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 
 @DisplayName("로그인 서비스 테스트")
@@ -264,5 +268,65 @@ class AuthServiceTest {
         then(jwtTokenProvider).should(times(1)).getStringIdFromPayLoad(notStoredTokenValue, JwtTokenType.REFRESH_TOKEN);
         then(refreshTokenRepository).should(times(1)).findById(id);
         then(refreshTokenRepository).should(times(0)).deleteById(id);
+    }
+
+    @DisplayName("토큰으로 appUser를 찾는다. - 성공, 관리자가 아닌 경우")
+    @Test
+    void findAppUserByToken() {
+        // given
+        String credential = "credential";
+        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
+        given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.FALSE);
+
+        // when
+        AppUser appUser = authService.findAppUserByToken(credential);
+
+        // then
+        assertThat(appUser.getId()).isEqualTo(1L);
+        assertThat(appUser.getRole()).isEqualTo(Role.USER);
+    }
+
+    @DisplayName("토큰으로 appUser를 찾는다. - 성공, 관리자의 경우")
+    @Test
+    void findAppUserByTokenWhenAdmin() {
+        // given
+        String credential = "credential";
+        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
+        given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.TRUE);
+
+        // when
+        AppUser appUser = authService.findAppUserByToken(credential);
+
+        // then
+        assertThat(appUser.getId()).isEqualTo(1L);
+        assertThat(appUser.getRole()).isEqualTo(Role.ADMIN);
+    }
+
+    @DisplayName("토큰으로 appUser를 찾는다. - 토큰이 null인경우 익명의 유저 리턴")
+    @Test
+    void findAppUserByTokenWhenAnonymous() {
+        // given
+        String credential = null;
+
+        // when
+        AppUser appUser = authService.findAppUserByToken(credential);
+
+        // then
+        assertThatThrownBy(appUser::getId)
+                .isInstanceOf(AnonymousHasNotIdException.class);
+        assertThat(appUser.getRole()).isEqualTo(Role.ANONYMOUS);
+    }
+
+    @DisplayName("토큰으로 appUser를 찾는다. - 토큰이 유효하지 않은 경우 예외를 던진다.")
+    @Test
+    void findAppUserByTokenWhenInvalidToken() {
+        // given
+        String credential = "credential";
+        willThrow(TokenNotValidException.class)
+                .given(jwtTokenProvider).validateToken(credential, JwtTokenType.ACCESS_TOKEN);
+
+        // when
+        assertThatThrownBy(() -> authService.findAppUserByToken(credential))
+                .isInstanceOf(TokenNotValidException.class);
     }
 }

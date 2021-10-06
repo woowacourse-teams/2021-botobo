@@ -9,10 +9,8 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.auth.LoginRequest;
 import botobo.core.dto.auth.TokenResponse;
-import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.http.UnAuthorizedException;
-import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.infrastructure.auth.JwtTokenProvider;
 import botobo.core.infrastructure.auth.JwtTokenType;
 import botobo.core.infrastructure.auth.OauthManager;
@@ -88,15 +86,6 @@ public class AuthService {
             return AppUser.admin(userId);
         }
         return AppUser.user(userId);
-    }
-
-    public void validateAdmin(String accessToken) {
-        validateAccessToken(accessToken);
-        User user = userRepository.findById(jwtTokenProvider.getIdFromPayLoad(accessToken, JwtTokenType.ACCESS_TOKEN))
-                .orElseThrow(UserNotFoundException::new);
-        if (!user.isAdmin()) {
-            throw new NotAdminException();
-        }
     }
 
     public void validateAccessToken(String accessToken) {

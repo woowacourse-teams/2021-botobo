@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS_WITH_TAG;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS_WITH_TAG;
 import static botobo.core.utils.Fixture.joanne;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,7 +73,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
     @Test
     void findAllTagsByWorkbookNameWhenCardCountsZero() {
         // given
-        서로_다른_관리자의_여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
 
         final String workbookName = "Java";
         final HttpResponse response = request()
