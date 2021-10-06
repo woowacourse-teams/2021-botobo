@@ -11,6 +11,7 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.domain.workbooktag.WorkbookTagRepository;
+import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,28 +107,29 @@ class WorkbookRepositoryTest {
                 .deleted(false)
                 .opened(true)
                 .build();
-        Card firstCard = generateCard(workbook);
-        Card secondCard = generateCard(workbook);
-        Card thirdCard = generateCard(workbook);
-
         workbookRepository.save(workbook);
 
-        testEntityManager.flush();
-        testEntityManager.clear();
+        Card firstCard = generateCard(workbook, "질문1", "답변1");
+        flushAndClear();
+        Workbook find = workbookRepository.findById(workbook.getId())
+                .orElseThrow(WorkbookNotFoundException::new);
+
+        Card secondCard = generateCard(find, "질문2", "답변2");
+        flushAndClear();
 
         // when
         Optional<Workbook> findWorkbook = workbookRepository.findByIdAndOrderCardByNew(workbook.getId());
 
         // then
         List<Card> cards = findWorkbook.get().getCards().getCards();
-        assertThat(cards).hasSize(3)
-                .containsExactly(thirdCard, secondCard, firstCard);
+        assertThat(cards).hasSize(2)
+                .containsExactly(secondCard, firstCard);
     }
 
-    private Card generateCard(Workbook workbook) {
+    private Card generateCard(Workbook workbook, String question, String answer) {
         return Card.builder()
-                .question("질문")
-                .answer("답변")
+                .question(question)
+                .answer(answer)
                 .workbook(workbook)
                 .build();
     }
