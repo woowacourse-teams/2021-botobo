@@ -1,7 +1,6 @@
 package botobo.core.config;
 
 import botobo.core.application.AuthService;
-import botobo.core.ui.auth.AdminInterceptor;
 import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
 import botobo.core.ui.auth.AuthorizationInterceptor;
 import botobo.core.ui.auth.PathMatcherInterceptor;
@@ -26,11 +25,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Bean
     public AuthorizationInterceptor authorizationInterceptor() {
         return new AuthorizationInterceptor(authService);
-    }
-
-    @Bean
-    public AdminInterceptor adminInterceptor() {
-        return new AdminInterceptor(authService);
     }
 
     @Bean
