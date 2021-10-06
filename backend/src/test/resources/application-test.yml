@@ -8,7 +8,6 @@ spring:
     database:
       replace: NONE
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     properties:
       hibernate:
         format_sql: true
