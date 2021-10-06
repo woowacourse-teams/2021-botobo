@@ -13,8 +13,6 @@ include::quizzes.adoc[]
 
 include::search.adoc[]
 
-include::admin.adoc[]
-
 include::login.adoc[]
 
 include::tags.adoc[]

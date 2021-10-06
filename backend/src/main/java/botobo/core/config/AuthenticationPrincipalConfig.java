@@ -1,7 +1,6 @@
 package botobo.core.config;
 
 import botobo.core.application.AuthService;
-import botobo.core.ui.auth.AdminInterceptor;
 import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
 import botobo.core.ui.auth.AuthorizationInterceptor;
 import botobo.core.ui.auth.PathMatcherInterceptor;
@@ -29,11 +28,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AdminInterceptor adminInterceptor() {
-        return new AdminInterceptor(authService);
-    }
-
-    @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
     }
@@ -46,7 +40,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authPathMatcherInterceptor());
-        registry.addInterceptor(adminPathMatcherInterceptor());
     }
 
     @Bean
@@ -65,13 +58,5 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/tags", PathMethod.GET)
                 .excludePathPatterns("/users", PathMethod.GET)
                 .excludePathPatterns("/search/**", PathMethod.GET);
-    }
-
-    @Bean
-    public PathMatcherInterceptor adminPathMatcherInterceptor() {
-        return new PathMatcherInterceptor(adminInterceptor())
-                .addPathPatterns("/admin/workbooks", PathMethod.POST)
-                .addPathPatterns("/admin/cards", PathMethod.POST)
-                .excludePathPatterns("/**", PathMethod.OPTIONS);
     }
 }

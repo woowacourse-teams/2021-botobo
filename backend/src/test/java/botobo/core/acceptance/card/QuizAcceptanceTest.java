@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.utils.Fixture.ADMIN_CARD_REQUESTS_OF_30_CARDS;
-import static botobo.core.utils.Fixture.ADMIN_WORKBOOK_REQUESTS;
+import static botobo.core.utils.Fixture.CARD_REQUESTS_OF_30_CARDS;
+import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Quiz 인수 테스트")
@@ -31,8 +31,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(ADMIN_WORKBOOK_REQUESTS);
-        여러개_카드_생성_요청(ADMIN_CARD_REQUESTS_OF_30_CARDS);
+        여러개_문제집_생성_요청(WORKBOOK_REQUESTS);
+        여러개_카드_생성_요청(CARD_REQUESTS_OF_30_CARDS);
     }
 
     @Test
