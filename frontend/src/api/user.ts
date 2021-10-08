@@ -22,13 +22,27 @@ export const getAccessTokenAsync = async (
   return accessToken;
 };
 
+export const getRefreshUserTokenAsync = async () => {
+  const {
+    data: { accessToken },
+  } = await request.get<AccessTokenResponse>(`/token`);
+
+  setCookie(STORAGE_KEY.TOKEN, accessToken, 3600);
+
+  request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+  return accessToken;
+};
+
 export const getUserInfoAsync = async () => {
   const { data } = await request.get<UserInfoResponse>('/users/me');
 
   return data;
 };
 
-export const postLogoutAsync = async () => {
+export const getLogoutAsync = async () => {
+  await request.get('/logout');
+
   removeCookie(STORAGE_KEY.TOKEN);
 
   request.defaults.headers.common['Authorization'] = '';

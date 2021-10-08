@@ -1,6 +1,6 @@
 export {
   getAccessTokenAsync,
-  postLogoutAsync,
+  getLogoutAsync,
   getUserInfoAsync,
   putProfileAsync,
   postProfileImageAsync,

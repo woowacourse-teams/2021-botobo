@@ -7,6 +7,8 @@ interface CancelController {
   [key: string]: Canceler | null;
 }
 
+export const noAuthorization = { Authorization: '' };
+
 export const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}`,
 });
@@ -18,6 +20,7 @@ export const cancelController: CancelController = {
 
 const token = getCookie(STORAGE_KEY.TOKEN);
 
+request.defaults.withCredentials = true;
 request.defaults.headers.common['Authorization'] = token
   ? `Bearer ${token}`
   : '';

@@ -133,7 +133,7 @@ const usePublicCard = () => {
 
       setShouldWorkbookUpdateState(true);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, toggleHeart);
     }
   };
 
@@ -176,7 +176,7 @@ const usePublicCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, takeCardsToMyWorkbook.bind(null, workbookId));
     }
   };
 

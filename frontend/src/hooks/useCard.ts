@@ -47,7 +47,7 @@ const useCard = () => {
       setCardInfo(newCardInfo);
       setIsLoading(false);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, getCards);
       setIsLoading(false);
     }
   };
@@ -61,7 +61,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, createCard.bind(null, question, answer));
     }
   };
 
@@ -81,7 +81,7 @@ const useCard = () => {
       closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, editCard.bind(null, info));
     }
   };
 
@@ -99,7 +99,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, deleteCard.bind(null, id));
     }
   };
 
@@ -107,7 +107,7 @@ const useCard = () => {
     try {
       await putCardAsync(info);
     } catch (error) {
-      errorHandler(error);
+      await errorHandler(error, toggleBookmark.bind(null, info));
     }
   };
 

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import { postWorkbookAsync } from '../api';
+import { useErrorHandler } from '../hooks';
 import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
 import Button from './Button';
@@ -25,6 +26,21 @@ const PublicCardsSelectBox = ({
   const [isDefaultSelected, setIsDefaultSelected] = useState(
     workbooks.length === 0 ? true : false
   );
+  const errorHandler = useErrorHandler();
+
+  const takeCardsToMyWorkbookWithCreation = async () => {
+    try {
+      const { id } = await postWorkbookAsync({
+        name: `[공유] ${publicWorkbookName}`,
+        opened: true,
+        tags: [],
+      });
+
+      takeCardsToMyWorkbook(id);
+    } catch (error) {
+      errorHandler(error, takeCardsToMyWorkbookWithCreation);
+    }
+  };
 
   return (
     <Container>
@@ -55,13 +71,7 @@ const PublicCardsSelectBox = ({
         size="full"
         onClick={async () => {
           if (isDefaultSelected) {
-            const { id } = await postWorkbookAsync({
-              name: `[공유] ${publicWorkbookName}`,
-              opened: true,
-              tags: [],
-            });
-
-            takeCardsToMyWorkbook(id);
+            takeCardsToMyWorkbookWithCreation();
           } else {
             takeCardsToMyWorkbook(selectedId);
           }
