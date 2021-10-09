@@ -31,7 +31,9 @@ public class AuthController {
     }
 
     @PostMapping("/login/{socialType}")
-    public ResponseEntity<TokenResponse> login(@PathVariable String socialType, @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<TokenResponse> login(@PathVariable String socialType, @RequestBody LoginRequest loginRequest,
+                                               HttpServletResponse response) {
+
         TokenResponse tokenResponse = authService.createAccessToken(socialType, loginRequest);
         Long id = authService.extractIdByToken(tokenResponse.getAccessToken(), JwtTokenType.ACCESS_TOKEN);
         ResponseCookie responseCookie = createRefreshTokenCookie(id);
@@ -40,7 +42,10 @@ public class AuthController {
     }
 
     @GetMapping("/token")
-    public ResponseEntity<TokenResponse> renewToken(@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<TokenResponse> renewToken(
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
+            HttpServletResponse response) {
+
         authService.validateRefreshToken(refreshToken);
         Long id = authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
         TokenResponse tokenResponse = authService.renewAccessToken(id);
@@ -61,8 +66,9 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
-                                       HttpServletResponse response) {
+    public ResponseEntity<Void> logout(
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
+            HttpServletResponse response) {
 
         authService.removeRefreshToken(refreshToken);
         expireRefreshTokenCookie(response);

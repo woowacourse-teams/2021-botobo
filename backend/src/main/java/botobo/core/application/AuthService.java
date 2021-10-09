@@ -29,7 +29,9 @@ public class AuthService {
     private final OauthManagerFactory oauthManagerFactory;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OauthManagerFactory oauthManagerFactory, RefreshTokenRepository refreshTokenRepository) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, UserRepository userRepository,
+                       OauthManagerFactory oauthManagerFactory, RefreshTokenRepository refreshTokenRepository) {
+
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.oauthManagerFactory = oauthManagerFactory;
