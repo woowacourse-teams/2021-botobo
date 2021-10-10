@@ -55,7 +55,11 @@ const MainPage = () => {
             </Button>
           </WorkbookHeader>
           {workbooks.length === 0 ? (
-            <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
+            <NoWorkbook>
+              {userInfo
+                ? '아직 추가된 문제집이 없어요.'
+                : '로그인 후 나만의 문제집을 만들어보세요.'}
+            </NoWorkbook>
           ) : (
             <StyledUl>
               {workbooks.map(({ id, name, cardCount, heartCount, tags }) => (
@@ -169,7 +173,11 @@ const WorkbookTitle = styled.h2`
 
 const NoWorkbook = styled.div`
   text-align: center;
-  margin-top: 20vh;
+  margin-top: 10vh;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+  `}
 `;
 
 const StyledUl = styled.ul`
