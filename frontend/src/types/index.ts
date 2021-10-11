@@ -42,6 +42,7 @@ export interface CardResponse {
 export interface CardsResponse {
   workbookId: number;
   workbookName: string;
+  workbookOpened: boolean;
   heartCount: number;
   tags: TagResponse[];
   cards: CardResponse[];

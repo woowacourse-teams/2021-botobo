@@ -9,19 +9,12 @@ import {
   postCardAsync,
   putCardAsync,
 } from '../api';
+import { cardsInitialState } from '../recoil/initialState';
 import { CardResponse, CardsResponse } from '../types';
 import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useModal from './useModal';
 import useSnackbar from './useSnackbar';
-
-const cardsInitialState = {
-  workbookId: -1,
-  workbookName: '',
-  heartCount: 0,
-  tags: [],
-  cards: [],
-};
 
 const useCard = () => {
   const param: IdParam = useParams();
@@ -32,7 +25,7 @@ const useCard = () => {
   );
 
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
-  const { workbookName, cards, heartCount, tags } = cardInfo;
+  const { workbookName, workbookOpened, cards, heartCount, tags } = cardInfo;
 
   const deletedCardId = useRef(-1);
 
@@ -118,6 +111,7 @@ const useCard = () => {
   return {
     workbookId,
     workbookName,
+    workbookOpened,
     cards,
     heartCount,
     tags,

@@ -14,23 +14,10 @@ import {
 } from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
+import { publicCardsInitialState } from '../recoil/initialState';
 import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
-
-const cardsInitialState = {
-  workbookId: -1,
-  workbookName: '',
-  cards: [],
-};
-
-const publicCardsInitialState = {
-  ...cardsInitialState,
-  heart: false,
-  heartCount: 0,
-  cardCount: -1,
-  tags: [],
-};
 
 interface PublicCard extends CardResponse {
   isChecked: boolean;
