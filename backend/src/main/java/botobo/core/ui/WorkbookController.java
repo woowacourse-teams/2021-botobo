@@ -64,11 +64,11 @@ public class WorkbookController {
         );
     }
 
-    @GetMapping("/{id}/cards")
-    public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long id,
+    @GetMapping("/{workbookId}/cards")
+    public ResponseEntity<WorkbookCardResponse> findWorkbookCardsById(@PathVariable Long workbookId,
                                                                       @AuthenticationPrincipal AppUser appUser) {
         return ResponseEntity.ok(
-                workbookService.findWorkbookCardsById(id, appUser)
+                workbookService.findWorkbookCardsById(workbookId, appUser)
         );
     }
 
