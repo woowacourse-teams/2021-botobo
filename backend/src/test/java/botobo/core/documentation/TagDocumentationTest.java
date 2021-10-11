@@ -24,7 +24,7 @@ public class TagDocumentationTest extends DocumentationTest {
     @MockBean
     private TagService tagService;
 
-    @DisplayName("키워드의 문제집명을 포함한 문제집의 태그를 가져온다. - 성공")
+    @DisplayName("문제집명을 포함한 문제집의 태그 조회 - 성공")
     @Test
     void findAllTagsByWorkbookName() throws Exception {
         // given

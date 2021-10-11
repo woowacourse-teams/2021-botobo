@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LoginDocumentationTest extends DocumentationTest {
 
     @Test
-    @DisplayName("로그인 - 성공")
+    @DisplayName("소셜 로그인 - 성공")
     void login() throws Exception {
         //given
         LoginRequest loginRequest = new LoginRequest("authCode");

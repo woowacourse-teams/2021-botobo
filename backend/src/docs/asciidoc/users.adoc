@@ -6,7 +6,7 @@ include::{snippets}/users-find-me-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/users-find-me-get-success/http-response.adoc[]
 
-=== 유저 프로필 이미지 수정 요청
+=== 프로필 이미지 수정
 ==== 요청
 include::{snippets}/users-update-profile-post-success/http-request.adoc[]
 ==== 응답
@@ -31,7 +31,7 @@ include::{snippets}/users-name-check-post-success/http-response.adoc[]
 |"[중복된 회원명](은)는 이미 존재합니다."
 |===
 
-=== [필터] 문제집명이 포함된 문제집의 유저 조회
+=== 문제집명을 포함한 문제집의 유저 조회
 ==== 요청
 include::{snippets}/users-get-success/http-request.adoc[]
 ==== 응답
