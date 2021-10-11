@@ -28,13 +28,17 @@ public class TagDocumentationTest extends DocumentationTest {
     @Test
     void findAllTagsByWorkbookName() throws Exception {
         // given
-        List<TagResponse> tagResponses = TagResponse.listOf(
-                Tags.of(List.of(
-                        Tag.of("java"),
-                        Tag.of("spring"),
-                        Tag.of("자바")
-                ))
+        List<TagResponse> tagResponses = List.of(
+                TagResponse.builder()
+                        .id(1L)
+                        .name("java")
+                        .build(),
+                TagResponse.builder()
+                        .id(2L)
+                        .name("javascript")
+                        .build()
         );
+
         given(tagService.findAllTagsByWorkbookName(any(FilterCriteria.class)))
                 .willReturn(tagResponses);
 

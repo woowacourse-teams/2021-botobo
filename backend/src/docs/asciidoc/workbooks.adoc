@@ -49,6 +49,8 @@ include::{snippets}/workbooks-scrap-cards-success/http-request.adoc[]
 include::{snippets}/workbooks-scrap-cards-success/http-response.adoc[]
 
 === 하트 토글하기
+==== 요청
+include::{snippets}/workbooks-toggle-hearts-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-toggle-hearts-success/http-response.adoc[]
 

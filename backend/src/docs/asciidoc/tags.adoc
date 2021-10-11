@@ -1,6 +1,6 @@
 == 태그 API
 
-=== 문제집명이 포함된 문제집의 태그 모두 가져오기 (필터용)
+===  (필터) 문제집명을 포함한 문제집의 태그 조회
 ==== 요청
 include::{snippets}/tags-get-success/http-request.adoc[]
 ==== 응답
