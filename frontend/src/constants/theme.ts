@@ -18,6 +18,9 @@ const theme: Theme = {
     green: '#02c584',
     blue: '#0084F4',
     red: '#d32f2f',
+    gold: '#ffd700',
+    silver: '#cecece',
+    bronze: '#dc8835',
   },
   boxShadow: {
     header: `0 2px 5px 0 rgb(0 0 0 / 12%)`,

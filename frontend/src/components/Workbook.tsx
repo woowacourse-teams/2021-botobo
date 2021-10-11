@@ -2,7 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
+import BronzeMedalIcon from '../assets/bronze-medal.svg';
+import GoldMedalIcon from '../assets/gold-medal.svg';
 import FillHeartIcon from '../assets/heart-solid.svg';
+import SilverMedalIcon from '../assets/silver-medal.svg';
 import { theme } from '../constants';
 import { Flex } from '../styles';
 import { WorkbookResponse } from '../types';
@@ -12,9 +15,16 @@ interface Props extends Omit<WorkbookResponse, 'id' | 'opened'> {
   path?: string;
   editable?: boolean;
   author?: string;
+  ranking?: 1 | 2 | 3;
   onClickEditButton?: React.MouseEventHandler<HTMLButtonElement>;
   onClickDeleteButton?: React.MouseEventHandler<HTMLButtonElement>;
 }
+
+const rankingIcon = {
+  1: <GoldMedalIcon />,
+  2: <SilverMedalIcon />,
+  3: <BronzeMedalIcon />,
+};
 
 const Workbook = ({
   name,
@@ -24,6 +34,7 @@ const Workbook = ({
   tags,
   path,
   editable,
+  ranking,
   onClickEditButton,
   onClickDeleteButton,
 }: Props) => (
@@ -33,6 +44,7 @@ const Workbook = ({
     onClickEditButton={onClickEditButton}
     onClickDeleteButton={onClickDeleteButton}
   >
+    {ranking && <RankingIconWrapper>{rankingIcon[ranking]}</RankingIconWrapper>}
     <TopContent>
       <InnerLeftContent>
         <Name>{name}</Name>
@@ -59,6 +71,12 @@ const Container = styled(CardTemplate)`
   ${Flex({ direction: 'column' })};
   position: relative;
   padding: 1.2rem;
+`;
+
+const RankingIconWrapper = styled.div`
+  position: absolute;
+  top: -0.75rem;
+  left: -0.75rem;
 `;
 
 const TopContent = styled.div`

@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
 import ForwardIcon from '../assets/chevron-right-solid.svg';
 import {
@@ -13,16 +13,26 @@ import {
 } from '../components';
 import { DEVICE, ROUTE } from '../constants';
 import { useModal, useRouter, useWorkbook } from '../hooks';
-import { shouldWorkbookUpdateState, userState } from '../recoil';
+import {
+  publicSearchResultState,
+  shouldWorkbookUpdateState,
+  userState,
+} from '../recoil';
 import { Flex, WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
   const { workbooks, deleteWorkbook, updateWorkbooks } = useWorkbook();
-  const { routeWorkbookAdd, routeWorkbookEdit, routePublicSearch, routeGuide } =
-    useRouter();
+  const {
+    routeWorkbookAdd,
+    routeWorkbookEdit,
+    routePublicSearch,
+    routeGuide,
+    routePublicSearchResultQuery,
+  } = useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
+  const resetSearchResult = useResetRecoilState(publicSearchResultState);
 
   const { openModal } = useModal();
 
@@ -47,9 +57,105 @@ const MainPage = () => {
           </StyledButton>
         </Banner>
         <QuizStarter workbooks={workbooks} />
+        <PopularWrapper>
+          <div>
+            <Title>인기 검색어</Title>
+            <PopularSearchKeywordList>
+              <li>
+                <PopularSearchKeywordButton
+                  shape="round"
+                  color="black"
+                  backgroundColor="gold"
+                  onClick={async () => {
+                    await resetSearchResult();
+                    routePublicSearchResultQuery({
+                      keyword: 'Java',
+                      method: 'push',
+                    });
+                  }}
+                >
+                  # Java
+                </PopularSearchKeywordButton>
+              </li>
+              <li>
+                <PopularSearchKeywordButton
+                  shape="round"
+                  color="black"
+                  backgroundColor="silver"
+                  onClick={async () => {
+                    await resetSearchResult();
+                    routePublicSearchResultQuery({
+                      keyword: 'Javascript',
+                      method: 'push',
+                    });
+                  }}
+                >
+                  # Javascript
+                </PopularSearchKeywordButton>
+              </li>
+              <li>
+                <PopularSearchKeywordButton
+                  shape="round"
+                  color="black"
+                  backgroundColor="bronze"
+                  onClick={() => {
+                    resetSearchResult();
+                    routePublicSearchResultQuery({
+                      keyword: '자스',
+                      method: 'push',
+                    });
+                  }}
+                >
+                  # 자스
+                </PopularSearchKeywordButton>
+              </li>
+            </PopularSearchKeywordList>
+          </div>
+          <div>
+            <Title>인기 문제집</Title>
+            <PopularWorkbookList>
+              <li>
+                <Workbook
+                  heartCount={100}
+                  tags={[{ id: 1, name: '자바' }]}
+                  name="자바"
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
+                  cardCount={24}
+                  author="카일"
+                  ranking={1}
+                />
+              </li>
+              <li>
+                <Workbook
+                  heartCount={100}
+                  tags={[{ id: 1, name: '자바' }]}
+                  name="자바"
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
+                  cardCount={24}
+                  author="카일"
+                  ranking={2}
+                />
+              </li>
+              <li>
+                <Workbook
+                  heartCount={100}
+                  tags={[{ id: 1, name: '자바' }]}
+                  name="자바"
+                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
+                  cardCount={24}
+                  author="카일"
+                  ranking={3}
+                />
+              </li>
+              <PopularWorkbookText>
+                인기 문제집의 주인공이 되어보세요!
+              </PopularWorkbookText>
+            </PopularWorkbookList>
+          </div>
+        </PopularWrapper>
         <section>
           <WorkbookHeader>
-            <WorkbookTitle>학습 중</WorkbookTitle>
+            <Title>학습 중</Title>
             <Button shape="square" onClick={routeWorkbookAdd}>
               문제집 추가
             </Button>
@@ -148,6 +254,57 @@ const BannerText = styled.span`
   word-spacing: -2px;
 `;
 
+const Title = styled.h2`
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.semiLarge};
+    `};
+`;
+
+const PopularWrapper = styled.section`
+  margin-top: 2rem;
+`;
+
+const PopularSearchKeywordList = styled.ul`
+  ${Flex()};
+  overflow-x: auto;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+
+  & > li:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+`;
+
+const PopularSearchKeywordButton = styled(Button)`
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: max-content;
+
+  ${({ theme }) => css`
+    font-weight: ${theme.fontWeight.semiBold};
+  `}
+`;
+
+const PopularWorkbookList = styled.ul`
+  ${WorkbookListStyle};
+  margin-top: 1.25rem;
+`;
+
+const PopularWorkbookText = styled.div`
+  ${Flex({ justify: 'center', items: 'center' })};
+  margin-top: 0.5rem;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+  `}
+
+  @media ${DEVICE.TABLET} {
+    margin-top: 0;
+  }
+`;
+
 const StyledButton = styled(Button)`
   ${Flex({ justify: 'center', items: 'center' })};
   width: 1.5rem;
@@ -162,13 +319,6 @@ const StyledButton = styled(Button)`
 const WorkbookHeader = styled.div`
   ${Flex({ justify: 'space-between', items: 'center' })};
   margin-top: 3rem;
-`;
-
-const WorkbookTitle = styled.h2`
-  ${({ theme }) =>
-    css`
-      font-size: ${theme.fontSize.semiLarge};
-    `};
 `;
 
 const NoWorkbook = styled.div`
