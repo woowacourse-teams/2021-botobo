@@ -22,26 +22,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.utils.Fixture.CARD_REQUESTS_OF_30_CARDS;
 import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS;
+import static botobo.core.utils.Fixture.질문_답변_문제집_아이디가_포함된_카드_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Quiz 인수 테스트")
 public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
+    private List<Long> workbookIds;
+
     @BeforeEach
     void setFixture() {
-        여러개_문제집_생성_요청(WORKBOOK_REQUESTS);
-        여러개_카드_생성_요청(CARD_REQUESTS_OF_30_CARDS);
+        workbookIds = 여러개_문제집_생성_요청(WORKBOOK_REQUESTS);
+        여러개_카드_생성_요청(질문_답변_문제집_아이디가_포함된_카드_요청_만들기(workbookIds));
     }
 
     @Test
     @DisplayName("퀴즈 생성 - 성공")
     void createQuiz() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -62,9 +63,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 비로그인은 회원용 퀴즈 생성을 이용할 수 없다.")
     void createQuizWhenGuest() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -84,9 +84,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 회원을 찾을 수 없음.")
     void createQuizWhenUserNotFound() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -107,9 +106,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 내 문제집이 아님.")
     void createQuizWhenNotAuthor() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -132,9 +130,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("퀴즈 생성 - 성공, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
     void createQuizWhenCountIsCorrect(int count) {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(count)
                 .build();
 
@@ -158,7 +155,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         final int requestCount = 11;
         final int existCardCount = 10;
 
-        List<Long> ids = List.of(1L); // 10개의 카드 존재
+        List<Long> ids = List.of(workbookIds.get(0));
         QuizRequest quizRequest = QuizRequest.builder()
                 .workbookIds(ids)
                 .count(requestCount)
@@ -182,9 +179,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("퀴즈 생성 - 실패, 퀴즈 개수는 10 ~ 30사이의 수만 가능하다.")
     void createQuizWhenQuizCountIsInvalid(int count) {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(count)
                 .build();
 
@@ -205,9 +201,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 시 encounterCount가 1 증가한다. - 성공")
     void checkEncounterCount() {
         // given
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -273,7 +268,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 실패, 퀴즈에 카드가 존재하지 않음.")
     void createQuizWithEmptyCards() {
         // given
-        List<Long> ids = Collections.singletonList(4L);
+        Long noCardWorkbookId = workbookIds.get(3);
+        List<Long> ids = Collections.singletonList(noCardWorkbookId);
         QuizRequest quizRequest = QuizRequest.builder()
                 .workbookIds(ids)
                 .count(10)
@@ -294,15 +290,14 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("다음에 또 보기가 포함된 카드를 퀴즈에 포함한다. - 성공")
     void createQuizIncludeNextQuizOption() {
         // given
-        List<CardResponse> cards = 문제집의_카드_모아보기(1L).getCards();
+        List<CardResponse> cards = 문제집의_카드_모아보기(workbookIds.get(0)).getCards();
         final List<Long> cardIds = cards.stream()
                 .map(CardResponse::getId)
                 .collect(Collectors.toList());
 
         다음에_또_보기(cardIds);
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
         QuizRequest quizRequest = QuizRequest.builder()
-                .workbookIds(ids)
+                .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
@@ -375,8 +370,9 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizFromWorkbook() {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
+        Long workbookId = workbookIds.get(0);
         final HttpResponse response = request()
-                .get("/quizzes/1")
+                .get("/quizzes/" + workbookId)
                 .auth(createToken(admin.getId()))
                 .build();
 
@@ -394,7 +390,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
-                .get("/quizzes/{workbookId}", 100L)
+                .get("/quizzes/{workbookId}", 1000L)
                 .auth(createToken(admin.getId()))
                 .build();
 
@@ -411,8 +407,9 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     void createQuizFromWorkbookFailedWhenWorkbookIsNotPublic() {
         // given
         // 1번 문제집에는 5개의 카드가 존재한다.
+        Long privateWorkbookId = workbookIds.get(4);
         final HttpResponse response = request()
-                .get("/quizzes/{workbookId}", 5L)
+                .get("/quizzes/{workbookId}", privateWorkbookId)
                 .failAuth()
                 .build();
 
@@ -430,8 +427,9 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // given
         // 4번 문제집에는 카드가 존재하지 않는다.
         // 4번 문제집은 isPublic = true
+        Long noCardWorkbookId = workbookIds.get(3);
         final HttpResponse response = request()
-                .get("/quizzes/{workbookId}", 4L)
+                .get("/quizzes/{workbookId}", noCardWorkbookId)
                 .failAuth()
                 .build();
 

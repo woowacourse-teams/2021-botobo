@@ -11,7 +11,6 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.domain.workbooktag.WorkbookTagRepository;
-import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,11 +109,7 @@ class WorkbookRepositoryTest {
         workbookRepository.save(workbook);
 
         Card firstCard = generateCard(workbook, "질문1", "답변1");
-        flushAndClear();
-        Workbook find = workbookRepository.findById(workbook.getId())
-                .orElseThrow(WorkbookNotFoundException::new);
-
-        Card secondCard = generateCard(find, "질문2", "답변2");
+        Card secondCard = generateCard(workbook, "질문2", "답변2");
         flushAndClear();
 
         // when
@@ -154,8 +149,6 @@ class WorkbookRepositoryTest {
                 .build();
 
         workbookRepository.save(workbook1);
-
-        flushAndClear();
 
         Workbook workbook2 = Workbook.builder()
                 .name("오즈의 Spring")
