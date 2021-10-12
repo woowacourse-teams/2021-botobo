@@ -316,6 +316,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
+                .workbookOpened(true)
                 .heartCount(10)
                 .tags(generateTagResponses())
                 .cards(generateCardResponses())

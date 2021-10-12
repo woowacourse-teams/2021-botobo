@@ -334,6 +334,33 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbookResponse.getName());
+        assertThat(workbookCardResponse.getWorkbookOpened()).isTrue();
+        assertThat(workbookCardResponse.getCards()).hasSize(3);
+        assertThat(workbookCardResponse.getTags()).hasSize(1);
+        assertThat(workbookCardResponse.getHeartCount()).isZero();
+    }
+
+    @Test
+    @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공, 비공개인 경우")
+    void findCategoryCardsByIdWhenPrivate() {
+        // given
+        final String accessToken = 소셜_로그인되어_있음(bear, SocialType.GITHUB);
+        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음("Java 문제집", false, accessToken);
+        유저_카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
+        유저_카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
+        유저_카드_등록되어_있음("question", "answer", workbookResponse.getId(), accessToken);
+
+        // when
+        final HttpResponse response = request()
+                .get("/workbooks/{id}/cards", workbookResponse.getId())
+                .auth(accessToken)
+                .build();
+
+        // then
+        final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbookResponse.getName());
+        assertThat(workbookCardResponse.getWorkbookOpened()).isFalse();
         assertThat(workbookCardResponse.getCards()).hasSize(3);
         assertThat(workbookCardResponse.getTags()).hasSize(1);
         assertThat(workbookCardResponse.getHeartCount()).isZero();
@@ -357,6 +384,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbookResponse.getName());
+        assertThat(workbookCardResponse.getWorkbookOpened()).isTrue();
         assertThat(workbookCardResponse.getCards()).isEmpty();
     }
 

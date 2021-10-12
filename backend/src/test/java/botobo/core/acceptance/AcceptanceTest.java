@@ -4,6 +4,7 @@ import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.acceptance.utils.RequestBuilder.HttpFunction;
 import botobo.core.infrastructure.auth.JwtTokenProvider;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,9 +33,13 @@ public class AcceptanceTest {
             RestAssured.port = port;
             databaseCleaner.afterPropertiesSet();
         }
-        databaseCleaner.execute();
         String defaultToken = jwtTokenProvider.createAccessToken(100L);
         requestBuilder = new RequestBuilder(defaultToken);
+    }
+
+    @AfterEach
+    protected void tearDown() {
+        databaseCleaner.execute();
     }
 
     /**
@@ -43,7 +48,7 @@ public class AcceptanceTest {
      * request()
      * .get(path, params)   http method type
      * .queryParam(name, value)     optional
-     * .auth(renewAccessToken(1L))         default: false
+     * .auth(createToken(1L))         default: false
      * .log()          default: false
      * .build();
      * <로그인이 필요하지 않은 경우>
