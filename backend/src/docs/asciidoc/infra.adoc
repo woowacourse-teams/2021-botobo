@@ -5,10 +5,3 @@
 include::{snippets}/infra-profile-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/infra-profile-get-success/http-response.adoc[]
-|===
-| Parameter | 설명
-
-| SocialType
-| 소셜 로그인 종류 (github, google)
-
-|===

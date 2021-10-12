@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.servlet.http.Cookie;
 import java.util.Objects;
 
 import static botobo.core.documentation.utils.DocumentationUtils.getDocumentRequest;
@@ -63,9 +65,11 @@ public class DocumentRequestBuilder {
         private final HttpMethodRequest request;
         private ResultActions resultActions;
         private boolean loginFlag;
+        private boolean cookieFlag;
         private boolean headerFlag;
         private String location;
         private String accessToken;
+        private Cookie cookie;
 
         public Options(HttpMethodRequest request) {
             this.request = request;
@@ -75,6 +79,12 @@ public class DocumentRequestBuilder {
         public Options auth(String token) {
             this.accessToken = token;
             this.loginFlag = true;
+            return this;
+        }
+
+        public Options cookie(Cookie cookie) {
+            this.cookie = cookie;
+            this.cookieFlag = true;
             return this;
         }
 
@@ -89,6 +99,9 @@ public class DocumentRequestBuilder {
             if (loginFlag) {
                 requestBuilder = requestBuilder.header("Authorization", "Bearer " + accessToken);
             }
+            if (cookieFlag) {
+                requestBuilder = requestBuilder.cookie(cookie);
+            }
             resultActions = mockMvc.perform(requestBuilder);
             if (headerFlag) {
                 resultActions = resultActions.andExpect(header().string("Location", location));
@@ -101,10 +114,11 @@ public class DocumentRequestBuilder {
             return this;
         }
 
-        public void identifier(String documentIdentifier) throws Exception {
-            resultActions.andDo(document(documentIdentifier,
+        public MvcResult identifier(String documentIdentifier) throws Exception {
+            return resultActions.andDo(document(documentIdentifier,
                     getDocumentRequest(),
-                    getDocumentResponse()));
+                    getDocumentResponse())
+            ).andReturn();
         }
     }
 

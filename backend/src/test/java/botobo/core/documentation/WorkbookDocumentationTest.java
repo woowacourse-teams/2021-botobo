@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -332,6 +331,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
+                .workbookOpened(true)
                 .heartCount(10)
                 .tags(generateTagResponses())
                 .cards(generateCardResponses())

@@ -154,16 +154,6 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("비회원 문제집을 조회 - 성공, 비어있는 리스트 반환")
-    void findWorkbooksByAnonymousUser() {
-        // when
-        List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(AppUser.anonymous());
-
-        // then
-        assertThat(workbooks).isEmpty();
-    }
-
-    @Test
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() {
         // given
@@ -171,11 +161,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(true)
@@ -205,11 +195,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(true)
@@ -239,11 +229,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(false)
