@@ -1,5 +1,7 @@
 package botobo.core.application;
 
+import botobo.core.domain.token.RefreshToken;
+import botobo.core.domain.token.RefreshTokenRepository;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
@@ -11,9 +13,10 @@ import botobo.core.dto.auth.TokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.exception.auth.TokenNotValidException;
 import botobo.core.exception.user.AnonymousHasNotIdException;
-import botobo.core.infrastructure.GithubOauthManager;
-import botobo.core.infrastructure.JwtTokenProvider;
-import botobo.core.infrastructure.OauthManagerFactory;
+import botobo.core.infrastructure.auth.GithubOauthManager;
+import botobo.core.infrastructure.auth.JwtTokenProvider;
+import botobo.core.infrastructure.auth.JwtTokenType;
+import botobo.core.infrastructure.auth.OauthManagerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,16 +26,21 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 
 @DisplayName("로그인 서비스 테스트")
 @MockitoSettings
 class AuthServiceTest {
+
+    private static final Long TIME_TO_LIVE = 20000L;
 
     @Mock
     private OauthManagerFactory oauthManagerFactory;
@@ -46,12 +54,15 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private RefreshTokenRepository refreshTokenRepository;
+
     @InjectMocks
     private AuthService authService;
 
     @Test
     @DisplayName("토큰을 만든다. - 성공, 유저가 이미 존재하는 경우")
-    void createToken() {
+    void createAccessToken() {
         // given
         UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
                 .socialId("1")
@@ -72,10 +83,10 @@ class AuthServiceTest {
         given(oauthManagerFactory.findOauthMangerBySocialType(any())).willReturn(githubOauthManager);
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
         given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.of(user));
-        given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
+        given(jwtTokenProvider.createAccessToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken("github", loginRequest);
+        TokenResponse tokenResponse = authService.createAccessToken("github", loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
@@ -91,12 +102,12 @@ class AuthServiceTest {
                 .findBySocialIdAndSocialType(any(), any());
         then(jwtTokenProvider)
                 .should(times(1))
-                .createToken(anyLong());
+                .createAccessToken(anyLong());
     }
 
     @Test
     @DisplayName("토큰을 만든다. - 성공, 새로운 유저인 경우")
-    void createTokenWithNewUser() {
+    void createAccessTokenWithNewUser() {
         // given
         UserInfoResponse githubUserInfoResponse = GithubUserInfoResponse.builder()
                 .socialId("1")
@@ -117,10 +128,10 @@ class AuthServiceTest {
         given(githubOauthManager.getUserInfo(any())).willReturn(githubUserInfoResponse.toUser());
         given(userRepository.findBySocialIdAndSocialType(any(), any())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willReturn(user);
-        given(jwtTokenProvider.createToken(user.getId())).willReturn(accessToken);
+        given(jwtTokenProvider.createAccessToken(user.getId())).willReturn(accessToken);
 
         // when
-        TokenResponse tokenResponse = authService.createToken("github", loginRequest);
+        TokenResponse tokenResponse = authService.createAccessToken("github", loginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
@@ -139,7 +150,124 @@ class AuthServiceTest {
                 .save(any(User.class));
         then(jwtTokenProvider)
                 .should(times(1))
-                .createToken(anyLong());
+                .createAccessToken(anyLong());
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰을 생성한다 - 성공")
+    void createRefreshToken() {
+        // given
+        Long id = 1L;
+        String refreshTokenValue = "refreshTokenValue";
+        RefreshToken refreshToken = new RefreshToken(id, refreshTokenValue, TIME_TO_LIVE);
+
+        given(jwtTokenProvider.createRefreshToken(id)).willReturn(refreshTokenValue);
+        given(jwtTokenProvider.getJwtRefreshTokenTimeToLive()).willReturn(TIME_TO_LIVE);
+        given(refreshTokenRepository.save(refEq(new RefreshToken(id, refreshTokenValue, TIME_TO_LIVE))))
+                .willReturn(refreshToken);
+
+        // when
+        authService.createRefreshToken(id);
+
+        // then
+        then(jwtTokenProvider)
+                .should(times(1))
+                .createRefreshToken(id);
+        then(jwtTokenProvider)
+                .should(times(1))
+                .getJwtRefreshTokenTimeToLive();
+        then(refreshTokenRepository)
+                .should(times(1))
+                .save(refEq(new RefreshToken(id, refreshTokenValue, TIME_TO_LIVE)));
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰 검증 - 성공")
+    void validateRefreshTokenTest() {
+        // given
+        String id = "1";
+        String tokenValue = "middleBearPk";
+        RefreshToken storedRefreshToken = new RefreshToken(id, tokenValue, TIME_TO_LIVE);
+
+        given(jwtTokenProvider.getStringIdFromPayLoad(tokenValue, JwtTokenType.REFRESH_TOKEN)).willReturn(id);
+        given(refreshTokenRepository.findById(id)).willReturn(Optional.of(storedRefreshToken));
+
+        // when, then
+        assertThatCode(() -> authService.validateRefreshToken(tokenValue))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰 검증 - 실패, 저장하지 않은 토큰")
+    void validateRefreshTokenWithNonexistentId() {
+        // given
+        String id = "1";
+        String tokenValue = "middleBearPk";
+
+        given(jwtTokenProvider.getStringIdFromPayLoad(tokenValue, JwtTokenType.REFRESH_TOKEN)).willReturn(id);
+        given(refreshTokenRepository.findById(id)).willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> authService.validateRefreshToken(tokenValue))
+                .isExactlyInstanceOf(TokenNotValidException.class);
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰 검증 - 실패, 최신에 발급받은 토큰이 아님")
+    void validateRefreshTokenWithDifferentTokenValue() {
+        // given
+        String storedTokenId = "1";
+        String storedTokenValue = "middleBearPk";
+        String givenTokenValue = "ozJoanne";
+        RefreshToken storedRefreshToken = new RefreshToken(storedTokenId, storedTokenValue, TIME_TO_LIVE);
+
+        given(jwtTokenProvider.getStringIdFromPayLoad(givenTokenValue, JwtTokenType.REFRESH_TOKEN)).willReturn(storedTokenId);
+        given(refreshTokenRepository.findById(storedTokenId)).willReturn(Optional.of(storedRefreshToken));
+
+        // when, then
+        assertThatThrownBy(() -> authService.validateRefreshToken(givenTokenValue))
+                .isExactlyInstanceOf(TokenNotValidException.class);
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰 삭제 - 성공")
+    void removeRefreshToken() {
+        // given
+        String id = "1";
+        String tokenValue = "middleBearPk";
+        RefreshToken storedRefreshToken = new RefreshToken(id, tokenValue, TIME_TO_LIVE);
+
+        given(jwtTokenProvider.getStringIdFromPayLoad(tokenValue, JwtTokenType.REFRESH_TOKEN)).willReturn(id);
+        given(refreshTokenRepository.findById(id)).willReturn(Optional.of(storedRefreshToken));
+
+        // when
+        authService.removeRefreshToken(tokenValue);
+
+        // then
+        then(jwtTokenProvider).should(times(2)).getStringIdFromPayLoad(tokenValue, JwtTokenType.REFRESH_TOKEN);
+        then(refreshTokenRepository).should(times(1)).findById(id);
+        then(refreshTokenRepository).should(times(1)).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("리프레시 토큰 삭제 - 실패, 유효한 JWT 토큰이지만 레디스에 존재하지 않는 토큰인 경우")
+    void removeRefreshTokenWhenNotStoredToken() {
+        // given
+        String id = "1";
+        String storedTokenValue = "middleBearPk";
+        RefreshToken storedRefreshToken = new RefreshToken(id, storedTokenValue, TIME_TO_LIVE);
+        String notStoredTokenValue = "notStoredTokenValue";
+
+        given(jwtTokenProvider.getStringIdFromPayLoad(notStoredTokenValue, JwtTokenType.REFRESH_TOKEN)).willReturn(id);
+        given(refreshTokenRepository.findById(id)).willReturn(Optional.of(storedRefreshToken));
+
+        // when
+        authService.removeRefreshToken(notStoredTokenValue);
+
+        // then
+        then(jwtTokenProvider).should(times(1)).getStringIdFromPayLoad(notStoredTokenValue, JwtTokenType.REFRESH_TOKEN);
+        then(refreshTokenRepository).should(times(1)).findById(id);
+        then(refreshTokenRepository).should(times(0)).deleteById(id);
     }
 
     @DisplayName("토큰으로 appUser를 찾는다. - 성공, 관리자가 아닌 경우")
@@ -147,8 +275,7 @@ class AuthServiceTest {
     void findAppUserByToken() {
         // given
         String credential = "credential";
-        given(jwtTokenProvider.isValidToken(credential)).willReturn(Boolean.TRUE);
-        given(jwtTokenProvider.getIdFromPayLoad(credential)).willReturn(1L);
+        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
         given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.FALSE);
 
         // when
@@ -164,8 +291,7 @@ class AuthServiceTest {
     void findAppUserByTokenWhenAdmin() {
         // given
         String credential = "credential";
-        given(jwtTokenProvider.isValidToken(credential)).willReturn(Boolean.TRUE);
-        given(jwtTokenProvider.getIdFromPayLoad(credential)).willReturn(1L);
+        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
         given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.TRUE);
 
         // when
@@ -196,7 +322,8 @@ class AuthServiceTest {
     void findAppUserByTokenWhenInvalidToken() {
         // given
         String credential = "credential";
-        given(jwtTokenProvider.isValidToken(credential)).willReturn(Boolean.FALSE);
+        willThrow(TokenNotValidException.class)
+                .given(jwtTokenProvider).validateToken(credential, JwtTokenType.ACCESS_TOKEN);
 
         // when
         assertThatThrownBy(() -> authService.findAppUserByToken(credential))

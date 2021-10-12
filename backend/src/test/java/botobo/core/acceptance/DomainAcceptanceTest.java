@@ -14,9 +14,9 @@ import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
-import botobo.core.infrastructure.GithubOauthManager;
-import botobo.core.infrastructure.GoogleOauthManager;
-import botobo.core.infrastructure.OauthManagerFactory;
+import botobo.core.infrastructure.auth.GithubOauthManager;
+import botobo.core.infrastructure.auth.GoogleOauthManager;
+import botobo.core.infrastructure.auth.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,7 +102,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     private HttpResponse 문제집_생성_요청(WorkbookRequest workbookRequest) {
         return request()
                 .post("/workbooks", workbookRequest)
-                .auth(jwtTokenProvider.createToken(admin.getId()))
+                .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                 .build();
     }
 
@@ -125,7 +125,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     private void 문제집_생성_요청(WorkbookRequest workbookRequest, User user) {
         request()
                 .post("/workbooks", workbookRequest)
-                .auth(jwtTokenProvider.createToken(user.getId()))
+                .auth(jwtTokenProvider.createAccessToken(user.getId()))
                 .build()
                 .extract();
     }
@@ -134,7 +134,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         for (CardRequest cardRequest : cardRequests) {
             request()
                     .post("/cards", cardRequest)
-                    .auth(jwtTokenProvider.createToken(admin.getId()))
+                    .auth(jwtTokenProvider.createAccessToken(admin.getId()))
                     .build()
                     .extract();
         }
@@ -216,7 +216,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     }
 
     protected String createToken(Long id) {
-        return jwtTokenProvider.createToken(id);
+        return jwtTokenProvider.createAccessToken(id);
     }
 
     protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {

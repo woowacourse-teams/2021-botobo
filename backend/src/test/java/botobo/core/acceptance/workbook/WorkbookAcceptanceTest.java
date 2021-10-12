@@ -315,19 +315,6 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     }
 
     @Test
-    @DisplayName("비회원 문제집 조회시 비어있는 리스트를 반환 - 성공")
-    void findWorkbooksByAnonymous() {
-        // when
-        final HttpResponse response = request()
-                .get("/workbooks")
-                .build();
-
-        List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(workbookResponses).isEmpty();
-    }
-
-    @Test
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공")
     void findCategoryCardsById() {
         // given

@@ -43,7 +43,7 @@ logs/**
 
 
 ### API Documentation ###
-backend/src/main/resources/static/docs/**
+backend/src/main/resources/static/index.html
 
 ### Secret files ###
 backend/src/main/resources/application-dev.yml

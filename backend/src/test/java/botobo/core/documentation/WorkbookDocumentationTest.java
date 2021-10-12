@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -83,21 +82,6 @@ class WorkbookDocumentationTest extends DocumentationTest {
                 .build()
                 .status(status().isOk())
                 .identifier("workbooks-get-success");
-    }
-
-    @Test
-    @DisplayName("비회원 문제집 조회 - 성공")
-    void findWorkbooksByAnonymous() throws Exception {
-        // given
-        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(Collections.emptyList());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/workbooks")
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-get-anonymous-success");
     }
 
     @Test

@@ -23,7 +23,6 @@ import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,9 +77,6 @@ public class WorkbookService extends AbstractUserService {
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {
-        if (appUser.isAnonymous()) {
-            return WorkbookResponse.authorListOf(Collections.emptyList());
-        }
         return WorkbookResponse.authorListOf(
                 workbookRepository.findAllByUserId(appUser.getId())
         );

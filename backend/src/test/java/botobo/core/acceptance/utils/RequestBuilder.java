@@ -2,6 +2,7 @@ package botobo.core.acceptance.utils;
 
 import botobo.core.exception.common.ErrorResponse;
 import io.restassured.RestAssured;
+import io.restassured.http.Cookie;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -54,6 +55,7 @@ public class RequestBuilder {
 
     public static class Options {
         private final List<Map.Entry<String, String>> queryParams;
+        private final List<Map.Entry<String, String>> cookies;
         private final RestAssuredRequest request;
         private String customAccessToken;
         private boolean loginFlag;
@@ -64,6 +66,7 @@ public class RequestBuilder {
             this.loginFlag = false;
             this.logFlag = false;
             this.queryParams = new ArrayList<>();
+            this.cookies = new ArrayList<>();
         }
 
         public Options log() {
@@ -92,6 +95,11 @@ public class RequestBuilder {
             return this;
         }
 
+        public Options cookie(String name, String value) {
+            this.cookies.add(new AbstractMap.SimpleEntry<>(name, value));
+            return this;
+        }
+
         public HttpResponse build() {
             RequestSpecification requestSpecification = RestAssured.given();
             if (loginFlag) {
@@ -99,6 +107,9 @@ public class RequestBuilder {
             }
             for (Map.Entry<String, String> param : queryParams) {
                 requestSpecification = addParams(requestSpecification, param);
+            }
+            for (Map.Entry<String, String> cookie : cookies) {
+                requestSpecification = addCookies(requestSpecification, cookie);
             }
             ValidatableResponse response = request.action(requestSpecification);
             if (logFlag) {
@@ -116,12 +127,16 @@ public class RequestBuilder {
             return token;
         }
 
+        private RequestSpecification addAuthHeader(RequestSpecification requestSpecification, String token) {
+            return requestSpecification.header("Authorization", "Bearer " + token);
+        }
+
         private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, String> param) {
             return requestSpecification.queryParam(param.getKey(), param.getValue());
         }
 
-        private RequestSpecification addAuthHeader(RequestSpecification requestSpecification, String token) {
-            return requestSpecification.header("Authorization", "Bearer " + token);
+        private RequestSpecification addCookies(RequestSpecification requestSpecification, Map.Entry<String, String> cookie) {
+            return requestSpecification.cookie(cookie.getKey(), cookie.getValue());
         }
     }
 
@@ -154,6 +169,10 @@ public class RequestBuilder {
 
         public String header(String name) {
             return response.header(name);
+        }
+
+        public Cookie detailedCookie(String name) {
+            return response.detailedCookie(name);
         }
     }
 

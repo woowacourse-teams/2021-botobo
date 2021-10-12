@@ -1,4 +1,4 @@
-package botobo.core.infrastructure;
+package botobo.core.infrastructure.auth;
 
 import botobo.core.domain.user.SocialType;
 import botobo.core.exception.user.SocialTypeNotFoundException;
