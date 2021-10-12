@@ -57,10 +57,10 @@ public class AuthService {
 
     @Transactional
     public String createRefreshToken(Long id) {
-        String refreshToken = jwtTokenProvider.createRefreshToken(id);
+        String refreshTokenValue = jwtTokenProvider.createRefreshToken(id);
         Long timeToLive = jwtTokenProvider.getJwtRefreshTokenTimeToLive();
-        RefreshToken saveRefreshToken = refreshTokenRepository.save(new RefreshToken(id, refreshToken, timeToLive));
-        return saveRefreshToken.getTokenValue();
+        RefreshToken savedRefreshToken = refreshTokenRepository.save(new RefreshToken(id, refreshTokenValue, timeToLive));
+        return savedRefreshToken.getTokenValue();
     }
 
     @Transactional

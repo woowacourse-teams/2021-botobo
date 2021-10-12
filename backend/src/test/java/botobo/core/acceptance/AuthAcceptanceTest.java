@@ -22,7 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @DisplayName("Auth Acceptance 테스트")
-public class AuthAcceptanceTest extends DomainAcceptanceTest {
+class AuthAcceptanceTest extends DomainAcceptanceTest {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
 
@@ -91,6 +91,7 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(refreshToken).isNotEmpty();
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
+        assertThat(cookie.getMaxAge()).isPositive();
     }
 
     @Test
@@ -116,6 +117,7 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(newRefreshToken).isNotEmpty();
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
+        assertThat(cookie.getMaxAge()).isPositive();
     }
 
     @Test
@@ -216,7 +218,7 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
         Cookie cookie = httpResponse.detailedCookie(REFRESH_TOKEN_COOKIE_NAME);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(cookie.getValue()).isBlank();
-        assertThat(cookie.getMaxAge()).isEqualTo(0);
+        assertThat(cookie.getMaxAge()).isZero();
     }
 
     @Test
@@ -239,6 +241,6 @@ public class AuthAcceptanceTest extends DomainAcceptanceTest {
         Cookie cookie = httpResponse.detailedCookie(REFRESH_TOKEN_COOKIE_NAME);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(cookie.getValue()).isBlank();
-        assertThat(cookie.getMaxAge()).isEqualTo(0);
+        assertThat(cookie.getMaxAge()).isZero();
     }
 }

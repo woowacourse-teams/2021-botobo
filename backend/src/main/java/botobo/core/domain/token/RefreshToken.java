@@ -2,6 +2,7 @@ package botobo.core.domain.token;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Getter
+@NoArgsConstructor
 @RedisHash("refreshToken")
 public class RefreshToken implements Serializable {
 
@@ -18,9 +20,6 @@ public class RefreshToken implements Serializable {
 
     @TimeToLive
     private Long timeToLive;
-
-    public RefreshToken() {
-    }
 
     public RefreshToken(Long id, String tokenValue, Long timeToLive) {
         this(String.valueOf(id), tokenValue, timeToLive);

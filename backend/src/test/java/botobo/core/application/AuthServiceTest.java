@@ -20,6 +20,7 @@ import botobo.core.infrastructure.auth.OauthManagerFactory;
 import botobo.core.utils.YamlLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -32,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
@@ -166,6 +168,7 @@ class AuthServiceTest {
         String refreshTokenValue = "refreshTokenValue";
         RefreshToken refreshToken = new RefreshToken(id, refreshTokenValue, TIME_TO_LIVE);
 
+        given(jwtTokenProvider.getJwtRefreshTokenTimeToLive()).willReturn(TIME_TO_LIVE);
         given(jwtTokenProvider.createRefreshToken(1L)).willReturn(refreshTokenValue);
         given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(refreshToken);
 
@@ -173,9 +176,18 @@ class AuthServiceTest {
         authService.createRefreshToken(id);
 
         // then
+        ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
+        then(refreshTokenRepository).should().save(captor.capture());
+        RefreshToken actual = captor.getValue();
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(refreshToken);
+
         then(jwtTokenProvider)
                 .should(times(1))
                 .createRefreshToken(1L);
+        then(jwtTokenProvider)
+                .should(times(1))
+                .getJwtRefreshTokenTimeToLive();
         then(refreshTokenRepository)
                 .should(times(1))
                 .save(any(RefreshToken.class));
