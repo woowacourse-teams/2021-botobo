@@ -471,12 +471,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_추천_태그_조회">추천 태그 조회</a></li>
 </ul>
 </li>
-<li><a href="#_관리자_api">관리자 API</a>
-<ul class="sectlevel2">
-<li><a href="#_관리자_권한으로_문제집_추가하기">관리자 권한으로 문제집 추가하기</a></li>
-<li><a href="#_관리자_권한으로_카드_추가하기">관리자 권한으로 카드 추가하기</a></li>
-</ul>
-</li>
 <li><a href="#_로그인_api">로그인 API</a>
 <ul class="sectlevel2">
 <li><a href="#_소셜_로그인">소셜 로그인</a></li>
@@ -673,11 +667,12 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 782
+Content-Length: 809
 
 {
   "workbookId" : 1,
   "workbookName" : "Java",
+  "workbookOpened" : true,
   "heartCount" : 10,
   "tags" : [ {
     "id" : 1,
@@ -1504,102 +1499,12 @@ Content-Length: 78
 </div>
 </div>
 <div class="sect1">
-<h2 id="_관리자_api">관리자 API</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_관리자_권한으로_문제집_추가하기">관리자 권한으로 문제집 추가하기</h3>
-<div class="sect3">
-<h4 id="_요청_18">요청</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /admin/workbooks HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Authorization: Bearer botobo.access.token
-Content-Length: 57
-Host: botobo.kr
-
-{
-  "name" : "JAVA",
-  "opened" : true,
-  "tags" : null
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_응답_19">응답</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Location: /admin/workbooks/1
-Content-Type: application/json
-Content-Length: 33
-
-{
-  "id" : 1,
-  "name" : "JAVA"
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_관리자_권한으로_카드_추가하기">관리자 권한으로 카드 추가하기</h3>
-<div class="sect3">
-<h4 id="_요청_19">요청</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /admin/cards HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Authorization: Bearer botobo.access.token
-Content-Length: 72
-Host: botobo.kr
-
-{
-  "question" : "질문1",
-  "answer" : "답변1",
-  "workbookId" : 1
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_응답_20">응답</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Location: /admin/cards/1
-Content-Type: application/json
-Content-Length: 103
-
-{
-  "id" : 1,
-  "question" : "질문1",
-  "answer" : null,
-  "workbookId" : 1,
-  "encounterCount" : 0
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_로그인_api">로그인 API</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_소셜_로그인">소셜 로그인</h3>
 <div class="sect3">
-<h4 id="_요청_20">요청</h4>
+<h4 id="_요청_18">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/github HTTP/1.1
@@ -1615,7 +1520,7 @@ Host: botobo.kr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_21">응답</h4>
+<h4 id="_응답_19">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1658,7 +1563,7 @@ Content-Length: 43
 <div class="sect2">
 <h3 id="_문제집명이_포함된_문제집의_태그_모두_가져오기_필터용">문제집명이 포함된 문제집의 태그 모두 가져오기 (필터용)</h3>
 <div class="sect3">
-<h4 id="_요청_21">요청</h4>
+<h4 id="_요청_19">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /tags?workbook=java HTTP/1.1
@@ -1667,7 +1572,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_22">응답</h4>
+<h4 id="_응답_20">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1699,7 +1604,7 @@ Content-Length: 120
 <div class="sect2">
 <h3 id="_회원_정보_조회">회원 정보 조회</h3>
 <div class="sect3">
-<h4 id="_요청_22">요청</h4>
+<h4 id="_요청_20">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users/me HTTP/1.1
@@ -1709,7 +1614,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_23">응답</h4>
+<h4 id="_응답_21">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1732,7 +1637,7 @@ Content-Length: 93
 <div class="sect2">
 <h3 id="_유저_프로필_이미지_수정_요청">유저 프로필 이미지 수정 요청</h3>
 <div class="sect3">
-<h4 id="_요청_23">요청</h4>
+<h4 id="_요청_21">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/profile HTTP/1.1
@@ -1749,7 +1654,7 @@ profile
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_24">응답</h4>
+<h4 id="_응답_22">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1769,7 +1674,7 @@ Content-Length: 77
 <div class="sect2">
 <h3 id="_회원_정보_수정">회원 정보 수정</h3>
 <div class="sect3">
-<h4 id="_요청_24">요청</h4>
+<h4 id="_요청_22">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /users/me HTTP/1.1
@@ -1788,7 +1693,7 @@ Host: botobo.kr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_25">응답</h4>
+<h4 id="_응답_23">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1811,7 +1716,7 @@ Content-Length: 113
 <div class="sect2">
 <h3 id="_회원명_중복_조회">회원명 중복 조회</h3>
 <div class="sect3">
-<h4 id="_요청_25">요청</h4>
+<h4 id="_요청_23">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/name-check HTTP/1.1
@@ -1828,7 +1733,7 @@ Host: botobo.kr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_26">응답</h4>
+<h4 id="_응답_24">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1861,7 +1766,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_문제집명이_포함된_문제집의_유저_모두_조회">문제집명이 포함된 문제집의 유저 모두 조회</h3>
 <div class="sect3">
-<h4 id="_요청_26">요청</h4>
+<h4 id="_요청_24">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users?workbook=java HTTP/1.1
@@ -1870,7 +1775,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_27">응답</h4>
+<h4 id="_응답_25">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2291,7 +2196,7 @@ Content-Length: 76
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-16 21:31:09 +0900
+Last updated 2021-10-06 10:52:20 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
