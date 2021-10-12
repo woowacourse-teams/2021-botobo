@@ -124,15 +124,17 @@ public class Fixture {
         return requests;
     }
 
-    public static final List<CardRequest> CARD_REQUESTS_OF_30_CARDS =
-            질문_답변_문제집_아이디가_포함된_카드_요청_만들기(
-                    질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성()
-            );
+    public static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청_만들기(List<Long> workbookIds) {
+        return 질문_답변_문제집_아이디가_포함된_카드_요청(
+                질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성(workbookIds)
+        );
+    }
 
-    private static List<String> 질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성() {
+    private static List<String> 질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성(List<Long> workbookIds) {
         List<String> results = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            long id = ((i - 1) / 10) + 1;
+            int index = (i - 1) / 10;
+            long id = workbookIds.get(index);
             results.add(i + " answer " + id);
         }
         return results;
@@ -140,10 +142,11 @@ public class Fixture {
 
     /**
      * 주의, questionAndAnswerAndWorkbookIds에 담기는 String은 "질문 답변 문제집ID"가 띄어쓰기로 구분된 형태의 String입니다.
+     *
      * @param questionAndAnswerAndWorkbookIds
      * @return
      */
-    private static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청_만들기(List<String> questionAndAnswerAndWorkbookIds) {
+    private static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청(List<String> questionAndAnswerAndWorkbookIds) {
         List<CardRequest> requests = new ArrayList<>();
 
         for (String questionAndAnswerAndWorkbookId : questionAndAnswerAndWorkbookIds) {

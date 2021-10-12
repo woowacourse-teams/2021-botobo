@@ -33,16 +33,16 @@ public class DatabaseCleaner implements InitializingBean {
     @Transactional
     public void execute() {
         entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        entityManager.createNativeQuery("SET foreign_key_checks = 0;").executeUpdate();
         tableNames.forEach(
                 tableName -> executeQueryWithTable(tableName)
         );
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        entityManager.createNativeQuery("SET foreign_key_checks = 1;").executeUpdate();
     }
 
     private void executeQueryWithTable(String tableName) {
-        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN "
-                + "ID RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName + ";").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1;").executeUpdate();
     }
+
 }

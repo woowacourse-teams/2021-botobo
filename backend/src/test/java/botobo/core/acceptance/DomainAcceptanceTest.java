@@ -94,18 +94,24 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return userRepository.save(anyUser);
     }
 
-    public ExtractableResponse<Response> 문제집_생성_요청(WorkbookRequest workbookRequest) {
+    private Long 생성된_문제집의_ID를_반환(HttpResponse response) {
+        WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
+        return workbookResponse.getId();
+    }
+
+    private HttpResponse 문제집_생성_요청(WorkbookRequest workbookRequest) {
         return request()
                 .post("/workbooks", workbookRequest)
                 .auth(jwtTokenProvider.createToken(admin.getId()))
-                .build()
-                .extract();
+                .build();
     }
 
-    public void 여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests) {
+    public List<Long> 여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests) {
+        List<Long> ids = new ArrayList<>();
         for (WorkbookRequest workbookRequest : workbookRequests) {
-            문제집_생성_요청(workbookRequest);
+            ids.add(생성된_문제집의_ID를_반환(문제집_생성_요청(workbookRequest)));
         }
+        return ids;
     }
 
     public void 서로_다른_유저의_여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests, List<User> admins) {
