@@ -343,6 +343,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("자바의 정석")
+                .workbookOpened(true)
                 .cardCount(3)
                 .heartCount(100)
                 .heart(true)

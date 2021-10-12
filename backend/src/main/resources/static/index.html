@@ -478,6 +478,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_로그인_api">로그인 API</a>
 <ul class="sectlevel2">
 <li><a href="#_소셜_로그인">소셜 로그인</a></li>
+<li><a href="#_토큰_재발급">토큰 재발급</a></li>
+<li><a href="#_로그아웃">로그아웃</a></li>
 </ul>
 </li>
 <li><a href="#_태그_api">태그 API</a>
@@ -764,11 +766,12 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 782
+Content-Length: 809
 
 {
   "workbookId" : 1,
   "workbookName" : "Java",
+  "workbookOpened" : true,
   "heartCount" : 10,
   "tags" : [ {
     "id" : 1,
@@ -1635,6 +1638,7 @@ Host: botobo.kr
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
+Set-Cookie: BTOKEN_REFRESH=botobo.refresh.token; Path=/; Max-Age=1000; Expires=Tue, 12 Oct 2021 13:44:05 GMT; Secure; HttpOnly; SameSite=Lax
 Content-Type: application/json
 Content-Length: 43
 
@@ -1650,7 +1654,7 @@ Content-Length: 43
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">파라미터</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1663,6 +1667,81 @@ Content-Length: 43
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_토큰_재발급">토큰 재발급</h3>
+<div class="sect3">
+<h4 id="_요청_21">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /token HTTP/1.1
+Host: botobo.kr
+Cookie: BTOKEN_REFRESH=botobo.refresh.token</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_21">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Set-Cookie: BTOKEN_REFRESH=new.refresh.token; Path=/; Max-Age=1000; Expires=Tue, 12 Oct 2021 13:44:05 GMT; Secure; HttpOnly; SameSite=Lax
+Content-Type: application/json
+Content-Length: 40
+
+{
+  "accessToken" : "new.access.token"
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">파라미터</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BTOKEN_REFRESH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh Token. (필수)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_로그아웃">로그아웃</h3>
+<div class="sect3">
+<h4 id="_요청_22">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /logout HTTP/1.1
+Authorization: Bearer botobo.access.token
+Host: botobo.kr
+Cookie: BTOKEN_REFRESH=botobo.refresh.token</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_22">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Set-Cookie: BTOKEN_REFRESH=; Path=/; Max-Age=0; Expires=Thu, 1 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Lax</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1671,7 +1750,7 @@ Content-Length: 43
 <div class="sect2">
 <h3 id="_문제집명을_포함한_문제집의_태그_조회">문제집명을 포함한 문제집의 태그 조회</h3>
 <div class="sect3">
-<h4 id="_요청_21">요청</h4>
+<h4 id="_요청_23">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /tags?workbook=java HTTP/1.1
@@ -1680,7 +1759,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_21">응답</h4>
+<h4 id="_응답_23">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1709,7 +1788,7 @@ Content-Length: 78
 <div class="sect2">
 <h3 id="_회원_정보_조회">회원 정보 조회</h3>
 <div class="sect3">
-<h4 id="_요청_22">요청</h4>
+<h4 id="_요청_24">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users/me HTTP/1.1
@@ -1719,7 +1798,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_22">응답</h4>
+<h4 id="_응답_24">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1742,7 +1821,7 @@ Content-Length: 93
 <div class="sect2">
 <h3 id="_프로필_이미지_수정">프로필 이미지 수정</h3>
 <div class="sect3">
-<h4 id="_요청_23">요청</h4>
+<h4 id="_요청_25">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/profile HTTP/1.1
@@ -1759,7 +1838,7 @@ profile
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_23">응답</h4>
+<h4 id="_응답_25">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1779,7 +1858,7 @@ Content-Length: 77
 <div class="sect2">
 <h3 id="_회원_정보_수정">회원 정보 수정</h3>
 <div class="sect3">
-<h4 id="_요청_24">요청</h4>
+<h4 id="_요청_26">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /users/me HTTP/1.1
@@ -1798,7 +1877,7 @@ Host: botobo.kr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_24">응답</h4>
+<h4 id="_응답_26">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1821,7 +1900,7 @@ Content-Length: 113
 <div class="sect2">
 <h3 id="_회원명_중복_조회">회원명 중복 조회</h3>
 <div class="sect3">
-<h4 id="_요청_25">요청</h4>
+<h4 id="_요청_27">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /users/name-check HTTP/1.1
@@ -1838,7 +1917,7 @@ Host: botobo.kr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_25">응답</h4>
+<h4 id="_응답_27">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1871,7 +1950,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_문제집명을_포함한_문제집의_유저_조회">문제집명을 포함한 문제집의 유저 조회</h3>
 <div class="sect3">
-<h4 id="_요청_26">요청</h4>
+<h4 id="_요청_28">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /users?workbook=java HTTP/1.1
@@ -1880,7 +1959,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_26">응답</h4>
+<h4 id="_응답_28">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1909,7 +1988,7 @@ Content-Length: 76
 <div class="sect2">
 <h3 id="_활성된_포트_번호_반환">활성된 포트 번호 반환</h3>
 <div class="sect3">
-<h4 id="_요청_27">요청</h4>
+<h4 id="_요청_29">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /infra/port HTTP/1.1
@@ -1918,7 +1997,7 @@ Host: botobo.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_27">응답</h4>
+<h4 id="_응답_29">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1927,24 +2006,6 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers</code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SocialType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">소셜 로그인 종류 (github, google)</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -2009,6 +2070,12 @@ Vary: Access-Control-Request-Headers</code></pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock">007</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">존재하지 않는 소셜 로그인 방식입니다.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">지원하지 않는 소셜로그인으로 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">008</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">액세스 토큰 재발급이 필요합니다.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">액세스 토큰을 재발급 받아야하는 경우</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">U</p></td>
@@ -2348,7 +2415,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-10-11 22:11:19 +0900
+Last updated 2021-10-12 22:13:35 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
