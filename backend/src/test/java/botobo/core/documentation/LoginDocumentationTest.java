@@ -55,7 +55,7 @@ class LoginDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("리프레시 토큰을 이용하여 액세스 토큰 재발급 - 성공")
+    @DisplayName("토큰 재발급 - 성공, 리프레시 토큰을 이용하여 액세스 토큰 재발급")
     void renewToken() throws Exception {
         //given
         String refreshToken = "botobo.refresh.token";

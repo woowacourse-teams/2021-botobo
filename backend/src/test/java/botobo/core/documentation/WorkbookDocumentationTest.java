@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -276,7 +277,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
                         .cardCount(8)
                         .heartCount(1)
                         .opened(true)
-                        .tags(Arrays.asList(
+                        .tags(List.of(
                                 TagResponse.builder().id(5L).name("network").build()
                         ))
                         .build()
