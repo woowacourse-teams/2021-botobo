@@ -1,6 +1,10 @@
 interface Window {
   __INITIAL_STATE__?: {
-    userInfo: import('.').UserInfoResponse;
-    workbookInfo: import('../recoil/workbookState').WorkbookState;
+    userState?: import('recoil').RecoilState<
+      import('.').UserInfoResponse | null
+    >;
+    workbookState?: import('recoil').RecoilState<
+      import('../recoil/workbookState').WorkbookState
+    >;
   };
 }
