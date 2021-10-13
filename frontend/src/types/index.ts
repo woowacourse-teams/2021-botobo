@@ -2,6 +2,10 @@ export interface AccessTokenResponse {
   accessToken: string;
 }
 
+export interface RefreshTokenWithSsr {
+  refreshTokenCookieInfo: string;
+}
+
 export interface TagResponse {
   id: number;
   name: string;

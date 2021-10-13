@@ -6,6 +6,7 @@ export {
   postProfileImageAsync,
   postUserNameCheckAsync,
   putHeartAsync,
+  getRefreshTokenWithSsr,
 } from './user';
 
 export type { PublicWorkbookAsync } from './workbook';

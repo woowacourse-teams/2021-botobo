@@ -1,6 +1,11 @@
 import { removeCookie, setCookie } from './../utils';
 import { STORAGE_KEY } from '../constants';
-import { AccessTokenResponse, AuthType, UserInfoResponse } from '../types';
+import {
+  AccessTokenResponse,
+  AuthType,
+  RefreshTokenWithSsr,
+  UserInfoResponse,
+} from '../types';
 import { request } from './request';
 
 interface PutHeartAsync {
@@ -32,6 +37,16 @@ export const getRefreshUserTokenAsync = async () => {
   request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
   return accessToken;
+};
+
+export const getRefreshTokenWithSsr = async () => {
+  const {
+    data: { refreshTokenCookieInfo, accessToken },
+  } = await request.get<AccessTokenResponse & RefreshTokenWithSsr>(
+    `/token/ssr`
+  );
+
+  return { refreshTokenCookieInfo, accessToken };
 };
 
 export const getUserInfoAsync = async () => {
