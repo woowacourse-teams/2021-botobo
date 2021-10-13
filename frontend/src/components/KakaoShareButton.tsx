@@ -8,7 +8,9 @@ interface Props {
   path: string;
 }
 
-window.Kakao.init(process.env.REACT_APP_KAKAO_API_KEY);
+if (window.Kakao) {
+  window.Kakao.init(process.env.REACT_APP_KAKAO_API_KEY);
+}
 
 const KakaoShareButton = ({ title, path }: Props) => {
   const share = () => {
