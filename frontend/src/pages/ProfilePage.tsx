@@ -132,10 +132,10 @@ const ProfilePage = () => {
               bio: userInfo?.bio ?? '',
             }}
             validators={{
-              userName: (value) => {
+              userName: async (value) => {
                 if (value === userInfo?.userName) return;
 
-                validateUserName(value);
+                await validateUserName(value);
               },
               bio: validateBio,
             }}
