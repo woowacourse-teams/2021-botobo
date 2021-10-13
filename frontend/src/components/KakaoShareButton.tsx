@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import ShareIcon from '../assets/share.svg';
 
@@ -7,6 +7,8 @@ interface Props {
   title: string;
   path: string;
 }
+
+window.Kakao.init(process.env.REACT_APP_KAKAO_API_KEY);
 
 const KakaoShareButton = ({ title, path }: Props) => {
   const share = () => {
@@ -22,13 +24,6 @@ const KakaoShareButton = ({ title, path }: Props) => {
       installTalk: true,
     });
   };
-
-  useEffect(() => {
-    if (window.Kakao.isInitialized()) return;
-    if (!process.env.REACT_APP_KAKAO_API_KEY) return;
-
-    window.Kakao.init(process.env.REACT_APP_KAKAO_API_KEY);
-  }, []);
 
   return (
     <Button onClick={share}>
