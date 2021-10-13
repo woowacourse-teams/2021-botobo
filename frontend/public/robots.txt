@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /$
-Sitemap: https://botobo.kr/naverdd03ad0477682a7d610cd8f4b7e60972.html
-Sitemap: https://botobo.kr/google7bc153d4b51ace90.html
