@@ -16,7 +16,7 @@ public class RankScheduler {
     @Value("${spring.config.activate.on-profile}")
     private String profileName;
 
-    @Value("${scheduler.rank.hostname}")
+    @Value("${scheduler.rank.hostname:}")
     private String hostName;
 
     private final SearchRankService searchRankService;
