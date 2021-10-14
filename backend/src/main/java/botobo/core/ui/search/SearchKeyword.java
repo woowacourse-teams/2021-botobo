@@ -17,6 +17,10 @@ public class SearchKeyword {
 
     private final String value;
 
+    private SearchKeyword(String value) {
+        this.value = value;
+    }
+
     public static SearchKeyword of(String value) {
         validateNonNull(value);
         String refinedValue = refineValue(value);
@@ -52,10 +56,6 @@ public class SearchKeyword {
         if (value.contains("바보")) {
             throw new ForbiddenSearchKeywordException();
         }
-    }
-
-    private SearchKeyword(String value) {
-        this.value = value;
     }
 
     public String getValue() {
