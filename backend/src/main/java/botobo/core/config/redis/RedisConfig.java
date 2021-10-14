@@ -11,8 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 @Configuration
-// TODO BEAR 넣어야 하는지 확실히 모르곘다.
-//@EnableRedisRepositories(basePackages = "botobo.core.domain")
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
@@ -33,7 +31,8 @@ public class RedisConfig {
     public StringRedisTemplate stringRedisTemplate() {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
-        stringRedisTemplate.setEnableTransactionSupport(true);
+        // TODO : Transactional 을 지원하려면 넣어야하는 것 같은데 넣으면 문제가 생김..
+//        stringRedisTemplate.setEnableTransactionSupport(true);
         return stringRedisTemplate;
     }
 
@@ -41,7 +40,7 @@ public class RedisConfig {
     public RedisTemplate<String, SearchRank> searchRankRedisTemplate() {
         RedisTemplate<String, SearchRank> searchRankRedisTemplate = new RedisTemplate<>();
         searchRankRedisTemplate.setConnectionFactory(redisConnectionFactory());
-        searchRankRedisTemplate.setEnableTransactionSupport(true);
+//        searchRankRedisTemplate.setEnableTransactionSupport(true);
         return searchRankRedisTemplate;
     }
 }
