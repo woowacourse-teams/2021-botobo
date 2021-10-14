@@ -17,7 +17,8 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class SearchRankService {
 
-    public static final int SEARCH_RANK_COUNT = 3;
+    private static final String SEARCH_RANKS_CACHE_VALUE = "SearchRanks";
+    private static final int SEARCH_RANK_COUNT = 3;
 
     private final SearchRankRepository searchRankRepository;
     private final SearchScoreRepository searchScoreRepository;
@@ -28,14 +29,14 @@ public class SearchRankService {
     }
 
     @Transactional
-    @Cacheable("SearchRanks")
+    @Cacheable(SEARCH_RANKS_CACHE_VALUE)
     public List<SearchRankResponse> bringSearchRanks() {
         List<SearchRank> searchRanks = searchRankRepository.findAll();
         return SearchRankResponse.listOf(searchRanks);
     }
 
     @Transactional
-    @CacheEvict("SearchRanks")
+    @CacheEvict(SEARCH_RANKS_CACHE_VALUE)
     public void updateSearchRanks() {
         SearchRanks oldSearchRanks = new SearchRanks(searchRankRepository.findAll());
         Set<String> keywords = searchScoreRepository.findByScoreDesc(SEARCH_RANK_COUNT);
