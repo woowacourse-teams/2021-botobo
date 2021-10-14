@@ -1,0 +1,8 @@
+== 인기 시리즈 API
+
+=== 인기 문제집 조회
+==== 요청
+include::{snippets}/ranks-workbooks-get-success/http-request.adoc[]
+
+==== 응답
+include::{snippets}/ranks-workbooks-get-success/http-response.adoc[]

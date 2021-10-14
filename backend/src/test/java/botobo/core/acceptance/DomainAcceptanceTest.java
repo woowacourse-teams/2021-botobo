@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -187,6 +188,23 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .build();
         final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
         유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+    }
+
+    protected void 카드와_좋아요도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken, List<String> heartUserTokens) {
+        카드도_함께_등록(workbookResponse, cardCount, accessToken);
+        좋아요도_함께_등록(workbookResponse, heartUserTokens);
+    }
+
+    protected void 카드도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken) {
+        Long workbookId = workbookResponse.getId();
+        IntStream.rangeClosed(1, cardCount)
+                .forEach(number -> 유저_카드_등록되어_있음("질문", "정답", workbookId, accessToken));
+    }
+
+    protected void 좋아요도_함께_등록(WorkbookResponse workbookResponse, List<String> heartUserTokens) {
+        Long workbookId = workbookResponse.getId();
+        heartUserTokens
+                .forEach(token -> 하트_토글_요청(workbookId, token));
     }
 
     protected WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, String accessToken) {
