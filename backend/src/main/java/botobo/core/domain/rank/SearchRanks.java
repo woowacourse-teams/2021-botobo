@@ -23,10 +23,9 @@ public class SearchRanks {
     }
 
     private SearchRank makeNewSearchRank(String keyword, int newRank) {
-        if (findRank(keyword).isEmpty()) {
-            return new SearchRank(keyword, newRank, null);
-        }
-        Integer change = findRank(keyword).get() - newRank;
+        Integer change = findRank(keyword)
+                .map(rank -> rank - newRank)
+                .orElse(null);
         return new SearchRank(keyword, newRank, change);
     }
 

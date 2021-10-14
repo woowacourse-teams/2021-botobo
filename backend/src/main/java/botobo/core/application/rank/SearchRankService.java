@@ -28,7 +28,6 @@ public class SearchRankService {
         this.searchScoreRepository = searchScoreRepository;
     }
 
-    @Transactional
     @Cacheable(SEARCH_RANKS_CACHE_VALUE)
     public List<SearchRankResponse> bringSearchRanks() {
         List<SearchRank> searchRanks = searchRankRepository.findAll();
