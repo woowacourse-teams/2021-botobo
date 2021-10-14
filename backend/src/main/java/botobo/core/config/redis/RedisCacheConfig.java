@@ -27,7 +27,7 @@ public class RedisCacheConfig {
         return builder -> builder
                 .withCacheConfiguration(
                         "workbookRanks",
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10))
                 );
     }
 }
