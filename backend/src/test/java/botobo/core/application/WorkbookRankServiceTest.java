@@ -8,6 +8,7 @@ import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,28 @@ class WorkbookRankServiceTest {
     @Autowired
     private WorkbookRankService workbookRankService;
 
+    private Workbook emptyWorkbook;
+    private Workbook workbookWithTags;
+    private Workbook workbookWithCards;
+
+    @BeforeEach
+    void setUp() {
+        emptyWorkbook = Workbook.builder()
+                .name("ozBook")
+                .opened(true)
+                .build();
+        workbookWithTags = Workbook.builder()
+                .name("joanneBook")
+                .opened(true)
+                .tags(Tags.of(List.of(Tag.of("java"), Tag.of("spring"))))
+                .build();
+        workbookWithCards = Workbook.builder()
+                .name("middleBearBook")
+                .opened(true)
+                .build();
+        workbookWithCards.addCards(generateTwoCards());
+    }
+
     @AfterEach
     void tearDown() {
         Cache workbookRanks = cacheManager.getCache("workbookRanks");
@@ -48,20 +71,6 @@ class WorkbookRankServiceTest {
     @DisplayName("인기 문제집 세 개를 가지고 온다 - 성공, 캐싱된 정보가 있으면 DB 조회를 하지 않고 캐싱된 것을 가지고 온다")
     void findWorkbookRanks() {
         // given
-        Workbook emptyWorkbook = Workbook.builder()
-                .name("ozBook")
-                .opened(true)
-                .build();
-        Workbook workbookWithTags = Workbook.builder()
-                .name("joanneBook")
-                .opened(true)
-                .tags(Tags.of(List.of(Tag.of("java"), Tag.of("spring"))))
-                .build();
-        Workbook workbookWithCards = Workbook.builder()
-                .name("middleBearBook")
-                .opened(true)
-                .build();
-        workbookWithCards.addCards(generateTwoCards());
         given(workbookSearchRepository.searchAll(
                 any(WorkbookSearchParameter.class)
         )).willReturn(List.of(emptyWorkbook, workbookWithTags, workbookWithCards));
@@ -73,6 +82,25 @@ class WorkbookRankServiceTest {
 
         // then
         then(workbookSearchRepository).should(times(1)).searchAll(
+                any(WorkbookSearchParameter.class)
+        );
+    }
+
+    @Test
+    @DisplayName("캐싱된 인기 문제집 제거 - 성공")
+    void removeWorkbookRanksCache() {
+        // given
+        given(workbookSearchRepository.searchAll(
+                any(WorkbookSearchParameter.class)
+        )).willReturn(List.of(emptyWorkbook, workbookWithTags, workbookWithCards));
+        workbookRankService.findWorkbookRanks();
+
+        // when
+        workbookRankService.removeWorkbookRanksCache();
+
+        // then
+        workbookRankService.findWorkbookRanks();
+        then(workbookSearchRepository).should(times(2)).searchAll(
                 any(WorkbookSearchParameter.class)
         );
     }
@@ -90,4 +118,3 @@ class WorkbookRankServiceTest {
         ));
     }
 }
-
