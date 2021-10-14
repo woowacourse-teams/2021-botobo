@@ -13,9 +13,11 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DataRedisTest
 @MockBean(JpaMetamodelMappingContext.class)
@@ -44,6 +46,19 @@ class SearchRankRepositoryTest {
 
         // then
         assertThat(searchRankRepository.count()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("비어있는 Collection 으로 데이터를 푸시한다 - 성공, 아무것도 푸시되지 않는다.")
+    void pushAllWithEmptyCollection() {
+        // given
+        assertThat(searchRankRepository.count()).isZero();
+
+        // when, then
+        assertThatCode(() -> searchRankRepository.pushAll(Collections.emptyList()))
+                .doesNotThrowAnyException();
+
+        assertThat(searchRankRepository.count()).isZero();
     }
 
     @Test

@@ -22,6 +22,9 @@ public class SearchRankRepository {
     }
 
     public void pushAll(Collection<SearchRank> searchRanks) {
+        if (searchRanks.isEmpty()) {
+            return;
+        }
         listOperations.rightPushAll(KEY, searchRanks);
     }
 
