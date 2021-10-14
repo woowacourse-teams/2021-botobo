@@ -15,15 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -50,6 +47,7 @@ class WorkbookRankServiceTest {
     @Test
     @DisplayName("인기 문제집 세 개를 가지고 온다 - 성공, 캐싱된 정보가 있으면 DB 조회를 하지 않고 캐싱된 것을 가지고 온다")
     void findWorkbookRanks() {
+        // given
         Workbook emptyWorkbook = Workbook.builder()
                 .name("ozBook")
                 .opened(true)
@@ -65,21 +63,17 @@ class WorkbookRankServiceTest {
                 .build();
         workbookWithCards.addCards(generateTwoCards());
         given(workbookSearchRepository.searchAll(
-                any(WorkbookSearchParameter.class),
-                anyList(),
-                anyList(),
-                any(PageRequest.class)
-        )).willReturn(new PageImpl<>(List.of(emptyWorkbook, workbookWithTags, workbookWithCards)));
+                any(WorkbookSearchParameter.class)
+        )).willReturn(List.of(emptyWorkbook, workbookWithTags, workbookWithCards));
 
+        // when
         workbookRankService.findWorkbookRanks();
         workbookRankService.findWorkbookRanks();
         workbookRankService.findWorkbookRanks();
 
+        // then
         then(workbookSearchRepository).should(times(1)).searchAll(
-                any(WorkbookSearchParameter.class),
-                anyList(),
-                anyList(),
-                any(PageRequest.class)
+                any(WorkbookSearchParameter.class)
         );
     }
 
