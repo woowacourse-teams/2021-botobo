@@ -56,8 +56,8 @@ class RankDocumentationTest extends DocumentationTest {
                         .heartCount(10)
                         .author("pkeugine")
                         .tags(List.of(
-                                TagResponse.builder().id(1L).name("java").build(),
-                                TagResponse.builder().id(2L).name("backend").build()
+                                TagResponse.builder().id(3L).name("java").build(),
+                                TagResponse.builder().id(4L).name("backend").build()
                         ))
                         .build(),
                 WorkbookResponse.builder()
@@ -67,8 +67,8 @@ class RankDocumentationTest extends DocumentationTest {
                         .heartCount(8)
                         .author("seovalue")
                         .tags(List.of(
-                                TagResponse.builder().id(3L).name("docker").build(),
-                                TagResponse.builder().id(4L).name("infrastructure").build()
+                                TagResponse.builder().id(5L).name("docker").build(),
+                                TagResponse.builder().id(6L).name("infrastructure").build()
                         ))
                         .build()
         );

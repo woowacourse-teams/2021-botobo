@@ -11,8 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 @Configuration
-// TODO BEAR 넣어야 하는지 확실히 모르곘다.
-//@EnableRedisRepositories(basePackages = "botobo.core.domain")
 public class RedisConfig {
 
     private final RedisProperties redisProperties;

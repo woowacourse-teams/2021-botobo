@@ -30,7 +30,6 @@ public class WorkbookRankService {
         this.workbookSearchRepository = workbookSearchRepository;
     }
 
-    @Transactional(readOnly = true)
     @Cacheable("workbookRanks")
     public List<WorkbookResponse> findWorkbookRanks() {
         WorkbookSearchParameter workbookSearchParameter = WorkbookSearchParameter.of(
