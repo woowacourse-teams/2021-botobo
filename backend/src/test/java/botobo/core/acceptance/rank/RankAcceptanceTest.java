@@ -59,7 +59,7 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
                 유저_태그포함_문제집_등록되어_있음("중간곰의 자바 기초 문제집", true, makeJavaTags(), bearToken),
                 1,
                 bearToken,
-                List.of(pkToken)
+                List.of(pkToken, joanneToken)
         );
         카드와_좋아요도_함께_등록(
                 유저_태그포함_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken),
@@ -72,6 +72,12 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
                 1,
                 bearToken,
                 List.of(ozToken, joanneToken)
+        );
+        카드와_좋아요도_함께_등록(
+                유저_태그포함_문제집_등록되어_있음("중간곰의 순위권 밖 문제집", true, makeJSTags(), bearToken),
+                1,
+                bearToken,
+                List.of(ozToken)
         );
     }
 
@@ -104,8 +110,8 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
                 .extracting(WorkbookResponse::getName)
                 .containsExactly(
                         "중간곰의 자바 중급 문제집",
-                        "중간곰의 자바스크립트 고급 문제집",
-                        "중간곰의 자바 기초 문제집"
+                        "중간곰의 자바 기초 문제집",
+                        "중간곰의 자바스크립트 고급 문제집"
                 );
 
     }
