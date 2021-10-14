@@ -19,4 +19,6 @@ include::tags.adoc[]
 
 include::users.adoc[]
 
+include::ranks.adoc[]
+
 include::errors.adoc[]
