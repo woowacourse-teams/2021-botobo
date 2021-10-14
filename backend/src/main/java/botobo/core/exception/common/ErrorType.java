@@ -13,6 +13,7 @@ import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.card.CardQuestionNullException;
 import botobo.core.exception.card.QuizEmptyException;
 import botobo.core.exception.http.InternalServerErrorException;
+import botobo.core.exception.search.ForbiddenSearchKeywordException;
 import botobo.core.exception.search.InvalidPageSizeException;
 import botobo.core.exception.search.InvalidPageStartException;
 import botobo.core.exception.search.InvalidSearchCriteriaException;
@@ -110,7 +111,7 @@ public enum ErrorType {
     S006("S006", "검색어는 null일 수 없습니다.", SearchKeywordNullException.class),
     S007("S007", "검색어는 30자 이하여야 합니다.", LongSearchKeywordException.class),
     S008("S008", "검색어는 1자 이상이어야 합니다.", ShortSearchKeywordException.class),
-    S009("S009", "금지어를 입력했습니다.", ShortSearchKeywordException.class),
+    S009("S009", "금지어를 입력했습니다.", ForbiddenSearchKeywordException.class),
 
     E001("E001", "서버에러", InternalServerErrorException.class),
     E002("E002", "파라미터를 입력해야 합니다.", ExternalException.class),
