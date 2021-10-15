@@ -27,7 +27,10 @@ public class RankAcceptanceTest extends AcceptanceTest {
         키워드로_여러번_검색_요청("java", 3);
         키워드로_여러번_검색_요청("react", 2);
         키워드로_여러번_검색_요청("spring", 1);
-        searchRankService.updateSearchRanks();
+        searchRankService.updateSearchRanks(
+                searchRankService.findSearchRanks(),
+                searchRankService.findKeywordRanks()
+        );
 
         // when
         final RequestBuilder.HttpResponse response = request()

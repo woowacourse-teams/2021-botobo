@@ -1,6 +1,6 @@
 package botobo.core.application;
 
-import botobo.core.domain.rank.SearchScoreRepository;
+import botobo.core.application.rank.SearchRankService;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.workbook.Workbook;
@@ -39,7 +39,7 @@ class SearchServiceTest {
     private WorkbookSearchRepository workbookSearchRepository;
 
     @Mock
-    private SearchScoreRepository searchScoreRepository;
+    private SearchRankService searchRankService;
 
     @InjectMocks
     private SearchService searchService;
@@ -117,7 +117,7 @@ class SearchServiceTest {
         searchService.searchWorkbooks(searchParameter, Collections.emptyList(), Collections.emptyList());
 
         // then
-        then(searchScoreRepository).should(times(1))
+        then(searchRankService).should(times(1))
                 .increaseScore(keyword);
     }
 
@@ -140,7 +140,7 @@ class SearchServiceTest {
         searchService.searchWorkbooks(searchParameter, Collections.emptyList(), Collections.emptyList());
 
         // then
-        then(searchScoreRepository).should(times(0))
+        then(searchRankService).should(times(0))
                 .increaseScore(keyword);
     }
 }

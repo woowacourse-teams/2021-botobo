@@ -31,8 +31,7 @@ public class RedisConfig {
     public StringRedisTemplate stringRedisTemplate() {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
-        // TODO : Transactional 을 지원하려면 넣어야하는 것 같은데 넣으면 문제가 생김..
-//        stringRedisTemplate.setEnableTransactionSupport(true);
+        stringRedisTemplate.setEnableTransactionSupport(true);
         return stringRedisTemplate;
     }
 
@@ -40,7 +39,7 @@ public class RedisConfig {
     public RedisTemplate<String, SearchRank> searchRankRedisTemplate() {
         RedisTemplate<String, SearchRank> searchRankRedisTemplate = new RedisTemplate<>();
         searchRankRedisTemplate.setConnectionFactory(redisConnectionFactory());
-//        searchRankRedisTemplate.setEnableTransactionSupport(true);
+        searchRankRedisTemplate.setEnableTransactionSupport(true);
         return searchRankRedisTemplate;
     }
 }

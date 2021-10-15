@@ -34,15 +34,15 @@ class SearchRankServiceTest {
 
     @BeforeEach
     void setUp() {
-        // 주석은 나중에 지우겠음
-        // 캐시를 지우고 이전 검색 기록이 있는 상황 (일반적인 상황)
-        // 으로 만들어 놓는다.
         getSearchRanksCache().clear();
         setScore("java", 10);
         setScore("spring", 5);
         setScore("react", 7);
         setScore("redis", 1);
-        searchRankService.updateSearchRanks();
+        searchRankService.updateSearchRanks(
+                searchRankService.findSearchRanks(),
+                searchRankService.findKeywordRanks()
+        );
     }
 
     @AfterEach
@@ -54,14 +54,12 @@ class SearchRankServiceTest {
     @DisplayName("검색 순위를 가져온다 - 성공")
     void bringSearchRanks() {
         // given
-        // 검색 이전에는 캐시가 비어있다.
         assertThat(isCacheEmpty()).isTrue();
 
         // when
         List<SearchRankResponse> searchRankResponses = searchRankService.bringSearchRanks();
 
         // then
-        // 검색 후 캐시가 채워진다.
         assertThat(isCacheEmpty()).isFalse();
 
         assertThat(searchRankResponses).extracting(SearchRankResponse::getKeyword)
@@ -76,7 +74,6 @@ class SearchRankServiceTest {
     @DisplayName("검색 순위를 업데이트한다 - 성공")
     void updateSearchRanks() {
         // given
-        // update를 하면 캐시가 지워진다는 것을 테스트하기 위해 캐시를 채워 놓는다.
         searchRankService.bringSearchRanks();
         assertThat(isCacheEmpty()).isFalse();
 
@@ -86,10 +83,12 @@ class SearchRankServiceTest {
         setScore("spring", 1);
 
         // when
-        searchRankService.updateSearchRanks();
+        searchRankService.updateSearchRanks(
+                searchRankService.findSearchRanks(),
+                searchRankService.findKeywordRanks()
+        );
 
         // then
-        // update 후에는 캐시가 비워져 있다.
         assertThat(isCacheEmpty()).isTrue();
 
         List<SearchRankResponse> searchRankResponses = searchRankService.bringSearchRanks();
@@ -106,7 +105,6 @@ class SearchRankServiceTest {
     }
 
     private boolean isCacheEmpty() {
-        // 이것보다 더 좋은 방법 없나 ?
         Map<Object, Object> map = (Map<Object, Object>) getSearchRanksCache().getNativeCache();
         return map.isEmpty();
     }

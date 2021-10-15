@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Conditional(RankSchedulerCondition.class)
+
 @Profile({"local", "dev", "prod"})
+@Conditional(RankSchedulerCondition.class)
 @Component
 public class RankScheduler {
 
@@ -19,6 +20,9 @@ public class RankScheduler {
 
     @Scheduled(cron = "0 0 4 * * *")
     public void updateSearchRanks() {
-        searchRankService.updateSearchRanks();
+        searchRankService.updateSearchRanks(
+                searchRankService.findSearchRanks(),
+                searchRankService.findKeywordRanks()
+        );
     }
 }
