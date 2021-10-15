@@ -1,5 +1,5 @@
 import { CardResponse, CardsResponse, PublicCardsResponse } from './../types';
-import { request } from './request';
+import { noAuthorization, request } from './request';
 
 interface PostCardAsync {
   question: string;
@@ -35,7 +35,8 @@ export const deleteCardAsync = async (id: number) => {
 
 export const getPublicCardsAsync = async (publicWorkbookId: number) => {
   const { data } = await request.get<PublicCardsResponse>(
-    `/workbooks/public/${publicWorkbookId}`
+    `/workbooks/public/${publicWorkbookId}`,
+    { headers: noAuthorization }
   );
 
   return data;

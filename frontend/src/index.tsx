@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil';
 
 import App from './App';
 import { STORAGE_KEY } from './constants';
-import { userState, workbookState } from './recoil';
+import { initRecoilStateWithSsr } from './recoil';
 
 const cache = createCache({ key: STORAGE_KEY.EMOTION_KEY });
 
@@ -19,12 +19,7 @@ ReactDOM.hydrate(
   <BrowserRouter>
     <CacheProvider value={cache}>
       <RecoilRoot
-        initializeState={({ set }) => {
-          if (!initialState) return;
-
-          set(userState, initialState.userInfo);
-          set(workbookState, initialState.workbookInfo);
-        }}
+        initializeState={({ set }) => initRecoilStateWithSsr(set, initialState)}
       >
         <App />
       </RecoilRoot>
