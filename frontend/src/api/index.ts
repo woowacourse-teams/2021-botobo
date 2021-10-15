@@ -40,3 +40,8 @@ export {
   getTagKeywordAsync,
   getSearchResultAsync,
 } from './search';
+
+export {
+  getRankingWorkbooksAsync,
+  getRankingSearchKeywordAsync,
+} from './ranks';

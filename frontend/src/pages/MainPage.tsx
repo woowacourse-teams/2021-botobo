@@ -23,7 +23,13 @@ import PageTemplate from './PageTemplate';
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, deleteWorkbook, updateWorkbooks } = useWorkbook();
+  const {
+    workbooks,
+    rankingWorkbooks,
+    rankingSearchKeywords,
+    deleteWorkbook,
+    updateWorkbooks,
+  } = useWorkbook();
   const {
     routeWorkbookAdd,
     routeWorkbookEdit,
@@ -58,100 +64,56 @@ const MainPage = () => {
         </Banner>
         <QuizStarter workbooks={workbooks} />
         <PopularWrapper>
-          <div>
-            <Title>인기 검색어</Title>
-            <PopularSearchKeywordList>
-              <li>
-                <PopularSearchKeywordButton
-                  shape="round"
-                  color="black"
-                  backgroundColor="gold"
-                  onClick={async () => {
-                    await resetSearchResult();
-                    routePublicSearchResultQuery({
-                      keyword: 'Java',
-                      method: 'push',
-                    });
-                  }}
-                >
-                  # Java
-                </PopularSearchKeywordButton>
-              </li>
-              <li>
-                <PopularSearchKeywordButton
-                  shape="round"
-                  color="black"
-                  backgroundColor="silver"
-                  onClick={async () => {
-                    await resetSearchResult();
-                    routePublicSearchResultQuery({
-                      keyword: 'Javascript',
-                      method: 'push',
-                    });
-                  }}
-                >
-                  # Javascript
-                </PopularSearchKeywordButton>
-              </li>
-              <li>
-                <PopularSearchKeywordButton
-                  shape="round"
-                  color="black"
-                  backgroundColor="bronze"
-                  onClick={() => {
-                    resetSearchResult();
-                    routePublicSearchResultQuery({
-                      keyword: '자스',
-                      method: 'push',
-                    });
-                  }}
-                >
-                  # 자스
-                </PopularSearchKeywordButton>
-              </li>
-            </PopularSearchKeywordList>
-          </div>
-          <div>
-            <Title>인기 문제집</Title>
-            <PopularWorkbookList>
-              <li>
-                <Workbook
-                  heartCount={100}
-                  tags={[{ id: 1, name: '자바' }]}
-                  name="자바"
-                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
-                  cardCount={24}
-                  author="카일"
-                  ranking={1}
-                />
-              </li>
-              <li>
-                <Workbook
-                  heartCount={100}
-                  tags={[{ id: 1, name: '자바' }]}
-                  name="자바"
-                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
-                  cardCount={24}
-                  author="카일"
-                  ranking={2}
-                />
-              </li>
-              <li>
-                <Workbook
-                  heartCount={100}
-                  tags={[{ id: 1, name: '자바' }]}
-                  name="자바"
-                  path={`${ROUTE.PUBLIC_CARDS.PATH}/1`}
-                  cardCount={24}
-                  author="카일"
-                  ranking={3}
-                />
-              </li>
-              <PopularWorkbookText>
-                인기 문제집의 주인공이 되어보세요!
-              </PopularWorkbookText>
-            </PopularWorkbookList>
-          </div>
+          {rankingSearchKeywords.length > 0 && (
+            <div>
+              <Title>인기 검색어</Title>
+              <PopularSearchKeywordList>
+                {rankingSearchKeywords.map(({ rank, keyword }) => (
+                  <li key={rank}>
+                    <PopularSearchKeywordButton
+                      shape="round"
+                      color="black"
+                      backgroundColor={
+                        rank === 1 ? 'gold' : rank === 2 ? 'silver' : 'bronze'
+                      }
+                      onClick={async () => {
+                        await resetSearchResult();
+                        routePublicSearchResultQuery({
+                          keyword,
+                          method: 'push',
+                        });
+                      }}
+                    >
+                      <span># {keyword}</span>
+                    </PopularSearchKeywordButton>
+                  </li>
+                ))}
+              </PopularSearchKeywordList>
+            </div>
+          )}
+          {rankingWorkbooks.length > 0 && (
+            <div>
+              <Title>인기 문제집</Title>
+              <PopularWorkbookList>
+                {rankingWorkbooks.map(({ id, ...rest }, index) => {
+                  const rank = (index + 1) as 1 | 2 | 3;
+
+                  return (
+                    <li key={id}>
+                      <Workbook
+                        path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+                        ranking={rank}
+                        {...rest}
+                      />
+                    </li>
+                  );
+                })}
+                <PopularWorkbookText>
+                  인기 문제집의 주인공이 되어보세요!
+                </PopularWorkbookText>
+              </PopularWorkbookList>
+            </div>
+          )}
         </PopularWrapper>
         <section>
           <WorkbookHeader>
