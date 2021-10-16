@@ -27,7 +27,7 @@ public class SearchRankService {
         this.searchScoreRepository = searchScoreRepository;
     }
 
-    @Cacheable(value = SEARCH_RANKS_CACHE_VALUE, key = "'SimpleKey'")
+    @Cacheable(value = SEARCH_RANKS_CACHE_VALUE, key = "'SearchRanksKey'")
     public List<SearchRankResponse> bringSearchRanks() {
         List<SearchRank> searchRanks = findSearchRanks();
         return SearchRankResponse.listOf(searchRanks);
@@ -46,7 +46,7 @@ public class SearchRankService {
 
     // 이 메서드에서 예외가 발생하면 deleteAll, pushAll은 레디스에 당연히 반영 안 되고, Cache도 지워지지 않는 것을 확인하였음
     @Transactional
-    @CacheEvict(value = SEARCH_RANKS_CACHE_VALUE, key = "'SimpleKey'")
+    @CacheEvict(value = SEARCH_RANKS_CACHE_VALUE, key = "'SearchRanksKey'")
     public void updateSearchRanks(List<SearchRank> oldSearchRankList, Set<String> newKeywordRanks) {
         SearchRanks oldSearchRanks = new SearchRanks(oldSearchRankList);
         searchRankRepository.deleteAll();
