@@ -7,7 +7,7 @@
               value="%t{yy-MM-dd} %t{HH:mm:ss} [HTTP REQUEST] [%requestMethod] [%localIP]
 \n%t{yy-MM-dd} %t{HH:mm:ss} [HTTP RESPONSE] [%statusCode] [%remoteIP]%n%n[FULL REQUEST]%n%fullRequest[FULL RESPONSE]%n%fullResponse"/>
 
-    <springProfile name="test, local">
+    <springProfile name="test, local, local-mariadb">
         <include resource="logback/http-console-appender.xml"/>
         <appender-ref ref="HTTP_CONSOLE"/>
     </springProfile>
