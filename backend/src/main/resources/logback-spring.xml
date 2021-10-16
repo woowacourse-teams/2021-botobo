@@ -11,7 +11,7 @@
     <property name="BOTOBO_FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss}:%-4relative [%C.%M]:%L] %n    > %msg%n"/>
 
-    <springProfile name="test, local">
+    <springProfile name="test, local, local-mariadb">
         <include resource="logback/console-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
