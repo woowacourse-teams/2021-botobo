@@ -48,6 +48,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**", PathMethod.ANY)
                 .excludePathPatterns("/", PathMethod.GET)
                 .excludePathPatterns("/index.html", PathMethod.GET)
+                .excludePathPatterns("/favicon.ico", PathMethod.GET)
+                .excludePathPatterns("/error", PathMethod.GET)
                 .excludePathPatterns("/**", PathMethod.OPTIONS)
                 .excludePathPatterns("/infra/**", PathMethod.GET)
                 .excludePathPatterns("/quizzes/**", PathMethod.GET)

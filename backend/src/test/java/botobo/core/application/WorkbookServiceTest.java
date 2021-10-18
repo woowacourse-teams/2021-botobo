@@ -181,6 +181,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getWorkbookOpened()).isTrue();
         assertThat(response.getHeart()).isTrue();
 
         then(workbookRepository).should(times(1))
@@ -215,6 +216,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getWorkbookOpened()).isTrue();
         assertThat(response.getHeart()).isFalse();
 
         then(workbookRepository).should(times(1))
@@ -265,7 +267,7 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("유저가 문제집 카드 모아보기 - 성공")
+    @DisplayName("유저의 문제집 카드 모아보기 - 성공")
     void findWorkbookCardsById() {
         // given
         Workbook workbook = Workbook.builder()
@@ -300,6 +302,7 @@ class WorkbookServiceTest {
         // then
         assertThat(workbookCardResponse.getWorkbookId()).isEqualTo(workbook.getId());
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbook.getName());
+        assertThat(workbookCardResponse.getWorkbookOpened()).isTrue();
         assertThat(workbookCardResponse.getCards()).hasSize(2);
 
         then(userRepository).should(times(1))

@@ -9,19 +9,12 @@ import {
   postCardAsync,
   putCardAsync,
 } from '../api';
+import { cardsInitialState } from '../recoil/initialState';
 import { CardResponse, CardsResponse } from '../types';
 import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useModal from './useModal';
 import useSnackbar from './useSnackbar';
-
-const cardsInitialState = {
-  workbookId: -1,
-  workbookName: '',
-  heartCount: 0,
-  tags: [],
-  cards: [],
-};
 
 const useCard = () => {
   const param: IdParam = useParams();
@@ -32,7 +25,7 @@ const useCard = () => {
   );
 
   const [cardInfo, setCardInfo] = useState<CardsResponse>(cardsInitialState);
-  const { workbookName, cards, heartCount, tags } = cardInfo;
+  const { workbookName, workbookOpened, cards, heartCount, tags } = cardInfo;
 
   const deletedCardId = useRef(-1);
 
@@ -47,7 +40,7 @@ const useCard = () => {
       setCardInfo(newCardInfo);
       setIsLoading(false);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, getCards);
       setIsLoading(false);
     }
   };
@@ -61,7 +54,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 추가되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, createCard.bind(null, question, answer));
     }
   };
 
@@ -81,7 +74,7 @@ const useCard = () => {
       closeModal();
       showSnackbar({ message: '1장의 카드가 수정되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, editCard.bind(null, info));
     }
   };
 
@@ -99,7 +92,7 @@ const useCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '1장의 카드가 삭제되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, deleteCard.bind(null, id));
     }
   };
 
@@ -107,7 +100,7 @@ const useCard = () => {
     try {
       await putCardAsync(info);
     } catch (error) {
-      errorHandler(error);
+      await errorHandler(error, toggleBookmark.bind(null, info));
     }
   };
 
@@ -118,6 +111,7 @@ const useCard = () => {
   return {
     workbookId,
     workbookName,
+    workbookOpened,
     cards,
     heartCount,
     tags,
