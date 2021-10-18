@@ -28,7 +28,8 @@ public class RankScheduler {
         workbookRankService.removeWorkbookRanksCache();
     }
 
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
     public void updateSearchRanks() {
         searchRankService.updateSearchRanks(
                 searchRankService.findSearchRanks(),
