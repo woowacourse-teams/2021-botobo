@@ -32,7 +32,7 @@ class UserDocumentationTest extends DocumentationTest {
     private UserService userService;
 
     @Test
-    @DisplayName("현재 로그인 한 유저 조회 - 성공")
+    @DisplayName("회원 정보 조회 - 성공")
     void findUserOfMine() throws Exception {
         UserResponse userResponse = UserResponse.builder()
                 .id(1L)
@@ -53,7 +53,7 @@ class UserDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("유저의 프로필 이미지 수정 - 성공")
+    @DisplayName("프로필 이미지 수정 - 성공")
     void updateProfile() throws Exception {
         ProfileResponse profileResponse = ProfileResponse.builder()
                 .profileUrl("https://cloudfront.com/users/user/aaabbbccc_210807.png")
@@ -122,7 +122,7 @@ class UserDocumentationTest extends DocumentationTest {
                 .identifier("users-name-check-post-success");
     }
 
-    @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공")
+    @DisplayName("문제집명을 포함한 문제집의 유저 조회 - 성공")
     @Test
     void findAllUsersByWorkbookName() throws Exception {
         // given

@@ -71,7 +71,7 @@ const useQuizSetting = () => {
       resetQuizTime();
       routeQuiz();
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, startQuiz.bind(null, { count, isTimeChecked }));
     }
   };
 

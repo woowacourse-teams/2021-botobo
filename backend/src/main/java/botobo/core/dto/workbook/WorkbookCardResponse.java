@@ -58,6 +58,7 @@ public class WorkbookCardResponse {
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
+                .workbookOpened(workbook.isOpened())
                 .cardCount(workbook.cardCount())
                 .heartCount(workbook.heartCount())
                 .heart(heart)

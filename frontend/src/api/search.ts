@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { PublicWorkbookResponse, SearchKeywordResponse } from './../types';
-import { cancelController, request } from './request';
+import { cancelController, noAuthorization, request } from './request';
 import { PublicWorkbookAsync } from './workbook';
 
 export const getTagsFromWorkbookAsync = async (keyword: string) => {
@@ -9,6 +9,7 @@ export const getTagsFromWorkbookAsync = async (keyword: string) => {
   params.append('workbook', keyword);
 
   const { data } = await request.get<SearchKeywordResponse[]>('/tags', {
+    headers: noAuthorization,
     params,
   });
 
@@ -20,6 +21,7 @@ export const getUsersFromWorkbookAsync = async (keyword: string) => {
   params.append('workbook', keyword);
 
   const { data } = await request.get<SearchKeywordResponse[]>('/users', {
+    headers: noAuthorization,
     params,
   });
 
@@ -36,6 +38,7 @@ export const getTagKeywordAsync = async (keyword: string) => {
     const { data } = await request.get<SearchKeywordResponse[]>(
       '/search/tags',
       {
+        headers: noAuthorization,
         params,
         cancelToken: new axios.CancelToken((token) => {
           cancelController.searchCancel = token;
@@ -73,6 +76,7 @@ export const getSearchResultAsync = async ({
     const { data } = await request.get<PublicWorkbookResponse[]>(
       '/search/workbooks',
       {
+        headers: noAuthorization,
         params,
         cancelToken: new axios.CancelToken((token) => {
           cancelController.tagCancel = token;

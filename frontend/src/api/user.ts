@@ -1,6 +1,11 @@
 import { removeCookie, setCookie } from './../utils';
 import { STORAGE_KEY } from '../constants';
-import { AccessTokenResponse, AuthType, UserInfoResponse } from '../types';
+import {
+  AccessTokenResponse,
+  AuthType,
+  RefreshTokenWithSsr,
+  UserInfoResponse,
+} from '../types';
 import { request } from './request';
 
 interface PutHeartAsync {
@@ -22,13 +27,37 @@ export const getAccessTokenAsync = async (
   return accessToken;
 };
 
+export const getRefreshUserTokenAsync = async () => {
+  const {
+    data: { accessToken },
+  } = await request.get<AccessTokenResponse>(`/token`);
+
+  setCookie(STORAGE_KEY.TOKEN, accessToken, 3600);
+
+  request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+  return accessToken;
+};
+
+export const getRefreshTokenWithSsr = async () => {
+  const {
+    data: { refreshTokenCookieInfo, accessToken },
+  } = await request.get<AccessTokenResponse & RefreshTokenWithSsr>(
+    `/token/ssr`
+  );
+
+  return { refreshTokenCookieInfo, accessToken };
+};
+
 export const getUserInfoAsync = async () => {
   const { data } = await request.get<UserInfoResponse>('/users/me');
 
   return data;
 };
 
-export const postLogoutAsync = async () => {
+export const getLogoutAsync = async () => {
+  await request.get('/logout');
+
   removeCookie(STORAGE_KEY.TOKEN);
 
   request.defaults.headers.common['Authorization'] = '';

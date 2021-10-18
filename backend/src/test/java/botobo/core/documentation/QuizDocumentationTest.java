@@ -25,7 +25,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     private QuizService quizService;
 
     @Test
-    @DisplayName("문제집 id(Long)를 이용해서 퀴즈 생성 - 성공")
+    @DisplayName("퀴즈 생성 - 성공")
     void createQuiz() throws Exception {
         // given
         QuizRequest quizRequest = new QuizRequest(Arrays.asList(1L, 2L, 3L), 10);
@@ -42,7 +42,7 @@ public class QuizDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("문제집에서 바로 풀기 - 성공")
+    @DisplayName("문제집에서 퀴즈 생성 - 성공")
     void createQuizFromWorkbook() throws Exception {
         // given
         Long workbookId = 1L;
