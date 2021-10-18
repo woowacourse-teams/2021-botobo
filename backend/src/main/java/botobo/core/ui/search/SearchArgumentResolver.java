@@ -19,16 +19,16 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         Map<String, String> parameterMap = extractMap(request);
 
-        return WorkbookSearchParameter.builder()
-                .searchKeyword(parameterMap.getOrDefault("keyword", null))
-                .searchCriteria(parameterMap.getOrDefault("criteria", null))
-                .start(parameterMap.getOrDefault("start", null))
-                .size(parameterMap.getOrDefault("size", null))
-                .build();
+        return WorkbookSearchParameter.ofRequest(
+                parameterMap.getOrDefault("criteria", null),
+                parameterMap.getOrDefault("keyword", null),
+                parameterMap.getOrDefault("start", null),
+                parameterMap.getOrDefault("size", null)
+        );
     }
 
     private Map<String, String> extractMap(HttpServletRequest request) {

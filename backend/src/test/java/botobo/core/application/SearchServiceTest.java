@@ -8,6 +8,7 @@ import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.ui.search.SearchRelated;
 import botobo.core.ui.search.WorkbookSearchParameter;
+import botobo.core.utils.WorkbookSearchParameterUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -104,7 +105,7 @@ class SearchServiceTest {
     void searchWorkbooksWithIncreaseScore() {
         // given
         String keyword = "java";
-        WorkbookSearchParameter searchParameter = WorkbookSearchParameter.builder().searchKeyword(keyword).build();
+        WorkbookSearchParameter searchParameter = WorkbookSearchParameterUtils.builder().searchKeyword(keyword).build();
         PageRequest pageRequest = searchParameter.toPageRequest();
 
         Page<Workbook> mockPage = mock(Page.class);
@@ -126,7 +127,7 @@ class SearchServiceTest {
     void searchWorkbooksWithKeepScore() {
         // given
         String keyword = "java";
-        WorkbookSearchParameter searchParameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter searchParameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword(keyword).start("2").build();
         PageRequest pageRequest = searchParameter.toPageRequest();
 

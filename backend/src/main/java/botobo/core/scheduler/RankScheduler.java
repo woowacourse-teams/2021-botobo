@@ -1,6 +1,8 @@
 package botobo.core.scheduler;
 
+import botobo.core.application.WorkbookRankService;
 import botobo.core.application.rank.SearchRankService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,10 +14,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class RankScheduler {
 
+    private final WorkbookRankService workbookRankService;
     private final SearchRankService searchRankService;
 
-    public RankScheduler(SearchRankService searchRankService) {
+    public RankScheduler(WorkbookRankService workbookRankService, SearchRankService searchRankService) {
+        this.workbookRankService = workbookRankService;
         this.searchRankService = searchRankService;
+    }
+
+    @Scheduled(cron = "0 0/10 * * * *")
+    @CacheEvict("workbookRanks")
+    public void updateWorkbookRanks() {
+        workbookRankService.removeWorkbookRanksCache();
     }
 
     @Scheduled(cron = "0 0 4 * * *")

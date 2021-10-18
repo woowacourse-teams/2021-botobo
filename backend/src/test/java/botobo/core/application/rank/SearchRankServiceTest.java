@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -24,7 +25,8 @@ class SearchRankServiceTest {
     private static final String SEARCH_RANKS_CACHE_VALUE = "SearchRanks";
 
     @Autowired
-    private CacheManager cacheManager;
+    @Qualifier("concurrentMapCacheManager")
+    private CacheManager concurrentMapCacheManager;
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
@@ -101,7 +103,7 @@ class SearchRankServiceTest {
     }
 
     private Cache getSearchRanksCache() {
-        return cacheManager.getCache(SEARCH_RANKS_CACHE_VALUE);
+        return concurrentMapCacheManager.getCache(SEARCH_RANKS_CACHE_VALUE);
     }
 
     private boolean isCacheEmpty() {
