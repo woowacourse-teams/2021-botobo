@@ -2,6 +2,7 @@ package botobo.core.ui.auth;
 
 import botobo.core.application.AuthService;
 import botobo.core.dto.auth.LoginRequest;
+import botobo.core.dto.auth.SsrTokenResponse;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.infrastructure.auth.JwtRefreshTokenInfo;
 import botobo.core.infrastructure.auth.JwtTokenType;
@@ -63,6 +64,22 @@ public class AuthController {
                 .path("/")
                 .maxAge(jwtRefreshTokenInfo.getValidityInSeconds().intValue())
                 .build();
+    }
+
+    @GetMapping("/token/ssr")
+    public ResponseEntity<SsrTokenResponse> renewTokenForSsr(
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+
+        authService.validateRefreshToken(refreshToken);
+        Long id = authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
+        String accessToken = authService.renewAccessToken(id).getAccessToken();
+        String refreshTokenCookieInfo = createRefreshTokenCookie(id).toString();
+        return ResponseEntity.ok(
+                SsrTokenResponse.of(
+                        accessToken,
+                        refreshTokenCookieInfo
+                )
+        );
     }
 
     @GetMapping("/logout")

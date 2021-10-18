@@ -88,6 +88,31 @@ class LoginDocumentationTest extends DocumentationTest {
     }
 
     @Test
+    @DisplayName("리프레시 토큰을 이용하여 액세스 토큰 재발급 - 성공")
+    void renewTokenForSsr() throws Exception {
+        //given
+        String refreshToken = "botobo.refresh.token";
+        String renewedAccessToken = "new.access.token";
+        String renewedRefreshToken = "new.refresh.token";
+        Long id = authenticatedUser().getId();
+        given(authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN)).willReturn(id);
+        given(authService.renewAccessToken(id)).willReturn(
+                TokenResponse.of(renewedAccessToken)
+        );
+        given(authService.createRefreshToken(id)).willReturn(renewedRefreshToken);
+        given(jwtRefreshTokenInfo.getValidityInSeconds()).willReturn(1000L);
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/token/ssr")
+                .cookie(new Cookie("BTOKEN_REFRESH", refreshToken))
+                .build()
+                .status(status().isOk())
+                .identifier("ssr-token-get-success");
+    }
+
+    @Test
     @DisplayName("로그아웃 - 성공")
     void logout() throws Exception {
         //given

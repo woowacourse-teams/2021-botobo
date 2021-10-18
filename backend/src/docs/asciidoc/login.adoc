@@ -24,6 +24,19 @@ include::{snippets}/token-get-success/http-response.adoc[]
 
 |===
 
+=== SSR을 위한 토큰 재발급
+==== 요청
+include::{snippets}/ssr-token-get-success/http-request.adoc[]
+
+==== 응답
+include::{snippets}/ssr-token-get-success/http-response.adoc[]
+|===
+| 파라미터 | 설명
+
+| BTOKEN_REFRESH | Refresh Token. (필수)
+
+|===
+
 === 로그아웃
 ==== 요청
 include::{snippets}/logout-get-success/http-request.adoc[]
