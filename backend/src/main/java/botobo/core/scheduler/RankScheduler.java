@@ -1,52 +1,38 @@
 package botobo.core.scheduler;
 
 import botobo.core.application.WorkbookRankService;
-import org.springframework.beans.factory.annotation.Value;
+import botobo.core.application.rank.SearchRankService;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
+@Profile({"local", "dev", "prod"})
+@Conditional(RankSchedulerCondition.class)
 @Component
 public class RankScheduler {
 
-    @Value("${spring.config.activate.on-profile}")
-    private String profileName;
-
-    @Value("${rank.scheduler.hostname:}")
-    private String hostName;
-
     private final WorkbookRankService workbookRankService;
+    private final SearchRankService searchRankService;
 
-    public RankScheduler(WorkbookRankService workbookRankService) {
+    public RankScheduler(WorkbookRankService workbookRankService, SearchRankService searchRankService) {
         this.workbookRankService = workbookRankService;
-    }
-
-    @Scheduled(cron = "0 0 4 * * *")
-    public void updateRanks() {
-
+        this.searchRankService = searchRankService;
     }
 
     @Scheduled(cron = "0 0/10 * * * *")
     @CacheEvict("workbookRanks")
     public void updateWorkbookRanks() {
-        if (isLocalProfile() || isIntendedHostName()) {
-            workbookRankService.removeWorkbookRanksCache();
-        }
+        workbookRankService.removeWorkbookRanksCache();
     }
 
-    private boolean isLocalProfile() {
-        return "local".equals(profileName);
-    }
-
-    private boolean isIntendedHostName() {
-        try {
-            String runningHostName = InetAddress.getLocalHost().getHostName();
-            return hostName.equals(runningHostName);
-        } catch (UnknownHostException e) {
-            return false;
-        }
+    @Scheduled(cron = "0 0 4 * * *")
+    public void updateSearchRanks() {
+        searchRankService.updateSearchRanks(
+                searchRankService.findSearchRanks(),
+                searchRankService.findKeywordRanks()
+        );
     }
 }

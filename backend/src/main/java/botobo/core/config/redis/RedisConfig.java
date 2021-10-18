@@ -1,6 +1,6 @@
 package botobo.core.config.redis;
 
-import botobo.core.dto.workbook.WorkbookResponse;
+import botobo.core.domain.rank.SearchRank;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,16 +28,18 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, WorkbookResponse> workbookResponseRedisTemplate() {
-        RedisTemplate<String, WorkbookResponse> workbookResponseRedisTemplate = new RedisTemplate<>();
-        workbookResponseRedisTemplate.setConnectionFactory(redisConnectionFactory());
-        return workbookResponseRedisTemplate;
-    }
-
-    @Bean
     public StringRedisTemplate stringRedisTemplate() {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
+        stringRedisTemplate.setEnableTransactionSupport(true);
         return stringRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, SearchRank> searchRankRedisTemplate() {
+        RedisTemplate<String, SearchRank> searchRankRedisTemplate = new RedisTemplate<>();
+        searchRankRedisTemplate.setConnectionFactory(redisConnectionFactory());
+        searchRankRedisTemplate.setEnableTransactionSupport(true);
+        return searchRankRedisTemplate;
     }
 }

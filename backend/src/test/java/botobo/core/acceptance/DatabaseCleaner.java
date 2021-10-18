@@ -1,7 +1,9 @@
 package botobo.core.acceptance;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.google.common.base.CaseFormat;
@@ -19,6 +21,9 @@ public class DatabaseCleaner implements InitializingBean {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     private List<String> tableNames;
 
@@ -38,6 +43,7 @@ public class DatabaseCleaner implements InitializingBean {
                 tableName -> executeQueryWithTable(tableName)
         );
         entityManager.createNativeQuery("SET foreign_key_checks = 1;").executeUpdate();
+        redisConnectionFactory.getConnection().flushAll();
     }
 
     private void executeQueryWithTable(String tableName) {
