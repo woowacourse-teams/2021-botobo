@@ -21,4 +21,6 @@ include::users.adoc[]
 
 include::infra.adoc[]
 
+include::ranks.adoc[]
+
 include::errors.adoc[]
