@@ -2,6 +2,7 @@ package botobo.core.exception.common;
 
 import botobo.core.exception.BotoboException;
 import botobo.core.exception.ExternalException;
+import botobo.core.exception.auth.AccessTokenRenewalException;
 import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.TokenExpirationException;
@@ -12,6 +13,7 @@ import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.card.CardQuestionNullException;
 import botobo.core.exception.card.QuizEmptyException;
 import botobo.core.exception.http.InternalServerErrorException;
+import botobo.core.exception.search.ForbiddenSearchKeywordException;
 import botobo.core.exception.search.InvalidPageSizeException;
 import botobo.core.exception.search.InvalidPageStartException;
 import botobo.core.exception.search.InvalidSearchCriteriaException;
@@ -52,6 +54,7 @@ public enum ErrorType {
     A005("A005", "유저정보를 불러오는데 실패했습니다.", UserProfileLoadFailedException.class),
     A006("A006", "Admin 권한이 아니기에 접근할 수 없습니다.", NotAdminException.class),
     A007("A007", "존재하지 않는 소셜 로그인 방식입니다.", SocialTypeNotFoundException.class),
+    A008("A008", "액세스 토큰 재발급이 필요합니다.", AccessTokenRenewalException.class),
 
     U001("U001", "해당 유저를 찾을 수 없습니다.", UserNotFoundException.class),
     U002("U002", "프로필 이미지 수정은 불가합니다.", ProfileUpdateNotAllowedException.class),
@@ -108,10 +111,11 @@ public enum ErrorType {
     S006("S006", "검색어는 null일 수 없습니다.", SearchKeywordNullException.class),
     S007("S007", "검색어는 30자 이하여야 합니다.", LongSearchKeywordException.class),
     S008("S008", "검색어는 1자 이상이어야 합니다.", ShortSearchKeywordException.class),
-    S009("S009", "금지어를 입력했습니다.", ShortSearchKeywordException.class),
+    S009("S009", "금지어를 입력했습니다.", ForbiddenSearchKeywordException.class),
 
     E001("E001", "서버에러", InternalServerErrorException.class),
     E002("E002", "파라미터를 입력해야 합니다.", ExternalException.class),
+
     X001("X001", "정의되지 않은 에러", UndefinedException.class),
     ;
 

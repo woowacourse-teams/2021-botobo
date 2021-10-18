@@ -1,6 +1,6 @@
 import { useSetRecoilState } from 'recoil';
 
-import { postLogoutAsync } from '../api';
+import { getLogoutAsync } from '../api';
 import { shouldWorkbookUpdateState, userState } from '../recoil';
 import { useRouter } from '.';
 
@@ -11,7 +11,7 @@ const useLogout = () => {
 
   const logout = async ({ isRouteMain = false } = {}) => {
     try {
-      await postLogoutAsync();
+      await getLogoutAsync();
       setUserInfo(null);
       setIsWorkbookUpdate(true);
       isRouteMain && routeMain();

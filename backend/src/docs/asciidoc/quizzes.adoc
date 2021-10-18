@@ -1,12 +1,18 @@
 == 퀴즈 API
 
-=== 퀴즈 생성하기
+=== 퀴즈 생성
 ==== 요청
 include::{snippets}/quizzes-post-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/quizzes-post-success/http-response.adoc[]
 
-=== 비회원용 퀴즈 생성하기
+=== 문제집에서 퀴즈 생성
+==== 요청
+include::{snippets}/quizzes-from-workbook-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/quizzes-from-workbook-get-success/http-response.adoc[]
+
+=== 비회원용 퀴즈 생성
 ==== 요청
 include::{snippets}/quizzes-guest-get-success/http-request.adoc[]
 ==== 응답

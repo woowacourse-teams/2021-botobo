@@ -1,7 +1,9 @@
 package botobo.core.acceptance;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.google.common.base.CaseFormat;
@@ -20,6 +22,9 @@ public class DatabaseCleaner implements InitializingBean {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+
     private List<String> tableNames;
 
     @Override
@@ -33,16 +38,17 @@ public class DatabaseCleaner implements InitializingBean {
     @Transactional
     public void execute() {
         entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        entityManager.createNativeQuery("SET foreign_key_checks = 0;").executeUpdate();
         tableNames.forEach(
                 tableName -> executeQueryWithTable(tableName)
         );
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        entityManager.createNativeQuery("SET foreign_key_checks = 1;").executeUpdate();
+        redisConnectionFactory.getConnection().flushAll();
     }
 
     private void executeQueryWithTable(String tableName) {
-        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN "
-                + "ID RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName + ";").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1;").executeUpdate();
     }
+
 }

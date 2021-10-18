@@ -154,16 +154,6 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("비회원 문제집을 조회 - 성공, 비어있는 리스트 반환")
-    void findWorkbooksByAnonymousUser() {
-        // when
-        List<WorkbookResponse> workbooks = workbookService.findWorkbooksByUser(AppUser.anonymous());
-
-        // then
-        assertThat(workbooks).isEmpty();
-    }
-
-    @Test
     @DisplayName("공유 문제집 상세보기 - 성공")
     void findPublicWorkbookById() {
         // given
@@ -171,11 +161,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(true)
@@ -191,6 +181,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getWorkbookOpened()).isTrue();
         assertThat(response.getHeart()).isTrue();
 
         then(workbookRepository).should(times(1))
@@ -205,11 +196,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(true)
@@ -225,6 +216,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(response.getHeartCount()).isEqualTo(1);
+        assertThat(response.getWorkbookOpened()).isTrue();
         assertThat(response.getHeart()).isFalse();
 
         then(workbookRepository).should(times(1))
@@ -239,11 +231,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                                Card.builder()
-                                        .id(1L)
-                                        .question("question")
-                                        .answer("answer")
-                                        .build())
+                        Card.builder()
+                                .id(1L)
+                                .question("question")
+                                .answer("answer")
+                                .build())
                         )
                 )
                 .opened(false)
@@ -275,7 +267,7 @@ class WorkbookServiceTest {
     }
 
     @Test
-    @DisplayName("유저가 문제집 카드 모아보기 - 성공")
+    @DisplayName("유저의 문제집 카드 모아보기 - 성공")
     void findWorkbookCardsById() {
         // given
         Workbook workbook = Workbook.builder()
@@ -310,6 +302,7 @@ class WorkbookServiceTest {
         // then
         assertThat(workbookCardResponse.getWorkbookId()).isEqualTo(workbook.getId());
         assertThat(workbookCardResponse.getWorkbookName()).isEqualTo(workbook.getName());
+        assertThat(workbookCardResponse.getWorkbookOpened()).isTrue();
         assertThat(workbookCardResponse.getCards()).hasSize(2);
 
         then(userRepository).should(times(1))

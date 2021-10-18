@@ -34,7 +34,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
     private WorkbookService workbookService;
 
     @Test
-    @DisplayName("유저가 문제집 추가 - 성공")
+    @DisplayName("문제집 생성 - 성공")
     void createWorkbookByUser() throws Exception {
         // given
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
@@ -70,54 +70,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("유저 문제집 전체 조회 - 성공")
-    void findWorkbooksByUser() throws Exception {
-        // given
-        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/workbooks")
-                .auth(authenticatedToken())
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-get-success");
-    }
-
-    @Test
-    @DisplayName("비회원 문제집 조회 - 성공")
-    void findWorkbooksByAnonymous() throws Exception {
-        // given
-        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(Collections.emptyList());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/workbooks")
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-get-anonymous-success");
-    }
-
-    @Test
-    @DisplayName("문제집의 카드 모아보기 - 성공")
-    void findWorkbookCardsById() throws Exception {
-        // given
-        given(workbookService.findWorkbookCardsById(anyLong(), any(AppUser.class))).willReturn(generatePersonalWorkbookCardsResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/workbooks/{id}/cards", 1)
-                .auth(authenticatedToken())
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-cards-get-success");
-    }
-
-    @Test
-    @DisplayName("유저가 문제집 수정 - 성공")
+    @DisplayName("문제집 수정 - 성공")
     void updateWorkbook() throws Exception {
         // given
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
@@ -157,23 +110,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("공유 문제집 상세보기 - 성공")
-    void findPublicWorkbookById() throws Exception {
-        // given
-        given(workbookService.findPublicWorkbookById(anyLong(), any(AppUser.class))).willReturn(generatePublicWorkbookCardsResponse());
-
-        // when, then
-        document()
-                .mockMvc(mockMvc)
-                .get("/workbooks/public/{id}", 1)
-                .auth(authenticatedToken())
-                .build()
-                .status(status().isOk())
-                .identifier("workbooks-public-get-success");
-    }
-
-    @Test
-    @DisplayName("유저가 문제집 삭제 - 성공")
+    @DisplayName("문제집 삭제 - 성공")
     void deleteWorkbook() throws Exception {
         // given
         WorkbookResponse workbookResponse = WorkbookResponse.builder()
@@ -195,7 +132,70 @@ class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("문제집으로 카드 가져오기 - 성공")
+    @DisplayName("회원 문제집 전체 조회 - 성공")
+    void findWorkbooksByUser() throws Exception {
+        // given
+        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(generateUserWorkbookResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/workbooks")
+                .auth(authenticatedToken())
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-get-success");
+    }
+
+    @Test
+    @DisplayName("비회원 문제집 전체 조회 - 성공")
+    void findWorkbooksByAnonymous() throws Exception {
+        // given
+        given(workbookService.findWorkbooksByUser(any(AppUser.class))).willReturn(Collections.emptyList());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/workbooks")
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-get-anonymous-success");
+    }
+
+    @Test
+    @DisplayName("특정 문제집의 카드 전체 조회 - 성공")
+    void findWorkbookCardsById() throws Exception {
+        // given
+        given(workbookService.findWorkbookCardsById(anyLong(), any(AppUser.class))).willReturn(generatePersonalWorkbookCardsResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/workbooks/{id}/cards", 1)
+                .auth(authenticatedToken())
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-cards-get-success");
+    }
+
+    @Test
+    @DisplayName("공유 문제집 상세 페이지 - 성공")
+    void findPublicWorkbookById() throws Exception {
+        // given
+        given(workbookService.findPublicWorkbookById(anyLong(), any(AppUser.class))).willReturn(generatePublicWorkbookCardsResponse());
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/workbooks/public/{id}", 1)
+                .auth(authenticatedToken())
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-public-get-success");
+    }
+
+    @Test
+    @DisplayName("다른 회원의 문제집에서 카드 스크랩 - 성공")
     void scrapSelectedCardsToWorkbook() throws Exception {
         // given
         long workbookId = 1L;
@@ -215,7 +215,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("유저가 하트 토글 - 성공")
+    @DisplayName("문제집의 하트 토글 - 성공")
     void toggleHeart() throws Exception {
         // given
         HeartResponse heartResponse = HeartResponse.of(true);
@@ -233,7 +233,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("다양한 공개 문제집 조회 - 성공")
+    @DisplayName("다양한 공유 문제집 조회 - 성공")
     void findPublicWorkbooks() throws Exception {
         // given
         given(workbookService.findPublicWorkbooks()).willReturn(generatePublicWorkbookResponse());
@@ -277,7 +277,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
                         .cardCount(8)
                         .heartCount(1)
                         .opened(true)
-                        .tags(Arrays.asList(
+                        .tags(List.of(
                                 TagResponse.builder().id(5L).name("network").build()
                         ))
                         .build()
@@ -332,6 +332,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("Java")
+                .workbookOpened(true)
                 .heartCount(10)
                 .tags(generateTagResponses())
                 .cards(generateCardResponses())
@@ -342,6 +343,7 @@ class WorkbookDocumentationTest extends DocumentationTest {
         return WorkbookCardResponse.builder()
                 .workbookId(1L)
                 .workbookName("자바의 정석")
+                .workbookOpened(true)
                 .cardCount(3)
                 .heartCount(100)
                 .heart(true)

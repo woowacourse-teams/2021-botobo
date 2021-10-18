@@ -1,11 +1,12 @@
 export {
   getAccessTokenAsync,
-  postLogoutAsync,
+  getLogoutAsync,
   getUserInfoAsync,
   putProfileAsync,
   postProfileImageAsync,
   postUserNameCheckAsync,
   putHeartAsync,
+  getRefreshTokenWithSsr,
 } from './user';
 
 export type { PublicWorkbookAsync } from './workbook';

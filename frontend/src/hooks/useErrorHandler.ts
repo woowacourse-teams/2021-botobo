@@ -1,6 +1,11 @@
 import axios, { AxiosError } from 'axios';
 
 import { ERROR_MESSAGE } from '../constants';
+import {
+  handleAccessTokenRefreshError,
+  isAccessTokenExpiredError,
+  isAccessTokenRefreshError,
+} from '../utils/error';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 import { useLogout } from '.';
@@ -10,7 +15,10 @@ const useErrorHandler = () => {
   const { logout } = useLogout();
   const showSnackbar = useSnackbar();
 
-  const handler = (error: AxiosError | Error | unknown) => {
+  const handler = async <T>(
+    error: AxiosError | Error | unknown,
+    onRefreshCallback?: () => Promise<T>
+  ) => {
     if (!(error instanceof Error)) return;
 
     console.error(error.message);
@@ -19,7 +27,7 @@ const useErrorHandler = () => {
 
     const errorCode = error.response?.data.code as keyof typeof ERROR_MESSAGE;
 
-    if (errorCode === 'A001' || errorCode === 'A002') {
+    if (isAccessTokenExpiredError(error)) {
       logout();
       routeLogin();
 
@@ -28,7 +36,16 @@ const useErrorHandler = () => {
       return;
     }
 
-    showSnackbar({
+    if (isAccessTokenRefreshError(error) && onRefreshCallback) {
+      handleAccessTokenRefreshError({
+        resolve: onRefreshCallback,
+        reject: handler.bind(null, error),
+      });
+
+      return;
+    }
+
+    return showSnackbar({
       message: ERROR_MESSAGE[errorCode] ?? '알 수 없는 에러가 발생했어요.',
       type: 'error',
     });

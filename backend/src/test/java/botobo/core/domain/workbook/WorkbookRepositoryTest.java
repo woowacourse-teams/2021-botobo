@@ -106,28 +106,25 @@ class WorkbookRepositoryTest {
                 .deleted(false)
                 .opened(true)
                 .build();
-        Card firstCard = generateCard(workbook);
-        Card secondCard = generateCard(workbook);
-        Card thirdCard = generateCard(workbook);
-
         workbookRepository.save(workbook);
 
-        testEntityManager.flush();
-        testEntityManager.clear();
+        Card firstCard = generateCard(workbook, "질문1", "답변1");
+        Card secondCard = generateCard(workbook, "질문2", "답변2");
+        flushAndClear();
 
         // when
         Optional<Workbook> findWorkbook = workbookRepository.findByIdAndOrderCardByNew(workbook.getId());
 
         // then
         List<Card> cards = findWorkbook.get().getCards().getCards();
-        assertThat(cards).hasSize(3)
-                .containsExactly(thirdCard, secondCard, firstCard);
+        assertThat(cards).hasSize(2)
+                .containsExactly(secondCard, firstCard);
     }
 
-    private Card generateCard(Workbook workbook) {
+    private Card generateCard(Workbook workbook, String question, String answer) {
         return Card.builder()
-                .question("질문")
-                .answer("답변")
+                .question(question)
+                .answer(answer)
                 .workbook(workbook)
                 .build();
     }
@@ -152,8 +149,6 @@ class WorkbookRepositoryTest {
                 .build();
 
         workbookRepository.save(workbook1);
-
-        flushAndClear();
 
         Workbook workbook2 = Workbook.builder()
                 .name("오즈의 Spring")
@@ -392,7 +387,7 @@ class WorkbookRepositoryTest {
     }
 
     @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 카드의 개수가 0개인 문제집은 조회하지 않는다.")
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
     void findRandomPublicWorkbooksIncludeNonZero() {
         saveWorkbooksWithCard(100, 0);
 
@@ -400,7 +395,7 @@ class WorkbookRepositoryTest {
 
         assertThat(workbooks).hasSize(100);
         for (Workbook workbook : workbooks) {
-            assertThat(workbook.cardCount()).isGreaterThan(0);
+            assertThat(workbook.cardCount()).isPositive();
         }
     }
 

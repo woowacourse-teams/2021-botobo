@@ -1,8 +1,10 @@
 import { QuizResponse } from './../types';
-import { request } from './request';
+import { noAuthorization, request } from './request';
 
 export const getQuizzesAsync = async (workbookId: number) => {
-  const { data } = await request.get<QuizResponse[]>(`/quizzes/${workbookId}`);
+  const { data } = await request.get<QuizResponse[]>(`/quizzes/${workbookId}`, {
+    headers: noAuthorization,
+  });
 
   return data;
 };
@@ -20,7 +22,9 @@ export const postQuizzesAsync = async (
 };
 
 export const getGuestQuizzesAsync = async () => {
-  const { data } = await request.get<QuizResponse[]>('/quizzes/guest');
+  const { data } = await request.get<QuizResponse[]>('/quizzes/guest', {
+    headers: noAuthorization,
+  });
 
   return data;
 };
