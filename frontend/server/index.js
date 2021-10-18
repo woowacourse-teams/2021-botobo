@@ -14,7 +14,13 @@ import { RecoilRoot } from 'recoil';
 import App from '../src/App';
 import { STORAGE_KEY } from '../src/constants';
 import { initRecoilStateWithSsr } from '../src/recoil';
-import { getUserInfo, getWorkbook, initRequest } from './initialState';
+import {
+  getRankingSearchKeywords,
+  getRankingWorkbooks,
+  getUserInfo,
+  getWorkbook,
+  initRequest,
+} from './initialState';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -46,8 +52,15 @@ app.get('/', async (req, res) => {
     initRequest(req.headers.cookie);
     const userState = await getUserInfo(res);
     const workbookState = await getWorkbook(userState, res);
+    const rankingWorkbooksState = await getRankingWorkbooks();
+    const rankingSearchKeywordsState = await getRankingSearchKeywords();
 
-    const initialState = { userState, workbookState };
+    const initialState = {
+      userState,
+      workbookState,
+      rankingWorkbooksState,
+      rankingSearchKeywordsState,
+    };
 
     const context = {};
     const app = (

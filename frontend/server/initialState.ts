@@ -1,6 +1,11 @@
 import { Response } from 'express';
 
-import { getUserInfoAsync, getWorkbooksAsync } from '../src/api';
+import {
+  getRankingSearchKeywordAsync,
+  getRankingWorkbooksAsync,
+  getUserInfoAsync,
+  getWorkbooksAsync,
+} from '../src/api';
 import { request } from '../src/api/request';
 import { getRefreshTokenWithSsr } from '../src/api/user';
 import { STORAGE_KEY } from '../src/constants';
@@ -90,5 +95,21 @@ export const getWorkbook = async (
     await setToken(res);
 
     return await getWorkbook(userInfo, res);
+  }
+};
+
+export const getRankingWorkbooks = async () => {
+  try {
+    return await getRankingWorkbooksAsync();
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getRankingSearchKeywords = async () => {
+  try {
+    return await getRankingSearchKeywordAsync();
+  } catch (error) {
+    return [];
   }
 };
