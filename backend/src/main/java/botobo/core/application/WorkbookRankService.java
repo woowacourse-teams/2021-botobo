@@ -7,8 +7,6 @@ import botobo.core.ui.search.SearchCriteria;
 import botobo.core.ui.search.SearchKeyword;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

@@ -41,10 +41,6 @@ public class SearchRankService {
         return searchScoreRepository.findByScoreDesc(SEARCH_RANK_COUNT);
     }
 
-    // 해당 메서드에 인자가 생기면서 Key 값을 정해줘야 했는데, SPEL 문법을 따라야 해서 아래처럼 만들었음
-    // 참고: https://stackoverflow.com/questions/33383366/cacheble-annotation-on-no-parameter-method
-
-    // 이 메서드에서 예외가 발생하면 deleteAll, pushAll은 레디스에 당연히 반영 안 되고, Cache도 지워지지 않는 것을 확인하였음
     @Transactional
     @CacheEvict(value = SEARCH_RANKS_CACHE_VALUE, key = "'SearchRanksKey'", cacheManager = "concurrentMapCacheManager")
     public void updateSearchRanks(List<SearchRank> oldSearchRankList, Set<String> newKeywordRanks) {

@@ -1,11 +1,11 @@
 package botobo.core.documentation;
 
 import botobo.core.application.WorkbookRankService;
-import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.application.rank.SearchRankService;
 import botobo.core.domain.rank.SearchRank;
 import botobo.core.dto.rank.SearchRankResponse;
+import botobo.core.dto.tag.TagResponse;
+import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.RankController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
