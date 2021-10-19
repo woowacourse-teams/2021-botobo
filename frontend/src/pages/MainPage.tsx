@@ -34,8 +34,8 @@ const MainPage = () => {
   const userInfo = useRecoilValue(userState);
   const {
     workbooks,
-    rankingWorkbooks,
-    rankingSearchKeywords,
+    workbookRankings,
+    searchKeywordRankings,
     deleteWorkbook,
     updateWorkbooks,
   } = useWorkbook();
@@ -72,14 +72,14 @@ const MainPage = () => {
           </StyledButton>
         </Banner>
         <QuizStarter workbooks={workbooks} />
-        <PopularWrapper>
-          {rankingSearchKeywords.length > 0 && (
+        <RankingWrapper>
+          {searchKeywordRankings.length > 0 && (
             <div>
               <Title>인기 검색어</Title>
-              <PopularSearchKeywordList>
-                {rankingSearchKeywords.map(({ rank, keyword }) => (
+              <SearchKeywordRankingList>
+                {searchKeywordRankings.map(({ rank, keyword }) => (
                   <li key={rank}>
-                    <PopularSearchKeywordButton
+                    <SearchKeywordRankingButton
                       shape="round"
                       color="black"
                       backgroundColor={
@@ -94,21 +94,21 @@ const MainPage = () => {
                       }}
                     >
                       <span># {keyword}</span>
-                    </PopularSearchKeywordButton>
+                    </SearchKeywordRankingButton>
                   </li>
                 ))}
-              </PopularSearchKeywordList>
+              </SearchKeywordRankingList>
             </div>
           )}
-          {rankingWorkbooks.length > 0 && (
+          {workbookRankings.length > 0 && (
             <div>
               <Title>인기 문제집</Title>
-              <PopularWorkbookList>
-                {rankingWorkbooks.map(({ id, ...rest }, index) => {
+              <WorkbookRankingList>
+                {workbookRankings.map(({ id, ...rest }, index) => {
                   const rank = (index + 1) as 1 | 2 | 3;
 
                   return (
-                    <RankingWorkbookItem key={id}>
+                    <WorkbookRankingItem key={id}>
                       <RankingIconWrapper>
                         {rankingIcon[rank]}
                       </RankingIconWrapper>
@@ -116,16 +116,16 @@ const MainPage = () => {
                         path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
                         {...rest}
                       />
-                    </RankingWorkbookItem>
+                    </WorkbookRankingItem>
                   );
                 })}
-                <PopularWorkbookText>
+                <WorkbookRankingText>
                   인기 문제집의 주인공이 되어보세요!
-                </PopularWorkbookText>
-              </PopularWorkbookList>
+                </WorkbookRankingText>
+              </WorkbookRankingList>
             </div>
           )}
-        </PopularWrapper>
+        </RankingWrapper>
         <section>
           <WorkbookHeader>
             <Title>학습 중</Title>
@@ -234,11 +234,11 @@ const Title = styled.h2`
     `};
 `;
 
-const PopularWrapper = styled.section`
+const RankingWrapper = styled.section`
   margin-top: 2rem;
 `;
 
-const PopularSearchKeywordList = styled.ul`
+const SearchKeywordRankingList = styled.ul`
   ${Flex()};
   overflow-x: auto;
   margin-top: 1rem;
@@ -250,7 +250,7 @@ const PopularSearchKeywordList = styled.ul`
   }
 `;
 
-const PopularSearchKeywordButton = styled(Button)`
+const SearchKeywordRankingButton = styled(Button)`
   padding-left: 1rem;
   padding-right: 1rem;
   width: max-content;
@@ -260,12 +260,12 @@ const PopularSearchKeywordButton = styled(Button)`
   `}
 `;
 
-const PopularWorkbookList = styled.ul`
+const WorkbookRankingList = styled.ul`
   ${WorkbookListStyle};
   margin-top: 1.25rem;
 `;
 
-const RankingWorkbookItem = styled.li`
+const WorkbookRankingItem = styled.li`
   position: relative;
 `;
 
@@ -276,7 +276,7 @@ const RankingIconWrapper = styled.div`
   left: -0.75rem;
 `;
 
-const PopularWorkbookText = styled.div`
+const WorkbookRankingText = styled.div`
   ${Flex({ justify: 'center', items: 'center' })};
   margin-top: 0.5rem;
 

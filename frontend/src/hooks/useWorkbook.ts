@@ -23,8 +23,8 @@ const useWorkbook = () => {
   const userInfo = useRecoilValue(userState);
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
-  const rankingWorkbooks = useRecoilValue(rankingWorkbooksState);
-  const rankingSearchKeywords = useRecoilValue(rankingSearchKeywordsState);
+  const workbookRankings = useRecoilValue(rankingWorkbooksState);
+  const searchKeywordRankings = useRecoilValue(rankingSearchKeywordsState);
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
 
   const { routePrevPage } = useRouter();
@@ -97,8 +97,8 @@ const useWorkbook = () => {
 
   return {
     workbooks,
-    rankingWorkbooks,
-    rankingSearchKeywords,
+    workbookRankings,
+    searchKeywordRankings,
     createWorkbook,
     editWorkbook,
     deleteWorkbook,
