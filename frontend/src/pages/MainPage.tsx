@@ -3,7 +3,10 @@ import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 
+import BronzeMedalIcon from '../assets/bronze-medal.svg';
 import ForwardIcon from '../assets/chevron-right-solid.svg';
+import GoldMedalIcon from '../assets/gold-medal.svg';
+import SilverMedalIcon from '../assets/silver-medal.svg';
 import {
   Button,
   Confirm,
@@ -20,6 +23,12 @@ import {
 } from '../recoil';
 import { Flex, WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
+
+const rankingIcon = {
+  1: <GoldMedalIcon />,
+  2: <SilverMedalIcon />,
+  3: <BronzeMedalIcon />,
+} as const;
 
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
@@ -99,13 +108,15 @@ const MainPage = () => {
                   const rank = (index + 1) as 1 | 2 | 3;
 
                   return (
-                    <li key={id}>
+                    <RankingWorkbookItem key={id}>
+                      <RankingIconWrapper>
+                        {rankingIcon[rank]}
+                      </RankingIconWrapper>
                       <Workbook
                         path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
-                        ranking={rank}
                         {...rest}
                       />
-                    </li>
+                    </RankingWorkbookItem>
                   );
                 })}
                 <PopularWorkbookText>
@@ -252,6 +263,17 @@ const PopularSearchKeywordButton = styled(Button)`
 const PopularWorkbookList = styled.ul`
   ${WorkbookListStyle};
   margin-top: 1.25rem;
+`;
+
+const RankingWorkbookItem = styled.li`
+  position: relative;
+`;
+
+const RankingIconWrapper = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: -0.75rem;
+  left: -0.75rem;
 `;
 
 const PopularWorkbookText = styled.div`
