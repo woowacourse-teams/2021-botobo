@@ -5,6 +5,7 @@ import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
 import botobo.core.ui.auth.AuthorizationInterceptor;
 import botobo.core.ui.auth.PathMatcherInterceptor;
 import botobo.core.ui.auth.PathMethod;
+import botobo.core.ui.auth.PublicAuthorizationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -25,6 +26,11 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Bean
     public AuthorizationInterceptor authorizationInterceptor() {
         return new AuthorizationInterceptor(authService);
+    }
+
+    @Bean
+    public PublicAuthorizationInterceptor publicAuthorizationInterceptor() {
+        return new PublicAuthorizationInterceptor(authService);
     }
 
     @Bean
@@ -62,5 +68,11 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/tags", PathMethod.GET)
                 .excludePathPatterns("/users", PathMethod.GET)
                 .excludePathPatterns("/search/**", PathMethod.GET);
+    }
+
+    @Bean
+    public PathMatcherInterceptor publicAuthPathMatcherInterceptor() {
+        return new PathMatcherInterceptor(publicAuthorizationInterceptor())
+                .addPathPatterns("/workbooks/public/?*", PathMethod.GET);
     }
 }
