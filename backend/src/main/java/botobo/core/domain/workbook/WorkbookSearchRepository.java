@@ -115,8 +115,8 @@ public class WorkbookSearchRepository {
             return workbook.name.asc();
         }
         if (searchCriteria == SearchCriteria.COUNT) {
-            return card.count().desc();
+            return card.countDistinct().desc();
         }
-        return heart.count().desc();
+        return heart.countDistinct().desc();
     }
 }
