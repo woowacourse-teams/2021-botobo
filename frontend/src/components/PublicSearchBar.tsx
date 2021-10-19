@@ -190,7 +190,6 @@ const PublicSearchBar = () => {
 
                   searchInputRef.current?.blur();
                 }}
-                onMouseOver={() => setRecommendedIndex(index)}
                 onMouseDown={() => searchForWorkbook(name)}
                 isSelected={index === recommendedIndex}
               >
@@ -322,6 +321,10 @@ const RecommendedKeyword = styled.li<RecommendedKeywordStyleProps>`
 
   ${({ theme, isSelected }) => css`
     background-color: ${isSelected && theme.color.gray_3};
+
+    &:hover {
+      background-color: ${theme.color.gray_3};
+    }
   `}
 `;
 
