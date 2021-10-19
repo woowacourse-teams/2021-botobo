@@ -71,4 +71,12 @@ export interface UserInfoResponse {
   bio: string;
 }
 
+export type WorkbookRankingResponse = PublicWorkbookResponse;
+
+export interface SearchKeywordRankingResponse {
+  keyword: string;
+  rank: 1 | 2 | 3;
+  change: number;
+}
+
 export type AuthType = 'github' | 'google';

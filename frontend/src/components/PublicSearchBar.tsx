@@ -44,9 +44,9 @@ const PublicSearchBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mountedRef = useRef(true);
 
-  const searchForWorkbook = (keyword: string) => {
+  const searchForWorkbook = async (keyword: string) => {
     mountedRef.current = false;
-    resetSearchResult();
+    await resetSearchResult();
     routePublicSearchResultQuery({
       keyword,
       method: 'push',

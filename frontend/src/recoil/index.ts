@@ -1,6 +1,7 @@
 import { SetRecoilState } from 'recoil';
 
 import { Entries } from '../types/utils';
+import { searchKeywordRankingState, workbookRankingState } from './rankState';
 import { userState } from './userState';
 import { workbookState } from './workbookState';
 
@@ -17,22 +18,20 @@ export {
   workbookState,
   publicWorkbookState,
 } from './workbookState';
-
-export interface InitialState {
-  userState?: typeof userState;
-  workbookState?: typeof workbookState;
-}
+export { workbookRankingState, searchKeywordRankingState } from './rankState';
 
 const entries = <T>(obj: T) => Object.entries(obj) as Entries<T>;
 
 const ssrState = {
   userState,
   workbookState,
+  workbookRankingState,
+  searchKeywordRankingState,
 } as const;
 
 export const initRecoilStateWithSsr = (
   set: SetRecoilState,
-  initialState?: InitialState
+  initialState?: Partial<typeof ssrState>
 ) => {
   if (!initialState) return;
 

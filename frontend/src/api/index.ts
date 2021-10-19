@@ -41,3 +41,8 @@ export {
   getTagKeywordAsync,
   getSearchResultAsync,
 } from './search';
+
+export {
+  getWorkbookRankingsAsync,
+  getSearchKeywordRankingsAsync,
+} from './ranks';

@@ -1,9 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 
+import BronzeMedalIcon from '../assets/bronze-medal.svg';
 import ForwardIcon from '../assets/chevron-right-solid.svg';
+import GoldMedalIcon from '../assets/gold-medal.svg';
+import SilverMedalIcon from '../assets/silver-medal.svg';
 import {
   Button,
   Confirm,
@@ -13,16 +16,38 @@ import {
 } from '../components';
 import { DEVICE, ROUTE } from '../constants';
 import { useModal, useRouter, useWorkbook } from '../hooks';
-import { shouldWorkbookUpdateState, userState } from '../recoil';
+import {
+  publicSearchResultState,
+  shouldWorkbookUpdateState,
+  userState,
+} from '../recoil';
 import { Flex, WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
 
+const rankingDecorator = {
+  1: { icon: <GoldMedalIcon />, color: 'gold' },
+  2: { icon: <SilverMedalIcon />, color: 'silver' },
+  3: { icon: <BronzeMedalIcon />, color: 'bronze' },
+} as const;
+
 const MainPage = () => {
   const userInfo = useRecoilValue(userState);
-  const { workbooks, deleteWorkbook, updateWorkbooks } = useWorkbook();
-  const { routeWorkbookAdd, routeWorkbookEdit, routePublicSearch, routeGuide } =
-    useRouter();
+  const {
+    workbooks,
+    workbookRankings,
+    searchKeywordRankings,
+    deleteWorkbook,
+    updateWorkbooks,
+  } = useWorkbook();
+  const {
+    routeWorkbookAdd,
+    routeWorkbookEdit,
+    routePublicSearch,
+    routeGuide,
+    routePublicSearchResultQuery,
+  } = useRouter();
   const shouldWorkbookUpdate = useRecoilValue(shouldWorkbookUpdateState);
+  const resetSearchResult = useResetRecoilState(publicSearchResultState);
 
   const { openModal } = useModal();
 
@@ -47,15 +72,71 @@ const MainPage = () => {
           </StyledButton>
         </Banner>
         <QuizStarter workbooks={workbooks} />
+        <RankingWrapper>
+          {searchKeywordRankings.length > 0 && (
+            <div>
+              <Title>인기 검색어</Title>
+              <SearchKeywordRankingList>
+                {searchKeywordRankings.map(({ rank, keyword }) => (
+                  <li key={rank}>
+                    <SearchKeywordRankingButton
+                      shape="round"
+                      color="black"
+                      backgroundColor={rankingDecorator[rank].color}
+                      onClick={async () => {
+                        await resetSearchResult();
+                        routePublicSearchResultQuery({
+                          keyword,
+                          method: 'push',
+                        });
+                      }}
+                    >
+                      <span># {keyword}</span>
+                    </SearchKeywordRankingButton>
+                  </li>
+                ))}
+              </SearchKeywordRankingList>
+            </div>
+          )}
+          {workbookRankings.length > 0 && (
+            <div>
+              <Title>인기 문제집</Title>
+              <WorkbookRankingList>
+                {workbookRankings.map(({ id, ...rest }, index) => {
+                  const rank = (index + 1) as 1 | 2 | 3;
+
+                  return (
+                    <WorkbookRankingItem key={id}>
+                      <RankingIconWrapper>
+                        {rankingDecorator[rank].icon}
+                      </RankingIconWrapper>
+                      <Workbook
+                        path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
+                        {...rest}
+                      />
+                    </WorkbookRankingItem>
+                  );
+                })}
+                <WorkbookRankingText>
+                  인기 문제집의 주인공이 되어보세요!
+                </WorkbookRankingText>
+              </WorkbookRankingList>
+            </div>
+          )}
+        </RankingWrapper>
         <section>
           <WorkbookHeader>
-            <WorkbookTitle>학습 중</WorkbookTitle>
+            <Title>학습 중</Title>
             <Button shape="square" onClick={routeWorkbookAdd}>
               문제집 추가
             </Button>
           </WorkbookHeader>
           {workbooks.length === 0 ? (
-            <NoWorkbook>아직 추가된 문제집이 없어요.</NoWorkbook>
+            <NoWorkbook>
+              {userInfo
+                ? '아직 추가된 문제집이 없어요.'
+                : '로그인 후 나만의 문제집을 만들어보세요.'}
+            </NoWorkbook>
           ) : (
             <StyledUl>
               {workbooks.map(({ id, name, cardCount, heartCount, tags }) => (
@@ -144,6 +225,68 @@ const BannerText = styled.span`
   word-spacing: -2px;
 `;
 
+const Title = styled.h2`
+  ${({ theme }) =>
+    css`
+      font-size: ${theme.fontSize.semiLarge};
+    `};
+`;
+
+const RankingWrapper = styled.section`
+  margin-top: 2rem;
+`;
+
+const SearchKeywordRankingList = styled.ul`
+  ${Flex()};
+  overflow-x: auto;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+
+  & > li:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+`;
+
+const SearchKeywordRankingButton = styled(Button)`
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: max-content;
+
+  ${({ theme }) => css`
+    font-weight: ${theme.fontWeight.semiBold};
+  `}
+`;
+
+const WorkbookRankingList = styled.ul`
+  ${WorkbookListStyle};
+  margin-top: 1.25rem;
+`;
+
+const WorkbookRankingItem = styled.li`
+  position: relative;
+`;
+
+const RankingIconWrapper = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: -0.75rem;
+  left: -0.75rem;
+`;
+
+const WorkbookRankingText = styled.div`
+  ${Flex({ justify: 'center', items: 'center' })};
+  margin-top: 0.5rem;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+  `}
+
+  @media ${DEVICE.TABLET} {
+    margin-top: 0;
+  }
+`;
+
 const StyledButton = styled(Button)`
   ${Flex({ justify: 'center', items: 'center' })};
   width: 1.5rem;
@@ -160,16 +303,13 @@ const WorkbookHeader = styled.div`
   margin-top: 3rem;
 `;
 
-const WorkbookTitle = styled.h2`
-  ${({ theme }) =>
-    css`
-      font-size: ${theme.fontSize.semiLarge};
-    `};
-`;
-
 const NoWorkbook = styled.div`
   text-align: center;
-  margin-top: 20vh;
+  margin-top: 10vh;
+
+  ${({ theme }) => css`
+    font-size: ${theme.fontSize.medium};
+  `}
 `;
 
 const StyledUl = styled.ul`
