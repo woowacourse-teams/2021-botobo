@@ -27,6 +27,7 @@ import static org.mockito.Mockito.times;
 class AuthAcceptanceTest extends DomainAcceptanceTest {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
+    private static final String COOKIE_DOMAIN_VALUE = ".test.botobo.kr";
 
     @Test
     @DisplayName("깃헙 로그인을 한다 - 성공")
@@ -94,6 +95,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
         assertThat(cookie.getMaxAge()).isPositive();
+        assertThat(cookie.getDomain()).isEqualTo(COOKIE_DOMAIN_VALUE);
     }
 
     @Test
@@ -120,6 +122,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
         assertThat(cookie.getMaxAge()).isPositive();
+        assertThat(cookie.getDomain()).isEqualTo(COOKIE_DOMAIN_VALUE);
     }
 
     @Test
