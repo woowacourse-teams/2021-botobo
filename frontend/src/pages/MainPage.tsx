@@ -24,10 +24,10 @@ import {
 import { Flex, WorkbookListStyle } from '../styles';
 import PageTemplate from './PageTemplate';
 
-const rankingIcon = {
-  1: <GoldMedalIcon />,
-  2: <SilverMedalIcon />,
-  3: <BronzeMedalIcon />,
+const rankingDecorator = {
+  1: { icon: <GoldMedalIcon />, color: 'gold' },
+  2: { icon: <SilverMedalIcon />, color: 'silver' },
+  3: { icon: <BronzeMedalIcon />, color: 'bronze' },
 } as const;
 
 const MainPage = () => {
@@ -82,9 +82,7 @@ const MainPage = () => {
                     <SearchKeywordRankingButton
                       shape="round"
                       color="black"
-                      backgroundColor={
-                        rank === 1 ? 'gold' : rank === 2 ? 'silver' : 'bronze'
-                      }
+                      backgroundColor={rankingDecorator[rank].color}
                       onClick={async () => {
                         await resetSearchResult();
                         routePublicSearchResultQuery({
@@ -110,7 +108,7 @@ const MainPage = () => {
                   return (
                     <WorkbookRankingItem key={id}>
                       <RankingIconWrapper>
-                        {rankingIcon[rank]}
+                        {rankingDecorator[rank].icon}
                       </RankingIconWrapper>
                       <Workbook
                         path={`${ROUTE.PUBLIC_CARDS.PATH}/${id}`}
