@@ -38,6 +38,7 @@ const MainPage = () => {
     searchKeywordRankings,
     deleteWorkbook,
     updateWorkbooks,
+    getRankings,
   } = useWorkbook();
   const {
     routeWorkbookAdd,
@@ -52,6 +53,8 @@ const MainPage = () => {
   const { openModal } = useModal();
 
   useEffect(() => {
+    getRankings();
+
     if (!shouldWorkbookUpdate) return;
 
     updateWorkbooks();
