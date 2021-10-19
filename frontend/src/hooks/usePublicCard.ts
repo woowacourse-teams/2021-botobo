@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import {
   getPublicCardsAsync,
@@ -34,7 +34,8 @@ const usePublicCard = () => {
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
-  const setPublicWorkbook = useSetRecoilState(publicWorkbookState);
+  const [publicWorkbook, setPublicWorkbook] =
+    useRecoilState(publicWorkbookState);
   const setPublicSearchResult = useSetRecoilState(publicSearchResultState);
 
   const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
@@ -90,9 +91,9 @@ const usePublicCard = () => {
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
 
-      setPublicWorkbook((prevValue) => ({
-        ...prevValue,
-        data: prevValue.data.map((prevData) => {
+      setPublicWorkbook({
+        ...publicWorkbook,
+        data: publicWorkbook.data.map((prevData) => {
           if (prevData.id !== workbookId) return prevData;
 
           return {
@@ -102,7 +103,7 @@ const usePublicCard = () => {
               : prevData.heartCount - 1,
           };
         }),
-      }));
+      });
 
       setPublicSearchResult((prevValue) => ({
         ...prevValue,
