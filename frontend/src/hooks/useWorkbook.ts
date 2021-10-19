@@ -8,10 +8,10 @@ import {
   putWorkbookAsync,
 } from '../api';
 import {
-  rankingSearchKeywordsState,
-  rankingWorkbooksState,
+  searchKeywordRankingState,
   shouldWorkbookUpdateState,
   userState,
+  workbookRankingState,
   workbookState,
 } from '../recoil';
 import { TagResponse, WorkbookResponse } from '../types';
@@ -23,8 +23,8 @@ const useWorkbook = () => {
   const userInfo = useRecoilValue(userState);
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
-  const workbookRankings = useRecoilValue(rankingWorkbooksState);
-  const searchKeywordRankings = useRecoilValue(rankingSearchKeywordsState);
+  const workbookRankings = useRecoilValue(workbookRankingState);
+  const searchKeywordRankings = useRecoilValue(searchKeywordRankingState);
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
 
   const { routePrevPage } = useRouter();

@@ -1,18 +1,21 @@
 import { atom, selector } from 'recoil';
 
-import { getRankingSearchKeywordAsync, getRankingWorkbooksAsync } from '../api';
 import {
-  RankingSearchKeywordResponse,
-  RankingWorkbookResponse,
+  getSearchKeywordRankingsAsync,
+  getWorkbookRankingsAsync,
+} from '../api';
+import {
+  SearchKeywordRankingResponse,
+  WorkbookRankingResponse,
 } from '../types';
 
-export const rankingWorkbooksState = atom<RankingWorkbookResponse[]>({
-  key: 'rankingWorkbooksState',
+export const workbookRankingState = atom<WorkbookRankingResponse[]>({
+  key: 'workbookRankingState',
   default: selector({
-    key: 'rankingWorkbooksRequest',
+    key: 'workbookRankingRequest',
     get: async () => {
       try {
-        return await getRankingWorkbooksAsync();
+        return await getWorkbookRankingsAsync();
       } catch (error) {
         return [];
       }
@@ -20,13 +23,13 @@ export const rankingWorkbooksState = atom<RankingWorkbookResponse[]>({
   }),
 });
 
-export const rankingSearchKeywordsState = atom<RankingSearchKeywordResponse[]>({
-  key: 'rankingSearchKeywordsState',
+export const searchKeywordRankingState = atom<SearchKeywordRankingResponse[]>({
+  key: 'searchKeywordRankingState',
   default: selector({
-    key: 'rankingSearchKeywordsRequest',
+    key: 'searchKeywordRankingRequest',
     get: async () => {
       try {
-        return await getRankingSearchKeywordAsync();
+        return await getSearchKeywordRankingsAsync();
       } catch (error) {
         return [];
       }

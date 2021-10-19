@@ -43,6 +43,6 @@ export {
 } from './search';
 
 export {
-  getRankingWorkbooksAsync,
-  getRankingSearchKeywordAsync,
+  getWorkbookRankingsAsync,
+  getSearchKeywordRankingsAsync,
 } from './ranks';

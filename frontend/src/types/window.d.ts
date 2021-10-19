@@ -6,11 +6,11 @@ interface Window {
     workbookState?: import('recoil').RecoilState<
       import('../recoil/workbookState').WorkbookState
     >;
-    rankingWorkbooksState?: import('recoil').RecoilState<
-      import('.').RankingWorkbookResponse[]
+    workbookRankingState?: import('recoil').RecoilState<
+      import('.').WorkbookRankingResponse[]
     >;
-    rankingSearchKeywordsState?: import('recoil').RecoilState<
-      import('.').RankingSearchKeywordResponse[]
+    searchKeywordRankingState?: import('recoil').RecoilState<
+      import('.').SearchKeywordRankingResponse[]
     >;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

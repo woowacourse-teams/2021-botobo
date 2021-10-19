@@ -71,9 +71,9 @@ export interface UserInfoResponse {
   bio: string;
 }
 
-export type RankingWorkbookResponse = PublicWorkbookResponse;
+export type WorkbookRankingResponse = PublicWorkbookResponse;
 
-export interface RankingSearchKeywordResponse {
+export interface SearchKeywordRankingResponse {
   keyword: string;
   rank: 1 | 2 | 3;
   change: number;

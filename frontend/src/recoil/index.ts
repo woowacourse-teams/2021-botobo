@@ -1,7 +1,7 @@
 import { SetRecoilState } from 'recoil';
 
 import { Entries } from '../types/utils';
-import { rankingSearchKeywordsState, rankingWorkbooksState } from './rankState';
+import { searchKeywordRankingState, workbookRankingState } from './rankState';
 import { userState } from './userState';
 import { workbookState } from './workbookState';
 
@@ -18,15 +18,15 @@ export {
   workbookState,
   publicWorkbookState,
 } from './workbookState';
-export { rankingWorkbooksState, rankingSearchKeywordsState } from './rankState';
+export { workbookRankingState, searchKeywordRankingState } from './rankState';
 
 const entries = <T>(obj: T) => Object.entries(obj) as Entries<T>;
 
 const ssrState = {
   userState,
   workbookState,
-  rankingWorkbooksState,
-  rankingSearchKeywordsState,
+  workbookRankingState,
+  searchKeywordRankingState,
 } as const;
 
 export const initRecoilStateWithSsr = (

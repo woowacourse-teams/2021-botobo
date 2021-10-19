@@ -1,11 +1,11 @@
 import {
-  RankingSearchKeywordResponse,
-  RankingWorkbookResponse,
+  SearchKeywordRankingResponse,
+  WorkbookRankingResponse,
 } from '../types';
 import { noAuthorization, request } from './request';
 
-export const getRankingWorkbooksAsync = async () => {
-  const { data } = await request.get<RankingWorkbookResponse[]>(
+export const getWorkbookRankingsAsync = async () => {
+  const { data } = await request.get<WorkbookRankingResponse[]>(
     '/ranks/workbooks',
     {
       headers: noAuthorization,
@@ -15,8 +15,8 @@ export const getRankingWorkbooksAsync = async () => {
   return data;
 };
 
-export const getRankingSearchKeywordAsync = async () => {
-  const { data } = await request.get<RankingSearchKeywordResponse[]>(
+export const getSearchKeywordRankingsAsync = async () => {
+  const { data } = await request.get<SearchKeywordRankingResponse[]>(
     '/ranks/search',
     {
       headers: noAuthorization,

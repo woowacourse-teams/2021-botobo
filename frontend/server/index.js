@@ -15,10 +15,10 @@ import App from '../src/App';
 import { STORAGE_KEY } from '../src/constants';
 import { initRecoilStateWithSsr } from '../src/recoil';
 import {
-  getRankingSearchKeywords,
-  getRankingWorkbooks,
+  getSearchKeywordRankings,
   getUserInfo,
   getWorkbook,
+  getWorkbookRankings,
   initRequest,
 } from './initialState';
 
@@ -52,14 +52,14 @@ app.get('/', async (req, res) => {
     initRequest(req.headers.cookie);
     const userState = await getUserInfo(res);
     const workbookState = await getWorkbook(userState, res);
-    const rankingWorkbooksState = await getRankingWorkbooks();
-    const rankingSearchKeywordsState = await getRankingSearchKeywords();
+    const workbookRankingState = await getWorkbookRankings();
+    const searchKeywordRankingState = await getSearchKeywordRankings();
 
     const initialState = {
       userState,
       workbookState,
-      rankingWorkbooksState,
-      rankingSearchKeywordsState,
+      workbookRankingState,
+      searchKeywordRankingState,
     };
 
     const context = {};

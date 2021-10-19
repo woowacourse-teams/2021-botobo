@@ -1,9 +1,9 @@
 import { Response } from 'express';
 
 import {
-  getRankingSearchKeywordAsync,
-  getRankingWorkbooksAsync,
+  getSearchKeywordRankingsAsync,
   getUserInfoAsync,
+  getWorkbookRankingsAsync,
   getWorkbooksAsync,
 } from '../src/api';
 import { request } from '../src/api/request';
@@ -98,17 +98,17 @@ export const getWorkbook = async (
   }
 };
 
-export const getRankingWorkbooks = async () => {
+export const getWorkbookRankings = async () => {
   try {
-    return await getRankingWorkbooksAsync();
+    return await getWorkbookRankingsAsync();
   } catch (error) {
     return [];
   }
 };
 
-export const getRankingSearchKeywords = async () => {
+export const getSearchKeywordRankings = async () => {
   try {
-    return await getRankingSearchKeywordAsync();
+    return await getSearchKeywordRankingsAsync();
   } catch (error) {
     return [];
   }
