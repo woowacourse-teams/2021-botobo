@@ -1,5 +1,6 @@
 package botobo.core.application;
 
+import botobo.core.application.rank.SearchRankService;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.tag.Tags;
@@ -25,17 +26,26 @@ public class SearchService {
 
     private final WorkbookSearchRepository workbookSearchRepository;
     private final TagSearchRepository tagSearchRepository;
+    private final SearchRankService searchRankService;
 
-    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagSearchRepository tagSearchRepository) {
+    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagSearchRepository tagSearchRepository,
+                         SearchRankService searchRankService) {
+
         this.workbookSearchRepository = workbookSearchRepository;
         this.tagSearchRepository = tagSearchRepository;
+        this.searchRankService = searchRankService;
     }
 
+    @Transactional
     public List<WorkbookResponse> searchWorkbooks(WorkbookSearchParameter workbookSearchParameter,
                                                   List<Long> tags,
                                                   List<Long> users) {
-        PageRequest pageRequest = workbookSearchParameter.toPageRequest();
 
+        PageRequest pageRequest = workbookSearchParameter.toPageRequest();
+        if (pageRequest.getPageNumber() == 0) {
+            String searchKeywordValue = workbookSearchParameter.getSearchKeyword().getValue();
+            searchRankService.increaseScore(searchKeywordValue);
+        }
         Page<Workbook> page = workbookSearchRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
         List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);

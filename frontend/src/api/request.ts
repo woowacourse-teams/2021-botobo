@@ -7,8 +7,11 @@ interface CancelController {
   [key: string]: Canceler | null;
 }
 
+export const noAuthorization = { Authorization: '' };
+
 export const request = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}`,
+  withCredentials: true,
 });
 
 export const cancelController: CancelController = {

@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class InfrastructureDocumentationTest extends DocumentationTest {
 
     @Test
-    @DisplayName("현재 애플리케이션에서 사용하는 port 번호 반환 - 성공")
+    @DisplayName("활성된 포트 번호 반환 - 성공")
     void portTest() throws Exception {
         document()
                 .mockMvc(mockMvc)

@@ -1,0 +1,13 @@
+== 랭크 API
+
+=== 문제집 순위 가져오기
+==== 요청
+include::{snippets}/ranks-workbooks-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/ranks-workbooks-get-success/http-response.adoc[]
+
+=== 검색어 순위 가져오기
+==== 요청
+include::{snippets}/ranks-search-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/ranks-search-get-success/http-response.adoc[]
