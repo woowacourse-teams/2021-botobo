@@ -31,7 +31,8 @@ const setHeaderCookie = (accessToken: string, refreshToken?: string) => {
 };
 
 export const initRequest = (cookies: string) => {
-  request.defaults.headers = {};
+  request.defaults.headers.Cookie = '';
+  request.defaults.headers.get = {};
 
   const accessToken = getCookie(STORAGE_KEY.TOKEN, cookies);
   const refreshToken = getCookie(STORAGE_KEY.REFRESH_TOKEN, cookies);
