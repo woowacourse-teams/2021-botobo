@@ -19,15 +19,24 @@ import java.util.List;
 public class WorkbookCardResponse {
 
     private Long workbookId;
+
     private String workbookName;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean workbookOpened;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer cardCount;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer heartCount;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean heart;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<TagResponse> tags;
+
     private List<CardResponse> cards;
 
     public static WorkbookCardResponse ofUserWorkbook(Workbook workbook) {
@@ -36,6 +45,7 @@ public class WorkbookCardResponse {
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
+                .workbookOpened(workbook.isOpened())
                 .heartCount(workbook.heartCount())
                 .tags(tagResponses)
                 .cards(cardResponses)
@@ -48,6 +58,7 @@ public class WorkbookCardResponse {
         return WorkbookCardResponse.builder()
                 .workbookId(workbook.getId())
                 .workbookName(workbook.getName())
+                .workbookOpened(workbook.isOpened())
                 .cardCount(workbook.cardCount())
                 .heartCount(workbook.heartCount())
                 .heart(heart)

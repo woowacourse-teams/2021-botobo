@@ -2,8 +2,11 @@
 
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL;
     username: sa
+  test:
+    database:
+      replace: NONE
   jpa:
     properties:
       hibernate:
@@ -11,8 +14,24 @@ spring:
         default_batch_fetch_size: 100
     hibernate:
       ddl-auto: create
+  redis:
+    host: localhost
+    port: 6379
   config:
     activate:
       on-profile: test
   flyway:
     enabled: false
+
+cookie:
+  properties:
+    domain: ".test.botobo.kr"
+
+security:
+  jwt:
+    access-token:
+      secret-key: accesstokentestkey
+      expire-length: 1000000
+    refresh-token:
+      secret-key: refreshtokentestkey
+      expire-length: 2000000

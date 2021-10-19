@@ -43,7 +43,7 @@ logs/**
 
 
 ### API Documentation ###
-backend/src/main/resources/static/docs/**
+backend/src/main/resources/static/index.html
 
 ### Secret files ###
 backend/src/main/resources/application-dev.yml
@@ -56,3 +56,6 @@ backend/src/main/resources/application-prod2.yml
 backend/src/main/resources/aws-s3.yml
 backend/src/main/resources/aws-s3-dev.yml
 backend/src/main/resources/aws-s3-prod.yml
+
+### Unnecessary files
+backend/src/main/resources/static/index.html

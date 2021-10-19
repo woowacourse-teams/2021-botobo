@@ -1,4 +1,4 @@
-= 보고 또 보고 api
+= 보고 또 보고 API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -13,12 +13,14 @@ include::quizzes.adoc[]
 
 include::search.adoc[]
 
-include::admin.adoc[]
-
 include::login.adoc[]
 
 include::tags.adoc[]
 
 include::users.adoc[]
+
+include::infra.adoc[]
+
+include::ranks.adoc[]
 
 include::errors.adoc[]

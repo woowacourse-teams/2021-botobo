@@ -12,6 +12,7 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.ui.search.WorkbookSearchParameter;
+import botobo.core.utils.WorkbookSearchParameterUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하면 문제집 이름 또는 태그에서 검색어가 포함된 것들을 가져온다. - 성공, 문제집 명에 포함")
     void searchAllFromKeyword() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("Java")
                 .build();
 
@@ -70,7 +71,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하면 문제집 이름에서 검색어가 포함된 것들을 가져온다. - 성공, 태그와 일치")
     void searchAllFromKeywordWhenEqualsTagName() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("Joanne")
                 .build();
 
@@ -97,7 +98,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어와 태그 id를 입력하면 검색어 및 태그 id가 포함된 것들을 가져온다.")
     void searchAllFromKeywordAndTags() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("문제집")
                 .build();
 
@@ -122,7 +123,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어와 유저 id를 입력하면 검색어 및 유저 id가 포함된 것들을 가져온다.")
     void searchAllFromKeywordAndUsers() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("문제집")
                 .build();
 
@@ -147,7 +148,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어와 태그 id, 유저 id를 입력하면 검색어 및 태그 id, 유저 id가 포함된 것들을 가져온다.")
     void searchAllFromKeywordAndTagsAndUsers() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("문제집")
                 .build();
 
@@ -174,7 +175,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하고 최신순으로 정렬한다.")
     void searchAllFromKeywordAndDateDesc() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("Javascript")
                 .searchCriteria("date")
                 .build();
@@ -194,7 +195,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하고 이름순으로 정렬한다.")
     void searchAllFromKeywordAndNameAsc() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("Javascript")
                 .searchCriteria("name")
                 .build();
@@ -214,7 +215,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하고 카드순으로 정렬한다.")
     void searchAllFromKeywordAndCardDesc() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("Javascript")
                 .searchCriteria("count")
                 .build();
@@ -234,7 +235,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어를 입력하고 좋아요순으로 정렬한다. 좋아요가 같다면 id순으로 정렬한다.")
     void searchAllFromKeywordAndHeartDesc() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("문제")
                 .searchCriteria("heart")
                 .build();
@@ -259,7 +260,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어와 일치해도 카드가 없으면 조회되지 않는다.")
     void searchAllFromKeywordWhenNotExistCard() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("카드가 없다")
                 .build();
 
@@ -275,7 +276,7 @@ class WorkbookSearchRepositoryTest {
     @DisplayName("검색어와 일치해도 공개 문제집이 아니면 조회되지 않는다.")
     void searchAllFromKeywordWhenPrivate() {
         // given
-        WorkbookSearchParameter parameter = WorkbookSearchParameter.builder()
+        WorkbookSearchParameter parameter = WorkbookSearchParameterUtils.builder()
                 .searchKeyword("비공개")
                 .build();
 

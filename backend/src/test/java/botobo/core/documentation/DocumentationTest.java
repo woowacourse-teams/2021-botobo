@@ -4,6 +4,7 @@ import botobo.core.application.AuthService;
 import botobo.core.documentation.utils.DocumentRequestBuilder;
 import botobo.core.documentation.utils.DocumentRequestBuilder.MockMvcFunction;
 import botobo.core.domain.user.AppUser;
+import botobo.core.infrastructure.auth.JwtRefreshTokenInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -25,6 +26,9 @@ public class DocumentationTest {
     @MockBean
     protected AuthService authService;
 
+    @MockBean
+    protected JwtRefreshTokenInfo jwtRefreshTokenInfo;
+
     private final AppUser authenticatedUser = AppUser.user(1L);
     private final String authenticatedToken = "botobo.access.token";
 
@@ -33,6 +37,10 @@ public class DocumentationTest {
         documentRequestBuilder = new DocumentRequestBuilder();
         given(authService.findAppUserByToken(null)).willReturn(AppUser.anonymous());
         given(authService.findAppUserByToken(authenticatedToken)).willReturn(authenticatedUser);
+    }
+
+    protected AppUser authenticatedUser() {
+        return this.authenticatedUser;
     }
 
     protected String authenticatedToken() {

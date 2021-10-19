@@ -53,7 +53,7 @@ include::{snippets}/search-workbooks-get-success/http-response.adoc[]
 
 |===
 
-=== 추천 태그 조회
+=== 태그 자동완성
 ==== 요청
 include::{snippets}/search-tags-get-success/http-request.adoc[]
 ==== 응답

@@ -1,58 +1,60 @@
 == 문제집 API
 
-=== 문제집 추가 하기
+=== 문제집 생성
 ==== 요청
 include::{snippets}/workbooks-post-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-post-success/http-response.adoc[]
 
-=== 로그인 유저 문제집 보기
-==== 요청
-include::{snippets}/workbooks-get-success/http-request.adoc[]
-==== 응답
-include::{snippets}/workbooks-get-success/http-response.adoc[]
-
-=== 비회원 문제집 보기
-==== 요청
-include::{snippets}/workbooks-get-anonymous-success/http-request.adoc[]
-==== 응답
-include::{snippets}/workbooks-get-anonymous-success/http-response.adoc[]
-
-=== 문제집별 카드 모아보기
-==== 요청
-include::{snippets}/workbooks-cards-get-success/http-request.adoc[]
-==== 응답
-include::{snippets}/workbooks-cards-get-success/http-response.adoc[]
-
-=== 문제집 수정 하기
+=== 문제집 수정
 ==== 요청
 include::{snippets}/workbooks-put-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-put-success/http-response.adoc[]
 
-=== 문제집 삭제 하기
+=== 문제집 삭제
 ==== 요청
 include::{snippets}/workbooks-delete-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-delete-success/http-response.adoc[]
 
-=== 공유 문제집 상세보기
+=== 회원 문제집 전체 조회
+==== 요청
+include::{snippets}/workbooks-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-get-success/http-response.adoc[]
+
+=== 비회원 문제집 전체 조회
+==== 요청
+include::{snippets}/workbooks-get-anonymous-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-get-anonymous-success/http-response.adoc[]
+
+=== 특정 문제집의 카드 전체 조회
+==== 요청
+include::{snippets}/workbooks-cards-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-cards-get-success/http-response.adoc[]
+
+=== 공유 문제집 상세 페이지
 ==== 요청
 include::{snippets}/workbooks-public-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-public-get-success/http-response.adoc[]
 
-=== 문제집으로 카드 가져오기
+=== 다른 회원의 문제집에서 카드 스크랩
 ==== 요청
 include::{snippets}/workbooks-scrap-cards-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-scrap-cards-success/http-response.adoc[]
 
-=== 하트 토글하기
+=== 문제집의 하트 토글
+==== 요청
+include::{snippets}/workbooks-toggle-hearts-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-toggle-hearts-success/http-response.adoc[]
 
-=== 다양한 공유 문제집 가져오기
+=== 다양한 공유 문제집 조회
 ==== 요청
 include::{snippets}/workbooks-random-public-get-success/http-request.adoc[]
 ==== 응답

@@ -1,11 +1,11 @@
 package botobo.core.config;
 
 import botobo.core.application.AuthService;
-import botobo.core.ui.auth.AdminInterceptor;
 import botobo.core.ui.auth.AuthenticationPrincipalArgumentResolver;
 import botobo.core.ui.auth.AuthorizationInterceptor;
 import botobo.core.ui.auth.PathMatcherInterceptor;
 import botobo.core.ui.auth.PathMethod;
+import botobo.core.ui.auth.PublicAuthorizationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -29,8 +29,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AdminInterceptor adminInterceptor() {
-        return new AdminInterceptor(authService);
+    public PublicAuthorizationInterceptor publicAuthorizationInterceptor() {
+        return new PublicAuthorizationInterceptor(authService);
     }
 
     @Bean
@@ -46,32 +46,34 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authPathMatcherInterceptor());
-        registry.addInterceptor(adminPathMatcherInterceptor());
+        registry.addInterceptor(publicAuthPathMatcherInterceptor());
     }
 
     @Bean
     public PathMatcherInterceptor authPathMatcherInterceptor() {
         return new PathMatcherInterceptor(authorizationInterceptor())
                 .addPathPatterns("/**", PathMethod.ANY)
-                .excludePathPatterns("/*", PathMethod.GET)
+                .excludePathPatterns("/", PathMethod.GET)
+                .excludePathPatterns("/index.html", PathMethod.GET)
+                .excludePathPatterns("/favicon.ico", PathMethod.GET)
+                .excludePathPatterns("/error", PathMethod.GET)
                 .excludePathPatterns("/**", PathMethod.OPTIONS)
                 .excludePathPatterns("/infra/**", PathMethod.GET)
-                .excludePathPatterns("/workbooks", PathMethod.GET)
                 .excludePathPatterns("/quizzes/**", PathMethod.GET)
                 .excludePathPatterns("/login/**", PathMethod.POST)
-                .excludePathPatterns("/docs/**", PathMethod.GET)
+                .excludePathPatterns("/token/**", PathMethod.GET)
+                .excludePathPatterns("/logout", PathMethod.GET)
                 .excludePathPatterns("/workbooks/public", PathMethod.GET)
                 .excludePathPatterns("/workbooks/public/**", PathMethod.GET)
+                .excludePathPatterns("/ranks/**", PathMethod.GET)
                 .excludePathPatterns("/tags", PathMethod.GET)
                 .excludePathPatterns("/users", PathMethod.GET)
                 .excludePathPatterns("/search/**", PathMethod.GET);
     }
 
     @Bean
-    public PathMatcherInterceptor adminPathMatcherInterceptor() {
-        return new PathMatcherInterceptor(adminInterceptor())
-                .addPathPatterns("/admin/workbooks", PathMethod.POST)
-                .addPathPatterns("/admin/cards", PathMethod.POST)
-                .excludePathPatterns("/**", PathMethod.OPTIONS);
+    public PathMatcherInterceptor publicAuthPathMatcherInterceptor() {
+        return new PathMatcherInterceptor(publicAuthorizationInterceptor())
+                .addPathPatterns("/workbooks/public/?*", PathMethod.GET);
     }
 }

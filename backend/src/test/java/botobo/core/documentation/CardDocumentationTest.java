@@ -106,7 +106,7 @@ public class CardDocumentationTest extends DocumentationTest {
     }
 
     @Test
-    @DisplayName("또 보기 원하는 카드 선택 - 성공")
+    @DisplayName("다음에 또 보기 카드 선택 - 성공")
     void selectNextQuizCards() throws Exception {
         // given
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()

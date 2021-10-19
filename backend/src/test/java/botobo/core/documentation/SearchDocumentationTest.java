@@ -30,17 +30,6 @@ public class SearchDocumentationTest extends DocumentationTest {
         // given
         List<WorkbookResponse> workbookResponses = List.of(
                 WorkbookResponse.builder()
-                        .id(2L)
-                        .name("피케이의 java 문제집")
-                        .cardCount(15)
-                        .heartCount(5)
-                        .author("pkeugine")
-                        .tags(List.of(
-                                TagResponse.builder().id(1L).name("java").build(),
-                                TagResponse.builder().id(2L).name("backend").build()
-                        ))
-                        .build(),
-                WorkbookResponse.builder()
                         .id(1L)
                         .name("피케이의 javascript 문제집")
                         .cardCount(15)
@@ -49,6 +38,17 @@ public class SearchDocumentationTest extends DocumentationTest {
                         .tags(List.of(
                                 TagResponse.builder().id(3L).name("javascript").build(),
                                 TagResponse.builder().id(4L).name("frontend").build()
+                        ))
+                        .build(),
+                WorkbookResponse.builder()
+                        .id(2L)
+                        .name("피케이의 java 문제집")
+                        .cardCount(15)
+                        .heartCount(5)
+                        .author("pkeugine")
+                        .tags(List.of(
+                                TagResponse.builder().id(1L).name("java").build(),
+                                TagResponse.builder().id(2L).name("backend").build()
                         ))
                         .build()
         );

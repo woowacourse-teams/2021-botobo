@@ -10,6 +10,7 @@ import FillHeartIcon from '../assets/heart-solid.svg';
 import {
   Button,
   Checkbox,
+  KakaoShareButton,
   MainHeader,
   PageHeader,
   PublicCardsSelectBox,
@@ -105,37 +106,45 @@ const PublicCardsPage = () => {
         }
       />
       <StyledPageTemplate isScroll={true}>
-        <Heart>
-          <button type="button" onClick={onClickHeart}>
-            {heart ? (
-              <FillHeartIcon
-                width="1.5rem"
-                height="1.5rem"
-                fill={theme.color.red}
-              />
-            ) : (
-              <EmptyHeartIcon width="1.5rem" height="1.5rem" />
-            )}
-          </button>
-          <div>{heartCount}</div>
-        </Heart>
         <TopContent>
-          <WorkbookName>{workbookName}</WorkbookName>
-          <CardCount>{cardCount}개의 카드</CardCount>
-          <ul>
-            {tags.map(({ id, name }) => (
-              <TagWrapper key={id}>
-                <Tag
-                  to={`${ROUTE.PUBLIC_SEARCH_RESULT.PATH}?keyword=${name}`}
-                  onClick={resetSearchResult}
-                >
-                  <span>#</span>
-                  {name}
-                </Tag>
-              </TagWrapper>
-            ))}
-          </ul>
+          <div>
+            <WorkbookName>{workbookName}</WorkbookName>
+            <CardCount>{cardCount}개의 카드</CardCount>
+          </div>
+          <RightContent>
+            <Heart>
+              <button type="button" onClick={onClickHeart}>
+                {heart ? (
+                  <FillHeartIcon
+                    width="1.5rem"
+                    height="1.5rem"
+                    fill={theme.color.red}
+                  />
+                ) : (
+                  <EmptyHeartIcon width="1.5rem" height="1.5rem" />
+                )}
+              </button>
+              <div>{heartCount}</div>
+            </Heart>
+            <KakaoShareButton
+              title={workbookName}
+              path={`publicCards/${workbookId}`}
+            />
+          </RightContent>
         </TopContent>
+        <ul>
+          {tags.map(({ id, name }) => (
+            <TagWrapper key={id}>
+              <Tag
+                to={`${ROUTE.PUBLIC_SEARCH_RESULT.PATH}?keyword=${name}`}
+                onClick={resetSearchResult}
+              >
+                <span>#</span>
+                {name}
+              </Tag>
+            </TagWrapper>
+          ))}
+        </ul>
         <ul>
           {cards.map(({ id, question, answer, isChecked }) => (
             <CardItem key={id}>
@@ -208,15 +217,18 @@ const StyledPageTemplate = styled(PageTemplate)`
   padding-top: 1.5rem;
 `;
 
-const Heart = styled.div`
-  ${Flex({ direction: 'column', items: 'center' })};
-  position: absolute;
-  top: 2rem;
-  right: 1.25rem;
+const TopContent = styled.div`
+  ${Flex({ items: 'flex-start' })};
 `;
 
-const TopContent = styled.div`
-  width: calc(100% - 2rem);
+const RightContent = styled.div`
+  ${Flex()};
+  margin-left: auto;
+`;
+
+const Heart = styled.div`
+  ${Flex({ direction: 'column', items: 'center' })};
+  margin-right: 0.5rem;
 `;
 
 const WorkbookName = styled.h2`

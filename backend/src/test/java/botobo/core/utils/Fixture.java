@@ -1,84 +1,174 @@
 package botobo.core.utils;
 
-import botobo.core.dto.admin.AdminCardRequest;
-import botobo.core.dto.admin.AdminWorkbookRequest;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.GoogleUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
+import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.tag.TagRequest;
+import botobo.core.dto.workbook.WorkbookRequest;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Fixture {
 
-    public static final AdminWorkbookRequest WORKBOOK_REQUEST_1 = new AdminWorkbookRequest("1");
-    public static final AdminWorkbookRequest WORKBOOK_REQUEST_2 = new AdminWorkbookRequest("2");
-    private static final TagRequest TAG_REQUEST_1 = TagRequest.builder().id(1L).name("자바").build();
-    private static final TagRequest TAG_REQUEST_2 = TagRequest.builder().id(2L).name("자바스크립트").build();
-    private static final TagRequest TAG_REQUEST_3 = TagRequest.builder().id(3L).name("리액트").build();
-    private static final TagRequest TAG_REQUEST_4 = TagRequest.builder().id(4L).name("스프링").build();
-    private static final TagRequest TAG_REQUEST_5 = TagRequest.builder().id(5L).name("네트워크").build();
-    private static final List<TagRequest> TAG_REQUESTS_TYPE_1 = List.of(TAG_REQUEST_1, TAG_REQUEST_2, TAG_REQUEST_3);
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_1 = AdminWorkbookRequest.builder()
-            .name("Java")
-            .tags(TAG_REQUESTS_TYPE_1)
-            .build();
-    private static final List<TagRequest> TAG_REQUESTS_TYPE_2 = List.of(TAG_REQUEST_1, TAG_REQUEST_3, TAG_REQUEST_5);
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_2 = AdminWorkbookRequest.builder()
-            .name("JAVAVA")
-            .tags(TAG_REQUESTS_TYPE_2)
-            .build();
-    private static final List<TagRequest> TAG_REQUESTS_TYPE_3 = List.of(TAG_REQUEST_2, TAG_REQUEST_4, TAG_REQUEST_5);
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_WITH_TAG_3 = AdminWorkbookRequest.builder()
-            .name("Javascript")
-            .tags(TAG_REQUESTS_TYPE_3)
-            .build();
-    public static final List<AdminWorkbookRequest> ADMIN_WORKBOOK_REQUESTS_WITH_TAG =
-            Arrays.asList(WORKBOOK_REQUEST_WITH_TAG_1, WORKBOOK_REQUEST_WITH_TAG_2, WORKBOOK_REQUEST_WITH_TAG_3);
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_3 = new AdminWorkbookRequest("3");
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_4 = new AdminWorkbookRequest("4");
-    private static final AdminWorkbookRequest WORKBOOK_REQUEST_5 = new AdminWorkbookRequest("5", false);
-    public static final List<AdminWorkbookRequest> ADMIN_WORKBOOK_REQUESTS =
-            Arrays.asList(WORKBOOK_REQUEST_1, WORKBOOK_REQUEST_2, WORKBOOK_REQUEST_3,
-                    WORKBOOK_REQUEST_4, WORKBOOK_REQUEST_5);
-    private static final AdminCardRequest CARD_REQUEST_1 = new AdminCardRequest("1", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_2 = new AdminCardRequest("2", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_3 = new AdminCardRequest("3", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_4 = new AdminCardRequest("4", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_5 = new AdminCardRequest("5", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_6 = new AdminCardRequest("6", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_7 = new AdminCardRequest("7", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_8 = new AdminCardRequest("8", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_9 = new AdminCardRequest("9", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_10 = new AdminCardRequest("10", "answer", 1L);
-    private static final AdminCardRequest CARD_REQUEST_11 = new AdminCardRequest("11", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_12 = new AdminCardRequest("12", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_13 = new AdminCardRequest("13", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_14 = new AdminCardRequest("14", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_15 = new AdminCardRequest("15", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_16 = new AdminCardRequest("16", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_17 = new AdminCardRequest("17", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_18 = new AdminCardRequest("18", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_19 = new AdminCardRequest("19", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_20 = new AdminCardRequest("20", "answer", 2L);
-    private static final AdminCardRequest CARD_REQUEST_21 = new AdminCardRequest("21", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_22 = new AdminCardRequest("22", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_23 = new AdminCardRequest("23", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_24 = new AdminCardRequest("24", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_25 = new AdminCardRequest("25", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_26 = new AdminCardRequest("26", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_27 = new AdminCardRequest("27", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_28 = new AdminCardRequest("28", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_29 = new AdminCardRequest("29", "answer", 3L);
-    private static final AdminCardRequest CARD_REQUEST_30 = new AdminCardRequest("30", "answer", 3L);
-    public static final List<AdminCardRequest> ADMIN_CARD_REQUESTS_OF_30_CARDS =
-            Arrays.asList(CARD_REQUEST_1, CARD_REQUEST_2, CARD_REQUEST_3, CARD_REQUEST_4,
-                    CARD_REQUEST_5, CARD_REQUEST_6, CARD_REQUEST_7, CARD_REQUEST_8, CARD_REQUEST_9, CARD_REQUEST_10,
-                    CARD_REQUEST_11, CARD_REQUEST_12, CARD_REQUEST_13, CARD_REQUEST_14, CARD_REQUEST_15, CARD_REQUEST_16,
-                    CARD_REQUEST_17, CARD_REQUEST_18, CARD_REQUEST_19, CARD_REQUEST_20, CARD_REQUEST_21, CARD_REQUEST_22,
-                    CARD_REQUEST_23, CARD_REQUEST_24, CARD_REQUEST_25, CARD_REQUEST_26, CARD_REQUEST_27, CARD_REQUEST_28,
-                    CARD_REQUEST_29, CARD_REQUEST_30);
+
+    public static final List<WorkbookRequest> WORKBOOK_REQUESTS
+            = 문제집명만_포함된_문제집_요청_만들기(
+            List.of(
+                    Map.of("1", true),
+                    Map.of("2", true),
+                    Map.of("3", true),
+                    Map.of("4", true),
+                    Map.of("5", false)
+            )
+    );
+
+    private static List<WorkbookRequest> 문제집명만_포함된_문제집_요청_만들기(List<Map<String, Boolean>> nameAndOpenedSets) {
+        List<WorkbookRequest> requests = new ArrayList<>();
+
+        for (Map<String, Boolean> args : nameAndOpenedSets) {
+            for (Map.Entry<String, Boolean> entry : args.entrySet()) {
+                requests.add(
+                        WorkbookRequest.builder()
+                                .name(entry.getKey())
+                                .opened(entry.getValue())
+                                .build()
+                );
+            }
+        }
+        return requests;
+    }
+
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_1 = 태그명과_아이디가_포함된_태그_요청_만들기(
+            List.of(
+                    Map.of(1L, "자바"),
+                    Map.of(2L, "자바스크립트"),
+                    Map.of(3L, "리액트")
+            )
+    );
+
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_2 = 태그명과_아이디가_포함된_태그_요청_만들기(
+            List.of(
+                    Map.of(1L, "자바"),
+                    Map.of(3L, "리액트"),
+                    Map.of(5L, "네트워크")
+            )
+    );
+
+    private static final List<TagRequest> TAG_REQUESTS_TYPE_3 = 태그명과_아이디가_포함된_태그_요청_만들기(
+            List.of(
+                    Map.of(2L, "자바스크립트"),
+                    Map.of(4L, "스프링"),
+                    Map.of(5L, "네트워크")
+            )
+    );
+
+    public static final List<WorkbookRequest> WORKBOOK_REQUESTS_WITH_TAG =
+            문제집명과_태그_요청이_포함된_문제집_요청_만들기(
+                    List.of(
+                            Map.of("Java", true),
+                            Map.of("JAVAVA", true),
+                            Map.of("Javascript", true)
+                    ),
+                    List.of(TAG_REQUESTS_TYPE_1, TAG_REQUESTS_TYPE_2, TAG_REQUESTS_TYPE_3)
+            );
+
+    /**
+     * 주의, namedAndOpenedSets와 tagRequests의 사이즈는 동일해야하며
+     * 병렬적으로 매핑되어 WorkbookRequest를 생성합니다.
+     *
+     * @param nameAndOpenedSets
+     * @param tagRequests
+     * @return 태그가 포함된 WorkbookRequest List
+     */
+    private static List<WorkbookRequest> 문제집명과_태그_요청이_포함된_문제집_요청_만들기(List<Map<String, Boolean>> nameAndOpenedSets,
+                                                                     List<List<TagRequest>> tagRequests) {
+
+        if (nameAndOpenedSets.size() != tagRequests.size()) {
+            throw new IllegalArgumentException("문제집명과 태그 요청의 수는 같아야합니다.");
+        }
+        List<WorkbookRequest> requests = new ArrayList<>();
+        int size = nameAndOpenedSets.size();
+
+        for (int i = 0; i < size; i++) {
+            Map<String, Boolean> nameAndOpened = nameAndOpenedSets.get(i);
+            List<TagRequest> tagRequest = tagRequests.get(i);
+            for (Map.Entry<String, Boolean> entry : nameAndOpened.entrySet()) {
+                requests.add(
+                        WorkbookRequest.builder()
+                                .name(entry.getKey())
+                                .opened(entry.getValue())
+                                .tags(tagRequest)
+                                .build()
+                );
+            }
+        }
+        return requests;
+    }
+
+    private static List<TagRequest> 태그명과_아이디가_포함된_태그_요청_만들기(List<Map<Long, String>> idAndNameSets) {
+        List<TagRequest> requests = new ArrayList<>();
+
+        for (Map<Long, String> args : idAndNameSets) {
+            for (Map.Entry<Long, String> entry : args.entrySet()) {
+                requests.add(
+                        TagRequest.builder()
+                                .id(entry.getKey())
+                                .name(entry.getValue())
+                                .build()
+                );
+            }
+        }
+        return requests;
+    }
+
+    public static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청_만들기(List<Long> workbookIds) {
+        return 질문_답변_문제집_아이디가_포함된_카드_요청(
+                질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성(workbookIds)
+        );
+    }
+
+    private static List<String> 질문_답변_문제집_아이디를_띄어쓰기로_구분해_30개_생성(List<Long> workbookIds) {
+        List<String> results = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            int index = (i - 1) / 10;
+            long id = workbookIds.get(index);
+            results.add(i + " answer " + id);
+        }
+        return results;
+    }
+
+    /**
+     * 주의, questionAndAnswerAndWorkbookIds에 담기는 String은 "질문 답변 문제집ID"가 띄어쓰기로 구분된 형태의 String입니다.
+     *
+     * @param questionAndAnswerAndWorkbookIds
+     * @return
+     */
+    private static List<CardRequest> 질문_답변_문제집_아이디가_포함된_카드_요청(List<String> questionAndAnswerAndWorkbookIds) {
+        List<CardRequest> requests = new ArrayList<>();
+
+        for (String questionAndAnswerAndWorkbookId : questionAndAnswerAndWorkbookIds) {
+            String[] split = questionAndAnswerAndWorkbookId.split(" ");
+            if (split.length != 3) {
+                throw new IllegalArgumentException("카드 생성 요청을 만들기 위해서는 질문, 답변, 문제집 ID가 띄어쓰기로 구분되어 모두 포함되어야합니다.");
+            }
+            String question = split[0];
+            String answer = split[1];
+            Long workbookId = Long.valueOf(split[2]);
+
+            requests.add(
+                    CardRequest.builder()
+                            .question(question)
+                            .answer(answer)
+                            .workbookId(workbookId)
+                            .build()
+            );
+        }
+        return requests;
+    }
+
     public static UserInfoResponse pk = GithubUserInfoResponse.builder()
             .userName("pk")
             .socialId("10")

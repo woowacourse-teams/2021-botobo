@@ -4,7 +4,6 @@ import botobo.core.exception.search.InvalidPageSizeException;
 import botobo.core.exception.search.InvalidPageStartException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,15 +26,36 @@ public class WorkbookSearchParameter {
     private int start;
     private int size;
 
-    @Builder
-    private WorkbookSearchParameter(String searchCriteria, String searchKeyword, String start, String size) {
-        this.start = initializeStartValue(start);
-        this.size = initializeSizeValue(size);
-        this.searchKeyword = SearchKeyword.of(searchKeyword);
-        this.searchCriteria = SearchCriteria.of(searchCriteria);
+    private WorkbookSearchParameter(SearchCriteria searchCriteria, SearchKeyword searchKeyword, int start, int size) {
+        this.start = start;
+        this.size = size;
+        this.searchKeyword = searchKeyword;
+        this.searchCriteria = searchCriteria;
     }
 
-    private int initializeStartValue(String start) {
+    public static WorkbookSearchParameter ofRequest(String searchCriteria,
+                                                    String searchKeyword,
+                                                    String start, String size) {
+        return of(
+                SearchCriteria.of(searchCriteria),
+                SearchKeyword.of(searchKeyword),
+                initializeStartValue(start),
+                initializeSizeValue(size)
+        );
+    }
+
+    public static WorkbookSearchParameter of(SearchCriteria searchCriteria,
+                                             SearchKeyword searchKeyword,
+                                             int start, int size) {
+        return new WorkbookSearchParameter(
+                searchCriteria,
+                searchKeyword,
+                start,
+                size
+        );
+    }
+
+    private static int initializeStartValue(String start) {
         try {
             int value = Integer.parseInt(start);
             if (value < MINIMUM_START_PAGE) {
@@ -47,7 +67,7 @@ public class WorkbookSearchParameter {
         }
     }
 
-    private int initializeSizeValue(String size) {
+    private static int initializeSizeValue(String size) {
         try {
             int value = Integer.parseInt(size);
             if (value < MINIMUM_PAGE_SIZE || value > MAXIMUM_PAGE_SIZE) {

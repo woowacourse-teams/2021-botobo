@@ -25,11 +25,14 @@ export const cardInitialState = {
 export const cardsInitialState = {
   workbookId: -1,
   workbookName: '',
-  cards: [cardInitialState],
+  workbookOpened: false,
+  heartCount: 0,
+  tags: [],
+  cards: [],
 };
 
 export const publicCardsInitialState = {
   ...cardsInitialState,
   cardCount: -1,
-  tags: [tagInitialState],
+  heart: false,
 };
