@@ -33,6 +33,10 @@ public class CacheConfig extends CachingConfigurerSupport {
                         "workbookRanks",
                         workbookRanksConfiguration()
                 )
+                .withCacheConfiguration(
+                        "usersByWorkbookName",
+                        usersByWorkbookNameConfiguration()
+                )
                 .build();
     }
 
@@ -50,6 +54,11 @@ public class CacheConfig extends CachingConfigurerSupport {
     private RedisCacheConfiguration workbookRanksConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10));
+    }
+
+    private RedisCacheConfiguration usersByWorkbookNameConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(1));
     }
 
     @Bean

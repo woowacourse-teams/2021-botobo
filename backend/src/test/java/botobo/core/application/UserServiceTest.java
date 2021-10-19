@@ -1,5 +1,6 @@
 package botobo.core.application;
 
+import botobo.core.config.CacheConfig;
 import botobo.core.config.QuerydslConfig;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.card.Cards;
@@ -19,6 +20,7 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
+import botobo.core.infrastructure.s3.FileUploader;
 import botobo.core.infrastructure.s3.S3Uploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +31,12 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,23 +52,25 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @DisplayName("유저 서비스 테스트")
-@MockitoSettings
-@Import({UserFilterRepository.class, QuerydslConfig.class})
+@ActiveProfiles("test")
+@SpringBootTest
+//@MockitoSettings
+//@Import({UserFilterRepository.class, QuerydslConfig.class, CacheConfig.class})
 class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
     private static final String USER_DEFAULT_IMAGE = "imagesForS3Test/botobo-default-profile.png";
 
-    @Mock
+    @MockBean
     private UserRepository userRepository;
 
-    @Mock
+    @MockBean
     private UserFilterRepository userFilterRepository;
 
-    @Mock
-    private S3Uploader s3Uploader;
+    @MockBean
+    private FileUploader s3Uploader;
 
-    @InjectMocks
+    @Autowired
     private UserService userService;
 
     private User userHasCard, user1, user2;
@@ -372,6 +380,26 @@ class UserServiceTest {
                 .willReturn(List.of(userHasCard, user1, user2));
 
         // when
+        List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
+
+        // then
+        assertThat(responses).hasSize(3);
+        then(userFilterRepository)
+                .should(times(1))
+                .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+    }
+
+    @DisplayName("문제집명이 포함된 문제집의 유저를 모두 가져온다. - 성공, 캐싱된 정보가 있으면 DB를 조회하지 않고 캐싱된 것을 가지고 온다")
+    @Test
+    void findAllUsersByWorkbookNameCache() {
+        // given
+        FilterCriteria filterCriteria = new FilterCriteria("자바");
+        given(userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
+                .willReturn(List.of(userHasCard, user1, user2));
+
+        // when
+        userService.findAllUsersByWorkbookName(filterCriteria);
+        userService.findAllUsersByWorkbookName(filterCriteria);
         List<UserFilterResponse> responses = userService.findAllUsersByWorkbookName(filterCriteria);
 
         // then

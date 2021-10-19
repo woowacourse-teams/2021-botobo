@@ -1,11 +1,13 @@
 package botobo.core.dto.tag;
 
 import botobo.core.exception.workbook.WorkbookNameLengthException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Objects;
 
 @Getter
+@EqualsAndHashCode
 public class FilterCriteria {
     private static final int MAX_NAME_LENGTH = 30;
     private static final String EMPTY = "";
