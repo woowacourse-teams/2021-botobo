@@ -62,6 +62,8 @@ app.get('/', async (req, res) => {
       searchKeywordRankingState,
     };
 
+    console.log(initialState);
+
     const context = {};
     const app = (
       <StaticRouter location={req.url} context={context}>
