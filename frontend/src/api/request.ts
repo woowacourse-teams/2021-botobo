@@ -21,6 +21,6 @@ export const cancelController: CancelController = {
 
 const token = getCookie(STORAGE_KEY.TOKEN);
 
-request.defaults.headers.common['Authorization'] = token
-  ? `Bearer ${token}`
-  : '';
+if (token) {
+  request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}

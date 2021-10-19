@@ -60,7 +60,7 @@ export const getLogoutAsync = async () => {
 
   removeCookie(STORAGE_KEY.TOKEN);
 
-  request.defaults.headers.common['Authorization'] = '';
+  delete request.defaults.headers.common['Authorization'];
 };
 
 export const putProfileAsync = async (
