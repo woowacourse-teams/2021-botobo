@@ -70,9 +70,7 @@ const Guide = () => (
           <span>
             {index + 1}. {formatNewLine(description)}
           </span>
-          <ImageWrapper>
-            <Image src={imgSrc} alt={description} />
-          </ImageWrapper>
+          <Image src={imgSrc} alt={description} />
         </div>
       ))}
     </PageTemplate>
@@ -81,10 +79,6 @@ const Guide = () => (
 
 const Title = styled.h2`
   margin-bottom: 2rem;
-`;
-
-const ImageWrapper = styled.div`
-  height: 34.375rem;
 `;
 
 const Image = styled.img`
