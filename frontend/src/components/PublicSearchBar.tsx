@@ -149,6 +149,7 @@ const PublicSearchBar = () => {
             setSearchKeyword(target.value);
           }}
           onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing) return;
             if (recommendedKeywords.length === 0) return;
 
             if (event.key === 'ArrowDown') {
