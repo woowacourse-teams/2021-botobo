@@ -149,6 +149,7 @@ const PublicSearchBar = () => {
             setSearchKeyword(target.value);
           }}
           onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing) return;
             if (recommendedKeywords.length === 0) return;
 
             if (event.key === 'ArrowDown') {
@@ -190,7 +191,6 @@ const PublicSearchBar = () => {
 
                   searchInputRef.current?.blur();
                 }}
-                onMouseOver={() => setRecommendedIndex(index)}
                 onMouseDown={() => searchForWorkbook(name)}
                 isSelected={index === recommendedIndex}
               >
@@ -322,6 +322,10 @@ const RecommendedKeyword = styled.li<RecommendedKeywordStyleProps>`
 
   ${({ theme, isSelected }) => css`
     background-color: ${isSelected && theme.color.gray_3};
+
+    &:hover {
+      background-color: ${theme.color.gray_3};
+    }
   `}
 `;
 
