@@ -59,6 +59,12 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void setUp() {
         super.setUp();
+        userRepository.save(USER_PK);
+        userRepository.save(USER_JOANNE);
+        userRepository.save(USER_BEAR);
+        userRepository.save(USER_OZ);
+        userRepository.save(USER_KYLE);
+        userRepository.save(USER_DITTO);
         admin1 = User.builder()
                 .socialId("2")
                 .userName("user1")
@@ -80,12 +86,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         userRepository.save(admin1);
         userRepository.save(admin2);
         userRepository.save(admin3);
-        userRepository.save(USER_PK);
-        userRepository.save(USER_JOANNE);
-        userRepository.save(USER_BEAR);
-        userRepository.save(USER_OZ);
-        userRepository.save(USER_KYLE);
-        userRepository.save(USER_DITTO);
 
         ADMINS.addAll(List.of(admin1, admin2, admin3));
     }

@@ -9,6 +9,7 @@ import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,9 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-@DataJpaTest(showSql = false)
-@ActiveProfiles("test")
-public class FilterRepositoryTest {
+public class FilterRepositoryTest extends RepositoryTest{
 
     @Autowired
     private UserRepository userRepository;
