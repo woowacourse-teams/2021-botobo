@@ -3,10 +3,12 @@ package botobo.core.acceptance.card;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.User;
+import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
+import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.exception.common.ErrorResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,25 +19,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS;
-import static botobo.core.utils.Fixture.질문_답변_문제집_아이디가_포함된_카드_요청_만들기;
+import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_CARD_REQUEST;
+import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Quiz 인수 테스트")
 public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
     private List<Long> workbookIds;
-
-    @BeforeEach
-    void setFixture() {
-        workbookIds = 여러개_문제집_생성_요청(WORKBOOK_REQUESTS);
-        여러개_카드_생성_요청(질문_답변_문제집_아이디가_포함된_카드_요청_만들기(workbookIds));
-    }
 
     @Test
     @DisplayName("퀴즈 생성 - 성공")
@@ -439,5 +437,44 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("퀴즈에 문제가 존재하지 않습니다.");
+    }
+
+    @BeforeEach
+    void setFixture() {
+        List<WorkbookRequest> workbookRequests =
+                List.of(
+                        MAKE_SINGLE_WORKBOOK_REQUEST("1", true, emptyList()),
+                        MAKE_SINGLE_WORKBOOK_REQUEST("2", true, emptyList()),
+                        MAKE_SINGLE_WORKBOOK_REQUEST("3", true, emptyList()),
+                        MAKE_SINGLE_WORKBOOK_REQUEST("4", true, emptyList()),
+                        MAKE_SINGLE_WORKBOOK_REQUEST("5", false, emptyList())
+                );
+        workbookIds = 여러개_문제집_생성_요청(workbookRequests);
+        여러개_카드_생성_요청(make30DummyQuestionAndAnswerSets(workbookIds));
+    }
+
+    private List<CardRequest> make30DummyQuestionAndAnswerSets(List<Long> workbookIds) {
+        List<CardRequest> cardRequests = new ArrayList<>();
+        List<String> dummySets = makeDummy30QuestionAndAnswerSets();
+        for (int i = 0; i < dummySets.size(); i++) {
+            String dummySet = dummySets.get(i);
+            String[] questionAndAnswer = dummySet.split(" ");
+            cardRequests.add(
+                    MAKE_SINGLE_CARD_REQUEST(
+                            questionAndAnswer[0],
+                            questionAndAnswer[1],
+                            workbookIds.get(i / 10)
+                    )
+            );
+        }
+        return cardRequests;
+    }
+
+    private List<String> makeDummy30QuestionAndAnswerSets() {
+        List<String> results = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            results.add(i + " answer");
+        }
+        return results;
     }
 }

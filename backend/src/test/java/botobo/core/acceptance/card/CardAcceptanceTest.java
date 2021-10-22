@@ -21,9 +21,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static botobo.core.utils.Fixture.ditto;
-import static botobo.core.utils.Fixture.joanne;
-import static botobo.core.utils.Fixture.kyle;
+import static botobo.core.acceptance.utils.Fixture.DITTO;
+import static botobo.core.acceptance.utils.Fixture.JOANNE;
+import static botobo.core.acceptance.utils.Fixture.KYLE;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +36,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GOOGLE);
+        joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GOOGLE);
         workbookId = 유저_태그_포함_문제집_등록되어_있음("문제집", true, joanneToken).getId();
     }
 
@@ -213,7 +213,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
                 .answer("answer")
                 .workbookId(workbookId)
                 .build();
-        final String anotherToken = 소셜_로그인되어_있음(kyle, SocialType.GOOGLE);
+        final String anotherToken = 소셜_로그인되어_있음(KYLE, SocialType.GOOGLE);
 
         // when
         final HttpResponse response = 유저_카드_생성_요청(cardRequest, anotherToken);
@@ -398,7 +398,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
                 .nextQuiz(true)
                 .build();
 
-        final String anotherToken = 소셜_로그인되어_있음(ditto, SocialType.GOOGLE);
+        final String anotherToken = 소셜_로그인되어_있음(DITTO, SocialType.GOOGLE);
 
         // when
         final HttpResponse response = 유저_카드_수정_요청(cardUpdateRequest, cardResponse, anotherToken);
@@ -445,7 +445,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     void deleteCardWithNotAuthor() {
         // given
         final CardResponse cardResponse = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken);
-        final String anotherToken = 소셜_로그인되어_있음(ditto, SocialType.GOOGLE);
+        final String anotherToken = 소셜_로그인되어_있음(DITTO, SocialType.GOOGLE);
 
         // when
         final HttpResponse response = 유저_카드_삭제_요청(cardResponse, anotherToken);
@@ -551,7 +551,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         final Long card2 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
         final Long card3 = 유저_카드_등록되어_있음("question", "answer", workbookId, joanneToken).getId();
 
-        final String anotherToken = 소셜_로그인되어_있음(kyle, SocialType.GOOGLE);
+        final String anotherToken = 소셜_로그인되어_있음(KYLE, SocialType.GOOGLE);
 
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))

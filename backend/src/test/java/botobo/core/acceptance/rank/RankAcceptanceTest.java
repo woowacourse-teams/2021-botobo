@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static botobo.core.utils.Fixture.bear;
-import static botobo.core.utils.Fixture.joanne;
-import static botobo.core.utils.Fixture.oz;
-import static botobo.core.utils.Fixture.pk;
+import static botobo.core.acceptance.utils.Fixture.BEAR;
+import static botobo.core.acceptance.utils.Fixture.JOANNE;
+import static botobo.core.acceptance.utils.Fixture.OZ;
+import static botobo.core.acceptance.utils.Fixture.PK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RankAcceptanceTest extends DomainAcceptanceTest {
@@ -40,10 +40,10 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void initializeUsers() {
-        pkToken = 소셜_로그인되어_있음(pk, SocialType.GITHUB);
-        bearToken = 소셜_로그인되어_있음(bear, SocialType.GITHUB);
-        joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
-        ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
+        pkToken = 소셜_로그인되어_있음(PK, SocialType.GITHUB);
+        bearToken = 소셜_로그인되어_있음(BEAR, SocialType.GITHUB);
+        joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
+        ozToken = 소셜_로그인되어_있음(OZ, SocialType.GITHUB);
     }
 
     private void initializeWorkbooks() {

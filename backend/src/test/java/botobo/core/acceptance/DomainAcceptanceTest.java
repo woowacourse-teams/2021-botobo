@@ -39,11 +39,11 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @MockBean
     protected GoogleOauthManager googleOauthManager;
 
-    @Autowired
-    protected UserRepository userRepository;
-
     @MockBean
     private OauthManagerFactory oauthManagerFactory;
+
+    @Autowired
+    protected UserRepository userRepository;
 
     protected User admin, admin1, admin2, admin3;
 
