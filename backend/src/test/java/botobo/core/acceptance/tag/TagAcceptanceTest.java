@@ -2,7 +2,6 @@ package botobo.core.acceptance.tag;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
-import botobo.core.domain.user.SocialType;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
 import static botobo.core.utils.TestUtils.stringGenerator;
@@ -105,7 +103,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
                 )
         );
 
-        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, USERS);
 
         final String workbookName = "Java";
         final HttpResponse response = request()

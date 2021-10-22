@@ -51,9 +51,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @Autowired
     protected UserRepository userRepository;
 
-    protected User admin1, admin2, admin3;
-
-    protected static final List<User> ADMINS = new ArrayList<>();
+    protected static final List<User> USERS = new ArrayList<>();
 
     @Override
     @BeforeEach
@@ -65,29 +63,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         userRepository.save(USER_OZ);
         userRepository.save(USER_KYLE);
         userRepository.save(USER_DITTO);
-        admin1 = User.builder()
-                .socialId("2")
-                .userName("user1")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
-        admin2 = User.builder()
-                .socialId("3")
-                .userName("user2")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
-        admin3 = User.builder()
-                .socialId("4")
-                .userName("user3")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
-        userRepository.save(admin1);
-        userRepository.save(admin2);
-        userRepository.save(admin3);
-
-        ADMINS.addAll(List.of(admin1, admin2, admin3));
+        USERS.addAll(List.of(USER_PK, USER_BEAR, USER_OZ));
     }
 
     public List<Long> 여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests) {

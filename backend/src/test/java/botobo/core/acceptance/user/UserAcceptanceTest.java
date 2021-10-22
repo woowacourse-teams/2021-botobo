@@ -27,11 +27,8 @@ import java.util.List;
 
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.USER_OZ;
-import static botobo.core.acceptance.utils.Fixture.USER_PK;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
 import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -575,8 +572,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
     @Test
     void findAllUsersByWorkbookNameWhenCardIsEmpty() {
-//        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
-        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, USERS);
 
         // given
         final String workbookName = "Java";
@@ -666,7 +662,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
     @Test
     void findAllUsersByWorkbookNameIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, ADMINS);
+        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, USERS);
 
         // given
         final String workbookName = "";
