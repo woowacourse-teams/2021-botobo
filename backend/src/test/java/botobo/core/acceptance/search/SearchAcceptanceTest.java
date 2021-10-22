@@ -10,17 +10,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static botobo.core.acceptance.utils.Fixture.JAVA_TAG_REQUESTS;
+import static botobo.core.acceptance.utils.Fixture.JS_TAG_REQUESTS;
 import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
 import static botobo.core.acceptance.utils.Fixture.USER_PK;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("검색 인수 테스트")
 class SearchAcceptanceTest extends DomainAcceptanceTest {
+
+    private static final List<TagRequest> failTags = List.of(
+            TagRequest.builder().id(0L).name("실패").build()
+    );
 
     @Override
     @BeforeEach
@@ -32,7 +38,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
     private void initializeWorkbooks() {
         // pk의 문제집 생성
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), USER_PK),
+                CREATE_WORKBOOK_WITH_PARAMS("가장 멋진 피케이의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
                 2,
                 "질문",
                 "답변",
@@ -40,7 +46,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 emptyList()
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), USER_PK),
+                CREATE_WORKBOOK_WITH_PARAMS("나는 피케이의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
                 5,
                 "질문",
                 "답변",
@@ -48,7 +54,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 emptyList()
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), USER_PK),
+                CREATE_WORKBOOK_WITH_PARAMS("다들 피케이의 자바 고급 문제집을 봐", true, JAVA_TAG_REQUESTS, USER_PK),
                 10,
                 "질문",
                 "답변",
@@ -56,7 +62,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 emptyList()
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", true, makeJSTags(), USER_PK),
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", true, JS_TAG_REQUESTS, USER_PK),
                 1,
                 "질문",
                 "답변",
@@ -64,7 +70,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 emptyList()
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", false, makeFailTags(), USER_PK),
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", false, failTags, USER_PK),
                 1,
                 "질문",
                 "답변",
@@ -74,7 +80,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
 
         // 중간곰의 문제집 생성
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
                 1,
                 "질문",
                 "답변",
@@ -82,7 +88,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 List.of(USER_PK)
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
                 1,
                 "질문",
                 "답변",
@@ -90,34 +96,14 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 List.of(USER_PK, USER_BEAR)
         );
         CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, JS_TAG_REQUESTS, USER_BEAR),
                 1,
                 "질문",
                 "답변",
                 USER_BEAR,
                 List.of()
         );
-        CREATE_WORKBOOK_WITH_PARAMS("너도 중간곰과 함께 자바 할 수 있어", true, makeFailTags(), USER_BEAR);
-    }
-
-    private List<TagRequest> makeFailTags() {
-        return List.of(
-                TagRequest.builder().id(0L).name("실패").build()
-        );
-    }
-
-    private List<TagRequest> makeJavaTags() {
-        return Arrays.asList(
-                TagRequest.builder().id(0L).name("java").build(),
-                TagRequest.builder().id(0L).name("자바").build()
-        );
-    }
-
-    private List<TagRequest> makeJSTags() {
-        return Arrays.asList(
-                TagRequest.builder().id(0L).name("javascript").build(),
-                TagRequest.builder().id(0L).name("js").build()
-        );
+        CREATE_WORKBOOK_WITH_PARAMS("너도 중간곰과 함께 자바 할 수 있어", true, failTags, USER_BEAR);
     }
 
     @Test
@@ -127,7 +113,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         Map<String, Object> parameters = Map.of("keyword", "java");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
@@ -141,7 +127,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "기초");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -160,7 +146,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "자바");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -187,7 +173,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "java");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -214,7 +200,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("criteria", "date");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -239,7 +225,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("criteria", "name");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -263,7 +249,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "중간곰");
         parameters.put("criteria", "heart");
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -287,7 +273,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("criteria", "count");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -313,7 +299,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("size", "50");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -340,7 +326,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("size", "2");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -362,7 +348,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("keyword", "중간곰");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -383,7 +369,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("tags", "1");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -408,7 +394,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("tags", "1");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -433,7 +419,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("tags", "2");
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -457,7 +443,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_PK.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -483,7 +469,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_PK.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -509,7 +495,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_BEAR.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -535,7 +521,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_PK.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -561,7 +547,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_PK.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -587,7 +573,7 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         parameters.put("users", USER_BEAR.getId());
 
         // when
-        HttpResponse response = 문제집_검색_요청(parameters);
+        HttpResponse response = SEARCH_WORKBOOK(parameters);
 
         // then
         List<WorkbookResponse> workbookResponses = response.convertBodyToList(WorkbookResponse.class);
@@ -608,7 +594,10 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         String keyword = "j";
 
         // when
-        HttpResponse response = 연관_태그_검색_요청(keyword);
+        HttpResponse response = request()
+                .get("/search/tags")
+                .queryParam("keyword", keyword)
+                .build();
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
@@ -626,7 +615,10 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         String keyword = "";
 
         // when
-        HttpResponse response = 연관_태그_검색_요청(keyword);
+        HttpResponse response = request()
+                .get("/search/tags")
+                .queryParam("keyword", keyword)
+                .build();
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
@@ -641,25 +633,14 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         String keyword = "실패";
 
         // when
-        HttpResponse response = 연관_태그_검색_요청(keyword);
+        HttpResponse response = request()
+                .get("/search/tags")
+                .queryParam("keyword", keyword)
+                .build();
 
         // then
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(tagResponses).isEmpty();
-    }
-
-    private HttpResponse 문제집_검색_요청(Map<String, Object> parameters) {
-        return request()
-                .get("/search/workbooks")
-                .queryParams(parameters)
-                .build();
-    }
-
-    private HttpResponse 연관_태그_검색_요청(String keyword) {
-        return request()
-                .get("/search/tags")
-                .queryParam("keyword", keyword)
-                .build();
     }
 }

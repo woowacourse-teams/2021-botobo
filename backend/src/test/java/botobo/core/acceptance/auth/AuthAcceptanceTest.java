@@ -1,5 +1,6 @@
-package botobo.core.acceptance;
+package botobo.core.acceptance.auth;
 
+import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.LoginRequest;

@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_CARD_REQUEST;
@@ -143,6 +144,13 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return request()
                 .putWithoutBody("/workbooks/{workbookId}/hearts", workbookId)
                 .auth(CREATE_TOKEN(user.getId()))
+                .build();
+    }
+
+    protected HttpResponse SEARCH_WORKBOOK(Map<String, Object> parameters) {
+        return request()
+                .get("/search/workbooks")
+                .queryParams(parameters)
                 .build();
     }
 

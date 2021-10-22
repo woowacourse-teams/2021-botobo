@@ -15,6 +15,7 @@ import java.util.Map;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("검색 실패 케이스 인수 테스트")
 public class SearchAcceptanceFailTest extends AcceptanceTest {
     @Test
     @DisplayName("문제집 검색 - 실패, 검색어 없음")

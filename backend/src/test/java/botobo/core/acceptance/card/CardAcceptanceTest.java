@@ -28,14 +28,14 @@ import static botobo.core.utils.TestUtils.stringGenerator;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("카드 인수 테스트")
+@DisplayName("Card 인수 테스트")
 class CardAcceptanceTest extends DomainAcceptanceTest {
 
-    private Long workbookId;
+    private static Long WORKBOOK_ID;
 
     @BeforeEach
     void setFixture() {
-        workbookId = CREATE_WORKBOOK_WITH_PARAMS("문제집", true, emptyList(), USER_JOANNE).getId();
+        WORKBOOK_ID = CREATE_WORKBOOK_WITH_PARAMS("문제집", true, emptyList(), USER_JOANNE).getId();
     }
 
     @ParameterizedTest
@@ -47,7 +47,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -70,7 +70,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question(question)
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -89,7 +89,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question(stringGenerator(2001))
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -109,7 +109,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -128,7 +128,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer(stringGenerator(2001))
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -187,7 +187,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
 
         // when
@@ -209,7 +209,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         CardRequest cardRequest = CardRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .build();
         // when
         final HttpResponse response = CREATE_CARD(cardRequest, USER_KYLE);
@@ -226,12 +226,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 성공")
     void updateCard(String answer) {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -257,12 +257,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 유효하지 않은 question")
     void updateCardWithInvalidQuestion(String question) {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(question)
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -281,12 +281,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 2000자를 넘긴 question")
     void updateCardWithLongQuestion() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question(stringGenerator(2001))
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -306,12 +306,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, null")
     void updateCardWithNullAndEmptyAnswer(String answer) {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(answer)
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -331,12 +331,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 2000자를 넘긴 answer")
     void updateCardWithLongAnswer() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer(stringGenerator(2001))
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -356,12 +356,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 존재하지 않는 유저")
     void updateCardWithNotExistUser() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -383,12 +383,12 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 수정 - 실패, 작성자가 아닌 유저")
     void updateCardWithNotAuthor() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         CardUpdateRequest cardUpdateRequest = CardUpdateRequest.builder()
                 .question("question")
                 .answer("answer")
-                .workbookId(workbookId)
+                .workbookId(WORKBOOK_ID)
                 .encounterCount(0)
                 .bookmark(true)
                 .nextQuiz(true)
@@ -406,7 +406,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 성공")
     void deleteCard() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         // when
         final HttpResponse response = 유저_카드_삭제_요청(cardResponse, USER_JOANNE);
@@ -419,7 +419,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 실패, 존재하지 않는 유저")
     void deleteCardWithNotExistUser() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
 
         // when
         final HttpResponse response = request()
@@ -437,7 +437,7 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("카드 삭제 - 실패, 작성자가 아닌 유저")
     void deleteCardWithNotAuthor() {
         // given
-        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE);
+        final CardResponse cardResponse = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE);
         // when
         final HttpResponse response = 유저_카드_삭제_요청(cardResponse, USER_DITTO);
 
@@ -451,9 +451,9 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 성공")
     void selectNextQuizCards() {
         // given
-        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
+        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
 
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))
@@ -491,9 +491,9 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, 로그인하지 않은 경우")
     void selectNextQuizCardsWhenUserNotLogin() {
         // given
-        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
+        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
 
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))
@@ -514,9 +514,9 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, 유저가 존재하지 않는 경우")
     void selectNextQuizCardsWhenUserNotFound() {
         // given
-        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
+        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
 
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))
@@ -538,9 +538,9 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("또 보기 원하는 카드 선택 - 실패, author가 아닌 경우")
     void selectNextQuizCardsWhenUserIsNotAuthor() {
         // given
-        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
-        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", workbookId, USER_JOANNE).getId();
+        final Long card1 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card2 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
+        final Long card3 = CREATE_CARD_WITH_PARAMS("question", "answer", WORKBOOK_ID, USER_JOANNE).getId();
 
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))

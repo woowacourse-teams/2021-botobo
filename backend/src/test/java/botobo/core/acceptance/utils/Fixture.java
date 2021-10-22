@@ -9,6 +9,7 @@ import botobo.core.dto.card.CardRequest;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookRequest;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Fixture {
@@ -119,4 +120,14 @@ public class Fixture {
                 .workbookId(workbookId)
                 .build();
     }
+
+    public static final List<TagRequest> JAVA_TAG_REQUESTS = Arrays.asList(
+            TagRequest.builder().id(0L).name("java").build(),
+            TagRequest.builder().id(0L).name("자바").build()
+    );
+
+    public static final List<TagRequest> JS_TAG_REQUESTS = Arrays.asList(
+            TagRequest.builder().id(0L).name("javascript").build(),
+            TagRequest.builder().id(0L).name("js").build()
+    );
 }
