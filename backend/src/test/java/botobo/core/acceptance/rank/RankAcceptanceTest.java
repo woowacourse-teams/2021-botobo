@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static botobo.core.acceptance.utils.Fixture.JAVA_TAG_REQUESTS;
+import static botobo.core.acceptance.utils.Fixture.JS_TAG_REQUESTS;
 import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.USER_OZ;
 import static botobo.core.acceptance.utils.Fixture.USER_PK;
-import static botobo.core.acceptance.utils.Fixture.JAVA_TAG_REQUESTS;
-import static botobo.core.acceptance.utils.Fixture.JS_TAG_REQUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Rank 인수 테스트")
