@@ -34,13 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("카드 인수 테스트")
 class CardAcceptanceTest extends DomainAcceptanceTest {
 
-    private String joanneToken;
-
     private Long workbookId;
 
     @BeforeEach
     void setFixture() {
-        joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GOOGLE);
         workbookId = 유저_태그_포함_문제집_등록되어_있음_12("문제집", true, USER_JOANNE).getId();
     }
 
@@ -217,8 +214,6 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
                 .answer("answer")
                 .workbookId(workbookId)
                 .build();
-        final String anotherToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_KYLE, SocialType.GOOGLE);
-
         // when
         final HttpResponse response = 유저_카드_생성_요청_1(cardRequest, USER_KYLE);
 
@@ -401,9 +396,6 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
                 .bookmark(true)
                 .nextQuiz(true)
                 .build();
-
-        final String anotherToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_DITTO, SocialType.GOOGLE);
-
         // when
         final HttpResponse response = 유저_카드_수정_요청_1(cardUpdateRequest, cardResponse, USER_DITTO);
 
@@ -449,8 +441,6 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
     void deleteCardWithNotAuthor() {
         // given
         final CardResponse cardResponse = 유저_카드_등록되어_있음_1("question", "answer", workbookId, USER_JOANNE);
-        final String anotherToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_DITTO, SocialType.GOOGLE);
-
         // when
         final HttpResponse response = 유저_카드_삭제_요청(cardResponse, USER_DITTO);
 
@@ -555,8 +545,6 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         final Long card2 = 유저_카드_등록되어_있음_1("question", "answer", workbookId, USER_JOANNE).getId();
         final Long card3 = 유저_카드_등록되어_있음_1("question", "answer", workbookId, USER_JOANNE).getId();
 
-        final String anotherToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_KYLE, SocialType.GOOGLE);
-
         NextQuizCardsRequest request = NextQuizCardsRequest.builder()
                 .cardIds(List.of(card1, card2, card3))
                 .build();
@@ -569,15 +557,6 @@ class CardAcceptanceTest extends DomainAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(errorResponse).extracting("message").isEqualTo("작성자가 아니므로 권한이 없습니다.");
     }
-
-//    private HttpResponse 유저_카드_수정_요청(CardUpdateRequest cardUpdateRequest,
-//                                     CardResponse cardResponse,
-//                                     String accessToken) {
-//        return request()
-//                .put("/cards/{id}", cardUpdateRequest, cardResponse.getId())
-//                .auth(accessToken)
-//                .build();
-//    }
 
     private HttpResponse 유저_카드_수정_요청_1(CardUpdateRequest cardUpdateRequest,
                                      CardResponse cardResponse,

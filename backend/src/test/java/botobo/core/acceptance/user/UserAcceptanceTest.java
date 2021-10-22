@@ -27,6 +27,7 @@ import java.util.List;
 
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.USER_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_PK;
 import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
@@ -593,8 +594,6 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
     @Test
     void findAllUsersByWorkbookName() {
-//        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
-//        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
         유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
         유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", true, USER_JOANNE);
 
@@ -617,9 +616,6 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 태그에 포함됨")
     @Test
     void findAllUsersByWorkbookNameEqualsTag() {
-        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
-
         List<TagRequest> jsTags = Arrays.asList(
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
@@ -648,8 +644,6 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")
     @Test
     void findAllUsersByWorkbookNameWhenOpened() {
-        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
         유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
         유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", false, USER_JOANNE);
 
@@ -672,7 +666,6 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
     @Test
     void findAllUsersByWorkbookNameIsEmpty() {
-//        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
         서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, ADMINS);
 
         // given

@@ -25,7 +25,6 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
         List<TagRequest> jsTags = Arrays.asList(
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
@@ -106,7 +105,6 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
                 )
         );
 
-//        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
         서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, ADMINS);
 
         final String workbookName = "Java";

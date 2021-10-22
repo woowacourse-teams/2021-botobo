@@ -33,21 +33,11 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
     @Autowired
     private SearchRankService searchRankService;
 
-    private String pkToken, bearToken, joanneToken, ozToken;
-
     @Override
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        initializeUsers();
         initializeWorkbooks();
-    }
-
-    private void initializeUsers() {
-        pkToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_PK, SocialType.GITHUB);
-        bearToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_BEAR, SocialType.GITHUB);
-        joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
-        ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
     }
 
     private void initializeWorkbooks() {
