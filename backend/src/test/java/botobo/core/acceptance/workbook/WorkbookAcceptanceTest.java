@@ -845,7 +845,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .failAuth()
+                .auth(CREATE_TOKEN(-100L))
                 .build();
 
         // then
@@ -913,7 +913,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .failAuth()
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
 
         // then

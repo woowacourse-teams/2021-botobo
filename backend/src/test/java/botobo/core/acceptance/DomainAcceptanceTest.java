@@ -14,6 +14,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.infrastructure.auth.GithubOauthManager;
 import botobo.core.infrastructure.auth.GoogleOauthManager;
+import botobo.core.infrastructure.auth.JwtTokenProvider;
 import botobo.core.infrastructure.auth.OauthManagerFactory;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -50,6 +51,9 @@ public class DomainAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected JwtTokenProvider jwtTokenProvider;
 
     protected static final List<User> USERS = new ArrayList<>();
 

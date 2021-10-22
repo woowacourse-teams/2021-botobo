@@ -12,16 +12,12 @@ import org.springframework.http.MediaType;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class RequestBuilder {
-    private static String accessToken;
-
-    public RequestBuilder(String accessToken) {
-        RequestBuilder.accessToken = accessToken;
+    public RequestBuilder() {
     }
 
     public HttpFunction build() {
@@ -58,7 +54,7 @@ public class RequestBuilder {
         private final List<Map.Entry<String, Object>> queryParams;
         private final List<Map.Entry<String, String>> cookies;
         private final RestAssuredRequest request;
-        private String customAccessToken;
+        private String accessToken;
         private boolean loginFlag;
         private boolean logFlag;
 
@@ -82,7 +78,7 @@ public class RequestBuilder {
 
         public Options auth(String token) {
             this.loginFlag = true;
-            this.customAccessToken = token;
+            this.accessToken = token;
             return this;
         }
 
@@ -104,7 +100,7 @@ public class RequestBuilder {
         public HttpResponse build() {
             RequestSpecification requestSpecification = RestAssured.given();
             if (loginFlag) {
-                requestSpecification = addAuthHeader(requestSpecification, getToken());
+                requestSpecification = addAuthHeader(requestSpecification, accessToken);
             }
             for (Map.Entry<String, Object> param : queryParams) {
                 requestSpecification = addParams(requestSpecification, param);
@@ -117,15 +113,6 @@ public class RequestBuilder {
                 response = response.log().all();
             }
             return new HttpResponse(response.extract());
-        }
-
-        private String getToken() {
-            if (Objects.isNull(customAccessToken)) {
-                return accessToken;
-            }
-            final String token = customAccessToken;
-            customAccessToken = null;
-            return token;
         }
 
         private RequestSpecification addAuthHeader(RequestSpecification requestSpecification, String token) {
