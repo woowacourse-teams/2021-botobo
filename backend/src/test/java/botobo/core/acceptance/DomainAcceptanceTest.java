@@ -28,6 +28,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
+import static botobo.core.acceptance.utils.Fixture.USER_DITTO;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_KYLE;
+import static botobo.core.acceptance.utils.Fixture.USER_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_PK;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -45,7 +51,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @Autowired
     protected UserRepository userRepository;
 
-    protected User admin, admin1, admin2, admin3;
+    protected User admin1, admin2, admin3;
 
     protected static final List<User> ADMINS = new ArrayList<>();
 
@@ -53,12 +59,6 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        admin = User.builder()
-                .socialId("1")
-                .userName("admin")
-                .profileUrl("github.io")
-                .role(Role.ADMIN)
-                .build();
         admin1 = User.builder()
                 .socialId("2")
                 .userName("user1")
@@ -77,34 +77,17 @@ public class DomainAcceptanceTest extends AcceptanceTest {
                 .profileUrl("github.io")
                 .role(Role.ADMIN)
                 .build();
-        userRepository.save(admin);
         userRepository.save(admin1);
         userRepository.save(admin2);
         userRepository.save(admin3);
+        userRepository.save(USER_PK);
+        userRepository.save(USER_JOANNE);
+        userRepository.save(USER_BEAR);
+        userRepository.save(USER_OZ);
+        userRepository.save(USER_KYLE);
+        userRepository.save(USER_DITTO);
 
         ADMINS.addAll(List.of(admin1, admin2, admin3));
-    }
-
-    protected User anyUser() {
-        User anyUser = User.builder()
-                .socialId("2")
-                .userName("joanne")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-        return userRepository.save(anyUser);
-    }
-
-    private Long 생성된_문제집의_ID를_반환(HttpResponse response) {
-        WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
-        return workbookResponse.getId();
-    }
-
-    private HttpResponse 문제집_생성_요청(WorkbookRequest workbookRequest) {
-        return request()
-                .post("/workbooks", workbookRequest)
-                .auth(jwtTokenProvider.createAccessToken(admin.getId()))
-                .build();
     }
 
     public List<Long> 여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests) {
@@ -113,6 +96,18 @@ public class DomainAcceptanceTest extends AcceptanceTest {
             ids.add(생성된_문제집의_ID를_반환(문제집_생성_요청(workbookRequest)));
         }
         return ids;
+    }
+
+    private HttpResponse 문제집_생성_요청(WorkbookRequest workbookRequest) {
+        return request()
+                .post("/workbooks", workbookRequest)
+                .auth(createToken(USER_PK.getId()))
+                .build();
+    }
+
+    private Long 생성된_문제집의_ID를_반환(HttpResponse response) {
+        WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
+        return workbookResponse.getId();
     }
 
     public void 서로_다른_유저의_여러개_문제집_생성_요청(List<WorkbookRequest> workbookRequests, List<User> admins) {
@@ -126,7 +121,7 @@ public class DomainAcceptanceTest extends AcceptanceTest {
     private void 문제집_생성_요청(WorkbookRequest workbookRequest, User user) {
         request()
                 .post("/workbooks", workbookRequest)
-                .auth(jwtTokenProvider.createAccessToken(user.getId()))
+                .auth(createToken(user.getId()))
                 .build()
                 .extract();
     }
@@ -135,113 +130,118 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         for (CardRequest cardRequest : cardRequests) {
             request()
                     .post("/cards", cardRequest)
-                    .auth(jwtTokenProvider.createAccessToken(admin.getId()))
+                    .auth(createToken(USER_PK.getId()))
                     .build()
                     .extract();
         }
     }
 
-    public CardResponse 유저_카드_등록되어_있음(String question, String answer, Long workbookId, String accessToken) {
+    protected WorkbookResponse 유저_태그포함_문제집_등록되어_있음_1(String name, boolean opened, List<TagRequest> tags, User user) {
+        WorkbookRequest workbookRequest = WorkbookRequest.builder()
+                .name(name)
+                .opened(opened)
+                .tags(tags)
+                .build();
+        return 유저_문제집_등록되어_있음_1(workbookRequest, user);
+    }
+
+    protected WorkbookResponse 유저_문제집_등록되어_있음_1(WorkbookRequest workbookRequest, User user) {
+        return 유저_문제집_생성_요청_1(workbookRequest, user).convertBody(WorkbookResponse.class);
+    }
+
+    protected HttpResponse 유저_문제집_생성_요청_1(WorkbookRequest workbookRequest, User user) {
+        return request()
+                .post("/workbooks", workbookRequest)
+                .auth(createToken(user.getId()))
+                .build();
+    }
+
+    public CardResponse 유저_카드_등록되어_있음_1(String question, String answer, Long workbookId, User user) {
         CardRequest cardRequest = CardRequest.builder()
                 .question(question)
                 .answer(answer)
                 .workbookId(workbookId)
                 .build();
-        return 유저_카드_등록되어_있음(cardRequest, accessToken);
+        return 유저_카드_등록되어_있음_1(cardRequest, user);
     }
 
-    private CardResponse 유저_카드_등록되어_있음(CardRequest cardRequest, String accessToken) {
-        return 유저_카드_생성_요청(cardRequest, accessToken).convertBody(CardResponse.class);
+    private CardResponse 유저_카드_등록되어_있음_1(CardRequest cardRequest, User user) {
+        return 유저_카드_생성_요청_1(cardRequest, user).convertBody(CardResponse.class);
     }
 
-    protected HttpResponse 유저_카드_생성_요청(CardRequest cardRequest, String accessToken) {
+    protected HttpResponse 유저_카드_생성_요청_1(CardRequest cardRequest, User user) {
         return request()
                 .post("/cards", cardRequest)
-                .auth(accessToken)
+                .auth(createToken(user.getId()))
                 .build();
     }
 
-    protected void 유저_카드_포함_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+    protected void 유저_카드_포함_문제집_등록되어_있음_1(String name, boolean opened, User user) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(name)
                 .opened(opened)
                 .build();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
-        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음_1(workbookRequest, user);
+        유저_카드_등록되어_있음_1("질문", "답변", workbookResponse.getId(), user);
     }
 
-
-    protected WorkbookResponse 유저_태그포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
-        WorkbookRequest workbookRequest = WorkbookRequest.builder()
-                .name(name)
-                .opened(opened)
-                .tags(tags)
-                .build();
-        return 유저_문제집_등록되어_있음(workbookRequest, accessToken);
-    }
-
-    protected void 유저_태그_카드_포함_문제집_등록되어_있음(String name, boolean opened, List<TagRequest> tags, String accessToken) {
+    protected void 유저_태그_카드_포함_문제집_등록되어_있음_1(String name, boolean opened, List<TagRequest> tags, User user) {
         WorkbookRequest workbookRequest = WorkbookRequest.builder()
                 .name(name)
                 .opened(opened)
                 .tags(tags)
                 .build();
-        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음(workbookRequest, accessToken);
-        유저_카드_등록되어_있음("질문", "답변", workbookResponse.getId(), accessToken);
+        final WorkbookResponse workbookResponse = 유저_문제집_등록되어_있음_1(workbookRequest, user);
+        유저_카드_등록되어_있음_1("질문", "답변", workbookResponse.getId(), user);
     }
 
-    protected void 카드와_좋아요도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken, List<String> heartUserTokens) {
-        카드도_함께_등록(workbookResponse, cardCount, accessToken);
-        좋아요도_함께_등록(workbookResponse, heartUserTokens);
+    protected void 카드와_좋아요도_함께_등록_1(WorkbookResponse workbookResponse, int cardCount, User user, List<User> heartUsers) {
+        카드도_함께_등록_12(workbookResponse, cardCount, user);
+        좋아요도_함께_등록_12(workbookResponse, heartUsers);
     }
 
-    protected void 카드도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken) {
+    protected void 카드도_함께_등록_12(WorkbookResponse workbookResponse, int cardCount, User user) {
         Long workbookId = workbookResponse.getId();
         IntStream.rangeClosed(1, cardCount)
-                .forEach(number -> 유저_카드_등록되어_있음("질문", "정답", workbookId, accessToken));
+                .forEach(number -> 유저_카드_등록되어_있음_1("질문", "정답", workbookId, user));
     }
 
-    protected void 좋아요도_함께_등록(WorkbookResponse workbookResponse, List<String> heartUserTokens) {
+    protected void 좋아요도_함께_등록_12(WorkbookResponse workbookResponse, List<User> heartUsers) {
         Long workbookId = workbookResponse.getId();
-        heartUserTokens
-                .forEach(token -> 하트_토글_요청(workbookId, token));
+        heartUsers
+                .forEach(user -> 하트_토글_요청_12(workbookId, user));
     }
 
-    protected WorkbookResponse 유저_문제집_등록되어_있음(WorkbookRequest workbookRequest, String accessToken) {
-        return 유저_문제집_생성_요청(workbookRequest, accessToken).convertBody(WorkbookResponse.class);
-    }
-
-    protected HttpResponse 유저_문제집_생성_요청(WorkbookRequest workbookRequest, String accessToken) {
+    protected HttpResponse 하트_토글_요청_12(Long workbookId, User user) {
         return request()
-                .post("/workbooks", workbookRequest)
-                .auth(accessToken)
+                .putWithoutBody("/workbooks/{workbookId}/hearts", workbookId)
+                .auth(createToken(user.getId()))
                 .build();
     }
 
-    protected WorkbookResponse 유저_태그_포함_문제집_등록되어_있음(String name, boolean opened, String accessToken) {
+    protected void 카드도_함께_등록_1(WorkbookResponse workbookResponse, int cardCount, User user) {
+        Long workbookId = workbookResponse.getId();
+        IntStream.rangeClosed(1, cardCount)
+                .forEach(number -> 유저_카드_등록되어_있음_1("질문", "정답", workbookId, user));
+    }
+
+    protected WorkbookResponse 유저_태그_포함_문제집_등록되어_있음_12(String name, boolean opened, User user) {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );
-        return 유저_태그포함_문제집_등록되어_있음(name, opened, tagRequests, accessToken);
+        return 유저_태그포함_문제집_등록되어_있음_1(name, opened, tagRequests, user);
     }
 
     protected WorkbookCardResponse 문제집의_카드_모아보기(Long workbookId) {
         HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookId)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
         return response.convertBody(WorkbookCardResponse.class);
     }
 
     protected String createToken(Long id) {
         return jwtTokenProvider.createAccessToken(id);
-    }
-
-    protected HttpResponse 하트_토글_요청(Long workbookId, String accessToken) {
-        return request()
-                .putWithoutBody("/workbooks/{workbookId}/hearts", workbookId)
-                .auth(accessToken)
-                .build();
     }
 
     protected String 소셜_로그인되어_있음(UserInfoResponse userInfo, SocialType socialType) {

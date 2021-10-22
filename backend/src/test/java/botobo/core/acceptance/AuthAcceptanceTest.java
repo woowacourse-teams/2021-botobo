@@ -14,8 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static botobo.core.acceptance.utils.Fixture.OZ;
-import static botobo.core.acceptance.utils.Fixture.PK;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
@@ -32,7 +32,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("깃헙 로그인을 한다 - 성공")
     void loginWithGithub() {
         // given, when
-        final String accessToken = 소셜_로그인되어_있음(PK, SocialType.GITHUB);
+        final String accessToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_PK, SocialType.GITHUB);
 
         // then
         assertThat(accessToken).isNotNull();
@@ -48,7 +48,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("구글 로그인을 한다 - 성공")
     void loginWithGoogle() {
         // given, when
-        final String accessToken = 소셜_로그인되어_있음(OZ, SocialType.GOOGLE);
+        final String accessToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GOOGLE);
 
         // then
         assertThat(accessToken).isNotNull();
@@ -81,7 +81,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("로그인을 한다 - 성공, 액세스 토큰은 응답 body에 리프레시 토큰은 쿠키에 포함한다.")
     void loginSuccessWithNewTokens() {
         // when
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
 
         // then
         String accessToken = response.as(TokenResponse.class).getAccessToken();
@@ -101,7 +101,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("토큰을 재발급 받는다 - 성공, 유효한 리프레시 토큰이 쿠키에 있는 경우")
     void renewToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String refreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         // when
@@ -128,7 +128,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("SSR을 위한 서버를 위해 토큰을 재발급 받는다 - 성공, 유효한 리프레시 토큰이 쿠키에 있는 경우")
     void renewTokenForSsr() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String refreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         // when
@@ -166,7 +166,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("토큰을 재발급 받는다 - 실패, 유효하지 않은 리프레시 토큰의 경우")
     void renewTokenWhenHasInvalidRefreshToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String invalidRefreshToken = "invalidRefreshToken";
 
         // when
@@ -186,7 +186,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("토큰을 재발급 받는다 - 실패, 만료된 리프레시 토큰의 경우")
     void renewTokenWhenHasExpiredRefreshToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String refreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         Long id = jwtTokenProvider.getIdFromPayLoad(refreshToken, JwtTokenType.REFRESH_TOKEN);
@@ -209,7 +209,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("토큰을 재발급 받는다 - 실패, 레디스에 저장된 리프레시 토큰과 다른 경우")
     void renewTokenWhenNotStoredRefreshToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String storedRefreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         Long id = jwtTokenProvider.getIdFromPayLoad(storedRefreshToken, JwtTokenType.REFRESH_TOKEN);
@@ -232,7 +232,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("로그아웃한다 - 성공, 유효한 토큰인 경우 쿠키를 지우고 레디스의 리프레시 토큰도 지운다.")
     void logoutWithValidRefreshToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String refreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         // when
@@ -252,7 +252,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("로그아웃한다 - 성공, 저장된 리프레시 토큰이 아닌 경우에 레디스에는 영향을 주지 않는다.")
     void logoutWithNotStoredRefreshToken() {
         // given
-        ExtractableResponse<Response> response = 소셜_로그인_요청(PK, SocialType.GITHUB);
+        ExtractableResponse<Response> response = 소셜_로그인_요청(USER_RESPONSE_OF_PK, SocialType.GITHUB);
         String storedRefreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
 
         Long id = jwtTokenProvider.getIdFromPayLoad(storedRefreshToken, JwtTokenType.REFRESH_TOKEN);

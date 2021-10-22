@@ -18,10 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static botobo.core.acceptance.utils.Fixture.BEAR;
-import static botobo.core.acceptance.utils.Fixture.JOANNE;
-import static botobo.core.acceptance.utils.Fixture.OZ;
-import static botobo.core.acceptance.utils.Fixture.PK;
+import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_PK;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_BEAR;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RankAcceptanceTest extends DomainAcceptanceTest {
@@ -40,36 +44,36 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void initializeUsers() {
-        pkToken = 소셜_로그인되어_있음(PK, SocialType.GITHUB);
-        bearToken = 소셜_로그인되어_있음(BEAR, SocialType.GITHUB);
-        joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
-        ozToken = 소셜_로그인되어_있음(OZ, SocialType.GITHUB);
+        pkToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_PK, SocialType.GITHUB);
+        bearToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_BEAR, SocialType.GITHUB);
+        joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
+        ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
     }
 
     private void initializeWorkbooks() {
-        카드와_좋아요도_함께_등록(
-                유저_태그포함_문제집_등록되어_있음("중간곰의 자바 기초 문제집", true, makeJavaTags(), bearToken),
+        카드와_좋아요도_함께_등록_1(
+                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
-                bearToken,
-                List.of(pkToken, joanneToken)
+                USER_BEAR,
+                List.of(USER_PK, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록(
-                유저_태그포함_문제집_등록되어_있음("중간곰의 자바 중급 문제집", true, makeJavaTags(), bearToken),
+        카드와_좋아요도_함께_등록_1(
+                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
-                bearToken,
-                List.of(pkToken, bearToken, joanneToken)
+                USER_BEAR,
+                List.of(USER_PK, USER_BEAR, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록(
-                유저_태그포함_문제집_등록되어_있음("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), bearToken),
+        카드와_좋아요도_함께_등록_1(
+                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
                 1,
-                bearToken,
-                List.of(ozToken, joanneToken)
+                USER_BEAR,
+                List.of(USER_OZ, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록(
-                유저_태그포함_문제집_등록되어_있음("중간곰의 순위권 밖 문제집", true, makeJSTags(), bearToken),
+        카드와_좋아요도_함께_등록_1(
+                유저_태그포함_문제집_등록되어_있음_1("중간곰의 순위권 밖 문제집", true, makeJSTags(), USER_BEAR),
                 1,
-                bearToken,
-                List.of(ozToken)
+                USER_BEAR,
+                List.of(USER_OZ)
         );
     }
 
@@ -133,14 +137,14 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void 키워드로_여러번_검색_요청(String keyword, int searchCount) {
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<>();
         for (int i = 0; i < searchCount; i++) {
             parameters.put("keyword", keyword);
             문제집_검색_요청(parameters);
         }
     }
 
-    private RequestBuilder.HttpResponse 문제집_검색_요청(Map<String, String> parameters) {
+    private RequestBuilder.HttpResponse 문제집_검색_요청(Map<String, Object> parameters) {
         return request()
                 .get("/search/workbooks")
                 .queryParams(parameters)

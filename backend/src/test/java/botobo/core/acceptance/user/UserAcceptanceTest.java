@@ -25,11 +25,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.acceptance.utils.Fixture.JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
-import static botobo.core.acceptance.utils.Fixture.OZ;
-import static botobo.core.acceptance.utils.Fixture.PK;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,7 +84,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given, when
         final HttpResponse response = request()
                 .get("/users/me")
-                .auth(소셜_로그인되어_있음(PK, SocialType.GITHUB))
+                .auth(소셜_로그인되어_있음(USER_RESPONSE_OF_PK, SocialType.GITHUB))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
@@ -337,9 +339,9 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 회원명은 중복될 수 없다.")
     void updateFailedDuplicateUserName() {
         //given
-        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        Long id = USER_JOANNE.getId();// 유저 2번을 save한다. {이름 : "joanne"}
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("admin") // 기존에 존재하는 1번 유저의 admin 이름으로 변경한다.
+                .userName("pk") // 기존에 존재하는 USER_PK의 이름으로 변경한다.
                 .profileUrl("github.io")
                 .bio("안녕하세요~")
                 .build();
@@ -467,9 +469,9 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("회원명을 중복 조회한다. - 실패, 중복된 이름")
     void checkSameUserNameAlreadyExistFailed() {
         //given
-        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        Long id = USER_JOANNE.getId();// 유저 2번을 save한다. {이름 : "joanne"}
         UserNameRequest userNameRequest = UserNameRequest.builder()
-                .userName("admin")
+                .userName("pk")
                 .build();
         //when
         final HttpResponse response = request()
@@ -591,10 +593,10 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
     @Test
     void findAllUsersByWorkbookName() {
-        final String ozToken = 소셜_로그인되어_있음(OZ, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+//        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
+//        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
+        유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", true, USER_JOANNE);
 
         // given
         final String workbookName = "Java";
@@ -615,17 +617,17 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 태그에 포함됨")
     @Test
     void findAllUsersByWorkbookNameEqualsTag() {
-        final String ozToken = 소셜_로그인되어_있음(OZ, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
+        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
 
         List<TagRequest> jsTags = Arrays.asList(
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
         );
 
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
+        유저_태그_카드_포함_문제집_등록되어_있음_1("Js 문제집", true, jsTags, USER_JOANNE);
+        유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
+        유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", true, USER_JOANNE);
 
         // given
         final String workbookName = "Js";
@@ -646,10 +648,10 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")
     @Test
     void findAllUsersByWorkbookNameWhenOpened() {
-        final String ozToken = 소셜_로그인되어_있음(OZ, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
+        final String ozToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_OZ, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
+        유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
+        유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", false, USER_JOANNE);
 
         // given
         final String workbookName = "문제집";

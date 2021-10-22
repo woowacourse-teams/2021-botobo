@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.acceptance.utils.Fixture.JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
 import static botobo.core.utils.TestUtils.stringGenerator;
@@ -24,13 +25,13 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        final String joanneToken = 소셜_로그인되어_있음(JOANNE, SocialType.GITHUB);
+        final String joanneToken = 소셜_로그인되어_있음(USER_RESPONSE_OF_JOANNE, SocialType.GITHUB);
         List<TagRequest> jsTags = Arrays.asList(
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
         );
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 비공개 문제집", false, jsTags, joanneToken);
+        유저_태그_카드_포함_문제집_등록되어_있음_1("Js 문제집", true, jsTags, USER_JOANNE);
+        유저_태그_카드_포함_문제집_등록되어_있음_1("Js 비공개 문제집", false, jsTags, USER_JOANNE);
     }
 
     @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공")

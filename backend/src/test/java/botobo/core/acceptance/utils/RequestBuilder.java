@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class RequestBuilder {
     }
 
     public static class Options {
-        private final List<Map.Entry<String, String>> queryParams;
+        private final List<Map.Entry<String, Object>> queryParams;
         private final List<Map.Entry<String, String>> cookies;
         private final RestAssuredRequest request;
         private String customAccessToken;
@@ -90,7 +91,7 @@ public class RequestBuilder {
             return this;
         }
 
-        public Options queryParams(Map<String, String> parameters) {
+        public Options queryParams(Map<String, Object> parameters) {
             this.queryParams.addAll(parameters.entrySet());
             return this;
         }
@@ -105,7 +106,7 @@ public class RequestBuilder {
             if (loginFlag) {
                 requestSpecification = addAuthHeader(requestSpecification, getToken());
             }
-            for (Map.Entry<String, String> param : queryParams) {
+            for (Map.Entry<String, Object> param : queryParams) {
                 requestSpecification = addParams(requestSpecification, param);
             }
             for (Map.Entry<String, String> cookie : cookies) {
@@ -131,7 +132,7 @@ public class RequestBuilder {
             return requestSpecification.header("Authorization", "Bearer " + token);
         }
 
-        private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, String> param) {
+        private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, Object> param) {
             return requestSpecification.queryParam(param.getKey(), param.getValue());
         }
 

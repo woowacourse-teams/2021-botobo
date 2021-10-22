@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_CARD_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_WORKBOOK_REQUEST;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_PK;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +48,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -109,10 +111,10 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 .count(10)
                 .build();
 
-        User anyUser = anyUser();
+        // TODO USER_PK의 문제집임.
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(anyUser.getId()))
+                .auth(createToken(USER_JOANNE.getId()))
                 .build();
 
         // when
@@ -135,7 +137,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -161,7 +163,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -206,7 +208,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -275,7 +277,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when, then
@@ -301,7 +303,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -322,7 +324,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/cards/next-quiz", request)
-                .auth(createToken(admin.getId()))
+                .auth(createToken(USER_PK.getId()))
                 .build()
                 .extract();
     }
@@ -371,7 +373,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         Long workbookId = workbookIds.get(0);
         final HttpResponse response = request()
                 .get("/quizzes/" + workbookId)
-                .auth(createToken(admin.getId()))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
@@ -389,7 +391,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/quizzes/{workbookId}", 1000L)
-                .auth(createToken(admin.getId()))
+                .auth(createToken(USER_PK.getId()))
                 .build();
 
         // when
