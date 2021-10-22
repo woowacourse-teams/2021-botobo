@@ -2,7 +2,6 @@ package botobo.core.acceptance.workbook;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
-import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.ScrapCardRequest;
@@ -25,16 +24,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static botobo.core.acceptance.utils.Fixture.MAKE_SINGLE_TAG_REQUEST;
 import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
-import static botobo.core.acceptance.utils.Fixture.USER_DITTO;
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.USER_OZ;
 import static botobo.core.acceptance.utils.Fixture.USER_PK;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_BEAR;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static botobo.core.utils.TestUtils.stringGenerator;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class WorkbookAcceptanceTest extends DomainAcceptanceTest {
@@ -51,7 +47,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
@@ -76,7 +72,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         WorkbookResponse workbookResponse = response.convertBody(WorkbookResponse.class);
@@ -97,7 +93,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -115,7 +111,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -135,7 +131,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -155,7 +151,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -175,7 +171,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -195,7 +191,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
                 .build();
 
         // when
-        final HttpResponse response = 유저_문제집_생성_요청_1(workbookRequest, USER_PK);
+        final HttpResponse response = CREATE_WORKBOOK(workbookRequest, USER_PK);
 
         // then
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -208,8 +204,8 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     void findPublicWorkbooksWhenMaxIsTwo() {
         // given
 
-        유저_카드_포함_문제집_등록되어_있음_1("Java 문제집", true, USER_OZ);
-        유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집", true, USER_JOANNE);
+        CREATE_WORKBOOK_INCLUDE_CARD("Java 문제집", true, emptyList(), USER_OZ, "질문", "답변");
+        CREATE_WORKBOOK_INCLUDE_CARD("Spring 문제집", true, emptyList(), USER_JOANNE, "질문", "답변");
 
         // when
         HttpResponse response = request()
@@ -228,8 +224,8 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // given
 
         for (int i = 0; i < 100; i++) {
-            유저_카드_포함_문제집_등록되어_있음_1("Java 문제집" + i, true, USER_OZ);
-            유저_카드_포함_문제집_등록되어_있음_1("Spring 문제집" + i, true, USER_JOANNE);
+            CREATE_WORKBOOK_INCLUDE_CARD("Java 문제집" + i, true, emptyList(), USER_OZ, "질문", "답변");
+            CREATE_WORKBOOK_INCLUDE_CARD("Spring 문제집" + i, true, emptyList(), USER_JOANNE, "질문", "답변");
         }
 
         // when
@@ -248,8 +244,8 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     void findPublicWorkbooksWhenOpenedIsFalse() {
         // given
 
-        유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", false, USER_OZ);
-        유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", false, USER_JOANNE);
+        CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", false, emptyList(), USER_OZ);
+        CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", false, emptyList(), USER_JOANNE);
 
         // when
         HttpResponse response = request()
@@ -268,8 +264,8 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // given
 
         // 카드를 포함하지 않은 문제집을 등록한다.
-        유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", false, USER_OZ);
-        유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", false, USER_JOANNE);
+        CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", false, emptyList(), USER_OZ);
+        CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", false, emptyList(), USER_JOANNE);
 
         // when
         HttpResponse response = request()
@@ -286,14 +282,14 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저의 문제집 전체 조회 - 성공")
     void findWorkbooksByUser() {
         // given
-        유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK);
-        유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", true, USER_PK);
-        유저_태그_포함_문제집_등록되어_있음_12("Database 문제집", true, USER_PK);
+        CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK);
+        CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", true, emptyList(), USER_PK);
+        CREATE_WORKBOOK_WITH_PARAMS("Database 문제집", true, emptyList(), USER_PK);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks")
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -306,15 +302,19 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공")
     void findCategoryCardsById() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS(
+                "Java 문제집",
+                true,
+                List.of(MAKE_SINGLE_TAG_REQUEST(1L, "Java")),
+                USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookResponse.getId())
-                .auth(createToken(USER_BEAR.getId()))
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
 
         // then
@@ -331,15 +331,19 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 (카드 존재) - 성공, 비공개인 경우")
     void findCategoryCardsByIdWhenPrivate() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", false, USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS(
+                "Java 문제집",
+                false,
+                List.of(MAKE_SINGLE_TAG_REQUEST(1L, "Java")),
+                USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookResponse.getId())
-                .auth(createToken(USER_BEAR.getId()))
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
 
         // then
@@ -356,12 +360,12 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 (카드 0개) - 성공")
     void findWorkbookCardsByIdWithNotExistsCard() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookResponse.getId())
-                .auth(createToken(USER_BEAR.getId()))
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
 
         // then
@@ -377,12 +381,12 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집의 카드 모아보기 - 실패, 자신의 문제집이 아닌 경우")
     void findWorkbookCardsByIdWithOtherUser() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookResponse.getId())
-                .auth(createToken(USER_JOANNE.getId()))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         // then
@@ -394,15 +398,15 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("공유 문제집 조회 - 성공")
     void findPublicWorkbookById() {
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
-        유저_카드_등록되어_있음_1("question", "answer", workbookResponse.getId(), USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
+        CREATE_CARD_WITH_PARAMS("question", "answer", workbookResponse.getId(), USER_BEAR);
 
         // when
         final HttpResponse response = request()
                 .get("/workbooks/public/{id}", workbookResponse.getId())
-                .auth(createToken(USER_BEAR.getId()))
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
         // then
         final WorkbookCardResponse workbookCardResponse = response.convertBody(WorkbookCardResponse.class);
@@ -420,7 +424,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         List<TagRequest> tagRequests = Collections.singletonList(
                 TagRequest.builder().id(0L).name("잡아").build()
         );
-        final WorkbookResponse workbookResponse = 유저_태그포함_문제집_등록되어_있음_1("Java 문제집", true, tagRequests, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, tagRequests, USER_BEAR);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name("자바").build()
         );
@@ -452,13 +456,13 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, name이 없을 때")
     void updateWorkbookWhenNameNotExist(String name) {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(name)
                 .opened(true)
                 .cardCount(0)
                 .heartCount(0)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -474,13 +478,13 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, name이 30자 초과")
     void updateWorkbookWhenNameLengthOver30() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(stringGenerator(31))
                 .opened(true)
                 .cardCount(0)
                 .heartCount(0)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -496,12 +500,12 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, opened가 없을 때")
     void updateWorkbookWhenOpenedNotExist() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name(stringGenerator(30))
                 .cardCount(0)
                 .heartCount(0)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -517,13 +521,13 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, cardCount가 음수")
     void updateWorkbookWhenCardCountNegative() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
                 .opened(true)
                 .cardCount(-5)
                 .heartCount(0)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -539,13 +543,13 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, heartCount가 음수")
     void updateWorkbookWhenHeartCountNegative() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
                 .opened(true)
                 .cardCount(0)
                 .heartCount(-5)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -561,7 +565,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 없음")
     void updateWorkbookByUserWhenTagNull() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
 
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
@@ -583,7 +587,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 아이디 없음")
     void updateWorkbookByUserWhenTagIdNull() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().name("자바").build()
         );
@@ -608,7 +612,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 아이디 음수")
     void updateWorkbookByUserWhenTagIdNegative() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(-1L).name("자바").build()
         );
@@ -633,7 +637,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, Tag 이름 없음")
     void updateWorkbookByUserWhenTagNameNull() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).build()
         );
@@ -658,7 +662,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, 20자를 초과하는 Tag 이름")
     void updateWorkbookByUserWhenTagNameLong() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
         List<TagRequest> updatedTagRequests = Collections.singletonList(
                 TagRequest.builder().id(1L).name(stringGenerator(21)).build()
         );
@@ -683,14 +687,14 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 수정 - 실패, 다른 유저가 수정을 시도할 때")
     void updateWorkbookWithOtherUser() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
 
         WorkbookUpdateRequest workbookUpdateRequest = WorkbookUpdateRequest.builder()
                 .name("Java 문제집 비공개버전")
                 .opened(false)
                 .cardCount(0)
                 .heartCount(0)
-                .tags(Collections.emptyList())
+                .tags(emptyList())
                 .build();
 
         // when
@@ -706,7 +710,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 삭제 - 성공")
     void deleteWorkbook() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
 
         // when
         final HttpResponse response = 유저_문제집_삭제_요청(workbookResponse, USER_OZ);
@@ -719,7 +723,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 문제집 삭제 - 실패, 다른 유저가 삭제를 시도할 때")
     void deleteWorkbookWithOtherUser() {
         // given
-        final WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_OZ);
+        final WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_OZ);
 
 
         // when
@@ -735,11 +739,11 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 성공")
     void scrapSelectedCardsToWorkbook() {
         // given
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", true, USER_PK).getId();
+        final Long workbookId = CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", true, emptyList(), USER_PK).getId();
 
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_BEAR).getId();
-        CardResponse response1 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
-        CardResponse response2 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
+        final Long otherWorkbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_BEAR).getId();
+        CardResponse response1 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
+        CardResponse response2 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(response1.getId(), response2.getId()))
@@ -748,7 +752,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -762,9 +766,9 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // given
         final Long workbookId = 100L;
 
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK).getId();
-        CardResponse response1 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_PK);
-        CardResponse response2 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_PK);
+        final Long otherWorkbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK).getId();
+        CardResponse response1 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_PK);
+        CardResponse response2 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_PK);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(response1.getId(), response2.getId()))
@@ -773,7 +777,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_OZ.getId()))
+                .auth(CREATE_TOKEN(USER_OZ.getId()))
                 .build();
 
         // then
@@ -795,7 +799,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -808,11 +812,11 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, 유저가 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenUserNotFound() {
         // given
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK).getId();
+        final Long workbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK).getId();
 
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음_12("유저가 존재하지 않는 문제집", true, USER_BEAR).getId();
-        CardResponse response1 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
-        CardResponse response2 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
+        final Long otherWorkbookId = CREATE_WORKBOOK_WITH_PARAMS("유저가 존재하지 않는 문제집", true, emptyList(), USER_BEAR).getId();
+        CardResponse response1 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
+        CardResponse response2 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(response1.getId(), response2.getId()))
@@ -834,11 +838,11 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, 문제집의 작성자가 아닌 유저")
     void scrapSelectedCardsToWorkbookFailedWhenNotAuthor() {
         // given
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK).getId();
+        final Long workbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK).getId();
 
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", true, USER_BEAR).getId();
-        CardResponse response1 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
-        CardResponse response2 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
+        final Long otherWorkbookId = CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", true, emptyList(), USER_BEAR).getId();
+        CardResponse response1 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
+        CardResponse response2 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(response1.getId(), response2.getId()))
@@ -847,7 +851,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_BEAR.getId()))
+                .auth(CREATE_TOKEN(USER_BEAR.getId()))
                 .build();
 
         // then
@@ -868,7 +872,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -902,7 +906,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, Card Id는 요청으로 들어왔으나 해당 ID의 카드가 모두 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenCardNotFound() {
         // given
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK).getId();
+        final Long workbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK).getId();
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(100L, 101L))
@@ -911,7 +915,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -924,11 +928,11 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("문제집으로 카드 가져오기 - 실패, Card Id는 요청으로 들어왔으나 해당 ID의 카드가 일부 존재하지 않음.")
     void scrapSelectedCardsToWorkbookFailedWhenPartOfCardNotFound() {
         // given
-        final Long workbookId = 유저_태그_포함_문제집_등록되어_있음_12("Java 문제집", true, USER_PK).getId();
+        final Long workbookId = CREATE_WORKBOOK_WITH_PARAMS("Java 문제집", true, emptyList(), USER_PK).getId();
 
-        final Long otherWorkbookId = 유저_태그_포함_문제집_등록되어_있음_12("Spring 문제집", true, USER_BEAR).getId();
-        CardResponse response1 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
-        CardResponse response2 = 유저_카드_등록되어_있음_1("question", "answer", otherWorkbookId, USER_BEAR);
+        final Long otherWorkbookId = CREATE_WORKBOOK_WITH_PARAMS("Spring 문제집", true, emptyList(), USER_BEAR).getId();
+        CardResponse response1 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
+        CardResponse response2 = CREATE_CARD_WITH_PARAMS("question", "answer", otherWorkbookId, USER_BEAR);
 
         final ScrapCardRequest scrapCardRequest = ScrapCardRequest.builder()
                 .cardIds(Arrays.asList(response1.getId(), response2.getId(), 100L))
@@ -937,7 +941,7 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         // when
         final HttpResponse response = request()
                 .post("/workbooks/{id}/cards", scrapCardRequest, workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // then
@@ -950,35 +954,35 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("유저가 하트를 토글 - 성공")
     void toggleOnHeart() {
         // given
-        WorkbookResponse workbookResponse = 유저_태그_포함_문제집_등록되어_있음_12("자바 문제집", true, USER_PK);
+        WorkbookResponse workbookResponse = CREATE_WORKBOOK_WITH_PARAMS("자바 문제집", true, emptyList(), USER_PK);
 
         Long workbookId = workbookResponse.getId();
 
         // when, then
-        HttpResponse httpResponse = 하트_토글_요청_12(workbookId, USER_OZ);
+        HttpResponse httpResponse = TOGGLE_HEARTS(workbookId, USER_OZ);
         HeartResponse heartResponse = httpResponse.convertBody(HeartResponse.class);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(heartResponse.isHeart()).isTrue();
 
-        httpResponse = 하트_토글_요청_12(workbookId, USER_OZ);
+        httpResponse = TOGGLE_HEARTS(workbookId, USER_OZ);
         heartResponse = httpResponse.convertBody(HeartResponse.class);
         assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(heartResponse.isHeart()).isFalse();
     }
 
     private HttpResponse 유저_문제집_수정_요청_1(WorkbookUpdateRequest workbookUpdateRequest,
-                                      WorkbookResponse workbookResponse,
-                                      User user) {
+                                        WorkbookResponse workbookResponse,
+                                        User user) {
         return request()
                 .put("/workbooks/{id}", workbookUpdateRequest, workbookResponse.getId())
-                .auth(createToken(user.getId()))
+                .auth(CREATE_TOKEN(user.getId()))
                 .build();
     }
 
     private HttpResponse 유저_문제집_삭제_요청(WorkbookResponse workbookResponse, User user) {
         return request()
                 .delete("/workbooks/{id}", workbookResponse.getId())
-                .auth(createToken(user.getId()))
+                .auth(CREATE_TOKEN(user.getId()))
                 .build();
     }
 }

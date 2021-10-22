@@ -3,7 +3,6 @@ package botobo.core.acceptance.rank;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.application.rank.SearchRankService;
-import botobo.core.domain.user.SocialType;
 import botobo.core.dto.rank.SearchRankResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
@@ -22,10 +21,6 @@ import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static botobo.core.acceptance.utils.Fixture.USER_OZ;
 import static botobo.core.acceptance.utils.Fixture.USER_PK;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_BEAR;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_JOANNE;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_OZ;
-import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RankAcceptanceTest extends DomainAcceptanceTest {
@@ -41,27 +36,35 @@ class RankAcceptanceTest extends DomainAcceptanceTest {
     }
 
     private void initializeWorkbooks() {
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_PK, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_PK, USER_BEAR, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_OZ, USER_JOANNE)
         );
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 순위권 밖 문제집", true, makeJSTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 순위권 밖 문제집", true, makeJSTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_OZ)
         );

@@ -1,18 +1,13 @@
 package botobo.core.acceptance.search;
 
-import botobo.core.acceptance.AcceptanceTest;
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
-import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
-import botobo.core.exception.common.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
@@ -22,7 +17,7 @@ import java.util.Map;
 
 import static botobo.core.acceptance.utils.Fixture.USER_BEAR;
 import static botobo.core.acceptance.utils.Fixture.USER_PK;
-import static botobo.core.utils.TestUtils.stringGenerator;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SearchAcceptanceTest extends DomainAcceptanceTest {
@@ -36,52 +31,73 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
 
     private void initializeWorkbooks() {
         // pk의 문제집 생성
-        카드도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), USER_PK),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("가장 멋진 피케이의 자바 기초 문제집", true, makeJavaTags(), USER_PK),
                 2,
-                USER_PK
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
         );
-        카드도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), USER_PK),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("나는 피케이의 자바 중급 문제집", true, makeJavaTags(), USER_PK),
                 5,
-                USER_PK
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
         );
-        카드도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), USER_PK),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("다들 피케이의 자바 고급 문제집을 봐", true, makeJavaTags(), USER_PK),
                 10,
-                USER_PK
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
         );
-        카드도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("피케이의 자바스크립트 문제집", true, makeJSTags(), USER_PK),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", true, makeJSTags(), USER_PK),
                 1,
-                USER_PK
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
         );
-        카드도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("피케이의 자바스크립트 문제집", false, makeFailTags(), USER_PK),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", false, makeFailTags(), USER_PK),
                 1,
-                USER_PK
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
         );
 
         // 중간곰의 문제집 생성
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_PK)
         );
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, makeJavaTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of(USER_PK, USER_BEAR)
         );
-        카드와_좋아요도_함께_등록_1(
-                유저_태그포함_문제집_등록되어_있음_1("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, makeJSTags(), USER_BEAR),
                 1,
+                "질문",
+                "답변",
                 USER_BEAR,
                 List.of()
         );
-        유저_태그포함_문제집_등록되어_있음_1("너도 중간곰과 함께 자바 할 수 있어", true, makeFailTags(), USER_BEAR);
+        CREATE_WORKBOOK_WITH_PARAMS("너도 중간곰과 함께 자바 할 수 있어", true, makeFailTags(), USER_BEAR);
     }
 
     private List<TagRequest> makeFailTags() {

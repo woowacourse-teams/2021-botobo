@@ -8,6 +8,7 @@ import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
+import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.exception.common.ErrorResponse;
 import io.restassured.response.ExtractableResponse;
@@ -48,7 +49,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -91,7 +92,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(100L))
+                .auth(CREATE_TOKEN(100L))
                 .build();
 
         // when
@@ -114,7 +115,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // TODO USER_PK의 문제집임.
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_JOANNE.getId()))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         // when
@@ -137,7 +138,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -163,7 +164,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -186,7 +187,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(1L))
                 .build();
 
         // when
@@ -208,7 +209,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -234,7 +235,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(1L))
                 .build();
 
         // when, then
@@ -255,7 +256,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(1L))
                 .build();
 
         // when, then
@@ -277,7 +278,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when, then
@@ -290,7 +291,11 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("다음에 또 보기가 포함된 카드를 퀴즈에 포함한다. - 성공")
     void createQuizIncludeNextQuizOption() {
         // given
-        List<CardResponse> cards = 문제집의_카드_모아보기(workbookIds.get(0)).getCards();
+        List<CardResponse> cards = COLLECT_CARDS_FROM_WORKBOOK(
+                workbookIds.get(0),
+                USER_PK
+        ).getCards();
+
         final List<Long> cardIds = cards.stream()
                 .map(CardResponse::getId)
                 .collect(Collectors.toList());
@@ -303,7 +308,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -324,7 +329,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
 
         return request()
                 .put("/cards/next-quiz", request)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build()
                 .extract();
     }
@@ -373,7 +378,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         Long workbookId = workbookIds.get(0);
         final HttpResponse response = request()
                 .get("/quizzes/" + workbookId)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -391,7 +396,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         // 1번 문제집에는 5개의 카드가 존재한다.
         final HttpResponse response = request()
                 .get("/quizzes/{workbookId}", 1000L)
-                .auth(createToken(USER_PK.getId()))
+                .auth(CREATE_TOKEN(USER_PK.getId()))
                 .build();
 
         // when
@@ -451,8 +456,8 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                         MAKE_SINGLE_WORKBOOK_REQUEST("4", true, emptyList()),
                         MAKE_SINGLE_WORKBOOK_REQUEST("5", false, emptyList())
                 );
-        workbookIds = 여러개_문제집_생성_요청(workbookRequests);
-        여러개_카드_생성_요청(make30DummyQuestionAndAnswerSets(workbookIds));
+        workbookIds = CREATE_WORKBOOKS(workbookRequests, USER_PK);
+        CREATE_CARDS(make30DummyQuestionAndAnswerSets(workbookIds), USER_PK);
     }
 
     private List<CardRequest> make30DummyQuestionAndAnswerSets(List<Long> workbookIds) {
@@ -478,5 +483,13 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
             results.add(i + " answer");
         }
         return results;
+    }
+
+    protected WorkbookCardResponse COLLECT_CARDS_FROM_WORKBOOK(Long workbookId, User user) {
+        HttpResponse response = request()
+                .get("/workbooks/{id}/cards", workbookId)
+                .auth(CREATE_TOKEN(user.getId()))
+                .build();
+        return response.convertBody(WorkbookCardResponse.class);
     }
 }

@@ -27,8 +27,8 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
         );
-        유저_태그_카드_포함_문제집_등록되어_있음_1("Js 문제집", true, jsTags, USER_JOANNE);
-        유저_태그_카드_포함_문제집_등록되어_있음_1("Js 비공개 문제집", false, jsTags, USER_JOANNE);
+        CREATE_WORKBOOK_INCLUDE_CARD("Js 문제집", true, jsTags, USER_JOANNE, "질문", "답변");
+        CREATE_WORKBOOK_INCLUDE_CARD("Js 비공개 문제집", false, jsTags, USER_JOANNE, "질문", "답변");
     }
 
     @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공")
@@ -103,7 +103,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
                 )
         );
 
-        서로_다른_유저의_여러개_문제집_생성_요청(workbookRequests, USERS);
+        CREATE_WORKBOOKS_OF_USERS(workbookRequests, USERS);
 
         final String workbookName = "Java";
         final HttpResponse response = request()
