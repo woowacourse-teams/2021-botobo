@@ -19,7 +19,7 @@ const useProfile = () => {
       setUserInfo(newUserInfo);
       showSnackbar({ message: '프로필이 수정되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, editProfile.bind(null, userInfo));
     }
   };
 
@@ -36,7 +36,7 @@ const useProfile = () => {
 
       setUserInfo({ ...userInfo, profileUrl: newImage.profileUrl });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, updateProfileUrl.bind(null, file));
     }
   };
 

@@ -47,7 +47,7 @@ const useQuizResult = () => {
       showSnackbar({ message: '다음에 볼 카드가 설정되었어요.' });
       routeMain();
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, setNextQuiz);
     }
   };
 

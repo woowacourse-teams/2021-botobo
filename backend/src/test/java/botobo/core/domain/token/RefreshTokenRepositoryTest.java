@@ -1,6 +1,6 @@
 package botobo.core.domain.token;
 
-import botobo.core.config.EmbeddedRedisConfig;
+import botobo.core.config.redis.EmbeddedRedisConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

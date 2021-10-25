@@ -1,0 +1,74 @@
+
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:13306/botobo?userSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: btbtechcourse1!
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create
+  redis:
+    host: localhost
+    port: 6379
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+  servlet:
+    multipart:
+      file-size-threshold: 1MB
+      location: C:/Temp
+      max-file-size: 3MB # 로컬은 테스트용으로 우선 작게 설정함.
+      max-request-size: 10MB
+      enabled: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  flyway:
+    enabled: false
+
+github:
+  client:
+    id: 5430c9812b968ee900cb
+    secret: 0c72bbf37aaaa6a54c122a6b1802fd1d17b8e83e
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com/user
+
+google:
+  client:
+    id: 763671262031-q7s2et6req6d0e43l6jeh8fpd0vai5bl.apps.googleusercontent.com
+    secret: s_kMcNHc-nVMeci5HY5q0Ibj
+    redirect-uri: http://localhost:3000/google/callback
+    grant-type: authorization_code
+  url:
+    access-token: https://oauth2.googleapis.com/token
+    profile: https://openidconnect.googleapis.com/v1/userinfo
+
+security:
+  jwt:
+    token: # feature/B13-B 브랜치 머지되면서 삭제 예정
+      secret-key: secretbotobosecretbotobosecretbotobo
+      expire-length: 3600000
+    access-token:
+      secret-key: secretbotobosecretbotobosecretbotobo
+      expire-length: 5000
+    refresh-token:
+      secret-key: refreshbotoborefreshbotoborefreshbotobo
+      expire-length: 30000
+
+dummy:
+  file-path: backend/src/docs/dummydata/
+  bootrun-file-path: src/docs/dummydata/
+  workbooks: database.txt, java.txt, javascript.txt, network.txt, react.txt, spring.txt
+
+cors:
+  allowed:
+    origins: "http://localhost:3000"

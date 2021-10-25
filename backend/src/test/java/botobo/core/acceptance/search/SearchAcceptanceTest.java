@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static botobo.core.utils.Fixture.bear;
 import static botobo.core.utils.Fixture.pk;
@@ -110,23 +109,6 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
                 TagRequest.builder().id(0L).name("javascript").build(),
                 TagRequest.builder().id(0L).name("js").build()
         );
-    }
-
-    private void 카드와_좋아요도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken, List<String> heartUserTokens) {
-        카드도_함께_등록(workbookResponse, cardCount, accessToken);
-        좋아요도_함께_등록(workbookResponse, heartUserTokens);
-    }
-
-    private void 카드도_함께_등록(WorkbookResponse workbookResponse, int cardCount, String accessToken) {
-        Long workbookId = workbookResponse.getId();
-        IntStream.rangeClosed(1, cardCount)
-                .forEach(number -> 유저_카드_등록되어_있음("질문", "정답", workbookId, accessToken));
-    }
-
-    private void 좋아요도_함께_등록(WorkbookResponse workbookResponse, List<String> heartUserTokens) {
-        Long workbookId = workbookResponse.getId();
-        heartUserTokens
-                .forEach(token -> 하트_토글_요청(workbookId, token));
     }
 
     @Test

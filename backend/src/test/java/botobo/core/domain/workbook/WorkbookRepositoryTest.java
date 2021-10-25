@@ -387,7 +387,7 @@ class WorkbookRepositoryTest {
     }
 
     @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 카드의 개수가 0개인 문제집은 조회하지 않는다.")
+    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
     void findRandomPublicWorkbooksIncludeNonZero() {
         saveWorkbooksWithCard(100, 0);
 
@@ -395,7 +395,7 @@ class WorkbookRepositoryTest {
 
         assertThat(workbooks).hasSize(100);
         for (Workbook workbook : workbooks) {
-            assertThat(workbook.cardCount()).isGreaterThan(0);
+            assertThat(workbook.cardCount()).isPositive();
         }
     }
 

@@ -69,7 +69,7 @@ class AuthorizationInterceptorTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 액세스 토큰과 유효하지 않은 리프레시 토큰으로 api를 실행한다 - 성공")
+    @DisplayName("유효하지 않은 액세스 토큰과 유효하지 않은 리프레시 토큰으로 요청 시 TokenNotValidException 을 발생시킨다 - 성공")
     void requestWithInValidAccessTokenAndInvalidRefreshToken() {
         // given
         givenRefreshToken();
@@ -86,7 +86,7 @@ class AuthorizationInterceptorTest {
 
 
     @Test
-    @DisplayName("유효하지 않은 액세스 토큰과 유효한 리프레시 토큰으로 api를 실행한다 - 성공")
+    @DisplayName("유효하지 않은 액세스 토큰과 유효한 리프레시 토큰으로 요청 시 AccessTokenRenewalException 을 발생시킨다 - 성공")
     void requestWithInValidAccessTokenAndValidRefreshToken() {
         // given
         givenRefreshToken();

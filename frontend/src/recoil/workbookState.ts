@@ -2,6 +2,10 @@ import { atom, selector } from 'recoil';
 
 import { getPublicWorkbookAsync, getWorkbooksAsync } from '../api';
 import { PublicWorkbookResponse, WorkbookResponse } from '../types';
+import {
+  handleAccessTokenRefreshError,
+  isAccessTokenRefreshError,
+} from '../utils/error';
 import { userState } from './userState';
 
 export interface WorkbookState {
@@ -13,6 +17,11 @@ interface PublicWorkbookState {
   data: PublicWorkbookResponse[];
   errorMessage: string | null;
 }
+
+const workbookErrorState = {
+  data: [],
+  errorMessage: '문제집을 불러오지 못했어요.',
+};
 
 export const shouldWorkbookUpdateState = atom({
   key: 'shouldWorkbookUpdateState',
@@ -30,10 +39,15 @@ export const workbookState = atom<WorkbookState>({
           errorMessage: null,
         };
       } catch (error) {
-        return {
-          data: [],
-          errorMessage: '문제집을 불러오지 못했어요.',
-        };
+        if (!isAccessTokenRefreshError(error)) return workbookErrorState;
+
+        return await handleAccessTokenRefreshError({
+          resolve: async () => ({
+            data: await getWorkbooksAsync(),
+            errorMessage: null,
+          }),
+          returnValue: workbookErrorState,
+        });
       }
     },
   }),
@@ -50,10 +64,7 @@ export const publicWorkbookState = atom<PublicWorkbookState>({
           errorMessage: null,
         };
       } catch (error) {
-        return {
-          data: [],
-          errorMessage: '문제집을 불러오지 못했어요.',
-        };
+        return workbookErrorState;
       }
     },
   }),

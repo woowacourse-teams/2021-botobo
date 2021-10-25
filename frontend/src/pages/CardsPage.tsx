@@ -3,7 +3,13 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 import FillHeartIcon from '../assets/heart-solid.svg';
-import { Button, CardAddForm, MainHeader, QnACard } from '../components';
+import {
+  Button,
+  CardAddForm,
+  KakaoShareButton,
+  MainHeader,
+  QnACard,
+} from '../components';
 import { theme } from '../constants';
 import { useCard } from '../hooks';
 import { Flex } from '../styles';
@@ -34,7 +40,9 @@ const filters = [
 
 const CardsPage = () => {
   const {
+    workbookId,
     workbookName,
+    workbookOpened,
     cards,
     heartCount,
     tags,
@@ -56,30 +64,42 @@ const CardsPage = () => {
     <>
       <MainHeader />
       <StyledPageTemplate isScroll={true}>
-        <Heart>
-          <FillHeartIcon
-            width="1.5rem"
-            height="1.5rem"
-            fill={theme.color.red}
-          />
-          <span>{heartCount}</span>
-        </Heart>
         <TopContent>
-          <WorkbookName>{workbookName}</WorkbookName>
-          <WorkbookCards>
-            {cards.length}개의 카드를 학습 중이에요.
-          </WorkbookCards>
-          <TagList>
-            {tags.map(({ id, name }) => (
-              <TagWrapper key={id}>
-                <Tag>
-                  <span>#</span>
-                  {name}
-                </Tag>
-              </TagWrapper>
-            ))}
-          </TagList>
+          <div>
+            <WorkbookName>{workbookName}</WorkbookName>
+            <WorkbookCards>
+              {cards.length}개의 카드를 학습 중이에요.
+            </WorkbookCards>
+          </div>
+          <RightContent>
+            <Heart>
+              <FillHeartIcon
+                width="1.5rem"
+                height="1.5rem"
+                fill={theme.color.red}
+              />
+              <span>{heartCount}</span>
+            </Heart>
+            {workbookOpened && (
+              <ShareButtonWrapper>
+                <KakaoShareButton
+                  title={workbookName}
+                  path={`publicCards/${workbookId}`}
+                />
+              </ShareButtonWrapper>
+            )}
+          </RightContent>
         </TopContent>
+        <TagList>
+          {tags.map(({ id, name }) => (
+            <TagWrapper key={id}>
+              <Tag>
+                <span>#</span>
+                {name}
+              </Tag>
+            </TagWrapper>
+          ))}
+        </TagList>
         <Filter>
           {filters.map(({ id, name }) => (
             <Button
@@ -134,19 +154,25 @@ const StyledPageTemplate = styled(PageTemplate)`
   position: relative;
 `;
 
+const TopContent = styled.div`
+  ${Flex({ items: 'flex-start' })};
+`;
+
+const RightContent = styled.div`
+  ${Flex()};
+  margin-left: auto;
+`;
+
 const Heart = styled.div`
   ${Flex({ direction: 'column', items: 'center' })};
-  position: absolute;
-  top: 3.5rem;
-  right: 1.25rem;
 
   & > span {
     margin-top: 0.25rem;
   }
 `;
 
-const TopContent = styled.div`
-  width: calc(100% - 2rem);
+const ShareButtonWrapper = styled.div`
+  margin-left: 0.5rem;
 `;
 
 const WorkbookName = styled.h2`
