@@ -8,6 +8,4 @@ public interface OauthManager {
     User getUserInfo(String code);
 
     boolean isSameSocialType(SocialType socialType);
-
-    OauthTokenResponse getAccessToken(String code);
 }
