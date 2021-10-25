@@ -1,5 +1,6 @@
 package botobo.core.domain.user;
 
+import botobo.core.domain.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest(showSql = false)
-@ActiveProfiles("test")
-class UserRepositoryTest {
+class UserRepositoryTest extends RepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
