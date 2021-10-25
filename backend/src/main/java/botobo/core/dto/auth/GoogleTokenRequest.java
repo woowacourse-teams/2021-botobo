@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GoogleTokenRequest {
+public class GoogleTokenRequest implements OauthTokenRequest {
     private String code;
     private String client_id;
     private String client_secret;
