@@ -43,10 +43,10 @@ public class GoogleOauthManager extends AbstractOauthManager {
     OauthTokenRequest getOauthTokenRequest(String code) {
         return GoogleTokenRequest.builder()
                 .code(code)
-                .client_id(clientId)
-                .client_secret(clientSecret)
-                .redirect_uri(redirectUri)
-                .grant_type(grantType)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .redirectUri(redirectUri)
+                .grantType(grantType)
                 .build();
     }
 
