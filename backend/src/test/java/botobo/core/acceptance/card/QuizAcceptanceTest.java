@@ -107,13 +107,12 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
     @Test
     @DisplayName("퀴즈 생성 - 실패, 내 문제집이 아님.")
     void createQuizWhenNotAuthor() {
-        // given
+        // given: USER_PK의 문제집
         QuizRequest quizRequest = QuizRequest.builder()
                 .workbookIds(workbookIds)
                 .count(10)
                 .build();
 
-        // TODO USER_PK의 문제집임.
         final HttpResponse response = request()
                 .post("/quizzes", quizRequest)
                 .auth(CREATE_TOKEN(USER_JOANNE.getId()))
