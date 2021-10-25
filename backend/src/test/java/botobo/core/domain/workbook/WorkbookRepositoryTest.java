@@ -1,5 +1,6 @@
 package botobo.core.domain.workbook;
 
+import botobo.core.domain.RepositoryTest;
 import botobo.core.domain.card.Card;
 import botobo.core.domain.heart.Heart;
 import botobo.core.domain.heart.HeartRepository;
@@ -24,9 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest(showSql = false)
-@ActiveProfiles("test")
-class WorkbookRepositoryTest {
+class WorkbookRepositoryTest extends RepositoryTest {
 
     @Autowired
     private WorkbookRepository workbookRepository;

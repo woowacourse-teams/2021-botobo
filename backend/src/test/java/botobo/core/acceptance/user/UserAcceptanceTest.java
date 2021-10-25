@@ -5,9 +5,7 @@ import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.GithubUserInfoResponse;
 import botobo.core.dto.auth.UserInfoResponse;
-import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.user.ProfileResponse;
-import botobo.core.dto.user.UserFilterResponse;
 import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
@@ -18,18 +16,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS_WITH_TAG;
-import static botobo.core.utils.Fixture.joanne;
-import static botobo.core.utils.Fixture.oz;
-import static botobo.core.utils.Fixture.pk;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
+import static botobo.core.acceptance.utils.Fixture.USER_RESPONSE_OF_PK;
 import static botobo.core.utils.TestUtils.stringGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("User 인수 테스트")
 class UserAcceptanceTest extends DomainAcceptanceTest {
 
     @Value("${aws.user-default-image}")
@@ -44,7 +37,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         // given, when
         final HttpResponse response = request()
                 .get("/users/me")
-                .auth(소셜_로그인되어_있음(pk, SocialType.GITHUB))
+                .auth(RETURN_ACCESS_TOKEN_VIA_LOGIN(USER_RESPONSE_OF_PK, SocialType.GITHUB))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
@@ -80,12 +73,11 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
                 .socialId("2")
                 .profileUrl(defaultUserImageUrl)
                 .build();
-        MockMultipartFile mockMultipartFile = null;
 
         //when
         final HttpResponse response = request()
-                .post("/users/profile", mockMultipartFile)
-                .auth(소셜_로그인되어_있음(userInfoResponse, SocialType.GITHUB))
+                .post("/users/profile", null)
+                .auth(RETURN_ACCESS_TOKEN_VIA_LOGIN(userInfoResponse, SocialType.GITHUB))
                 .build();
 
         ProfileResponse profileResponse = response.convertBody(ProfileResponse.class);
@@ -107,7 +99,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
@@ -131,7 +123,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -153,7 +145,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -175,7 +167,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -197,7 +189,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -219,7 +211,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -241,7 +233,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -263,7 +255,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -285,7 +277,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -299,16 +291,16 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("로그인 한 유저의 정보를 수정한다. - 실패, 회원명은 중복될 수 없다.")
     void updateFailedDuplicateUserName() {
         //given
-        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        Long id = USER_JOANNE.getId();// 유저 2번을 save한다. {이름 : "joanne"}
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .userName("admin") // 기존에 존재하는 1번 유저의 admin 이름으로 변경한다.
+                .userName("pk") // 기존에 존재하는 USER_PK의 이름으로 변경한다.
                 .profileUrl("github.io")
                 .bio("안녕하세요~")
                 .build();
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(id))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -330,7 +322,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         // then
@@ -356,7 +348,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         ErrorResponse errorResponse = response.convertBody(ErrorResponse.class);
@@ -378,7 +370,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .put("/users/me", userUpdateRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         UserResponse userResponse = response.convertBody(UserResponse.class);
@@ -401,7 +393,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -418,7 +410,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -429,14 +421,14 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("회원명을 중복 조회한다. - 실패, 중복된 이름")
     void checkSameUserNameAlreadyExistFailed() {
         //given
-        Long id = anyUser().getId();// 유저 2번을 save한다. {이름 : "joanne"}
+        Long id = USER_JOANNE.getId();// 유저 2번을 save한다. {이름 : "joanne"}
         UserNameRequest userNameRequest = UserNameRequest.builder()
-                .userName("admin")
+                .userName("pk")
                 .build();
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(id))
+                .auth(CREATE_TOKEN(id))
                 .build();
 
         ErrorResponse errorResponse = response.convertToErrorResponse();
@@ -456,7 +448,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -477,7 +469,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -498,7 +490,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -520,7 +512,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //when
         final HttpResponse response = request()
                 .post("/users/name-check", userNameRequest)
-                .auth(createToken(1L))
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
                 .build();
 
         //then
@@ -529,132 +521,5 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getMessage()).isEqualTo("회원명에 공백은 포함될 수 없습니다.");
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
-    @Test
-    void findAllUsersByWorkbookNameWhenCardIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
-
-        // given
-        final String workbookName = "Java";
-        final HttpResponse response = request()
-                .get("/users?workbook=" + workbookName)
-                .build();
-
-        // when
-        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
-
-        // then
-        assertThat(userResponses).isEmpty();
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공")
-    @Test
-    void findAllUsersByWorkbookName() {
-        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
-
-        // given
-        final String workbookName = "Java";
-        final HttpResponse response = request()
-                .get("/users?workbook=" + workbookName)
-                .build();
-
-        // when
-        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
-
-        // then
-        assertThat(userResponses).hasSize(1);
-        assertThat(userResponses)
-                .extracting(UserFilterResponse::getName)
-                .containsExactlyInAnyOrder("oz");
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 태그에 포함됨")
-    @Test
-    void findAllUsersByWorkbookNameEqualsTag() {
-        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
-
-        List<TagRequest> jsTags = Arrays.asList(
-                TagRequest.builder().id(0L).name("javascript").build(),
-                TagRequest.builder().id(0L).name("js").build()
-        );
-
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", true, joanneToken);
-
-        // given
-        final String workbookName = "Js";
-        final HttpResponse response = request()
-                .get("/users?workbook=" + workbookName)
-                .build();
-
-        // when
-        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
-
-        // then
-        assertThat(userResponses).hasSize(1);
-        assertThat(userResponses)
-                .extracting(UserFilterResponse::getName)
-                .containsExactlyInAnyOrder("joanne");
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 비공개 문제집의 경우 작성자를 가져오지 않는다.")
-    @Test
-    void findAllUsersByWorkbookNameWhenOpened() {
-        final String ozToken = 소셜_로그인되어_있음(oz, SocialType.GITHUB);
-        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
-        유저_카드_포함_문제집_등록되어_있음("Java 문제집", true, ozToken);
-        유저_카드_포함_문제집_등록되어_있음("Spring 문제집", false, joanneToken);
-
-        // given
-        final String workbookName = "문제집";
-        final HttpResponse response = request()
-                .get("/users?workbook=" + workbookName)
-                .build();
-
-        // when
-        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
-
-        // then
-        assertThat(userResponses).hasSize(1);
-        assertThat(userResponses)
-                .extracting(UserFilterResponse::getName)
-                .containsExactlyInAnyOrder("oz");
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 성공, 문제집명이 비어있는 경우 빈 응답")
-    @Test
-    void findAllUsersByWorkbookNameIsEmpty() {
-        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
-
-        // given
-        final String workbookName = "";
-        final HttpResponse response = request()
-                .get("/users?workbook=" + workbookName)
-                .build();
-
-        // when
-        final List<UserFilterResponse> userResponses = response.convertBodyToList(UserFilterResponse.class);
-
-        // then
-        assertThat(userResponses).isEmpty();
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 작성자들을 가져온다. - 실패, 문제집명이 30글자를 넘는 비정상적 경우")
-    @Test
-    void findAllUsersByWorkbookNameIsLong() {
-        // given
-        final HttpResponse response = request()
-                .get("/users?workbook=" + stringGenerator(31))
-                .build();
-
-        // when - then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
