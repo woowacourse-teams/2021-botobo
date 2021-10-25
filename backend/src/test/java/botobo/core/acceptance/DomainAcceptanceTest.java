@@ -121,10 +121,15 @@ public class DomainAcceptanceTest extends AcceptanceTest {
         return CREATE_CARD(cardRequest, user).convertBody(CardResponse.class);
     }
 
-    protected void CREATE_WORKBOOK_INCLUDE_CARD(String name, boolean opened, List<TagRequest> tagRequests, User user, String question, String answer) {
+    protected void CREATE_WORKBOOK_INCLUDE_CARD(String name,
+                                                boolean opened,
+                                                List<TagRequest> tagRequests,
+                                                User user, String question,
+                                                String answer
+    ) {
         Long workbookResponseId = CREATE_WORKBOOK(MAKE_SINGLE_WORKBOOK_REQUEST(name, opened, tagRequests), user)
-                .convertBody(WorkbookResponse.class).
-                getId();
+                .convertBody(WorkbookResponse.class)
+                .getId();
         CREATE_CARD_WITH_PARAMS(question, answer, workbookResponseId, user);
     }
 
