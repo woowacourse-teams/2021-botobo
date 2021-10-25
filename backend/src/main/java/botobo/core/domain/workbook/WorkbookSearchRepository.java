@@ -6,6 +6,7 @@ import botobo.core.ui.search.WorkbookSearchParameter;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static botobo.core.domain.card.QCard.card;
@@ -29,9 +31,29 @@ public class WorkbookSearchRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Workbook> searchAll(WorkbookSearchParameter parameter, List<Long> tags,
-                                    List<Long> users, Pageable pageable) {
-        QueryResults<Workbook> results = jpaQueryFactory.selectFrom(workbook)
+    public Page<Workbook> searchAll(WorkbookSearchParameter parameter,
+                                    List<Long> tags,
+                                    List<Long> users,
+                                    Pageable pageable) {
+        QueryResults<Workbook> results = queryBy(parameter, tags, users)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    public List<Workbook> searchAll(WorkbookSearchParameter parameter) {
+        return queryBy(parameter)
+                .limit(parameter.getSize())
+                .fetch();
+    }
+
+    private JPAQuery<Workbook> queryBy(WorkbookSearchParameter parameter) {
+        return queryBy(parameter, Collections.emptyList(), Collections.emptyList());
+    }
+
+    private JPAQuery<Workbook> queryBy(WorkbookSearchParameter parameter, List<Long> tags, List<Long> users) {
+        return jpaQueryFactory.selectFrom(workbook)
                 .innerJoin(workbook.user, user).fetchJoin()
                 .innerJoin(workbook.cards.cards, card)
                 .leftJoin(workbook.workbookTags, workbookTag)
@@ -42,11 +64,7 @@ public class WorkbookSearchRepository {
                         containUsers(users),
                         openedTrue())
                 .groupBy(workbook.id)
-                .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+                .orderBy(findCriteria(parameter.getSearchCriteria()), workbook.id.asc());
     }
 
     private BooleanExpression containKeyword(SearchKeyword searchKeyword) {
@@ -97,8 +115,8 @@ public class WorkbookSearchRepository {
             return workbook.name.asc();
         }
         if (searchCriteria == SearchCriteria.COUNT) {
-            return card.count().desc();
+            return card.countDistinct().desc();
         }
-        return heart.count().desc();
+        return heart.countDistinct().desc();
     }
 }

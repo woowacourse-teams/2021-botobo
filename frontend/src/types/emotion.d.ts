@@ -27,6 +27,9 @@ declare module '@emotion/react' {
     green: string;
     blue: string;
     red: string;
+    gold: string;
+    silver: string;
+    bronze: string;
   }
 
   interface BoxShadow {

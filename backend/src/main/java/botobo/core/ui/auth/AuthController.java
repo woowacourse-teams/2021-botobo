@@ -2,9 +2,11 @@ package botobo.core.ui.auth;
 
 import botobo.core.application.AuthService;
 import botobo.core.dto.auth.LoginRequest;
+import botobo.core.dto.auth.SsrTokenResponse;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.infrastructure.auth.JwtRefreshTokenInfo;
 import botobo.core.infrastructure.auth.JwtTokenType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -21,6 +23,9 @@ public class AuthController {
 
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
+
+    @Value("${cookie.properties.domain:}")
+    private String cookieDomainValue;
 
     private final AuthService authService;
     private final JwtRefreshTokenInfo jwtRefreshTokenInfo;
@@ -62,7 +67,24 @@ public class AuthController {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(jwtRefreshTokenInfo.getValidityInSeconds().intValue())
+                .domain(cookieDomainValue)
                 .build();
+    }
+
+    @GetMapping("/token/ssr")
+    public ResponseEntity<SsrTokenResponse> renewTokenForSsr(
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+
+        authService.validateRefreshToken(refreshToken);
+        Long id = authService.extractIdByToken(refreshToken, JwtTokenType.REFRESH_TOKEN);
+        String accessToken = authService.renewAccessToken(id).getAccessToken();
+        String refreshTokenCookieInfo = createRefreshTokenCookie(id).toString();
+        return ResponseEntity.ok(
+                SsrTokenResponse.of(
+                        accessToken,
+                        refreshTokenCookieInfo
+                )
+        );
     }
 
     @GetMapping("/logout")

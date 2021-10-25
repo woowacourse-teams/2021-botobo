@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import {
   getPublicCardsAsync,
@@ -14,23 +14,10 @@ import {
 } from './../recoil';
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
+import { publicCardsInitialState } from '../recoil/initialState';
 import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
-
-const cardsInitialState = {
-  workbookId: -1,
-  workbookName: '',
-  cards: [],
-};
-
-const publicCardsInitialState = {
-  ...cardsInitialState,
-  heart: false,
-  heartCount: 0,
-  cardCount: -1,
-  tags: [],
-};
 
 interface PublicCard extends CardResponse {
   isChecked: boolean;
@@ -47,7 +34,8 @@ const usePublicCard = () => {
   const setShouldWorkbookUpdateState = useSetRecoilState(
     shouldWorkbookUpdateState
   );
-  const setPublicWorkbook = useSetRecoilState(publicWorkbookState);
+  const [publicWorkbook, setPublicWorkbook] =
+    useRecoilState(publicWorkbookState);
   const setPublicSearchResult = useSetRecoilState(publicSearchResultState);
 
   const [publicCardInfo, setPublicCardInfo] = useState<PublicCardsInfo>(
@@ -92,7 +80,7 @@ const usePublicCard = () => {
       setHeartInfo({ heart, heartCount, serverHeart: heart });
       setIsLoading(false);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, getPublicCards);
       setIsLoading(false);
     }
   };
@@ -103,9 +91,9 @@ const usePublicCard = () => {
 
       setHeartInfo((prevValue) => ({ ...prevValue, serverHeart: heart }));
 
-      setPublicWorkbook((prevValue) => ({
-        ...prevValue,
-        data: prevValue.data.map((prevData) => {
+      setPublicWorkbook({
+        ...publicWorkbook,
+        data: publicWorkbook.data.map((prevData) => {
           if (prevData.id !== workbookId) return prevData;
 
           return {
@@ -115,7 +103,7 @@ const usePublicCard = () => {
               : prevData.heartCount - 1,
           };
         }),
-      }));
+      });
 
       setPublicSearchResult((prevValue) => ({
         ...prevValue,
@@ -133,7 +121,7 @@ const usePublicCard = () => {
 
       setShouldWorkbookUpdateState(true);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, toggleHeart);
     }
   };
 
@@ -176,7 +164,7 @@ const usePublicCard = () => {
       setShouldWorkbookUpdateState(true);
       showSnackbar({ message: '내 문제집에 추가 되었어요.' });
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, takeCardsToMyWorkbook.bind(null, workbookId));
     }
   };
 

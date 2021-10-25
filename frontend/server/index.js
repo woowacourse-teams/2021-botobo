@@ -13,8 +13,14 @@ import { RecoilRoot } from 'recoil';
 
 import App from '../src/App';
 import { STORAGE_KEY } from '../src/constants';
-import { userState, workbookState } from '../src/recoil';
-import { getUserInfo, getWorkbook } from './initialState';
+import { initRecoilStateWithSsr } from '../src/recoil';
+import {
+  getSearchKeywordRankings,
+  getUserInfo,
+  getWorkbook,
+  getWorkbookRankings,
+  initRequest,
+} from './initialState';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -43,20 +49,27 @@ app.get('/', async (req, res) => {
   const indexFile = path.resolve(__dirname, '../dist/index.html');
 
   try {
-    const userInfo = await getUserInfo(req.headers.cookie);
-    const workbookInfo = await getWorkbook(userInfo);
+    initRequest(req.headers.cookie);
+    const userState = await getUserInfo(res);
+    const workbookState = await getWorkbook(userState, res);
+    const workbookRankingState = await getWorkbookRankings();
+    const searchKeywordRankingState = await getSearchKeywordRankings();
 
-    const initialState = { userInfo, workbookInfo };
+    const initialState = {
+      userState,
+      workbookState,
+      workbookRankingState,
+      searchKeywordRankingState,
+    };
 
     const context = {};
     const app = (
       <StaticRouter location={req.url} context={context}>
         <CacheProvider value={cache}>
           <RecoilRoot
-            initializeState={({ set }) => {
-              set(userState, initialState.userInfo);
-              set(workbookState, initialState.workbookInfo);
-            }}
+            initializeState={({ set }) =>
+              initRecoilStateWithSsr(set, initialState)
+            }
           >
             <App />
           </RecoilRoot>

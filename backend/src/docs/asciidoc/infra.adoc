@@ -1,6 +1,6 @@
 == 인프라 API
 
-=== 현재 사용 중인 profile 이름 출력
+=== 활성된 포트 번호 반환
 ==== 요청
 include::{snippets}/infra-profile-get-success/http-request.adoc[]
 ==== 응답

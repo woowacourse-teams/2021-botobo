@@ -2,6 +2,10 @@ export interface AccessTokenResponse {
   accessToken: string;
 }
 
+export interface RefreshTokenWithSsr {
+  refreshTokenCookieInfo: string;
+}
+
 export interface TagResponse {
   id: number;
   name: string;
@@ -42,6 +46,7 @@ export interface CardResponse {
 export interface CardsResponse {
   workbookId: number;
   workbookName: string;
+  workbookOpened: boolean;
   heartCount: number;
   tags: TagResponse[];
   cards: CardResponse[];
@@ -64,6 +69,14 @@ export interface UserInfoResponse {
   userName: string;
   profileUrl: string;
   bio: string;
+}
+
+export type WorkbookRankingResponse = PublicWorkbookResponse;
+
+export interface SearchKeywordRankingResponse {
+  keyword: string;
+  rank: 1 | 2 | 3;
+  change: number;
 }
 
 export type AuthType = 'github' | 'google';

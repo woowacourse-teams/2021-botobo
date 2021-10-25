@@ -1,41 +1,59 @@
 import { useEffect, useRef } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
   deleteWorkbookAsync,
+  getSearchKeywordRankingsAsync,
+  getWorkbookRankingsAsync,
   getWorkbooksAsync,
   postWorkbookAsync,
   putWorkbookAsync,
 } from '../api';
-import { shouldWorkbookUpdateState, workbookState } from '../recoil';
+import {
+  searchKeywordRankingState,
+  shouldWorkbookUpdateState,
+  userState,
+  workbookRankingState,
+  workbookState,
+} from '../recoil';
 import { TagResponse, WorkbookResponse } from '../types';
 import useErrorHandler from './useErrorHandler';
 import useRouter from './useRouter';
 import useSnackbar from './useSnackbar';
 
 const useWorkbook = () => {
+  const userInfo = useRecoilValue(userState);
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
+  const [workbookRankings, setWorkbookRankings] =
+    useRecoilState(workbookRankingState);
+  const [searchKeywordRankings, setSearchKeywordRankings] = useRecoilState(
+    searchKeywordRankingState
+  );
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
+
+  const { routePrevPage } = useRouter();
+  const showSnackbar = useSnackbar();
+  const errorHandler = useErrorHandler();
 
   const deletedWorkbookId = useRef(-1);
 
   const updateWorkbooks = async () => {
+    if (!userInfo) {
+      setWorkbooks({ data: [], errorMessage: null });
+      setIsWorkbookUpdate(false);
+
+      return;
+    }
+
     try {
       const workbookResponse = await getWorkbooksAsync();
       setWorkbooks({ data: workbookResponse, errorMessage: null });
       setIsWorkbookUpdate(false);
     } catch (error) {
-      setWorkbooks({
-        data: [],
-        errorMessage: '문제집을 불러오지 못했어요. 새로고침을 해보세요.',
-      });
+      errorHandler(error, updateWorkbooks);
     }
   };
-
-  const { routePrevPage } = useRouter();
-  const showSnackbar = useSnackbar();
-  const errorHandler = useErrorHandler();
 
   const createWorkbook = async (
     name: string,
@@ -48,7 +66,7 @@ const useWorkbook = () => {
       routePrevPage();
       updateWorkbooks();
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, createWorkbook.bind(null, name, tags, opened));
     }
   };
 
@@ -59,7 +77,7 @@ const useWorkbook = () => {
       routePrevPage();
       updateWorkbooks();
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, editWorkbook.bind(null, workbookInfo));
     }
   };
 
@@ -72,7 +90,23 @@ const useWorkbook = () => {
       showSnackbar({ message: '문제집이 삭제되었어요.' });
       updateWorkbooks();
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, deleteWorkbook.bind(null, id));
+    }
+  };
+
+  const getRankings = async () => {
+    try {
+      const [workbookRankings, searchKeywordRankings] = await Promise.all([
+        getWorkbookRankingsAsync(),
+        getSearchKeywordRankingsAsync(),
+      ]);
+
+      setWorkbookRankings(workbookRankings);
+      setSearchKeywordRankings(searchKeywordRankings);
+    } catch (error) {
+      console.error(error);
+
+      return;
     }
   };
 
@@ -84,10 +118,13 @@ const useWorkbook = () => {
 
   return {
     workbooks,
+    workbookRankings,
+    searchKeywordRankings,
     createWorkbook,
     editWorkbook,
     deleteWorkbook,
     updateWorkbooks,
+    getRankings,
   };
 };
 

@@ -3,6 +3,7 @@ package botobo.core.acceptance;
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.domain.user.SocialType;
 import botobo.core.dto.auth.LoginRequest;
+import botobo.core.dto.auth.SsrTokenResponse;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.exception.common.ErrorResponse;
 import botobo.core.infrastructure.auth.JwtTokenType;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import static botobo.core.utils.Fixture.oz;
 import static botobo.core.utils.Fixture.pk;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.times;
 class AuthAcceptanceTest extends DomainAcceptanceTest {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
+    private static final String COOKIE_DOMAIN_VALUE = ".test.botobo.kr";
 
     @Test
     @DisplayName("깃헙 로그인을 한다 - 성공")
@@ -92,6 +95,7 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
         assertThat(cookie.getMaxAge()).isPositive();
+        assertThat(cookie.getDomain()).isEqualTo(COOKIE_DOMAIN_VALUE);
     }
 
     @Test
@@ -118,6 +122,30 @@ class AuthAcceptanceTest extends DomainAcceptanceTest {
         assertThat(cookie.isHttpOnly()).isTrue();
         assertThat(cookie.isSecured()).isTrue();
         assertThat(cookie.getMaxAge()).isPositive();
+        assertThat(cookie.getDomain()).isEqualTo(COOKIE_DOMAIN_VALUE);
+    }
+
+    @Test
+    @DisplayName("SSR을 위한 서버를 위해 토큰을 재발급 받는다 - 성공, 유효한 리프레시 토큰이 쿠키에 있는 경우")
+    void renewTokenForSsr() {
+        // given
+        ExtractableResponse<Response> response = 소셜_로그인_요청(pk, SocialType.GITHUB);
+        String refreshToken = response.cookies().get(REFRESH_TOKEN_COOKIE_NAME);
+
+        // when
+        RequestBuilder.HttpResponse httpResponse = request()
+                .get("/token/ssr")
+                .cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
+                .build();
+
+        // then
+        SsrTokenResponse ssrTokenResponse = httpResponse.convertBody(SsrTokenResponse.class);
+        String newAccessToken = ssrTokenResponse.getAccessToken();
+        String refreshTokenCookieInfo = ssrTokenResponse.getRefreshTokenCookieInfo();
+
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(newAccessToken).isNotEmpty();
+        assertThat(refreshTokenCookieInfo).isNotEmpty();
     }
 
     @Test
