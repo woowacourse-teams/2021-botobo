@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class SearchRankRepository {
 
-    public static final String KEY = "SearchRank";
+    private static final String KEY = "SearchRank";
 
     private final RedisTemplate<String, SearchRank> searchRankRedisTemplate;
     private final ListOperations<String, SearchRank> listOperations;
