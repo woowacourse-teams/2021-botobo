@@ -71,11 +71,6 @@ public class RequestBuilder {
             return this;
         }
 
-        public Options failAuth() {
-            this.loginFlag = true;
-            return this;
-        }
-
         public Options auth(String token) {
             this.loginFlag = true;
             this.accessToken = token;

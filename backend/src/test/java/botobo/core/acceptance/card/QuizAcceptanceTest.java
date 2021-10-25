@@ -415,7 +415,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         Long privateWorkbookId = workbookIds.get(4);
         final HttpResponse response = request()
                 .get("/quizzes/{workbookId}", privateWorkbookId)
-                .failAuth()
+                .auth(CREATE_TOKEN(-100L))
                 .build();
 
         // when
@@ -435,7 +435,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         Long noCardWorkbookId = workbookIds.get(3);
         final HttpResponse response = request()
                 .get("/quizzes/{workbookId}", noCardWorkbookId)
-                .failAuth()
+                .auth(CREATE_TOKEN(-100L))
                 .build();
 
         // when
