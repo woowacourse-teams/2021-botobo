@@ -10,6 +10,7 @@ import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
 import botobo.core.dto.workbook.WorkbookRequest;
+import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.exception.common.ErrorResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -452,17 +453,24 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
                 List.of(
                         MAKE_SINGLE_WORKBOOK_REQUEST("1", true, emptyList()),
                         MAKE_SINGLE_WORKBOOK_REQUEST("2", true, emptyList()),
-                        MAKE_SINGLE_WORKBOOK_REQUEST("3", true, emptyList()),
-                        MAKE_SINGLE_WORKBOOK_REQUEST("4", true, emptyList()),
-                        MAKE_SINGLE_WORKBOOK_REQUEST("5", false, emptyList())
+                        MAKE_SINGLE_WORKBOOK_REQUEST("3", true, emptyList())
                 );
         workbookIds = CREATE_WORKBOOKS(workbookRequests, USER_PK);
-        CREATE_CARDS(make30DummyQuestionAndAnswerSets(workbookIds), USER_PK);
+        CREATE_CARDS(MAKE_30_DUMMY_SETS(workbookIds), USER_PK);
+
+        Long noCardWorkbookId = CREATE_WORKBOOK(MAKE_SINGLE_WORKBOOK_REQUEST("4", true, emptyList()), USER_PK)
+                .convertBody(WorkbookResponse.class)
+                .getId();
+        Long privateWorkbookId = CREATE_WORKBOOK(MAKE_SINGLE_WORKBOOK_REQUEST("5", false, emptyList()), USER_PK)
+                .convertBody(WorkbookResponse.class)
+                .getId();
+        workbookIds.add(noCardWorkbookId);
+        workbookIds.add(privateWorkbookId);
     }
 
-    private List<CardRequest> make30DummyQuestionAndAnswerSets(List<Long> workbookIds) {
+    private List<CardRequest> MAKE_30_DUMMY_SETS(List<Long> workbookIds) {
         List<CardRequest> cardRequests = new ArrayList<>();
-        List<String> dummySets = makeDummy30QuestionAndAnswerSets();
+        List<String> dummySets = MAKE_DUMMY_SETS();
         for (int i = 0; i < dummySets.size(); i++) {
             String dummySet = dummySets.get(i);
             String[] questionAndAnswer = dummySet.split(" ");
@@ -477,7 +485,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         return cardRequests;
     }
 
-    private List<String> makeDummy30QuestionAndAnswerSets() {
+    private List<String> MAKE_DUMMY_SETS() {
         List<String> results = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
             results.add(i + " answer");
@@ -485,7 +493,7 @@ public class QuizAcceptanceTest extends DomainAcceptanceTest {
         return results;
     }
 
-    protected WorkbookCardResponse COLLECT_CARDS_FROM_WORKBOOK(Long workbookId, User user) {
+    private WorkbookCardResponse COLLECT_CARDS_FROM_WORKBOOK(Long workbookId, User user) {
         HttpResponse response = request()
                 .get("/workbooks/{id}/cards", workbookId)
                 .auth(CREATE_TOKEN(user.getId()))
