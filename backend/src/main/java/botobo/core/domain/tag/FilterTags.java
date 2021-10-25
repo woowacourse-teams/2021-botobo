@@ -14,19 +14,17 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @RedisHash(value = "filterTags", timeToLive = 30L)
 public class FilterTags implements Serializable {
-
-    // TODO 5L 변경
     @Id
     private String id;
     private List<FilterTag> filterTags;
 
-    public static FilterTags of (String keyword, List<Tag> tags) {
-        List<FilterTag> filterTags = convertToFilterTag(tags);
+    public static FilterTags of (String keyword, List<TagResponse> tagResponses) {
+        List<FilterTag> filterTags = convertToFilterTag(tagResponses);
         return new FilterTags(keyword, filterTags);
     }
 
-    private static List<FilterTag> convertToFilterTag(List<Tag> tags) {
-        return tags.stream()
+    private static List<FilterTag> convertToFilterTag(List<TagResponse> tagResponses) {
+        return tagResponses.stream()
                 .map(FilterTag::new)
                 .collect(Collectors.toList());
     }

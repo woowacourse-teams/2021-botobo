@@ -13,8 +13,8 @@ public class FilterTag implements Serializable {
     private Long id;
     private String name;
 
-    public FilterTag(Tag tag) {
-        this(tag.getId(), tag.getTagNameValue());
+    public FilterTag(TagResponse tagResponse) {
+        this(tagResponse.getId(), tagResponse.getName());
     }
 
     public FilterTag(Long id, String name) {

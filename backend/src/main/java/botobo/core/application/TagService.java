@@ -65,8 +65,9 @@ public class TagService {
         }
 
         List<Tag> findTags = tagSearchRepository.findAllByContainsWorkbookName(keyword);
-        tagCacheRepository.save(FilterTags.of(keyword, findTags));
-        return TagResponse.listOf(Tags.of(findTags));
+        List<TagResponse> tagResponses = TagResponse.listOf(Tags.of(findTags));
+        tagCacheRepository.save(FilterTags.of(keyword, tagResponses));
+        return tagResponses;
     }
 
 }
