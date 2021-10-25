@@ -28,84 +28,6 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
             TagRequest.builder().id(0L).name("실패").build()
     );
 
-    @Override
-    @BeforeEach
-    protected void setUp() {
-        super.setUp();
-        initializeWorkbooks();
-    }
-
-    private void initializeWorkbooks() {
-        // pk의 문제집 생성
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("가장 멋진 피케이의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
-                2,
-                "질문",
-                "답변",
-                USER_PK,
-                emptyList()
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("나는 피케이의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
-                5,
-                "질문",
-                "답변",
-                USER_PK,
-                emptyList()
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("다들 피케이의 자바 고급 문제집을 봐", true, JAVA_TAG_REQUESTS, USER_PK),
-                10,
-                "질문",
-                "답변",
-                USER_PK,
-                emptyList()
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", true, JS_TAG_REQUESTS, USER_PK),
-                1,
-                "질문",
-                "답변",
-                USER_PK,
-                emptyList()
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", false, failTags, USER_PK),
-                1,
-                "질문",
-                "답변",
-                USER_PK,
-                emptyList()
-        );
-
-        // 중간곰의 문제집 생성
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
-                1,
-                "질문",
-                "답변",
-                USER_BEAR,
-                List.of(USER_PK)
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
-                1,
-                "질문",
-                "답변",
-                USER_BEAR,
-                List.of(USER_PK, USER_BEAR)
-        );
-        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
-                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, JS_TAG_REQUESTS, USER_BEAR),
-                1,
-                "질문",
-                "답변",
-                USER_BEAR,
-                List.of()
-        );
-        CREATE_WORKBOOK_WITH_PARAMS("너도 중간곰과 함께 자바 할 수 있어", true, failTags, USER_BEAR);
-    }
-
     @Test
     @DisplayName("문제집 검색 - 성공, 검색어를 제외한 다른 인자는 생략 가능")
     void searchWithDefault() {
@@ -642,5 +564,83 @@ class SearchAcceptanceTest extends DomainAcceptanceTest {
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
         assertThat(tagResponses).isEmpty();
+    }
+
+    @Override
+    @BeforeEach
+    protected void setUp() {
+        super.setUp();
+        initializeWorkbooks();
+    }
+
+    private void initializeWorkbooks() {
+        // pk의 문제집 생성
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("가장 멋진 피케이의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
+                2,
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("나는 피케이의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_PK),
+                5,
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("다들 피케이의 자바 고급 문제집을 봐", true, JAVA_TAG_REQUESTS, USER_PK),
+                10,
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", true, JS_TAG_REQUESTS, USER_PK),
+                1,
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("피케이의 자바스크립트 문제집", false, failTags, USER_PK),
+                1,
+                "질문",
+                "답변",
+                USER_PK,
+                emptyList()
+        );
+
+        // 중간곰의 문제집 생성
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 기초 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
+                1,
+                "질문",
+                "답변",
+                USER_BEAR,
+                List.of(USER_PK)
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바 중급 문제집", true, JAVA_TAG_REQUESTS, USER_BEAR),
+                1,
+                "질문",
+                "답변",
+                USER_BEAR,
+                List.of(USER_PK, USER_BEAR)
+        );
+        CREATE_WORKBOOK_WITH_CARD_AND_HEARTS(
+                CREATE_WORKBOOK_WITH_PARAMS("중간곰의 자바스크립트 고급 문제집", true, JS_TAG_REQUESTS, USER_BEAR),
+                1,
+                "질문",
+                "답변",
+                USER_BEAR,
+                List.of()
+        );
+        CREATE_WORKBOOK_WITH_PARAMS("너도 중간곰과 함께 자바 할 수 있어", true, failTags, USER_BEAR);
     }
 }
