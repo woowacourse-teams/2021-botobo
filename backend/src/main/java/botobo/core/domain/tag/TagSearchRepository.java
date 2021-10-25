@@ -54,8 +54,8 @@ public class TagSearchRepository {
 
         List<Workbook> workbooks = jpaQueryFactory.selectFrom(workbook)
                 .distinct()
-                .leftJoin(workbook.workbookTags, workbookTag)
-                .leftJoin(workbookTag.tag, tag)
+                .leftJoin(workbook.workbookTags, workbookTag).fetchJoin()
+                .leftJoin(workbookTag.tag, tag).fetchJoin()
                 .innerJoin(workbook.cards.cards, card)
                 .where(containKeyword(workbookName),
                         openedTrue())
