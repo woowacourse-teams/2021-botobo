@@ -52,10 +52,11 @@ public class TagSearchRepository {
             return Collections.emptyList();
         }
 
+        // TODO fetchJoin을 workbookTag랑 tag에 걸어주면 왜 안될까?
         List<Workbook> workbooks = jpaQueryFactory.selectFrom(workbook)
                 .distinct()
-                .leftJoin(workbook.workbookTags, workbookTag).fetchJoin()
-                .leftJoin(workbookTag.tag, tag).fetchJoin()
+                .leftJoin(workbook.workbookTags, workbookTag)
+                .leftJoin(workbookTag.tag, tag)
                 .innerJoin(workbook.cards.cards, card)
                 .where(containKeyword(workbookName),
                         openedTrue())

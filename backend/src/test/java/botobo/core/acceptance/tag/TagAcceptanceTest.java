@@ -35,6 +35,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
 
         // then
+        // TODO: 왜 hasSize(2)가 통과해야하는건지 모르겠음.
         assertThat(tagResponses).hasSize(2);
         assertThat(tagResponses)
                 .extracting(TagResponse::getName)
@@ -54,6 +55,7 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
 
         // then
+        // TODO: 왜 hasSize(2)가 통과해야하는건지 모르겠음.
         assertThat(tagResponses).hasSize(2);
         assertThat(tagResponses)
                 .extracting(TagResponse::getName)
