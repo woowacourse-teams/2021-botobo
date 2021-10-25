@@ -6,16 +6,15 @@ import botobo.core.dto.auth.OauthTokenResponse;
 import botobo.core.dto.auth.UserInfoResponse;
 import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.UserProfileLoadFailedException;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 public abstract class AbstractOauthManager implements OauthManager {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final WebClient webClient = WebClient.create();
 
     abstract String getProfileUrl();
 
@@ -28,50 +27,56 @@ public abstract class AbstractOauthManager implements OauthManager {
     @Override
     public User getUserInfo(String code) {
         OauthTokenResponse oauthTokenResponse = getAccessToken(code);
-        HttpEntity<Void> httpEntity = httpEntityWithAccessToken(oauthTokenResponse);
-        try {
-            UserInfoResponse userInfoResponse = restTemplate
-                    .exchange(getProfileUrl(), HttpMethod.GET, httpEntity, getResponseType())
-                    .getBody();
-            validateNotNull(userInfoResponse);
-            return userInfoResponse.toUser();
-        } catch (RestClientException e) {
+        Mono<UserInfoResponse> userInfoResponseMono = webClient
+                .get()
+                .uri(getProfileUrl())
+                .headers(headers -> headers.setBearerAuth(oauthTokenResponse.getAccessToken()))
+                .exchangeToMono(response -> {
+                    if (!response.statusCode().equals(HttpStatus.OK)) {
+                        throw new UserProfileLoadFailedException();
+                    }
+                    return response.bodyToMono(getResponseType());
+                });
+        UserInfoResponse userInfoResponse = userInfoResponseMono.block();
+        validateNotNull(userInfoResponse);
+        return userInfoResponse.toUser();
+    }
+
+    private void validateNotNull(UserInfoResponse userInfoResponse) {
+        if (userInfoResponse == null) {
             throw new UserProfileLoadFailedException();
         }
     }
 
     public OauthTokenResponse getAccessToken(String code) {
         OauthTokenRequest oauthTokenRequest = getOauthTokenRequest(code);
-        HttpEntity<OauthTokenRequest> httpEntity = httpEntityWithJsonMediaType(oauthTokenRequest);
-        OauthTokenResponse oauthTokenResponse = restTemplate.exchange(getUrl(), HttpMethod.POST, httpEntity, OauthTokenResponse.class).getBody();
-        if (oauthTokenResponse == null) {
-            throw new OauthApiFailedException();
-        }
-        final String accessToken = oauthTokenResponse.getAccessToken();
-        if (accessToken == null) {
-            throw new OauthApiFailedException();
-        }
+        Mono<OauthTokenResponse> oauthTokenResponseMono = webClient
+                .post()
+                .uri(getUrl())
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(oauthTokenRequest)
+                .exchangeToMono(response -> {
+                    if (!response.statusCode().equals(HttpStatus.OK)) {
+                        throw new OauthApiFailedException();
+                    }
+                    return response.bodyToMono(OauthTokenResponse.class);
+                });
+        OauthTokenResponse oauthTokenResponse = oauthTokenResponseMono.block();
+        validateNotNull(oauthTokenResponse);
+        String accessToken = oauthTokenResponse.getAccessToken();
+        validateNotNull(accessToken);
         return oauthTokenResponse;
     }
 
-    private HttpEntity<OauthTokenRequest> httpEntityWithJsonMediaType(OauthTokenRequest oauthTokenRequest) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        return new HttpEntity<>(oauthTokenRequest, httpHeaders);
+    private void validateNotNull(OauthTokenResponse oauthTokenResponse) {
+        if (oauthTokenResponse == null) {
+            throw new OauthApiFailedException();
+        }
     }
 
-    private HttpEntity<Void> httpEntityWithAccessToken(OauthTokenResponse oauthTokenResponse) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(
-                "Authorization",
-                oauthTokenResponse.getTokenType() + " " + oauthTokenResponse.getAccessToken()
-        );
-        return new HttpEntity<>(headers);
-    }
-
-    private void validateNotNull(UserInfoResponse userInfoResponse) {
-        if (userInfoResponse == null) {
-            throw new UserProfileLoadFailedException();
+    private void validateNotNull(String accessToken) {
+        if (accessToken == null) {
+            throw new OauthApiFailedException();
         }
     }
 }
