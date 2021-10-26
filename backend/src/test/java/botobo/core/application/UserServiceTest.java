@@ -410,7 +410,7 @@ class UserServiceTest {
     }
 
     private void clearCache() {
-        Cache users = cacheManager.getCache("usersByWorkbookName");
+        Cache users = cacheManager.getCache("filterUsers");
         Objects.requireNonNull(users).clear();
     }
 }

@@ -77,7 +77,7 @@ public class UserService extends AbstractUserService {
         );
     }
 
-    @Cacheable("usersByWorkbookName")
+    @Cacheable(value = "filterUsers", key = "#filterCriteria.workbook")
     public List<UserFilterResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());

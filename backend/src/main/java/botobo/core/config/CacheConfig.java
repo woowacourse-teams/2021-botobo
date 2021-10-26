@@ -36,7 +36,7 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     private Map<String, RedisCacheConfiguration> cacheConfigurations() {
         return Map.of("workbookRanks", workbookRanksConfiguration(),
-                "usersByWorkbookName", usersByWorkbookNameConfiguration());
+                "filterUsers", filterUsersConfiguration());
     }
 
     private RedisCacheConfiguration defaultConfiguration() {
@@ -55,7 +55,7 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .entryTtl(Duration.ofMinutes(10));
     }
 
-    private RedisCacheConfiguration usersByWorkbookNameConfiguration() {
+    private RedisCacheConfiguration filterUsersConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(30L));
     }
