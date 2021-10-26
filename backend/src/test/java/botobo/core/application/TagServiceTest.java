@@ -2,7 +2,6 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagCacheRepository;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
@@ -14,11 +13,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,17 +33,13 @@ class TagServiceTest {
     private TagRepository tagRepository;
 
     @Autowired
-    private TagCacheRepository tagCacheRepository;
-
-    @Autowired
     private WorkbookRepository workbookRepository;
 
     @Autowired
     private TagService tagService;
 
-    private void clearCache() {
-        tagCacheRepository.deleteAll();
-    }
+    @Autowired
+    private CacheManager cacheManager;
 
     @Test
     @DisplayName("태그 변환 - 성공, DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")
@@ -225,6 +223,11 @@ class TagServiceTest {
 
         assertThat(tagResponses).isEmpty();
         clearCache();
+    }
+
+    private void clearCache() {
+        Cache tags = cacheManager.getCache("filterTags");
+        Objects.requireNonNull(tags).clear();
     }
 
     private Workbook makeWorkbookWithTwoTags(String workbookName, Tag tag) {
