@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-@RedisHash(value = "filterTags", timeToLive = 30L)
+@RedisHash(value = "filterTags", timeToLive = 600L)
 public class FilterTags implements Serializable {
     @Id
     private String id;
