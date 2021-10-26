@@ -13,6 +13,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Configuration
 @EnableCaching
@@ -29,15 +30,13 @@ public class CacheConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager() {
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
                 .cacheDefaults(defaultConfiguration())
-                .withCacheConfiguration(
-                        "workbookRanks",
-                        workbookRanksConfiguration()
-                )
-                .withCacheConfiguration(
-                        "usersByWorkbookName",
-                        usersByWorkbookNameConfiguration()
-                )
+                .withInitialCacheConfigurations(cacheConfigurations())
                 .build();
+    }
+
+    private Map<String, RedisCacheConfiguration> cacheConfigurations() {
+        return Map.of("workbookRanks", workbookRanksConfiguration(),
+                "usersByWorkbookName", usersByWorkbookNameConfiguration());
     }
 
     private RedisCacheConfiguration defaultConfiguration() {
@@ -58,7 +57,7 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     private RedisCacheConfiguration usersByWorkbookNameConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1));
+                .entryTtl(Duration.ofSeconds(30L));
     }
 
     @Bean
