@@ -10,7 +10,6 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,7 @@ class TagServiceTest {
     @Autowired
     private TagService tagService;
 
-    @AfterEach
-    void tearDown() {
+    private void clearCache() {
         tagCacheRepository.deleteAll();
     }
 
@@ -127,6 +125,7 @@ class TagServiceTest {
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
         assertThat(tagResponses).hasSize(2);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 한글 검색")
@@ -155,6 +154,7 @@ class TagServiceTest {
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
         assertThat(tagResponses).hasSize(2);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 카드가 0개면 가져오지 않는다.")
@@ -175,6 +175,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).hasSize(0);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 비공개 문제집이면 가져오지 않는다.")
@@ -196,6 +197,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).hasSize(0);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 빈 문자열일 경우 빈 리스트를 응답한다.")
@@ -222,6 +224,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).isEmpty();
+        clearCache();
     }
 
     private Workbook makeWorkbookWithTwoTags(String workbookName, Tag tag) {
