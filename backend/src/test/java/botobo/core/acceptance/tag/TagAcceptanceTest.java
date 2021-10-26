@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static botobo.core.acceptance.utils.Fixture.JAVA_TAG_REQUESTS;
 import static botobo.core.acceptance.utils.Fixture.JS_TAG_REQUESTS;
 import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,14 +20,14 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
     @BeforeEach
     void setFixture() {
         CREATE_WORKBOOK_INCLUDE_CARD("Js 문제집", true, JS_TAG_REQUESTS, USER_JOANNE, "질문", "답변");
-        CREATE_WORKBOOK_INCLUDE_CARD("Js 비공개 문제집", false, JS_TAG_REQUESTS, USER_JOANNE, "질문", "답변");
+        CREATE_WORKBOOK_INCLUDE_CARD("Java 비공개 문제집", false, JAVA_TAG_REQUESTS, USER_JOANNE, "질문", "답변");
     }
 
-    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공")
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 비공개는 가져오지 않는다.")
     @Test
     void findAllTagsByWorkbookName() {
         // given
-        final String workbookName = "Js";
+        final String workbookName = "문제집";
         final HttpResponse response = request()
                 .get("/tags?workbook=" + workbookName)
                 .build();
@@ -35,7 +36,6 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
 
         // then
-        // TODO: 왜 hasSize(2)가 통과해야하는건지 모르겠음.
         assertThat(tagResponses).hasSize(2);
         assertThat(tagResponses)
                 .extracting(TagResponse::getName)
@@ -55,7 +55,6 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
         List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
 
         // then
-        // TODO: 왜 hasSize(2)가 통과해야하는건지 모르겠음.
         assertThat(tagResponses).hasSize(2);
         assertThat(tagResponses)
                 .extracting(TagResponse::getName)
