@@ -12,17 +12,19 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Supplier;
+
 public abstract class AbstractOauthManager implements OauthManager {
 
     private final WebClient webClient = WebClient.create();
 
-    abstract String getProfileUrl();
+    protected abstract String getProfileUrl();
 
-    abstract Class<? extends UserInfoResponse> getResponseType();
+    protected abstract Class<? extends UserInfoResponse> getResponseType();
 
-    abstract OauthTokenRequest getOauthTokenRequest(String code);
+    protected abstract OauthTokenRequest getOauthTokenRequest(String code);
 
-    abstract String getUrl();
+    protected abstract String getUrl();
 
     @Override
     public User getUserInfo(String code) {
@@ -38,17 +40,11 @@ public abstract class AbstractOauthManager implements OauthManager {
                     return response.bodyToMono(getResponseType());
                 });
         UserInfoResponse userInfoResponse = userInfoResponseMono.block();
-        validateNotNull(userInfoResponse);
+        validateNotNull(userInfoResponse, UserProfileLoadFailedException::new);
         return userInfoResponse.toUser();
     }
 
-    private void validateNotNull(UserInfoResponse userInfoResponse) {
-        if (userInfoResponse == null) {
-            throw new UserProfileLoadFailedException();
-        }
-    }
-
-    public OauthTokenResponse getAccessToken(String code) {
+    private OauthTokenResponse getAccessToken(String code) {
         OauthTokenRequest oauthTokenRequest = getOauthTokenRequest(code);
         Mono<OauthTokenResponse> oauthTokenResponseMono = webClient
                 .post()
@@ -62,21 +58,15 @@ public abstract class AbstractOauthManager implements OauthManager {
                     return response.bodyToMono(OauthTokenResponse.class);
                 });
         OauthTokenResponse oauthTokenResponse = oauthTokenResponseMono.block();
-        validateNotNull(oauthTokenResponse);
+        validateNotNull(oauthTokenResponse, OauthApiFailedException::new);
         String accessToken = oauthTokenResponse.getAccessToken();
-        validateNotNull(accessToken);
+        validateNotNull(accessToken, OauthApiFailedException::new);
         return oauthTokenResponse;
     }
 
-    private void validateNotNull(OauthTokenResponse oauthTokenResponse) {
-        if (oauthTokenResponse == null) {
-            throw new OauthApiFailedException();
-        }
-    }
-
-    private void validateNotNull(String accessToken) {
-        if (accessToken == null) {
-            throw new OauthApiFailedException();
+    private void validateNotNull(Object object, Supplier<RuntimeException> exceptionSupplier) {
+        if (object == null) {
+            throw exceptionSupplier.get();
         }
     }
 }

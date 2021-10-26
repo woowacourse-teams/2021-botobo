@@ -21,7 +21,12 @@ public class GithubOauthManager extends AbstractOauthManager {
     private String profileUrl;
 
     @Override
-    String getProfileUrl() {
+    public boolean isSameSocialType(SocialType socialType) {
+        return socialType == SocialType.GITHUB;
+    }
+
+    @Override
+    protected String getProfileUrl() {
         return profileUrl;
     }
 
@@ -31,12 +36,7 @@ public class GithubOauthManager extends AbstractOauthManager {
     }
 
     @Override
-    public boolean isSameSocialType(SocialType socialType) {
-        return socialType == SocialType.GITHUB;
-    }
-
-    @Override
-    OauthTokenRequest getOauthTokenRequest(String code) {
+    protected OauthTokenRequest getOauthTokenRequest(String code) {
         return GithubTokenRequest.builder()
                 .code(code)
                 .clientId(clientId)
@@ -45,7 +45,7 @@ public class GithubOauthManager extends AbstractOauthManager {
     }
 
     @Override
-    String getUrl() {
+    protected String getUrl() {
         return url;
     }
 }

@@ -25,7 +25,12 @@ public class GoogleOauthManager extends AbstractOauthManager {
     private String profileUrl;
 
     @Override
-    String getProfileUrl() {
+    public boolean isSameSocialType(SocialType socialType) {
+        return socialType == SocialType.GOOGLE;
+    }
+
+    @Override
+    protected String getProfileUrl() {
         return profileUrl;
     }
 
@@ -35,12 +40,7 @@ public class GoogleOauthManager extends AbstractOauthManager {
     }
 
     @Override
-    public boolean isSameSocialType(SocialType socialType) {
-        return socialType == SocialType.GOOGLE;
-    }
-
-    @Override
-    OauthTokenRequest getOauthTokenRequest(String code) {
+    protected OauthTokenRequest getOauthTokenRequest(String code) {
         return GoogleTokenRequest.builder()
                 .code(code)
                 .clientId(clientId)
@@ -51,7 +51,7 @@ public class GoogleOauthManager extends AbstractOauthManager {
     }
 
     @Override
-    String getUrl() {
+    protected String getUrl() {
         return url;
     }
 }
