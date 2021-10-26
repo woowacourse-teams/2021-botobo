@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.TagCacheRepository;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
@@ -9,6 +10,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,18 @@ class TagServiceTest {
     private TagRepository tagRepository;
 
     @Autowired
+    private TagCacheRepository tagCacheRepository;
+
+    @Autowired
     private WorkbookRepository workbookRepository;
 
     @Autowired
     private TagService tagService;
+
+    @AfterEach
+    void tearDown() {
+        tagCacheRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("태그 변환 - 성공, DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")

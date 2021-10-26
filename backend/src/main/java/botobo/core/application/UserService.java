@@ -12,6 +12,7 @@ import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.infrastructure.s3.FileUploader;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,6 +77,7 @@ public class UserService extends AbstractUserService {
         );
     }
 
+    @Cacheable(value = "filterUsers", key = "#filterCriteria.workbook")
     public List<UserFilterResponse> findAllUsersByWorkbookName(FilterCriteria filterCriteria) {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());
