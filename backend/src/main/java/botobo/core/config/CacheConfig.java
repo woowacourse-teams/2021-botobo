@@ -36,7 +36,9 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     private Map<String, RedisCacheConfiguration> cacheConfigurations() {
         return Map.of("workbookRanks", durationConfiguration(),
-                "filterUsers", durationConfiguration());
+                "filterUsers", durationConfiguration(),
+                "filterTags", durationConfiguration()
+        );
     }
 
     private RedisCacheConfiguration defaultConfiguration() {
