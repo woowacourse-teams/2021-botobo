@@ -1,5 +1,6 @@
 package botobo.core.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GithubTokenRequest {
-
+public class GithubTokenRequest implements OauthTokenRequest {
     private String code;
-    private String client_id;
-    private String client_secret;
-
+    @JsonProperty("client_id")
+    private String clientId;
+    @JsonProperty("client_secret")
+    private String clientSecret;
 }
