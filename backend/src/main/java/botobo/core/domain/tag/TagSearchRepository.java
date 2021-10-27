@@ -1,20 +1,16 @@
 package botobo.core.domain.tag;
 
 
-import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbooktag.WorkbookTag;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 
 import static botobo.core.domain.card.QCard.card;
 import static botobo.core.domain.tag.QTag.tag;
@@ -52,23 +48,17 @@ public class TagSearchRepository {
             return Collections.emptyList();
         }
 
-        List<Workbook> workbooks = jpaQueryFactory.selectFrom(workbook)
+        return jpaQueryFactory.select(workbookTag.tag)
+                .from(workbook)
                 .distinct()
-                .leftJoin(workbook.workbookTags, workbookTag)
-                .leftJoin(workbookTag.tag, tag)
-                .innerJoin(workbook.cards.cards, card)
-                .where(containKeyword(workbookName),
-                        openedTrue())
+                .innerJoin(workbook.workbookTags, workbookTag)
+                .innerJoin(workbookTag.tag, tag)
+                .where(workbook.in(JPAExpressions.selectFrom(workbook)
+                        .leftJoin(workbook.workbookTags, workbookTag)
+                        .leftJoin(workbookTag.tag, tag)
+                        .innerJoin(workbook.cards.cards, card)
+                        .where(containKeyword(workbookName), openedTrue())))
                 .fetch();
-
-        Set<Tag> tags = new HashSet<>();
-        for (Workbook workbook : workbooks) {
-            List<WorkbookTag> workbookTags = workbook.getWorkbookTags();
-            for (WorkbookTag workbookTag : workbookTags) {
-                tags.add(workbookTag.getTag());
-            }
-        }
-        return new ArrayList<>(tags);
     }
 
     private BooleanExpression containKeyword(String workbookName) {

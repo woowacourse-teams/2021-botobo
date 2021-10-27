@@ -24,6 +24,11 @@ public class TagController {
     @GetMapping
     public ResponseEntity<List<TagResponse>> findAllTagsByWorkbookName(@RequestParam String workbook) {
         FilterCriteria filterCriteria = new FilterCriteria(workbook);
+        /*
+        if (redisRepository.exist(workbook)) {
+            return ResponseEntity.ok(TagResponse.fredisRepository.findByKeyword(workbook);
+         }
+         */
         List<TagResponse> responses = tagService.findAllTagsByWorkbookName(filterCriteria);
         return ResponseEntity.ok(responses);
     }

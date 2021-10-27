@@ -2,6 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.card.Card;
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.TagCacheRepository;
 import botobo.core.domain.tag.TagRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
@@ -30,10 +31,17 @@ class TagServiceTest {
     private TagRepository tagRepository;
 
     @Autowired
+    private TagCacheRepository tagCacheRepository;
+
+    @Autowired
     private WorkbookRepository workbookRepository;
 
     @Autowired
     private TagService tagService;
+
+    private void clearCache() {
+        tagCacheRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("태그 변환 - 성공, DB에 이미 존재하는 태그는 기존 태그를 가져오고 존재하지 않는 태그는 새로 생성된다.")
@@ -117,6 +125,7 @@ class TagServiceTest {
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
         assertThat(tagResponses).hasSize(2);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 한글 검색")
@@ -145,6 +154,7 @@ class TagServiceTest {
         assertThat(tagResponses).extracting("name")
                 .containsExactly("java", "spring");
         assertThat(tagResponses).hasSize(2);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 카드가 0개면 가져오지 않는다.")
@@ -165,6 +175,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).hasSize(0);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 비공개 문제집이면 가져오지 않는다.")
@@ -186,6 +197,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).hasSize(0);
+        clearCache();
     }
 
     @DisplayName("문제집명이 포함된 문제집의 모든 태그를 가져온다. - 성공, 빈 문자열일 경우 빈 리스트를 응답한다.")
@@ -212,6 +224,7 @@ class TagServiceTest {
         List<TagResponse> tagResponses = tagService.findAllTagsByWorkbookName(filterCriteria);
 
         assertThat(tagResponses).isEmpty();
+        clearCache();
     }
 
     private Workbook makeWorkbookWithTwoTags(String workbookName, Tag tag) {
