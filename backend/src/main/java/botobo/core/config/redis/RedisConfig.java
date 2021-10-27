@@ -1,6 +1,7 @@
 package botobo.core.config.redis;
 
 import botobo.core.domain.rank.SearchRank;
+import botobo.core.domain.token.RefreshToken;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,5 +42,13 @@ public class RedisConfig {
         searchRankRedisTemplate.setConnectionFactory(redisConnectionFactory());
         searchRankRedisTemplate.setEnableTransactionSupport(true);
         return searchRankRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, RefreshToken> refreshTokenRedisTemplate() {
+        RedisTemplate<String, RefreshToken> refreshTokenRedisTemplate = new RedisTemplate<>();
+        refreshTokenRedisTemplate.setConnectionFactory(redisConnectionFactory());
+        refreshTokenRedisTemplate.setEnableTransactionSupport(true);
+        return refreshTokenRedisTemplate;
     }
 }
