@@ -2,40 +2,32 @@ package botobo.core.acceptance.tag;
 
 import botobo.core.acceptance.DomainAcceptanceTest;
 import botobo.core.acceptance.utils.RequestBuilder.HttpResponse;
-import botobo.core.domain.user.SocialType;
-import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static botobo.core.utils.Fixture.WORKBOOK_REQUESTS_WITH_TAG;
-import static botobo.core.utils.Fixture.joanne;
-import static botobo.core.utils.TestUtils.stringGenerator;
+import static botobo.core.acceptance.utils.Fixture.JAVA_TAG_REQUESTS;
+import static botobo.core.acceptance.utils.Fixture.JS_TAG_REQUESTS;
+import static botobo.core.acceptance.utils.Fixture.USER_JOANNE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Tag 인수 테스트")
 class TagAcceptanceTest extends DomainAcceptanceTest {
 
     @BeforeEach
     void setFixture() {
-        final String joanneToken = 소셜_로그인되어_있음(joanne, SocialType.GITHUB);
-        List<TagRequest> jsTags = Arrays.asList(
-                TagRequest.builder().id(0L).name("javascript").build(),
-                TagRequest.builder().id(0L).name("js").build()
-        );
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 문제집", true, jsTags, joanneToken);
-        유저_태그_카드_포함_문제집_등록되어_있음("Js 비공개 문제집", false, jsTags, joanneToken);
+        CREATE_WORKBOOK_INCLUDE_CARD("Js 문제집", true, JS_TAG_REQUESTS, USER_JOANNE, "질문", "답변");
+        CREATE_WORKBOOK_INCLUDE_CARD("Java 비공개 문제집", false, JAVA_TAG_REQUESTS, USER_JOANNE, "질문", "답변");
     }
 
-    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공")
+    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 비공개는 가져오지 않는다.")
     @Test
     void findAllTagsByWorkbookName() {
         // given
-        final String workbookName = "Js";
+        final String workbookName = "문제집";
         final HttpResponse response = request()
                 .get("/tags?workbook=" + workbookName)
                 .build();
@@ -69,65 +61,4 @@ class TagAcceptanceTest extends DomainAcceptanceTest {
                 .containsExactly("javascript", "js");
     }
 
-    @DisplayName("문제집명이 포함된 문제집의 태그들을 가져온다. - 성공, 카드의 개수가 0개이면 가져오지 않는다.")
-    @Test
-    void findAllTagsByWorkbookNameWhenCardCountsZero() {
-        // given
-        서로_다른_유저의_여러개_문제집_생성_요청(WORKBOOK_REQUESTS_WITH_TAG, ADMINS);
-
-        final String workbookName = "Java";
-        final HttpResponse response = request()
-                .get("/tags?workbook=" + workbookName)
-                .build();
-
-        // when
-        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
-
-        // then
-        assertThat(tagResponses).hasSize(0);
-    }
-
-
-    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 성공, 문제집 명이 비어있는 경우 빈 응답")
-    @Test
-    void findAllTagsByWorkbookNameWhenEmpty() {
-        // given
-        final HttpResponse response = request()
-                .get("/tags?workbook=")
-                .build();
-
-        // when
-        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
-
-        // then
-        assertThat(tagResponses).isEmpty();
-    }
-
-    @DisplayName("문제집명에 해당하는 태그를 모두 가져온다. - 실패, 문제집 명이 30글자를 넘는 경우 예외")
-    @Test
-    void findAllTagsByWorkbookNameWhenInvalidLength() {
-        // given
-        final HttpResponse response = request()
-                .get("/tags?workbook=" + stringGenerator(31))
-                .build();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @DisplayName("문제집명이 포함된 문제집의 태그들을 가져온다. - 성공, 비공개 문제집이면 가져오지 않는다.")
-    @Test
-    void findAllTagsByWorkbookNameWhenPrivateWorkbook() {
-        // given
-        final String workbookName = "비공개";
-        final HttpResponse response = request()
-                .get("/tags?workbook=" + workbookName)
-                .build();
-
-        // when
-        List<TagResponse> tagResponses = response.convertBodyToList(TagResponse.class);
-
-        // then
-        assertThat(tagResponses).hasSize(0);
-    }
 }

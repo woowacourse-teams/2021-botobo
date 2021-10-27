@@ -1,8 +1,6 @@
 package botobo.core.documentation;
 
 import botobo.core.application.TagService;
-import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.Tags;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.ui.TagController;

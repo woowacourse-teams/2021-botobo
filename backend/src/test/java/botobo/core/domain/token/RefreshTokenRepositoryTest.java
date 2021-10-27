@@ -1,6 +1,7 @@
 package botobo.core.domain.token;
 
 import botobo.core.config.redis.EmbeddedRedisConfig;
+import botobo.core.config.redis.RedisConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataRedisTest
 @MockBean(JpaMetamodelMappingContext.class)
 @ActiveProfiles("test")
-@Import(EmbeddedRedisConfig.class)
+@Import({EmbeddedRedisConfig.class, RedisConfig.class, RefreshTokenRepository.class})
 class RefreshTokenRepositoryTest {
 
     @Value("${security.jwt.refresh-token.expire-length}")

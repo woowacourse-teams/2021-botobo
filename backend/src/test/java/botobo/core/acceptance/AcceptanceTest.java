@@ -2,7 +2,6 @@ package botobo.core.acceptance;
 
 import botobo.core.acceptance.utils.RequestBuilder;
 import botobo.core.acceptance.utils.RequestBuilder.HttpFunction;
-import botobo.core.infrastructure.auth.JwtTokenProvider;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,17 +23,13 @@ public class AcceptanceTest {
 
     private RequestBuilder requestBuilder;
 
-    @Autowired
-    protected JwtTokenProvider jwtTokenProvider;
-
     @BeforeEach
     protected void setUp() {
         if (RestAssured.port == UNDEFINED_PORT) {
             RestAssured.port = port;
             databaseCleaner.afterPropertiesSet();
         }
-        String defaultToken = jwtTokenProvider.createAccessToken(100L);
-        requestBuilder = new RequestBuilder(defaultToken);
+        requestBuilder = new RequestBuilder();
     }
 
     @AfterEach
@@ -48,7 +43,7 @@ public class AcceptanceTest {
      * request()
      * .get(path, params)   http method type
      * .queryParam(name, value)     optional
-     * .auth(createToken(1L))         default: false
+     * .auth(CREATE_TOKEN(USER.getId())         default: false
      * .log()          default: false
      * .build();
      * <로그인이 필요하지 않은 경우>
@@ -58,7 +53,7 @@ public class AcceptanceTest {
      * <등록되지 않은 유저가 필요한 경우>
      * request()
      * .post(path, body)   http method type
-     * .failAuth()
+     * .auth(CREATE_TOKEN(-100L))
      * .build();
      */
     protected HttpFunction request() {
