@@ -11,7 +11,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @Configuration
 @EnableElasticsearchRepositories
 public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
-    // TODO 서브모듈 업데이트 귀찮아서 그냥 박아놓음.
+    // TODO
+    // yml에서 주입받는게 좋지만 현재 학습테스트용도이므로 static하게 넣어둠!
 //    @Value("${elasticsearch.host}")
 //    private String host;
 //    @Value("${elasticsearch.port}")

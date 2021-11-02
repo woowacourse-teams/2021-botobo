@@ -13,6 +13,7 @@ public class WorkbookDocumentQueryBuilder {
     private WorkbookDocumentQueryBuilder() {
     }
 
+    // 현재는 간단하게 와일드카드를 이용해 해당 키워드가 workbookName이나 tagName 필드에 포함된 경우만 조회되도록 함.
     public static Query makeQuery(WorkbookSearchParameter workbookSearchParameter,
                                   Pageable pageable) {
         NativeSearchQueryBuilder query = new NativeSearchQueryBuilder();

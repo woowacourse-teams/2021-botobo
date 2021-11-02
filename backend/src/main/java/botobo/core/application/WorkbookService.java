@@ -56,6 +56,7 @@ public class WorkbookService extends AbstractUserService {
         Workbook savedWorkbook = workbookRepository.save(workbook);
 
         // TODO
+        // 참고로 es는 트랜잭션이 없어 단위로 수행되기 위해서는 트랜잭션이 걸린 메서드 가장 아래에 실행하는 것이 안전.
         workbookDocumentRepository.save(workbook.toDocument(tags));
         return WorkbookResponse.authorOf(savedWorkbook);
     }

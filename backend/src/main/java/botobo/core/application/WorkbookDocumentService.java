@@ -25,6 +25,9 @@ public class WorkbookDocumentService {
     }
 
     public List<Long> search(WorkbookSearchParameter workbookSearchParameter, Pageable pageable) {
+        /**
+         * 입력으로 들어온 값에 대해 boolQuery를 만들어 검색을 한 뒤, 결과값의 ID를 바탕으로 실제 엔티티를 가져온다.
+         */
         Query query = WorkbookDocumentQueryBuilder.makeQuery(workbookSearchParameter, pageable);
         SearchHits<WorkbookDocument> searchHits
                 = elasticsearchRestTemplate.search(query, WorkbookDocument.class, IndexCoordinates.of("botobo-workbook-document"));

@@ -34,6 +34,7 @@ public class SearchService {
     private final SearchRankService searchRankService;
 
     // TODO
+    // 엘라스틱서치 도입 후 사용할 서비스
     private final WorkbookDocumentService workbookDocumentService;
     private final WorkbookRepository workbookRepository;
 
