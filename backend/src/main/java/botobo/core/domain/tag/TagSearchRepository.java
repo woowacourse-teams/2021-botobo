@@ -1,6 +1,8 @@
 package botobo.core.domain.tag;
 
 
+import botobo.core.domain.tag.dto.TagDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,13 +25,16 @@ public class TagSearchRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<Tag> findAllTagContaining(String keyword) {
+    public List<TagDto> findAllTagContaining(String keyword) {
         if (Objects.isNull(keyword)) {
             return Collections.emptyList();
         }
 
-        return jpaQueryFactory.selectFrom(tag)
-                .distinct()
+        return jpaQueryFactory.from(tag)
+                .select(Projections.constructor(TagDto.class,
+                        tag.id,
+                        tag.tagName.value
+                )).distinct()
                 .innerJoin(tag.workbookTags, workbookTag)
                 .innerJoin(workbookTag.workbook, workbook)
                 .innerJoin(workbook.cards.cards, card)

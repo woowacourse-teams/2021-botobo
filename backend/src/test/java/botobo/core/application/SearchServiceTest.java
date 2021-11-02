@@ -1,15 +1,17 @@
 package botobo.core.application;
 
 import botobo.core.application.rank.SearchRankService;
-import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagSearchRepository;
+import botobo.core.domain.tag.dto.TagDto;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.ui.search.SearchRelated;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import botobo.core.utils.WorkbookSearchParameterUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,59 +47,63 @@ class SearchServiceTest {
     @InjectMocks
     private SearchService searchService;
 
-    @Test
-    @DisplayName("태그 검색 - 성공, 이름에 키워드가 들어가면 결과에 포함된다")
-    void searchTags() {
-        // given
-        String java = "java";
-        String javascript = "javascript";
-        List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
-        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
+    @Nested
+    @DisplayName("태그 검색")
+    class TagSearch {
+        private static final String JAVA = "java";
+        private static final String JAVASCRIPT = "javascript";
+        private List<TagDto> tags;
 
-        // when
-        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(java));
+        @BeforeEach
+        void setUp() {
+            tags = List.of(TagDto.of(1L, JAVA), TagDto.of(2L, JAVASCRIPT));
+        }
 
-        // then
-        then(tagRepository).should(times(1))
-                .findAllTagContaining(java);
-        assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
-    }
+        @Test
+        @DisplayName("성공, 이름에 키워드가 들어가면 결과에 포함된다")
+        void searchTags() {
+            // given
+            given(tagRepository.findAllTagContaining(JAVA)).willReturn(tags);
 
-    @Test
-    @DisplayName("대문자로 태그 검색 - 성공, 태그 검색은 대소문자를 구별하지 않는다")
-    void searchTagsWithUpperCaseIncluded() {
-        // given
-        String java = "java";
-        String javascript = "javascript";
-        List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
-        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
+            // when
+            List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(JAVA));
 
-        // when
-        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated("JAVA"));
+            // then
+            then(tagRepository).should(times(1))
+                    .findAllTagContaining(JAVA);
+            assertThat(tagResponses).extracting("name").containsExactly(JAVA, JAVASCRIPT);
+        }
 
-        // then
-        then(tagRepository).should(times(1))
-                .findAllTagContaining(java);
-        assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
-    }
+        @Test
+        @DisplayName("성공, 태그 검색은 대소문자를 구별하지 않는다")
+        void searchTagsWithUpperCaseIncluded() {
+            // given
+            given(tagRepository.findAllTagContaining(JAVA)).willReturn(tags);
 
-    @Test
-    @DisplayName("태그 검색 - 성공, 양 쪽 빈칸은 trim 된다.")
-    void searchTagsWhenHasEmptySpace() {
-        // given
-        String keyword = " java ";
-        String java = "java";
-        String javascript = "javascript";
-        List<Tag> tags = List.of(Tag.of(java), Tag.of(javascript));
-        given(tagRepository.findAllTagContaining(java)).willReturn(tags);
+            // when
+            List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated("JAVA"));
 
-        // when
-        List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(keyword));
+            // then
+            then(tagRepository).should(times(1))
+                    .findAllTagContaining(JAVA);
+            assertThat(tagResponses).extracting("name").containsExactly(JAVA, JAVASCRIPT);
+        }
 
-        // then
-        then(tagRepository).should(times(1))
-                .findAllTagContaining(java);
-        assertThat(tagResponses).extracting("name").containsExactly(java, javascript);
+        @Test
+        @DisplayName("성공, 양 쪽 빈칸은 trim 된다.")
+        void searchTagsWhenHasEmptySpace() {
+            // given
+            String keyword = " java ";
+            given(tagRepository.findAllTagContaining(JAVA)).willReturn(tags);
+
+            // when
+            List<TagResponse> tagResponses = searchService.findTagsIn(new SearchRelated(keyword));
+
+            // then
+            then(tagRepository).should(times(1))
+                    .findAllTagContaining(JAVA);
+            assertThat(tagResponses).extracting("name").containsExactly(JAVA, JAVASCRIPT);
+        }
     }
 
     @Test
