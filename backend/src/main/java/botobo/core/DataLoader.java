@@ -9,6 +9,8 @@ import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookDocument;
+import botobo.core.domain.workbook.WorkbookDocumentRepository;
 import botobo.core.domain.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -44,6 +47,10 @@ public class DataLoader implements CommandLineRunner {
     private List<String> workbooks;
 
     private final WorkbookRepository workbookRepository;
+
+    // TODO
+    private final WorkbookDocumentRepository workbookDocumentRepository;
+
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
@@ -51,8 +58,9 @@ public class DataLoader implements CommandLineRunner {
     private User normalUser;
     private int adminWorkbookCount;
 
-    public DataLoader(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
+    public DataLoader(WorkbookRepository workbookRepository, WorkbookDocumentRepository workbookDocumentRepository, CardRepository cardRepository, UserRepository userRepository) {
         this.workbookRepository = workbookRepository;
+        this.workbookDocumentRepository = workbookDocumentRepository;
         this.cardRepository = cardRepository;
         this.userRepository = userRepository;
     }
@@ -71,6 +79,14 @@ public class DataLoader implements CommandLineRunner {
                 readFile(targetPath + workbook, i);
             }
         }
+
+        // TODO
+        List<Workbook> workbooks = workbookRepository.findAll();
+        List<WorkbookDocument> workbookDocuments = workbooks.stream()
+                .map(Workbook::toDocument)
+                .collect(Collectors.toList());
+        workbookDocumentRepository.saveAll(workbookDocuments);
+        System.out.println("sync completed.");
     }
 
     private boolean isBootrun(String filePath) {

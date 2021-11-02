@@ -78,6 +78,11 @@ dependencies {
     implementation 'it.ozimov:embedded-redis:0.7.2'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+    // elastic-search
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation "org.testcontainers:elasticsearch:1.15.3"
+    testImplementation "org.testcontainers:elasticsearch:1.16.0"
+
 }
 
 ext {

@@ -25,7 +25,8 @@ public class SearchController {
     public ResponseEntity<List<WorkbookResponse>> searchWorkbooks(@SearchParams WorkbookSearchParameter workbookSearchParameter,
                                                                   @RequestParam(required = false) List<Long> tags,
                                                                   @RequestParam(required = false) List<Long> users) {
-        List<WorkbookResponse> workbookResponses = searchService.searchWorkbooks(workbookSearchParameter, tags, users);
+        // TODO 테스트용으로 변경해둠.
+        List<WorkbookResponse> workbookResponses = searchService.search(workbookSearchParameter);
         return ResponseEntity.ok(workbookResponses);
     }
 

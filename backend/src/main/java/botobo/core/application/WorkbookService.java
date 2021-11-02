@@ -9,6 +9,7 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookDocumentRepository;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
@@ -34,12 +35,15 @@ public class WorkbookService extends AbstractUserService {
     private final CardRepository cardRepository;
     private final TagService tagService;
 
-    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
-                           CardRepository cardRepository, TagService tagService) {
+    // TODO
+    private final WorkbookDocumentRepository workbookDocumentRepository;
+
+    public WorkbookService(UserRepository userRepository, WorkbookRepository workbookRepository, CardRepository cardRepository, TagService tagService, WorkbookDocumentRepository workbookDocumentRepository) {
         super(userRepository);
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
+        this.workbookDocumentRepository = workbookDocumentRepository;
     }
 
     @Transactional
@@ -50,6 +54,9 @@ public class WorkbookService extends AbstractUserService {
         workbook.setUser(user);
         workbook.setTags(tags);
         Workbook savedWorkbook = workbookRepository.save(workbook);
+
+        // TODO
+        workbookDocumentRepository.save(workbook.toDocument(tags));
         return WorkbookResponse.authorOf(savedWorkbook);
     }
 
@@ -63,6 +70,10 @@ public class WorkbookService extends AbstractUserService {
         Tags tags = tagService.convertTags(workbookUpdateRequest.getTags());
         workbook.update(workbookUpdateRequest.toWorkbookWithTags(tags));
         workbookRepository.flush();
+
+        // TODO
+        // elasticsearch는 update가 없음.
+        workbookDocumentRepository.save(workbook.toDocument(tags));
         return WorkbookResponse.authorOf(workbook);
     }
 
@@ -74,6 +85,9 @@ public class WorkbookService extends AbstractUserService {
         validateAuthor(user, workbook);
 
         workbook.delete();
+
+        // TODO
+        workbookDocumentRepository.delete(workbook.toDocument());
     }
 
     public List<WorkbookResponse> findWorkbooksByUser(AppUser appUser) {

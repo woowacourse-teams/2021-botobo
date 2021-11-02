@@ -198,4 +198,14 @@ public class Workbook extends BaseEntity {
     public int heartCount() {
         return hearts.size();
     }
+
+    // TODO
+
+    public WorkbookDocument toDocument(Tags tags) {
+        return WorkbookDocument.of(this.id, this.name, tags);
+    }
+
+    public WorkbookDocument toDocument() {
+        return WorkbookDocument.of(this.id, this.name, this.tags());
+    }
 }
