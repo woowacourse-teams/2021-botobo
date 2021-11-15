@@ -28,6 +28,12 @@ export const getWorkbooksAsync = async () => {
   return data;
 };
 
+export const downloadWorkbooksAsync = async () => {
+  const { data } = await request.get('/workbooks/download');
+
+  return data;
+};
+
 export const postWorkbookAsync = async (params: PostWorkbookAsync) => {
   const { data } = await request.post<WorkbookResponse>('/workbooks', params);
 

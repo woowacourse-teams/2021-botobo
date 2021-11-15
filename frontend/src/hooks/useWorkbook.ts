@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
   deleteWorkbookAsync,
+  downloadWorkbooksAsync,
   getSearchKeywordRankingsAsync,
   getWorkbookRankingsAsync,
   getWorkbooksAsync,
@@ -94,6 +95,16 @@ const useWorkbook = () => {
     }
   };
 
+  const downloadWorkbooks = async () => {
+    try {
+      await downloadWorkbooksAsync();
+    } catch (error) {
+      console.error(error);
+
+      return;
+    }
+  };
+
   const getRankings = async () => {
     try {
       const [workbookRankings, searchKeywordRankings] = await Promise.all([
@@ -121,6 +132,7 @@ const useWorkbook = () => {
     workbookRankings,
     searchKeywordRankings,
     createWorkbook,
+    downloadWorkbooks,
     editWorkbook,
     deleteWorkbook,
     updateWorkbooks,

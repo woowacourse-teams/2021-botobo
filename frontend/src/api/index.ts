@@ -13,6 +13,7 @@ export type { PublicWorkbookAsync } from './workbook';
 
 export {
   getWorkbooksAsync,
+  downloadWorkbooksAsync,
   postWorkbookAsync,
   putWorkbookAsync,
   deleteWorkbookAsync,

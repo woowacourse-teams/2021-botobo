@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 public class WorkbookService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
+    private final WorkbookSearchRepository workbookSearchRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
     private final FileUploader fileS3Uploader;
@@ -53,6 +54,7 @@ public class WorkbookService extends AbstractUserService {
     ) {
         super(userRepository);
         this.workbookRepository = workbookRepository;
+        this.workbookSearchRepository = workbookSearchRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
         this.fileS3Uploader = fileS3Uploader;

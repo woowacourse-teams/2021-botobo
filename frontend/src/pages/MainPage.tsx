@@ -38,6 +38,7 @@ const MainPage = () => {
     workbookRankings,
     searchKeywordRankings,
     deleteWorkbook,
+    downloadWorkbooks,
     updateWorkbooks,
     getRankings,
   } = useWorkbook();
