@@ -8,6 +8,7 @@ import botobo.core.domain.tag.Tags;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagRequest;
 import botobo.core.dto.tag.TagResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +37,15 @@ public class TagService {
         return Tags.of(tags);
     }
 
+    @Cacheable(value = "filterTags", key = "#filterCriteria.workbook")
     public List<TagResponse> findAllTagsByWorkbookName(FilterCriteria filterCriteria) {
+        String keyword = filterCriteria.getWorkbook();
         if (filterCriteria.isEmpty()) {
             return TagResponse.listOf(Tags.empty());
         }
-        List<Tag> allTags = tagSearchRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
 
-        Tags tags = Tags.of(allTags);
-        return TagResponse.listOf(tags);
+        List<Tag> findTags = tagSearchRepository.findAllByContainsWorkbookName(keyword);
+        return TagResponse.listOf(Tags.of(findTags));
     }
 
 }

@@ -76,9 +76,6 @@ class SearchRankServiceTest {
     @DisplayName("검색 순위를 업데이트한다 - 성공")
     void updateSearchRanks() {
         // given
-        searchRankService.bringSearchRanks();
-        assertThat(isCacheEmpty()).isFalse();
-
         setScore("react", 11);
         setScore("java", 5);
         setScore("redis", 7);
@@ -91,8 +88,7 @@ class SearchRankServiceTest {
         );
 
         // then
-        assertThat(isCacheEmpty()).isTrue();
-
+        getSearchRanksCache().clear();
         List<SearchRankResponse> searchRankResponses = searchRankService.bringSearchRanks();
         assertThat(searchRankResponses).extracting(SearchRankResponse::getKeyword)
                 .containsExactly("react", "redis", "java");
@@ -100,6 +96,20 @@ class SearchRankServiceTest {
                 .containsExactly(1, 2, 3);
         assertThat(searchRankResponses).extracting(SearchRankResponse::getChange)
                 .containsExactly(1, null, -2);
+    }
+
+    @Test
+    @DisplayName("검색 순위 캐시를 비운다 - 성공")
+    void removeSearchRanksCache() {
+        // given
+        bringSearchRanks();
+        assertThat(isCacheEmpty()).isFalse();
+
+        // when
+        searchRankService.removeSearchRanksCache();
+
+        // then
+        assertThat(isCacheEmpty()).isTrue();
     }
 
     private Cache getSearchRanksCache() {

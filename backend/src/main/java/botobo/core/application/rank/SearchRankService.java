@@ -5,6 +5,7 @@ import botobo.core.domain.rank.SearchRankRepository;
 import botobo.core.domain.rank.SearchRanks;
 import botobo.core.domain.rank.SearchScoreRepository;
 import botobo.core.dto.rank.SearchRankResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class SearchRankService {
 
@@ -42,7 +44,6 @@ public class SearchRankService {
     }
 
     @Transactional
-    @CacheEvict(value = SEARCH_RANKS_CACHE_VALUE, key = "'SearchRanksKey'", cacheManager = "concurrentMapCacheManager")
     public void updateSearchRanks(List<SearchRank> oldSearchRankList, Set<String> newKeywordRanks) {
         SearchRanks oldSearchRanks = new SearchRanks(oldSearchRankList);
         searchRankRepository.deleteAll();
@@ -53,5 +54,10 @@ public class SearchRankService {
     @Transactional
     public void increaseScore(String searchKeyword) {
         searchScoreRepository.increaseScore(searchKeyword);
+    }
+
+    @CacheEvict(value = SEARCH_RANKS_CACHE_VALUE, key = "'SearchRanksKey'", cacheManager = "concurrentMapCacheManager")
+    public void removeSearchRanksCache() {
+        log.info("cleared cache for search rankings request");
     }
 }

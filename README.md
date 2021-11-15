@@ -16,6 +16,14 @@
 <br>
 
 ## 🐸 보고 또 보고
+
+<p align="center">
+  <a target="_blank" href="https://www.youtube.com/watch?v=vD_MDebfVPA">
+    <img src="images/youtube.png" width="50%" height="50%">
+    <p align="center">(클릭하면 영상을 실행할 수 있습니다)</p>
+  </a>
+</p>
+
 * [보고 또 보고 바로가기](https://botobo.kr)
 * [보고 또 보고 이야기](https://github.com/woowacourse-teams/2021-botobo/wiki)
   <br>

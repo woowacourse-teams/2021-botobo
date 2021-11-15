@@ -3,6 +3,8 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
   deleteWorkbookAsync,
+  getSearchKeywordRankingsAsync,
+  getWorkbookRankingsAsync,
   getWorkbooksAsync,
   postWorkbookAsync,
   putWorkbookAsync,
@@ -23,8 +25,11 @@ const useWorkbook = () => {
   const userInfo = useRecoilValue(userState);
   const [{ data: workbooks, errorMessage }, setWorkbooks] =
     useRecoilState(workbookState);
-  const workbookRankings = useRecoilValue(workbookRankingState);
-  const searchKeywordRankings = useRecoilValue(searchKeywordRankingState);
+  const [workbookRankings, setWorkbookRankings] =
+    useRecoilState(workbookRankingState);
+  const [searchKeywordRankings, setSearchKeywordRankings] = useRecoilState(
+    searchKeywordRankingState
+  );
   const setIsWorkbookUpdate = useSetRecoilState(shouldWorkbookUpdateState);
 
   const { routePrevPage } = useRouter();
@@ -89,6 +94,22 @@ const useWorkbook = () => {
     }
   };
 
+  const getRankings = async () => {
+    try {
+      const [workbookRankings, searchKeywordRankings] = await Promise.all([
+        getWorkbookRankingsAsync(),
+        getSearchKeywordRankingsAsync(),
+      ]);
+
+      setWorkbookRankings(workbookRankings);
+      setSearchKeywordRankings(searchKeywordRankings);
+    } catch (error) {
+      console.error(error);
+
+      return;
+    }
+  };
+
   useEffect(() => {
     if (errorMessage) {
       showSnackbar({ message: errorMessage, type: 'error' });
@@ -103,6 +124,7 @@ const useWorkbook = () => {
     editWorkbook,
     deleteWorkbook,
     updateWorkbooks,
+    getRankings,
   };
 };
 

@@ -23,6 +23,10 @@ spring:
   flyway:
     enabled: false
 
+cookie:
+  properties:
+    domain: ".test.botobo.kr"
+
 security:
   jwt:
     access-token:

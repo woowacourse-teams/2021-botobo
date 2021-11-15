@@ -6,6 +6,7 @@ import botobo.core.dto.auth.SsrTokenResponse;
 import botobo.core.dto.auth.TokenResponse;
 import botobo.core.infrastructure.auth.JwtRefreshTokenInfo;
 import botobo.core.infrastructure.auth.JwtTokenType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -22,6 +23,9 @@ public class AuthController {
 
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "BTOKEN_REFRESH";
+
+    @Value("${cookie.properties.domain:}")
+    private String cookieDomainValue;
 
     private final AuthService authService;
     private final JwtRefreshTokenInfo jwtRefreshTokenInfo;
@@ -63,6 +67,7 @@ public class AuthController {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(jwtRefreshTokenInfo.getValidityInSeconds().intValue())
+                .domain(cookieDomainValue)
                 .build();
     }
 

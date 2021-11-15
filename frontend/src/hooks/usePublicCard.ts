@@ -80,7 +80,7 @@ const usePublicCard = () => {
       setHeartInfo({ heart, heartCount, serverHeart: heart });
       setIsLoading(false);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, getPublicCards);
       setIsLoading(false);
     }
   };

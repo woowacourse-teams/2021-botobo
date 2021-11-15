@@ -17,10 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RequestBuilder {
-    private static String accessToken;
-
-    public RequestBuilder(String accessToken) {
-        RequestBuilder.accessToken = accessToken;
+    public RequestBuilder() {
     }
 
     public HttpFunction build() {
@@ -54,10 +51,10 @@ public class RequestBuilder {
     }
 
     public static class Options {
-        private final List<Map.Entry<String, String>> queryParams;
+        private final List<Map.Entry<String, Object>> queryParams;
         private final List<Map.Entry<String, String>> cookies;
         private final RestAssuredRequest request;
-        private String customAccessToken;
+        private String accessToken;
         private boolean loginFlag;
         private boolean logFlag;
 
@@ -74,14 +71,9 @@ public class RequestBuilder {
             return this;
         }
 
-        public Options failAuth() {
-            this.loginFlag = true;
-            return this;
-        }
-
         public Options auth(String token) {
             this.loginFlag = true;
-            this.customAccessToken = token;
+            this.accessToken = token;
             return this;
         }
 
@@ -90,7 +82,7 @@ public class RequestBuilder {
             return this;
         }
 
-        public Options queryParams(Map<String, String> parameters) {
+        public Options queryParams(Map<String, Object> parameters) {
             this.queryParams.addAll(parameters.entrySet());
             return this;
         }
@@ -103,9 +95,9 @@ public class RequestBuilder {
         public HttpResponse build() {
             RequestSpecification requestSpecification = RestAssured.given();
             if (loginFlag) {
-                requestSpecification = addAuthHeader(requestSpecification, getToken());
+                requestSpecification = addAuthHeader(requestSpecification, accessToken);
             }
-            for (Map.Entry<String, String> param : queryParams) {
+            for (Map.Entry<String, Object> param : queryParams) {
                 requestSpecification = addParams(requestSpecification, param);
             }
             for (Map.Entry<String, String> cookie : cookies) {
@@ -118,20 +110,11 @@ public class RequestBuilder {
             return new HttpResponse(response.extract());
         }
 
-        private String getToken() {
-            if (Objects.isNull(customAccessToken)) {
-                return accessToken;
-            }
-            final String token = customAccessToken;
-            customAccessToken = null;
-            return token;
-        }
-
         private RequestSpecification addAuthHeader(RequestSpecification requestSpecification, String token) {
             return requestSpecification.header("Authorization", "Bearer " + token);
         }
 
-        private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, String> param) {
+        private RequestSpecification addParams(RequestSpecification requestSpecification, Map.Entry<String, Object> param) {
             return requestSpecification.queryParam(param.getKey(), param.getValue());
         }
 

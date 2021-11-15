@@ -10,7 +10,7 @@ import java.util.Set;
 @Repository
 public class SearchScoreRepository {
 
-    public static final String KEY = "SearchScore";
+    private static final String KEY = "SearchScore";
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ZSetOperations<String, String> setOperations;
