@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -21,15 +22,15 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class S3Uploader implements FileUploader {
+public class ImageS3Uploader implements FileUploader {
     private final AmazonS3 amazonS3Client;
     private final FileNameGenerator fileNameGenerator;
 
-    @Value("${aws.cloudfront.url-format}")
-    private String cloudfrontUrlFormat;
+    @Value("${aws.cloudfront.image.url-format}")
+    private String cloudfrontImageUrlFormat;
 
-    @Value("${aws.s3.bucket}")
-    private String bucket;
+    @Value("${aws.s3.image.bucket}")
+    private String imageBucket;
 
     @Value("${aws.user-default-image}")
     private String userDefaultImageName;
@@ -49,6 +50,11 @@ public class S3Uploader implements FileUploader {
         return makeCloudFrontUrl(uploadFile.getFileName());
     }
 
+    @Override
+    public String upload(File file, User user) {
+        throw new IllegalStateException("잘못된 요청입니다.");
+    }
+
     private void uploadImageToS3(UploadFile uploadFile) {
         MultipartFile uploadMultipartFile = uploadFile.getMultipartFile();
 
@@ -59,7 +65,7 @@ public class S3Uploader implements FileUploader {
 
         try (final InputStream uploadImageFileInputStream = uploadMultipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(
-                    bucket,
+                    imageBucket,
                     uploadFile.getFileName(),
                     uploadImageFileInputStream,
                     metadata
@@ -75,14 +81,14 @@ public class S3Uploader implements FileUploader {
                 cloudfrontUrl(),
                 ""
         );
-        if (!Objects.equals(oldImageName, userDefaultImageName) && amazonS3Client.doesObjectExist(bucket, oldImageName)) {
+        if (!Objects.equals(oldImageName, userDefaultImageName) && amazonS3Client.doesObjectExist(imageBucket, oldImageName)) {
             log.info("S3Uploader, S3에서 이미지(이미지명: {})를 삭제했습니다.", oldImageName);
-            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, oldImageName));
+            amazonS3Client.deleteObject(new DeleteObjectRequest(imageBucket, oldImageName));
         }
     }
 
     private String cloudfrontUrl() {
-        return cloudfrontUrlFormat.replace("%s", "");
+        return cloudfrontImageUrlFormat.replace("%s", "");
     }
 
     private boolean isEmpty(MultipartFile multipartFile) {
@@ -90,6 +96,6 @@ public class S3Uploader implements FileUploader {
     }
 
     private String makeCloudFrontUrl(String uploadImageUrl) {
-        return String.format(cloudfrontUrlFormat, uploadImageUrl);
+        return String.format(cloudfrontImageUrlFormat, uploadImageUrl);
     }
 }
