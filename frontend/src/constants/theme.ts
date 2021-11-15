@@ -15,6 +15,7 @@ const theme: Theme = {
     gray_9: '#212529',
     black: '#000000',
     pink: '#f582c6',
+    pink_2: '#ef476f',
     green: '#02c584',
     blue: '#0084F4',
     red: '#d32f2f',
