@@ -97,7 +97,7 @@ const MainPage = () => {
             </Inner>
           </Container>
           {userInfo && (
-            <TemporaryBanner>
+            <TemporaryBanner onClick={downloadWorkbooks}>
               <BannerText>내 문제집 다운로드 하기</BannerText>
               <StyledButton
                 backgroundColor="white"

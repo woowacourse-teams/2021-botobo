@@ -100,4 +100,11 @@ public class WorkbookController {
                 workbookService.findPublicWorkbooks()
         );
     }
+
+    @GetMapping("/download")
+    public ResponseEntity<Void> downloadWorkbooks(@AuthenticationPrincipal AppUser appUser,
+                                                    HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "attachment; " + workbookService.downloadWorkbooks(appUser));
+        return ResponseEntity.ok().build();
+    }
 }
