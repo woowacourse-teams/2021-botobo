@@ -59,3 +59,10 @@ include::{snippets}/workbooks-toggle-hearts-success/http-response.adoc[]
 include::{snippets}/workbooks-random-public-get-success/http-request.adoc[]
 ==== 응답
 include::{snippets}/workbooks-random-public-get-success/http-response.adoc[]
+
+=== 유저의 모든 문제집 다운로드
+==== 요청
+include::{snippets}/workbooks-download-get-success/http-request.adoc[]
+==== 응답
+include::{snippets}/workbooks-download-get-success/http-response.adoc[]
+

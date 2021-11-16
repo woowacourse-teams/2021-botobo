@@ -4,6 +4,7 @@ import botobo.core.application.rank.SearchRankService;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.tag.Tags;
+import botobo.core.domain.tag.dto.TagDto;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.tag.TagResponse;
@@ -56,8 +57,9 @@ public class SearchService {
         if (target.isBlank()) {
             return TagResponse.listOf(Tags.empty());
         }
-        List<Tag> tags = tagSearchRepository.findAllTagContaining(target);
-        List<Tag> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);
-        return TagResponse.listOf(Tags.of(sortedTags));
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining(target);
+        List<TagDto> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);
+        return TagResponse.listOf(sortedTags);
     }
+
 }

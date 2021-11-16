@@ -1,6 +1,7 @@
 package botobo.core.util;
 
 import botobo.core.domain.tag.Tag;
+import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,24 +16,24 @@ class SimilarityCheckerTest {
     @Test
     void orderBySimilarity() {
         // given
-        List<Tag> tags = List.of(
-                Tag.of("나무자바"),
-                Tag.of("자바스크립트 문제집"),
-                Tag.of("자바스"),
-                Tag.of("자바리자바"),
-                Tag.of("자바"),
-                Tag.of("자바스크립트"),
-                Tag.of("자바를 잡아라"),
-                Tag.of("공자바")
+        List<TagDto> tags = List.of(
+                TagDto.of(1L, "나무자바"),
+                TagDto.of(2L, "자바스크립트 문제집"),
+                TagDto.of(3L, "자바스"),
+                TagDto.of(4L, "자바리자바"),
+                TagDto.of(5L, "자바"),
+                TagDto.of(6L, "자바스크립트"),
+                TagDto.of(7L, "자바를 잡아라"),
+                TagDto.of(8L, "공자바")
         );
 
         // when
-        List<Tag> orderBySimilarity = SimilarityChecker.orderBySimilarity("자바", tags, 5);
+        List<TagDto> orderBySimilarity = SimilarityChecker.orderBySimilarity("자바", tags, 5);
 
         // then
         assertThat(orderBySimilarity).hasSize(5);
         assertThat(orderBySimilarity.stream()
-                .map(Tag::getTagNameValue)
+                .map(TagDto::getName)
                 .collect(Collectors.toList()))
                 .containsExactly("자바", "자바스", "자바리자바", "자바스크립트", "자바를 잡아라");
     }
@@ -41,22 +42,22 @@ class SimilarityCheckerTest {
     @Test
     void orderBySimilarityEng() {
         // given
-        List<Tag> tags = List.of(
-                Tag.of("java"),
-                Tag.of("javascript"),
-                Tag.of("java11"),
-                Tag.of("aajava"),
-                Tag.of("bbjava"),
-                Tag.of("ozjava"),
-                Tag.of("javajoanne")
+        List<TagDto> tags = List.of(
+                TagDto.of(1L, "java"),
+                TagDto.of(2L, "javascript"),
+                TagDto.of(3L, "java11"),
+                TagDto.of(4L, "aajava"),
+                TagDto.of(5L, "bbjava"),
+                TagDto.of(6L, "ozjava"),
+                TagDto.of(7L, "javajoanne")
         );
 
         // when
-        List<Tag> orderBySimilarity = SimilarityChecker.orderBySimilarity("java", tags, 5);
+        List<TagDto> orderBySimilarity = SimilarityChecker.orderBySimilarity("java", tags, 5);
         // then
         assertThat(orderBySimilarity).hasSize(5);
         assertThat(orderBySimilarity.stream()
-                .map(Tag::getTagNameValue)
+                .map(TagDto::getName)
                 .collect(Collectors.toList()))
                 .containsExactly("java", "java11", "javajoanne", "javascript", "aajava");
     }

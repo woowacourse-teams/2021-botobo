@@ -288,6 +288,18 @@ class WorkbookSearchRepositoryTest {
         assertThat(workbookList).isEmpty();
     }
 
+
+    @DisplayName("유저아이디로 DownloadWorkbook을 조회해온다. - 성공")
+    @Test
+    void findAllDownloadWorkbooksByUserId() {
+        // given
+        DownloadWorkbooks downloadWorkbooks = workbookSearchRepository.findAllDownloadWorkbooksByUserId(bear.getId());
+
+        // when - then
+        // 카드가 없는 문제집 1개 제외
+        assertThat(downloadWorkbooks.size()).isEqualTo(5);
+    }
+
     private void initWorkbook(int publicWorkbookSize) {
         initUser();
 
@@ -300,8 +312,16 @@ class WorkbookSearchRepositoryTest {
             Cards cards2 = new Cards();
             for (int j = publicWorkbookSize; j > i; j--) {
                 cards1.addCard(Card.builder()
-                        .question("질문")
-                        .answer("답변")
+                        .question("질문1")
+                        .answer("답변1")
+                        .build());
+                cards1.addCard(Card.builder()
+                        .question("질문2")
+                        .answer("답변2")
+                        .build());
+                cards1.addCard(Card.builder()
+                        .question("질문3")
+                        .answer("답변3")
                         .build());
                 cards2.addCard(Card.builder()
                         .question("질문")

@@ -247,6 +247,21 @@ class WorkbookDocumentationTest extends DocumentationTest {
                 .identifier("workbooks-random-public-get-success");
     }
 
+    @Test
+    @DisplayName("유저의 모든 문제집을 txt로 다운로드한다. - 성공")
+    void downloadWorkbooks() throws Exception {
+        // given
+        given(workbookService.downloadWorkbooks(any(AppUser.class))).willReturn("https://d81x7opnhslow.cloudfront.net/test.txt");
+
+        // when, then
+        document()
+                .mockMvc(mockMvc)
+                .get("/workbooks/download")
+                .build()
+                .status(status().isOk())
+                .identifier("workbooks-download-get-success");
+    }
+
     private List<WorkbookResponse> generateUserWorkbookResponse() {
         return Arrays.asList(
                 WorkbookResponse.builder()
