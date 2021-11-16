@@ -28,8 +28,7 @@ public class DownloadWorkbooks {
     }
 
     private String getFilePath() {
-        return this.getClass().getResource("/").getPath()
-                + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
+        return LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
                 + "_" + UUID.randomUUID();
     }
 
