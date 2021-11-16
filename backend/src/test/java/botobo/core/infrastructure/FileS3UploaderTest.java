@@ -9,6 +9,7 @@ import botobo.core.infrastructure.s3.FileS3Uploader;
 import botobo.core.infrastructure.s3.ImageS3Uploader;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,11 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Disabled
 @ActiveProfiles("s3")
 @DisplayName("File S3 Uploader Test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalStackS3Config.class)
-public class FileS3UploaderTest {
+class FileS3UploaderTest {
     @Value("${aws.s3.file.bucket}")
     private String bucket;
 
