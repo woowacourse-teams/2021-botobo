@@ -9,6 +9,7 @@ import botobo.core.dto.workbook.WorkbookRequest;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.ui.auth.AuthenticationPrincipal;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,10 +103,9 @@ public class WorkbookController {
         );
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<Void> downloadWorkbooks(@AuthenticationPrincipal AppUser appUser,
+    @GetMapping(value = "/download", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> downloadWorkbooks(@AuthenticationPrincipal AppUser appUser,
                                                     HttpServletResponse response) {
-        response.addHeader("Content-Disposition", "attachment; " + workbookService.downloadWorkbooks(appUser));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(workbookService.downloadWorkbooks(appUser));
     }
 }

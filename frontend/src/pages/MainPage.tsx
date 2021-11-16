@@ -273,7 +273,7 @@ const GreetingWrapper = styled.div`
   }
 `;
 
-const TemporaryWrapper = styled.div`
+const TemporaryWrapper = styled.a`
   ${Flex({ direction: 'column', justify: 'space-between' })};
 `;
 

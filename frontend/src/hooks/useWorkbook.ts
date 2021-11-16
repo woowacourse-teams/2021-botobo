@@ -97,7 +97,32 @@ const useWorkbook = () => {
 
   const downloadWorkbooks = async () => {
     try {
-      await downloadWorkbooksAsync();
+      const downloadUrl = await downloadWorkbooksAsync();
+
+      fetch(downloadUrl, {
+        method: 'GET',
+        headers: {
+          Origin: 'botobo.kr',
+          'Content-Type': 'text/plain',
+        },
+      })
+        .then((res) => {
+          return res.blob();
+        })
+        .then((blob) => {
+          console.log(blob);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          console.log(url);
+          a.href = url;
+          a.download = 'myWorkbooks.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        })
+        .catch((err) => {
+          console.error('err: ', err);
+        });
     } catch (error) {
       console.error(error);
 
