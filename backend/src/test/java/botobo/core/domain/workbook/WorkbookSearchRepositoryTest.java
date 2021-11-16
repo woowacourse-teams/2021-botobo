@@ -312,8 +312,16 @@ class WorkbookSearchRepositoryTest {
             Cards cards2 = new Cards();
             for (int j = publicWorkbookSize; j > i; j--) {
                 cards1.addCard(Card.builder()
-                        .question("질문")
-                        .answer("답변")
+                        .question("질문1")
+                        .answer("답변1")
+                        .build());
+                cards1.addCard(Card.builder()
+                        .question("질문2")
+                        .answer("답변2")
+                        .build());
+                cards1.addCard(Card.builder()
+                        .question("질문3")
+                        .answer("답변3")
                         .build());
                 cards2.addCard(Card.builder()
                         .question("질문")

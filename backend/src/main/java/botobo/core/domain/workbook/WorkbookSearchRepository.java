@@ -25,7 +25,7 @@ import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
 import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.types.Projections.list;
+import static com.querydsl.core.group.GroupBy.list;
 
 
 @RequiredArgsConstructor
@@ -38,6 +38,7 @@ public class WorkbookSearchRepository {
         List<DownloadWorkbook> downloadWorkbooks = jpaQueryFactory.from(workbook)
                 .innerJoin(card)
                 .on(workbook.id.eq(card.workbook.id))
+                .distinct()
                 .where(equalsUserId(userId))
                 .transform(groupBy(workbook.id)
                         .list(Projections.constructor(
