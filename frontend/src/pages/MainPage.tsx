@@ -74,7 +74,7 @@ const MainPage = () => {
           <Container>
             <Inner>
               <TitleContent>
-                <h2>🚨 긴급공지 🚨</h2>
+                <h2>🚨 공지사항 🚨</h2>
               </TitleContent>
               <Content>
                 <span>
@@ -89,7 +89,7 @@ const MainPage = () => {
                   보관해보세요.
                   <br />
                   <br />
-                  지금까지 보고 또 보고를 사랑해주셔서 정말 감사합니다.
+                  지금까지 보고 또 보고를 사랑해주셔서 정말 감사합니다. 🙏
                   <br />
                   다음에 더욱 발전한 모습으로 찾아뵙도록 할게요. 모두 즐거운
                   연말 보내세요 :)
@@ -216,7 +216,7 @@ const MainPage = () => {
 };
 
 const Container = styled(CardTemplate)`
-  height: 15rem;
+  height: fit-content;
   margin-bottom: 1rem;
 
   ${({ theme }) => css`
