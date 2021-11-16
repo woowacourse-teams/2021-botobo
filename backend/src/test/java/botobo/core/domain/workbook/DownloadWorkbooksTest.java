@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DownloadWorkbooksTest {
 
-    @DisplayName("")
+    @DisplayName("DownloadWorkbooks를 textFile로 변경한다.")
     @Test
     void toTextFile() {
         // given
