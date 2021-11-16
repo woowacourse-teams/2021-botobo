@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
   deleteWorkbookAsync,
+  downloadWorkbooksAsync,
   getSearchKeywordRankingsAsync,
   getWorkbookRankingsAsync,
   getWorkbooksAsync,
@@ -94,6 +95,41 @@ const useWorkbook = () => {
     }
   };
 
+  const downloadWorkbooks = async () => {
+    try {
+      const downloadUrl = await downloadWorkbooksAsync();
+
+      fetch(downloadUrl, {
+        method: 'GET',
+        headers: {
+          Origin: 'botobo.kr',
+          'Content-Type': 'text/plain',
+        },
+      })
+        .then((res) => {
+          return res.blob();
+        })
+        .then((blob) => {
+          console.log(blob);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          console.log(url);
+          a.href = url;
+          a.download = 'myWorkbooks.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        })
+        .catch((err) => {
+          console.error('err: ', err);
+        });
+    } catch (error) {
+      console.error(error);
+
+      return;
+    }
+  };
+
   const getRankings = async () => {
     try {
       const [workbookRankings, searchKeywordRankings] = await Promise.all([
@@ -121,6 +157,7 @@ const useWorkbook = () => {
     workbookRankings,
     searchKeywordRankings,
     createWorkbook,
+    downloadWorkbooks,
     editWorkbook,
     deleteWorkbook,
     updateWorkbooks,

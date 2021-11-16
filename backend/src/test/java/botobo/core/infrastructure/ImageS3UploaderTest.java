@@ -4,6 +4,7 @@ import botobo.core.config.LocalStackS3Config;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.infrastructure.s3.FileUploader;
+import botobo.core.infrastructure.s3.ImageS3Uploader;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,21 +23,21 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Disabled
+
 @ActiveProfiles("s3")
-@DisplayName("S3 Uploader 테스트")
+@DisplayName("Image S3 Uploader Test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalStackS3Config.class)
-class S3UploaderTest {
+class ImageS3UploaderTest {
 
     public static final String FILE_PATH = "/src/test/resources/";
     public static final String UPLOAD_IMAGE_NAME = "imagesForS3Test/botobo-upload-profile.png";
     private static final String USER_DEFAULT_IMAGE_NAME = "imagesForS3Test/botobo-default-profile.png";
     private static final String EMPTY_IMAGE_NAME = "imagesForS3Test/botobo-empty-image.png";
 
-    @Value("${aws.s3.bucket}")
+    @Value("${aws.s3.image.bucket}")
     private String bucket;
 
-    @Value("${aws.cloudfront.url-format}")
+    @Value("${aws.cloudfront.image.url-format}")
     private String cloudfrontUrlFormat;
 
     @Value("${aws.user-default-image}")
@@ -46,7 +47,7 @@ class S3UploaderTest {
     private AmazonS3 amazonS3;
 
     @Autowired
-    private FileUploader s3Uploader;
+    private ImageS3Uploader s3Uploader;
 
     private User user;
 
