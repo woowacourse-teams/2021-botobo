@@ -1,19 +1,13 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.card.Card;
-import botobo.core.domain.card.Cards;
-import botobo.core.domain.heart.Heart;
+import botobo.core.domain.SearchRepositoryTest;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagName;
 import botobo.core.domain.tag.Tags;
-import botobo.core.domain.user.Role;
-import botobo.core.domain.user.User;
-import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import botobo.core.utils.WorkbookSearchParameterUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
 @Import({WorkbookSearchRepository.class, QuerydslConfig.class})
-class WorkbookSearchRepositoryTest {
-
-    @Autowired
-    private WorkbookRepository workbookRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
 
     @Autowired
     private WorkbookSearchRepository workbookSearchRepository;
-
-    private Tag javaTag, javascriptTag, joanneTag;
-    private User bear, oz;
-
-    @BeforeEach
-    void setUp() {
-        initWorkbook(3);
-    }
 
     @Test
     @DisplayName("검색어를 입력하면 문제집 이름 또는 태그에서 검색어가 포함된 것들을 가져온다. - 성공, 문제집 명에 포함")
@@ -227,8 +207,8 @@ class WorkbookSearchRepositoryTest {
         // then
         assertThat(workbookList).hasSize(3);
         assertThat(workbookList).extracting(Workbook::getName)
-                .containsExactly("Javascript 문제집0",
-                        "Javascript 문제집1", "Javascript 문제집2");
+                .containsExactly("Javascript 문제집2",
+                        "Javascript 문제집1", "Javascript 문제집0");
     }
 
     @Test
@@ -247,12 +227,12 @@ class WorkbookSearchRepositoryTest {
         // then
         assertThat(workbookList).hasSize(7);
         assertThat(workbookList).extracting(Workbook::getName)
-                .containsExactly("좋아요가 많아 문제다.",
+                .containsExactly("좋아요가 많아 문제다",
                         "Java 문제집0",
-                        "Javascript 문제집0",
                         "Java 문제집1",
-                        "Javascript 문제집1",
                         "Java 문제집2",
+                        "Javascript 문제집0",
+                        "Javascript 문제집1",
                         "Javascript 문제집2");
     }
 
@@ -298,103 +278,5 @@ class WorkbookSearchRepositoryTest {
         // when - then
         // 카드가 없는 문제집 1개 제외
         assertThat(downloadWorkbooks.size()).isEqualTo(5);
-    }
-
-    private void initWorkbook(int publicWorkbookSize) {
-        initUser();
-
-        javaTag = Tag.of("Java");
-        joanneTag = Tag.of("Joanne");
-        javascriptTag = Tag.of("Javascript");
-
-        for (int i = 0; i < publicWorkbookSize; i++) {
-            Cards cards1 = new Cards();
-            Cards cards2 = new Cards();
-            for (int j = publicWorkbookSize; j > i; j--) {
-                cards1.addCard(Card.builder()
-                        .question("질문1")
-                        .answer("답변1")
-                        .build());
-                cards1.addCard(Card.builder()
-                        .question("질문2")
-                        .answer("답변2")
-                        .build());
-                cards1.addCard(Card.builder()
-                        .question("질문3")
-                        .answer("답변3")
-                        .build());
-                cards2.addCard(Card.builder()
-                        .question("질문")
-                        .answer("답변")
-                        .build());
-            }
-            Workbook workbook1 = Workbook.builder()
-                    .name("Java 문제집" + i)
-                    .opened(true)
-                    .user(bear)
-                    .tags(Tags.of(List.of(javaTag, joanneTag)))
-                    .build();
-            workbook1.addCards(cards1);
-            workbookRepository.save(workbook1);
-
-            Workbook workbook2 = Workbook.builder()
-                    .name("Javascript 문제집" + i)
-                    .opened(true)
-                    .user(oz)
-                    .tags(Tags.of(List.of(javascriptTag)))
-                    .build();
-            workbook2.addCards(cards2);
-            workbookRepository.save(workbook2);
-        }
-
-        Workbook privateWorkbook = Workbook.builder()
-                .name("비공개 문제집")
-                .opened(false)
-                .user(bear)
-                .build();
-        privateWorkbook.addCard(Card.builder()
-                .question("질문")
-                .answer("답변")
-                .build());
-        workbookRepository.save(privateWorkbook);
-
-
-        workbookRepository.save(Workbook.builder()
-                .name("카드가 없다")
-                .opened(true)
-                .user(bear)
-                .build());
-
-        Workbook heartWorkbook = Workbook.builder()
-                .name("좋아요가 많아 문제다.")
-                .opened(true)
-                .user(bear)
-                .build();
-        heartWorkbook.addCard(Card.builder()
-                .question("질문")
-                .answer("답변")
-                .build());
-        heartWorkbook.toggleHeart(Heart.builder()
-                .userId(1L)
-                .workbook(heartWorkbook)
-                .build());
-        workbookRepository.save(heartWorkbook);
-    }
-
-    private void initUser() {
-        bear = User.builder()
-                .socialId("1")
-                .userName("bear")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-        oz = User.builder()
-                .socialId("2")
-                .userName("oz")
-                .profileUrl("github.io")
-                .role(Role.USER)
-                .build();
-        userRepository.save(bear);
-        userRepository.save(oz);
     }
 }

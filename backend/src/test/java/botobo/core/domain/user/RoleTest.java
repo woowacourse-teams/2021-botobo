@@ -12,7 +12,8 @@ class RoleTest {
     void isAnonymous() {
         // given
         Role anonymous = Role.ANONYMOUS;
-        // when - then
+
+        // when, then
         assertThat(anonymous.isAnonymous()).isTrue();
     }
 
@@ -21,7 +22,8 @@ class RoleTest {
     void isAdmin() {
         // given
         Role admin = Role.ADMIN;
-        // when - then
+
+        // when, then
         assertThat(admin.isAdmin()).isTrue();
     }
 
@@ -30,7 +32,8 @@ class RoleTest {
     void isUser() {
         // given
         Role user = Role.USER;
-        // when - then
+
+        // when, then
         assertThat(user.isUser()).isTrue();
     }
 }

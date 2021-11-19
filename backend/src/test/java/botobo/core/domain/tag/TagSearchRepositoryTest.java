@@ -1,7 +1,7 @@
 package botobo.core.domain.tag;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.FilterRepositoryTest;
+import botobo.core.domain.SearchRepositoryTest;
 import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({TagSearchRepository.class, QuerydslConfig.class})
-class TagSearchRepositoryTest extends FilterRepositoryTest {
+class TagSearchRepositoryTest extends SearchRepositoryTest {
 
     @Autowired
     private TagSearchRepository tagSearchRepository;
@@ -22,20 +22,20 @@ class TagSearchRepositoryTest extends FilterRepositoryTest {
     @Test
     void findAllByWorkbookName() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("java");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("Java");
 
         // then
-        assertThat(tags).hasSize(7);
+        assertThat(tags).hasSize(3);
         assertThat(tags)
                 .extracting(Tag::getTagNameValue)
-                .contains("java", "자바", "자바짱", "jdk", "js", "javascript", "spring");
+                .contains("java", "joanne", "javascript");
     }
 
     @DisplayName("문제집명을 포함하는 문제집의 태그를 모두 가져온다. - 문제집의 카드가 0개일 때는 가져오지 않는다.")
     @Test
     void findAllByWorkbookNameWithCardZero() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("카드가 없는");
+        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("카드가 없다");
 
         // then
         assertThat(tags).isEmpty();
@@ -73,7 +73,7 @@ class TagSearchRepositoryTest extends FilterRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공")
     void findAllTagsIn() {
         // when
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining("자바");
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining("Java");
 
         // then
         assertThat(tags).hasSize(2);
