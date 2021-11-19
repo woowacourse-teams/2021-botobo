@@ -84,7 +84,7 @@ class WorkbookTest {
     @Test
     @DisplayName("Builder를 이용한 Workbook 객체 생성 - 성공, 태그와 함꼐 생성")
     void createWithTags() {
-        //given
+        // given
         Tags tags = Tags.of(Arrays.asList(
                 Tag.of("자바"), Tag.of("java"), Tag.of("코딩")
         ));

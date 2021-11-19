@@ -27,10 +27,6 @@ class QuizTest {
         return cards.stream().filter(Card::isNextQuiz).collect(Collectors.toList());
     }
 
-    private List<Integer> getEncounterCounts(List<Card> cards) {
-        return cards.stream().map(Card::getEncounterCount).collect(Collectors.toList());
-    }
-
     @DisplayName("isNextQuiz 3개를 포함하여 10개의 카드가 담긴 퀴즈를 생성한다. - 성공")
     @Test
     void makeQuiz() {
