@@ -2,7 +2,6 @@ package botobo.core.domain.tag;
 
 import botobo.core.config.QuerydslConfig;
 import botobo.core.domain.SearchRepositoryTest;
-import botobo.core.domain.FilterRepositoryTest;
 import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,8 +73,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공")
     void findAllTagsIn() {
         // when
-        List<Tag> tags = tagSearchRepository.findAllTagContaining("Java");
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining("자바");
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining("Java");
 
         // then
         assertThat(tags).hasSize(2);
