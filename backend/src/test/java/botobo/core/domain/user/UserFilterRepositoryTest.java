@@ -1,7 +1,7 @@
 package botobo.core.domain.user;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.FilterRepositoryTest;
+import botobo.core.domain.SearchRepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({UserFilterRepository.class, QuerydslConfig.class})
-class UserFilterRepositoryTest extends FilterRepositoryTest {
+class UserFilterRepositoryTest extends SearchRepositoryTest {
 
     @Autowired
     private UserFilterRepository userFilterRepository;
@@ -24,7 +24,7 @@ class UserFilterRepositoryTest extends FilterRepositoryTest {
         List<User> users = userFilterRepository.findAllByContainsWorkbookName("java");
 
         // then
-        assertThat(users).hasSize(5);
+        assertThat(users).hasSize(2);
     }
 
     @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공, 일치하는 문제집 없음.")
@@ -51,7 +51,7 @@ class UserFilterRepositoryTest extends FilterRepositoryTest {
     @Test
     void findAllByContainsWorkbookNameWhenCardsEmpty() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("없는");
+        List<User> users = userFilterRepository.findAllByContainsWorkbookName("없다");
 
         // then
         assertThat(users).isEmpty();
@@ -71,7 +71,7 @@ class UserFilterRepositoryTest extends FilterRepositoryTest {
     @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공, 문제집 명이 null일 때 빈 리스트를 반환한다.")
     @Test
     void findAllByWorkbookNameNull() {
-        // given - when
+        // given, when
         List<User> users = userFilterRepository.findAllByContainsWorkbookName(null);
 
         // then
@@ -81,8 +81,8 @@ class UserFilterRepositoryTest extends FilterRepositoryTest {
     @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공, 키워드가 태그와 일치할 때에도 가져온다.")
     @Test
     void findAllByWorkbookNameEqualsTagName() {
-        // given - when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("자바짱");
+        // given, when
+        List<User> users = userFilterRepository.findAllByContainsWorkbookName("Javascript");
 
         // then
         assertThat(users).hasSize(1);
