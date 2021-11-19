@@ -12,7 +12,9 @@ import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.infrastructure.s3.FileUploader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,14 +29,17 @@ import static java.util.Collections.emptyList;
 public class UserService extends AbstractUserService {
 
     private final UserFilterRepository userFilterRepository;
-    private final FileUploader fileUploader;
+
+//    @Qualifier("imageS3Uploader")
+//    @Autowired
+    private final FileUploader imageS3Uploader;
 
     public UserService(UserRepository userRepository,
                        UserFilterRepository userFilterRepository,
-                       FileUploader fileUploader) {
+                       FileUploader imageS3Uploader) {
         super(userRepository);
         this.userFilterRepository = userFilterRepository;
-        this.fileUploader = fileUploader;
+        this.imageS3Uploader = imageS3Uploader;
     }
 
     public UserResponse findById(AppUser appUser) {
@@ -53,11 +58,11 @@ public class UserService extends AbstractUserService {
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
-        String newProfileUrl = fileUploader.upload(multipartFile, user);
+        String newProfileUrl = imageS3Uploader.upload(multipartFile, user);
 
         user.updateProfileUrl(newProfileUrl);
 
-        fileUploader.deleteFromS3(oldProfileUrl);
+        imageS3Uploader.deleteFromS3(oldProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(newProfileUrl)
                 .build();

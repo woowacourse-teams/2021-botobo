@@ -992,6 +992,17 @@ class WorkbookAcceptanceTest extends DomainAcceptanceTest {
         assertThat(heartResponse.isHeart()).isFalse();
     }
 
+    @DisplayName("유저가 등록한 모든 문제집을 txt 형태로 다운로드한다.")
+    @Test
+    void downloads() {
+        HttpResponse httpResponse = request()
+                .get("/workbooks/download")
+                .auth(CREATE_TOKEN(USER_JOANNE.getId()))
+                .build();
+
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     private HttpResponse UPDATE_WORKBOOK(WorkbookUpdateRequest workbookUpdateRequest,
                                          WorkbookResponse workbookResponse,
                                          User user) {

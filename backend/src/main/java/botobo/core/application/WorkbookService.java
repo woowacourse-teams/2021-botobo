@@ -8,8 +8,10 @@ import botobo.core.domain.tag.Tags;
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
+import botobo.core.domain.workbook.DownloadWorkbooks;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
+import botobo.core.domain.workbook.WorkbookSearchRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
@@ -20,26 +22,43 @@ import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
+import botobo.core.infrastructure.s3.FileUploader;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class WorkbookService extends AbstractUserService {
 
     private final WorkbookRepository workbookRepository;
+    private final WorkbookSearchRepository workbookSearchRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
+    private final FileUploader fileS3Uploader;
 
-    public WorkbookService(WorkbookRepository workbookRepository, UserRepository userRepository,
-                           CardRepository cardRepository, TagService tagService) {
+    public WorkbookService(WorkbookRepository workbookRepository,
+                           WorkbookSearchRepository workbookSearchRepository,
+                           UserRepository userRepository,
+                           CardRepository cardRepository,
+                           TagService tagService,
+                           FileUploader fileS3Uploader
+    ) {
         super(userRepository);
         this.workbookRepository = workbookRepository;
+        this.workbookSearchRepository = workbookSearchRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
+        this.fileS3Uploader = fileS3Uploader;
     }
 
     @Transactional
@@ -155,5 +174,17 @@ public class WorkbookService extends AbstractUserService {
     public List<WorkbookResponse> findPublicWorkbooks() {
         List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
         return WorkbookResponse.openedListOf(workbooks);
+    }
+
+    public String downloadWorkbooks(AppUser appUser) {
+        User user = findUser(appUser);
+        DownloadWorkbooks downloadWorkbooks
+                = workbookSearchRepository.findAllDownloadWorkbooksByUserId(user.getId());
+        File file = downloadWorkbooks.toTextFile();
+        String uploadFileUrl = fileS3Uploader.upload(file, user);
+        if (!file.delete()) {
+            log.info("downloadWorkbook 파일을 삭제하지 못했습니다.");
+        }
+        return uploadFileUrl;
     }
 }

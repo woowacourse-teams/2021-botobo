@@ -1,7 +1,7 @@
 package botobo.core.util;
 
 import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagName;
+import botobo.core.domain.tag.dto.TagDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ public class SimilarityChecker {
     private SimilarityChecker() {
     }
 
-    public static List<Tag> orderBySimilarity(String origin, List<Tag> target, int sizeLimit) {
+    public static List<TagDto> orderBySimilarity(String origin, List<TagDto> target, int sizeLimit) {
         List<Pair> tempList = new ArrayList<>();
-        for (Tag tag : target) {
-            int score = similarity(origin, tag.getTagName());
+        for (TagDto tag : target) {
+            int score = similarity(origin, tag.getName());
             tempList.add(new Pair(tag, score));
         }
         return tempList.stream()
@@ -34,17 +34,17 @@ public class SimilarityChecker {
             return 1;
         }
         if (previous.score == next.score) {
-            return previous.getTag().compareToIgnoreCase(next.getTag());
+            return previous.getName().compareToIgnoreCase(next.getName());
         }
         return previous.score > next.score ? 1 : -1;
     }
 
     private static boolean tagNameStartsWith(Pair previous, String origin) {
-        return previous.getTag().startsWith(origin);
+        return previous.getName().startsWith(origin);
     }
 
-    private static int similarity(String s1, TagName tagName) {
-        String s2 = tagName.getValue();
+    private static int similarity(String s1, String name) {
+        String s2 = name;
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
         int[] scores = new int[s2.length() + 1];
@@ -77,16 +77,16 @@ public class SimilarityChecker {
     }
 
     private static class Pair {
-        Tag tag;
+        TagDto tag;
         int score;
 
-        public Pair(Tag tag, int score) {
+        public Pair(TagDto tag, int score) {
             this.tag = tag;
             this.score = score;
         }
 
-        public String getTag() {
-            return tag.getTagNameValue();
+        public String getName() {
+            return tag.getName();
         }
     }
 }

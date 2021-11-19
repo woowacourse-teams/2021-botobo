@@ -2,6 +2,8 @@ package botobo.core.domain.tag;
 
 import botobo.core.config.QuerydslConfig;
 import botobo.core.domain.SearchRepositoryTest;
+import botobo.core.domain.FilterRepositoryTest;
+import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +75,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     void findAllTagsIn() {
         // when
         List<Tag> tags = tagSearchRepository.findAllTagContaining("Java");
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining("자바");
 
         // then
         assertThat(tags).hasSize(2);
@@ -82,7 +85,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공, 비공개 문제집에 포함된 태그는 포함되지 않는다.")
     void findAllTagsWhenIncludeInPrivateWorkbook() {
         // when
-        List<Tag> tags = tagSearchRepository.findAllTagContaining("private");
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining("private");
 
         // then
         assertThat(tags).isEmpty();
@@ -92,7 +95,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공, 카드가 0개인 문제집은 포함되지 않는다.")
     void findAllTagsWhenEmptyCards() {
         // when
-        List<Tag> tags = tagSearchRepository.findAllTagContaining("empty");
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining("empty");
 
         // then
         assertThat(tags).isEmpty();
@@ -102,7 +105,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - keyword가 null인 경우 빈 리스트를 응답한다.")
     void findAllTagsContainingWhenKeywordIsNull() {
         // when
-        List<Tag> tags = tagSearchRepository.findAllTagContaining(null);
+        List<TagDto> tags = tagSearchRepository.findAllTagContaining(null);
 
         // then
         assertThat(tags).isEmpty();

@@ -5,6 +5,7 @@ import botobo.core.ui.search.SearchKeyword;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,6 +24,8 @@ import static botobo.core.domain.tag.QTag.tag;
 import static botobo.core.domain.user.QUser.user;
 import static botobo.core.domain.workbook.QWorkbook.workbook;
 import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 
 @RequiredArgsConstructor
@@ -30,6 +33,27 @@ import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 public class WorkbookSearchRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public DownloadWorkbooks findAllDownloadWorkbooksByUserId(Long userId) {
+        List<DownloadWorkbook> downloadWorkbooks = jpaQueryFactory.from(workbook)
+                .innerJoin(card)
+                .on(workbook.id.eq(card.workbook.id))
+                .distinct()
+                .where(equalsUserId(userId))
+                .transform(groupBy(workbook.id)
+                        .list(Projections.constructor(
+                                DownloadWorkbook.class,
+                                workbook.name,
+                                list(Projections.constructor(DownloadCard.class, card.question, card.answer))
+                        ))
+                );
+
+        return new DownloadWorkbooks(downloadWorkbooks);
+    }
+
+    private BooleanExpression equalsUserId(Long userId) {
+        return workbook.user.id.eq(userId);
+    }
 
     public Page<Workbook> searchAll(WorkbookSearchParameter parameter,
                                     List<Long> tags,

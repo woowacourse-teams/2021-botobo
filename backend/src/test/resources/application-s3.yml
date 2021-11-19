@@ -6,5 +6,58 @@ spring:
     enabled: false
 
 aws:
+  cloudfront:
+    file:
+        url-format: http://localhost:8080/%s
+    image:
+        url-format: http://localhost:8080/%s
   s3:
-    bucket: s3-test-storage
+    file:
+        bucket: s3-test-storage
+    image:
+        bucket: s3-test-storage
+  user-default-image: botobo-default-profile.png
+
+security:
+  jwt:
+    access-token:
+      secret-key: testaccesskey
+      expire-length: 3600000
+    refresh-token:
+      secret-key: testrefreshkey
+      expire-length: 604800000
+
+github:
+  client:
+    id: githubId
+    secret: githubSecret
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com/user
+
+google:
+  client:
+    id: googleId
+    secret: googleSecret
+    redirect-uri: googleRedirectUri
+    grant-type: authorization_code
+  url:
+    access-token: https://oauth2.googleapis.com/token
+    profile: https://openidconnect.googleapis.com/v1/userinfo
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error
+
