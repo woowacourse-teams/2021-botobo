@@ -13,7 +13,6 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.domain.workbooktag.WorkbookTagRepository;
 import botobo.core.utils.UserFactory;
-import botobo.core.utils.WorkbookFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
