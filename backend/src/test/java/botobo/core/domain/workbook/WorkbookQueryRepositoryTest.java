@@ -23,11 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
-@Import({WorkbookSearchRepository.class, QuerydslConfig.class})
-class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
+@Import({WorkbookQueryRepository.class, QuerydslConfig.class})
+class WorkbookQueryRepositoryTest extends SearchRepositoryTest {
 
     @Autowired
-    private WorkbookSearchRepository workbookSearchRepository;
+    private WorkbookQueryRepository workbookQueryRepository;
 
     @Test
     @DisplayName("검색어를 입력하면 문제집 이름 또는 태그에서 검색어가 포함된 것들을 가져온다. - 성공, 문제집 명에 포함")
@@ -38,7 +38,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -56,7 +56,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
 
@@ -83,7 +83,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(
                 parameter,
                 List.of(javaTag.getId()),
                 null,
@@ -108,7 +108,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(
                 parameter,
                 null,
                 List.of(bear.getId()),
@@ -133,7 +133,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(
                 parameter,
                 List.of(javaTag.getId()),
                 Arrays.asList(bear.getId(), oz.getId()),
@@ -161,7 +161,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -181,7 +181,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -201,7 +201,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -221,7 +221,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -245,7 +245,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -261,7 +261,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
                 .build();
 
         // when
-        Page<Workbook> workbooks = workbookSearchRepository.searchAll(parameter, null, null, parameter.toPageRequest());
+        Page<Workbook> workbooks = workbookQueryRepository.searchAll(parameter, null, null, parameter.toPageRequest());
         List<Workbook> workbookList = workbooks.toList();
 
         // then
@@ -273,7 +273,7 @@ class WorkbookSearchRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllDownloadWorkbooksByUserId() {
         // given
-        DownloadWorkbooks downloadWorkbooks = workbookSearchRepository.findAllDownloadWorkbooksByUserId(bear.getId());
+        DownloadWorkbooks downloadWorkbooks = workbookQueryRepository.findAllDownloadWorkbooksByUserId(bear.getId());
 
         // when - then
         // 카드가 없는 문제집 1개 제외

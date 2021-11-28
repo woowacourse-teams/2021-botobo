@@ -5,7 +5,7 @@ import botobo.core.domain.card.Cards;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookSearchRepository;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.ui.search.WorkbookSearchParameter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ class WorkbookRankServiceTest {
     CacheManager cacheManager;
 
     @MockBean
-    private WorkbookSearchRepository workbookSearchRepository;
+    private WorkbookQueryRepository workbookQueryRepository;
 
     @Autowired
     private WorkbookRankService workbookRankService;
@@ -71,7 +71,7 @@ class WorkbookRankServiceTest {
     @DisplayName("인기 문제집 세 개를 가지고 온다 - 성공, 캐싱된 정보가 있으면 DB 조회를 하지 않고 캐싱된 것을 가지고 온다")
     void findWorkbookRanks() {
         // given
-        given(workbookSearchRepository.searchAll(
+        given(workbookQueryRepository.searchAll(
                 any(WorkbookSearchParameter.class)
         )).willReturn(List.of(emptyWorkbook, workbookWithTags, workbookWithCards));
 
@@ -81,7 +81,7 @@ class WorkbookRankServiceTest {
         workbookRankService.findWorkbookRanks();
 
         // then
-        then(workbookSearchRepository).should(times(1)).searchAll(
+        then(workbookQueryRepository).should(times(1)).searchAll(
                 any(WorkbookSearchParameter.class)
         );
     }
@@ -90,7 +90,7 @@ class WorkbookRankServiceTest {
     @DisplayName("캐싱된 인기 문제집 제거 - 성공")
     void removeWorkbookRanksCache() {
         // given
-        given(workbookSearchRepository.searchAll(
+        given(workbookQueryRepository.searchAll(
                 any(WorkbookSearchParameter.class)
         )).willReturn(List.of(emptyWorkbook, workbookWithTags, workbookWithCards));
         workbookRankService.findWorkbookRanks();
@@ -100,7 +100,7 @@ class WorkbookRankServiceTest {
 
         // then
         workbookRankService.findWorkbookRanks();
-        then(workbookSearchRepository).should(times(2)).searchAll(
+        then(workbookQueryRepository).should(times(2)).searchAll(
                 any(WorkbookSearchParameter.class)
         );
     }

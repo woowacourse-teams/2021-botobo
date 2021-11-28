@@ -18,7 +18,7 @@ import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
 @Repository
-public class UserFilterRepository {
+public class UserQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

@@ -1,10 +1,10 @@
 package botobo.core.application;
 
 import botobo.core.application.rank.SearchRankService;
-import botobo.core.domain.tag.TagSearchRepository;
+import botobo.core.domain.tag.TagQueryRepository;
 import botobo.core.domain.tag.dto.TagDto;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookSearchRepository;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.ui.search.SearchRelated;
 import botobo.core.ui.search.WorkbookSearchParameter;
@@ -36,10 +36,10 @@ import static org.mockito.Mockito.times;
 class SearchServiceTest {
 
     @Mock
-    private TagSearchRepository tagRepository;
+    private TagQueryRepository tagRepository;
 
     @Mock
-    private WorkbookSearchRepository workbookSearchRepository;
+    private WorkbookQueryRepository workbookQueryRepository;
 
     @Mock
     private SearchRankService searchRankService;
@@ -116,7 +116,7 @@ class SearchServiceTest {
 
         Page<Workbook> mockPage = mock(Page.class);
         given(mockPage.toList()).willReturn(Collections.emptyList());
-        given(workbookSearchRepository.searchAll(
+        given(workbookQueryRepository.searchAll(
                 any(WorkbookSearchParameter.class), anyList(), anyList(), eq(pageRequest))
         ).willReturn(mockPage);
 
@@ -139,7 +139,7 @@ class SearchServiceTest {
 
         Page<Workbook> mockPage = mock(Page.class);
         given(mockPage.toList()).willReturn(Collections.emptyList());
-        given(workbookSearchRepository.searchAll(
+        given(workbookQueryRepository.searchAll(
                 any(WorkbookSearchParameter.class), anyList(), anyList(), eq(pageRequest))
         ).willReturn(mockPage);
 

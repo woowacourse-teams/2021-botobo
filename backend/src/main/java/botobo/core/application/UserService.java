@@ -2,7 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
-import botobo.core.domain.user.UserFilterRepository;
+import botobo.core.domain.user.UserQueryRepository;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
@@ -26,15 +26,15 @@ import static java.util.Collections.emptyList;
 @Transactional(readOnly = true)
 public class UserService {
 
-    private final UserFilterRepository userFilterRepository;
+    private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
     private final FileUploader imageS3Uploader;
 
-    public UserService(UserFilterRepository userFilterRepository,
+    public UserService(UserQueryRepository userQueryRepository,
                        UserRepository userRepository,
                        FileUploader imageS3Uploader
     ) {
-        this.userFilterRepository = userFilterRepository;
+        this.userQueryRepository = userQueryRepository;
         this.userRepository = userRepository;
         this.imageS3Uploader = imageS3Uploader;
     }
@@ -89,7 +89,7 @@ public class UserService {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());
         }
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         return UserFilterResponse.listOf(users);
     }
 }

@@ -30,7 +30,7 @@ import static com.querydsl.core.group.GroupBy.list;
 
 @RequiredArgsConstructor
 @Repository
-public class WorkbookSearchRepository {
+public class WorkbookQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

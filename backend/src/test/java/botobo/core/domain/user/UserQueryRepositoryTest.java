@@ -11,17 +11,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import({UserFilterRepository.class, QuerydslConfig.class})
-class UserFilterRepositoryTest extends SearchRepositoryTest {
+@Import({UserQueryRepository.class, QuerydslConfig.class})
+class UserQueryRepositoryTest extends SearchRepositoryTest {
 
     @Autowired
-    private UserFilterRepository userFilterRepository;
+    private UserQueryRepository userQueryRepository;
 
     @DisplayName("문제집명을 포함한 문제집의 유저를 모두 가져온다. - 성공, 영어는 대소문자를 구분하지 않는다.")
     @Test
     void findAllByContainsWorkbookNameWhenEng() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("java");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("java");
 
         // then
         assertThat(users).hasSize(2);
@@ -31,7 +31,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByContainsWorkbookNameWhenEmptyResult() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("바보");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("바보");
 
         // then
         assertThat(users).isEmpty();
@@ -41,7 +41,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByContainsKoreanWorkbookName() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("문제집");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("문제집");
 
         // then
         assertThat(users).hasSize(2);
@@ -51,7 +51,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByContainsWorkbookNameWhenCardsEmpty() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("없다");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("없다");
 
         // then
         assertThat(users).isEmpty();
@@ -61,7 +61,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByContainsWorkbookNameWhenOpened() {
         // when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("비공개");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("비공개");
 
         // then
         assertThat(users).isEmpty();
@@ -72,7 +72,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNameNull() {
         // given, when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName(null);
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName(null);
 
         // then
         assertThat(users).isEmpty();
@@ -82,7 +82,7 @@ class UserFilterRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNameEqualsTagName() {
         // given, when
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName("Javascript");
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName("Javascript");
 
         // then
         assertThat(users).hasSize(1);

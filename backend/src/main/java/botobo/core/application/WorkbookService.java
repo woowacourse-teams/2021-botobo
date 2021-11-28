@@ -11,7 +11,7 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.DownloadWorkbooks;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.domain.workbook.WorkbookRepository;
-import botobo.core.domain.workbook.WorkbookSearchRepository;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
 import botobo.core.dto.workbook.WorkbookCardResponse;
@@ -38,21 +38,21 @@ import java.util.stream.Collectors;
 public class WorkbookService {
 
     private final WorkbookRepository workbookRepository;
-    private final WorkbookSearchRepository workbookSearchRepository;
+    private final WorkbookQueryRepository workbookQueryRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
     private final FileUploader fileS3Uploader;
     private final UserRepository userRepository;
 
     public WorkbookService(WorkbookRepository workbookRepository,
-                           WorkbookSearchRepository workbookSearchRepository,
+                           WorkbookQueryRepository workbookQueryRepository,
                            CardRepository cardRepository,
                            TagService tagService,
                            FileUploader fileS3Uploader,
                            UserRepository userRepository
     ) {
         this.workbookRepository = workbookRepository;
-        this.workbookSearchRepository = workbookSearchRepository;
+        this.workbookQueryRepository = workbookQueryRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
         this.fileS3Uploader = fileS3Uploader;
@@ -173,7 +173,7 @@ public class WorkbookService {
     public String downloadWorkbooks(AppUser appUser) {
         User user = findUser(appUser);
         DownloadWorkbooks downloadWorkbooks
-                = workbookSearchRepository.findAllDownloadWorkbooksByUserId(user.getId());
+                = workbookQueryRepository.findAllDownloadWorkbooksByUserId(user.getId());
         File file = downloadWorkbooks.toTextFile();
         String uploadFileUrl = fileS3Uploader.upload(file, user);
         if (!file.delete()) {
