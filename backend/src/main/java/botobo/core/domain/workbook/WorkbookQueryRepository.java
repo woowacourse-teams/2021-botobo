@@ -7,6 +7,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -39,7 +40,7 @@ public class WorkbookQueryRepository {
         return jpaQueryFactory.selectFrom(workbook)
                 .innerJoin(workbook.cards.cards, card).fetchJoin()
                 .where(openedTrue())
-                .orderBy(NumberExpression.random().asc())
+                .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
                 .groupBy(workbook.id)
                 .limit(100)
                 .fetch();
