@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,8 +18,8 @@ class DownloadWorkbooksTest {
         DownloadWorkbooks downloadWorkbooks = new DownloadWorkbooks(
                 Arrays.asList(
                         new DownloadWorkbook(
-                                "조앤의 문제집" ,
-                                Arrays.asList(new DownloadCard("뭐 먹어?", "미역국1"))
+                                "조앤의 문제집",
+                                List.of(new DownloadCard("뭐 먹어?", "미역국1"))
                         ),
                         new DownloadWorkbook(
                                 "피케이 문제집",

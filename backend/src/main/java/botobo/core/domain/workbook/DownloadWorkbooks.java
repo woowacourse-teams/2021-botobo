@@ -29,7 +29,7 @@ public class DownloadWorkbooks {
 
     private String getFilePath() {
         return LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE)
-                + "_" + UUID.randomUUID();
+                + "_" + UUID.randomUUID() + ".txt";
     }
 
     private String downloadWorkbookToString() {

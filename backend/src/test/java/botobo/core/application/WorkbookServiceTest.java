@@ -161,11 +161,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(true)
@@ -174,7 +174,7 @@ class WorkbookServiceTest {
         Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
         workbook.toggleHeart(heart);
 
-        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
 
         // when
         WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, normalUser.toAppUser());
@@ -196,11 +196,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(true)
@@ -209,7 +209,7 @@ class WorkbookServiceTest {
         Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
         workbook.toggleHeart(heart);
 
-        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
 
         // when
         WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, AppUser.anonymous());
@@ -231,11 +231,11 @@ class WorkbookServiceTest {
                 .id(1L)
                 .name("피케이의 공유 문제집")
                 .cards(new Cards(List.of(
-                        Card.builder()
-                                .id(1L)
-                                .question("question")
-                                .answer("answer")
-                                .build())
+                                Card.builder()
+                                        .id(1L)
+                                        .question("question")
+                                        .answer("answer")
+                                        .build())
                         )
                 )
                 .opened(false)

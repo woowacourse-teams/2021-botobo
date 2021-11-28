@@ -3,7 +3,6 @@ package botobo.core.infrastructure.s3;
 import botobo.core.domain.user.User;
 import botobo.core.exception.user.s3.S3UploadFailedException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
