@@ -9,7 +9,7 @@ public class TagDto {
     private Long id;
     private String name;
 
-    public static TagDto of (Long id, String name) {
+    public static TagDto of(Long id, String name) {
         return new TagDto(id, name);
     }
 

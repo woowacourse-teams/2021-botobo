@@ -3,7 +3,6 @@ package botobo.core.application;
 import botobo.core.domain.token.RefreshToken;
 import botobo.core.domain.token.RefreshTokenRepository;
 import botobo.core.domain.user.AppUser;
-import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;

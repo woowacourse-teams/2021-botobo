@@ -6,7 +6,6 @@ import botobo.core.domain.workbook.DownloadCard;
 import botobo.core.domain.workbook.DownloadWorkbook;
 import botobo.core.domain.workbook.DownloadWorkbooks;
 import botobo.core.infrastructure.s3.FileS3Uploader;
-import botobo.core.infrastructure.s3.ImageS3Uploader;
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -16,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,8 +48,8 @@ class FileS3UploaderTest {
         downloadWorkbooks = new DownloadWorkbooks(
                 Arrays.asList(
                         new DownloadWorkbook(
-                                "조앤의 문제집" ,
-                                Arrays.asList(new DownloadCard("뭐 먹어?", "미역국1"))
+                                "조앤의 문제집",
+                                List.of(new DownloadCard("뭐 먹어?", "미역국1"))
                         ),
                         new DownloadWorkbook(
                                 "피케이 문제집",

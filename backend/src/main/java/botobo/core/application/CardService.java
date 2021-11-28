@@ -12,7 +12,6 @@ import botobo.core.dto.card.CardResponse;
 import botobo.core.dto.card.CardUpdateRequest;
 import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
-import botobo.core.dto.user.UserNameValidator;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;

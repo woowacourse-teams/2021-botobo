@@ -1,7 +1,6 @@
 package botobo.core.application;
 
 import botobo.core.application.rank.SearchRankService;
-import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.tag.dto.TagDto;
