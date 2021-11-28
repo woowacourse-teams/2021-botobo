@@ -166,7 +166,7 @@ public class WorkbookService {
     }
 
     public List<WorkbookResponse> findPublicWorkbooks() {
-        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
+        List<Workbook> workbooks = workbookQueryRepository.findRandomPublicWorkbooks();
         return WorkbookResponse.openedListOf(workbooks);
     }
 

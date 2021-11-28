@@ -1,7 +1,7 @@
 package botobo.core.domain.workbook;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.SearchRepositoryTest;
+import botobo.core.domain.QueryRepositoryTest;
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagName;
 import botobo.core.domain.tag.Tags;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest(showSql = false)
 @ActiveProfiles("test")
 @Import({WorkbookQueryRepository.class, QuerydslConfig.class})
-class WorkbookQueryRepositoryTest extends SearchRepositoryTest {
+class WorkbookQueryRepositoryTest extends QueryRepositoryTest {
 
     @Autowired
     private WorkbookQueryRepository workbookQueryRepository;

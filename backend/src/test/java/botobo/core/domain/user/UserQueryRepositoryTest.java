@@ -1,7 +1,7 @@
 package botobo.core.domain.user;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.SearchRepositoryTest;
+import botobo.core.domain.QueryRepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({UserQueryRepository.class, QuerydslConfig.class})
-class UserQueryRepositoryTest extends SearchRepositoryTest {
+class UserQueryRepositoryTest extends QueryRepositoryTest {
 
     @Autowired
     private UserQueryRepository userQueryRepository;

@@ -1,7 +1,7 @@
 package botobo.core.domain.tag;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.SearchRepositoryTest;
+import botobo.core.domain.QueryRepositoryTest;
 import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({TagQueryRepository.class, QuerydslConfig.class})
-class TagQueryRepositoryTest extends SearchRepositoryTest {
+class TagQueryRepositoryTest extends QueryRepositoryTest {
 
     @Autowired
     private TagQueryRepository tagQueryRepository;

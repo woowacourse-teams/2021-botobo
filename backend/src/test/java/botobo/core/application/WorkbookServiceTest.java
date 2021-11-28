@@ -11,6 +11,7 @@ import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
@@ -54,6 +55,9 @@ class WorkbookServiceTest {
 
     @Mock
     private WorkbookRepository workbookRepository;
+
+    @Mock
+    private WorkbookQueryRepository workbookQueryRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -820,7 +824,7 @@ class WorkbookServiceTest {
     @DisplayName("공개 문제집을 조회한다. - 성공")
     void findPublicWorkbooks() {
         // given
-        given(workbookRepository.findRandomPublicWorkbooks())
+        given(workbookQueryRepository.findRandomPublicWorkbooks())
                 .willReturn(workbooks);
 
         // when
@@ -828,7 +832,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(findWorkbooks).hasSize(4);
-        then(workbookRepository).should(times(1))
+        then(workbookQueryRepository).should(times(1))
                 .findRandomPublicWorkbooks();
     }
 
@@ -836,7 +840,7 @@ class WorkbookServiceTest {
     @DisplayName("공개 문제집을 조회한다. - 성공, 비공개가 있을 경우 공개만 조회한다.")
     void findPublicWorkbooksWhenHasPrivate() {
         // given
-        given(workbookRepository.findRandomPublicWorkbooks())
+        given(workbookQueryRepository.findRandomPublicWorkbooks())
                 .willReturn(new ArrayList<>(workbooks));
         workbooks.add(Workbook.builder()
                 .name("비공개지롱")
@@ -848,7 +852,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(findWorkbooks).hasSize(4);
-        then(workbookRepository).should(times(1))
+        then(workbookQueryRepository).should(times(1))
                 .findRandomPublicWorkbooks();
     }
 }

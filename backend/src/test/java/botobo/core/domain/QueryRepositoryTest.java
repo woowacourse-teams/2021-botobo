@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
-public class SearchRepositoryTest extends RepositoryTest {
+public class QueryRepositoryTest extends RepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -45,7 +45,7 @@ public class SearchRepositoryTest extends RepositoryTest {
         empty = Tag.of("empty");
 
         Tags tags1 = Tags.of(Arrays.asList(javaTag, joanneTag));
-        Tags tags2 = Tags.of(Arrays.asList(javascriptTag));
+        Tags tags2 = Tags.of(List.of(javascriptTag));
 
         List<Workbook> workbooks = List.of(
                 WorkbookFactory.workbook("Java 문제집0", bear, 1, true, tags1),
