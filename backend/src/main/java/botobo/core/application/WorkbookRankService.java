@@ -1,7 +1,7 @@
 package botobo.core.application;
 
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookSearchRepository;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchCriteria;
 import botobo.core.ui.search.SearchKeyword;
@@ -22,10 +22,10 @@ public class WorkbookRankService {
     private static final int START = 0;
     private static final int SIZE = 3;
 
-    private final WorkbookSearchRepository workbookSearchRepository;
+    private final WorkbookQueryRepository workbookQueryRepository;
 
-    public WorkbookRankService(WorkbookSearchRepository workbookSearchRepository) {
-        this.workbookSearchRepository = workbookSearchRepository;
+    public WorkbookRankService(WorkbookQueryRepository workbookQueryRepository) {
+        this.workbookQueryRepository = workbookQueryRepository;
     }
 
     @Cacheable("workbookRanks")
@@ -36,7 +36,7 @@ public class WorkbookRankService {
                 START,
                 SIZE
         );
-        List<Workbook> workbooks = workbookSearchRepository.searchAll(workbookSearchParameter);
+        List<Workbook> workbooks = workbookQueryRepository.searchAll(workbookSearchParameter);
         return WorkbookResponse.openedListOf(workbooks);
     }
 

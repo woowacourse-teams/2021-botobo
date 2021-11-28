@@ -7,6 +7,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,19 @@ import static com.querydsl.core.group.GroupBy.list;
 
 @RequiredArgsConstructor
 @Repository
-public class WorkbookSearchRepository {
+public class WorkbookQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public List<Workbook> findRandomPublicWorkbooks() {
+        return jpaQueryFactory.selectFrom(workbook)
+                .innerJoin(workbook.cards.cards, card).fetchJoin()
+                .where(openedTrue())
+                .orderBy(NumberExpression.random().asc())
+                .groupBy(workbook.id)
+                .limit(100)
+                .fetch();
+    }
 
     public DownloadWorkbooks findAllDownloadWorkbooksByUserId(Long userId) {
         List<DownloadWorkbook> downloadWorkbooks = jpaQueryFactory.from(workbook)

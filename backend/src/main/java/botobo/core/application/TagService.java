@@ -2,8 +2,8 @@ package botobo.core.application;
 
 import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.TagName;
+import botobo.core.domain.tag.TagQueryRepository;
 import botobo.core.domain.tag.TagRepository;
-import botobo.core.domain.tag.TagSearchRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.tag.TagRequest;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public class TagService {
 
     private final TagRepository tagRepository;
-    private final TagSearchRepository tagSearchRepository;
+    private final TagQueryRepository tagQueryRepository;
 
-    public TagService(TagRepository tagRepository, TagSearchRepository tagSearchRepository) {
+    public TagService(TagRepository tagRepository, TagQueryRepository tagQueryRepository) {
         this.tagRepository = tagRepository;
-        this.tagSearchRepository = tagSearchRepository;
+        this.tagQueryRepository = tagQueryRepository;
     }
 
     public Tags convertTags(List<TagRequest> tagRequests) {
@@ -44,7 +44,7 @@ public class TagService {
             return TagResponse.listOf(Tags.empty());
         }
 
-        List<Tag> findTags = tagSearchRepository.findAllByContainsWorkbookName(keyword);
+        List<Tag> findTags = tagQueryRepository.findAllByContainsWorkbookName(keyword);
         return TagResponse.listOf(Tags.of(findTags));
     }
 
