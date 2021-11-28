@@ -2,7 +2,7 @@ package botobo.core.application;
 
 import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.User;
-import botobo.core.domain.user.UserFilterRepository;
+import botobo.core.domain.user.UserQueryRepository;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.dto.tag.FilterCriteria;
 import botobo.core.dto.user.ProfileResponse;
@@ -11,34 +11,31 @@ import botobo.core.dto.user.UserNameRequest;
 import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.infrastructure.s3.FileUploader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
 @Service
 @Transactional(readOnly = true)
-public class UserService extends AbstractUserService {
+public class UserService {
 
-    private final UserFilterRepository userFilterRepository;
-
-//    @Qualifier("imageS3Uploader")
-//    @Autowired
+    private final UserQueryRepository userQueryRepository;
+    private final UserRepository userRepository;
     private final FileUploader imageS3Uploader;
 
-    public UserService(UserRepository userRepository,
-                       UserFilterRepository userFilterRepository,
-                       FileUploader imageS3Uploader) {
-        super(userRepository);
-        this.userFilterRepository = userFilterRepository;
+    public UserService(UserQueryRepository userQueryRepository,
+                       UserRepository userRepository,
+                       FileUploader imageS3Uploader
+    ) {
+        this.userQueryRepository = userQueryRepository;
+        this.userRepository = userRepository;
         this.imageS3Uploader = imageS3Uploader;
     }
 
@@ -55,7 +52,7 @@ public class UserService extends AbstractUserService {
     }
 
     @Transactional
-    public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) throws IOException {
+    public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
         String newProfileUrl = imageS3Uploader.upload(multipartFile, user);
@@ -66,6 +63,11 @@ public class UserService extends AbstractUserService {
         return ProfileResponse.builder()
                 .profileUrl(newProfileUrl)
                 .build();
+    }
+
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public void checkDuplicatedUserName(UserNameRequest userNameRequest, AppUser appUser) {
@@ -87,7 +89,7 @@ public class UserService extends AbstractUserService {
         if (filterCriteria.isEmpty()) {
             return UserFilterResponse.listOf(emptyList());
         }
-        List<User> users = userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
+        List<User> users = userQueryRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         return UserFilterResponse.listOf(users);
     }
 }

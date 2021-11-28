@@ -3,7 +3,6 @@ package botobo.core.infrastructure;
 import botobo.core.config.LocalStackS3Config;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
-import botobo.core.infrastructure.s3.FileUploader;
 import botobo.core.infrastructure.s3.ImageS3Uploader;
 import botobo.core.utils.FileFactory;
 import com.amazonaws.services.s3.AmazonS3;
@@ -108,7 +107,7 @@ class ImageS3UploaderTest {
 
     @Test
     @DisplayName("이미지를 제거한다. - 실패, 기본 이미지인 경우")
-    void deleteWhenPreviousFileIsDefault() throws IOException {
+    void deleteWhenPreviousFileIsDefault() {
         // given - when
         s3Uploader.deleteFromS3(String.format(cloudfrontUrlFormat, userDefaultImageName));
 

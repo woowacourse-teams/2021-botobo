@@ -1,12 +1,11 @@
 package botobo.core.application;
 
 import botobo.core.application.rank.SearchRankService;
-import botobo.core.domain.tag.Tag;
-import botobo.core.domain.tag.TagSearchRepository;
+import botobo.core.domain.tag.TagQueryRepository;
 import botobo.core.domain.tag.Tags;
 import botobo.core.domain.tag.dto.TagDto;
 import botobo.core.domain.workbook.Workbook;
-import botobo.core.domain.workbook.WorkbookSearchRepository;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.dto.tag.TagResponse;
 import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.ui.search.SearchRelated;
@@ -25,15 +24,15 @@ public class SearchService {
 
     private static final int SIZE_LIMIT = 10;
 
-    private final WorkbookSearchRepository workbookSearchRepository;
-    private final TagSearchRepository tagSearchRepository;
+    private final WorkbookQueryRepository workbookQueryRepository;
+    private final TagQueryRepository tagQueryRepository;
     private final SearchRankService searchRankService;
 
-    public SearchService(WorkbookSearchRepository workbookSearchRepository, TagSearchRepository tagSearchRepository,
+    public SearchService(WorkbookQueryRepository workbookQueryRepository, TagQueryRepository tagQueryRepository,
                          SearchRankService searchRankService) {
 
-        this.workbookSearchRepository = workbookSearchRepository;
-        this.tagSearchRepository = tagSearchRepository;
+        this.workbookQueryRepository = workbookQueryRepository;
+        this.tagQueryRepository = tagQueryRepository;
         this.searchRankService = searchRankService;
     }
 
@@ -47,7 +46,7 @@ public class SearchService {
             String searchKeywordValue = workbookSearchParameter.getSearchKeyword().getValue();
             searchRankService.increaseScore(searchKeywordValue);
         }
-        Page<Workbook> page = workbookSearchRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
+        Page<Workbook> page = workbookQueryRepository.searchAll(workbookSearchParameter, tags, users, pageRequest);
         List<Workbook> workbooks = page.toList();
         return WorkbookResponse.openedListOf(workbooks);
     }
@@ -57,7 +56,7 @@ public class SearchService {
         if (target.isBlank()) {
             return TagResponse.listOf(Tags.empty());
         }
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining(target);
+        List<TagDto> tags = tagQueryRepository.findAllTagContaining(target);
         List<TagDto> sortedTags = SimilarityChecker.orderBySimilarity(target, tags, SIZE_LIMIT);
         return TagResponse.listOf(sortedTags);
     }

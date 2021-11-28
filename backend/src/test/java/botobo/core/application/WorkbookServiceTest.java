@@ -11,6 +11,7 @@ import botobo.core.domain.user.Role;
 import botobo.core.domain.user.User;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
+import botobo.core.domain.workbook.WorkbookQueryRepository;
 import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.ScrapCardRequest;
 import botobo.core.dto.heart.HeartResponse;
@@ -54,6 +55,9 @@ class WorkbookServiceTest {
 
     @Mock
     private WorkbookRepository workbookRepository;
+
+    @Mock
+    private WorkbookQueryRepository workbookQueryRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -174,7 +178,7 @@ class WorkbookServiceTest {
         Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
         workbook.toggleHeart(heart);
 
-        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
 
         // when
         WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, normalUser.toAppUser());
@@ -209,7 +213,7 @@ class WorkbookServiceTest {
         Heart heart = Heart.builder().workbook(workbook).userId(userId).build();
         workbook.toggleHeart(heart);
 
-        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.ofNullable(workbook));
+        given(workbookRepository.findByIdAndOrderCardByNew(anyLong())).willReturn(Optional.of(workbook));
 
         // when
         WorkbookCardResponse response = workbookService.findPublicWorkbookById(1L, AppUser.anonymous());
@@ -526,7 +530,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -567,7 +571,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L, 1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -608,7 +612,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
         given(workbookRepository.findById(anyLong())).willThrow(WorkbookNotFoundException.class);
@@ -635,7 +639,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1000L);
+        AppUser appUser = AppUser.user(1000L);
 
         given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
 
@@ -661,7 +665,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L, 2L, 3L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -708,7 +712,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(100L, 101L, 102L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -743,7 +747,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -820,7 +824,7 @@ class WorkbookServiceTest {
     @DisplayName("공개 문제집을 조회한다. - 성공")
     void findPublicWorkbooks() {
         // given
-        given(workbookRepository.findRandomPublicWorkbooks())
+        given(workbookQueryRepository.findRandomPublicWorkbooks())
                 .willReturn(workbooks);
 
         // when
@@ -828,7 +832,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(findWorkbooks).hasSize(4);
-        then(workbookRepository).should(times(1))
+        then(workbookQueryRepository).should(times(1))
                 .findRandomPublicWorkbooks();
     }
 
@@ -836,7 +840,7 @@ class WorkbookServiceTest {
     @DisplayName("공개 문제집을 조회한다. - 성공, 비공개가 있을 경우 공개만 조회한다.")
     void findPublicWorkbooksWhenHasPrivate() {
         // given
-        given(workbookRepository.findRandomPublicWorkbooks())
+        given(workbookQueryRepository.findRandomPublicWorkbooks())
                 .willReturn(new ArrayList<>(workbooks));
         workbooks.add(Workbook.builder()
                 .name("비공개지롱")
@@ -848,7 +852,7 @@ class WorkbookServiceTest {
 
         // then
         assertThat(findWorkbooks).hasSize(4);
-        then(workbookRepository).should(times(1))
+        then(workbookQueryRepository).should(times(1))
                 .findRandomPublicWorkbooks();
     }
 }

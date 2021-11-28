@@ -1,7 +1,7 @@
 package botobo.core.domain.tag;
 
 import botobo.core.config.QuerydslConfig;
-import botobo.core.domain.SearchRepositoryTest;
+import botobo.core.domain.QueryRepositoryTest;
 import botobo.core.domain.tag.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,17 +12,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import({TagSearchRepository.class, QuerydslConfig.class})
-class TagSearchRepositoryTest extends SearchRepositoryTest {
+@Import({TagQueryRepository.class, QuerydslConfig.class})
+class TagQueryRepositoryTest extends QueryRepositoryTest {
 
     @Autowired
-    private TagSearchRepository tagSearchRepository;
+    private TagQueryRepository tagQueryRepository;
 
     @DisplayName("문제집명을 포함하고 태그명이 문제집명과 일치하는 문제집의 태그를 모두 가져온다. - 성공")
     @Test
     void findAllByWorkbookName() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("Java");
+        List<Tag> tags = tagQueryRepository.findAllByContainsWorkbookName("Java");
 
         // then
         assertThat(tags).hasSize(3);
@@ -35,7 +35,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNameWithCardZero() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("카드가 없다");
+        List<Tag> tags = tagQueryRepository.findAllByContainsWorkbookName("카드가 없다");
 
         // then
         assertThat(tags).isEmpty();
@@ -45,7 +45,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNamePrivateWorkbook() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("비공개");
+        List<Tag> tags = tagQueryRepository.findAllByContainsWorkbookName("비공개");
 
         // then
         assertThat(tags).isEmpty();
@@ -55,7 +55,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNameEmpty() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName("babo");
+        List<Tag> tags = tagQueryRepository.findAllByContainsWorkbookName("babo");
         // then
         assertThat(tags).isEmpty();
     }
@@ -64,7 +64,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @Test
     void findAllByWorkbookNameNull() {
         // given, when
-        List<Tag> tags = tagSearchRepository.findAllByContainsWorkbookName(null);
+        List<Tag> tags = tagQueryRepository.findAllByContainsWorkbookName(null);
         // then
         assertThat(tags).isEmpty();
     }
@@ -73,7 +73,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공")
     void findAllTagsIn() {
         // when
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining("Java");
+        List<TagDto> tags = tagQueryRepository.findAllTagContaining("Java");
 
         // then
         assertThat(tags).hasSize(2);
@@ -83,7 +83,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공, 비공개 문제집에 포함된 태그는 포함되지 않는다.")
     void findAllTagsWhenIncludeInPrivateWorkbook() {
         // when
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining("private");
+        List<TagDto> tags = tagQueryRepository.findAllTagContaining("private");
 
         // then
         assertThat(tags).isEmpty();
@@ -93,7 +93,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - 성공, 카드가 0개인 문제집은 포함되지 않는다.")
     void findAllTagsWhenEmptyCards() {
         // when
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining("empty");
+        List<TagDto> tags = tagQueryRepository.findAllTagContaining("empty");
 
         // then
         assertThat(tags).isEmpty();
@@ -103,7 +103,7 @@ class TagSearchRepositoryTest extends SearchRepositoryTest {
     @DisplayName("keyword에 포함된 태그 조회 - keyword가 null인 경우 빈 리스트를 응답한다.")
     void findAllTagsContainingWhenKeywordIsNull() {
         // when
-        List<TagDto> tags = tagSearchRepository.findAllTagContaining(null);
+        List<TagDto> tags = tagQueryRepository.findAllTagContaining(null);
 
         // then
         assertThat(tags).isEmpty();

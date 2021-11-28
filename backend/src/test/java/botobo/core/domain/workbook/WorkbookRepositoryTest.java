@@ -13,7 +13,6 @@ import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbooktag.WorkbookTag;
 import botobo.core.domain.workbooktag.WorkbookTagRepository;
 import botobo.core.utils.UserFactory;
-import botobo.core.utils.WorkbookFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WorkbookRepositoryTest extends RepositoryTest {
 
@@ -124,6 +124,7 @@ class WorkbookRepositoryTest extends RepositoryTest {
         Optional<Workbook> findWorkbook = workbookRepository.findByIdAndOrderCardByNew(workbook.getId());
 
         // then
+        assertTrue(findWorkbook.isPresent());
         List<Card> cards = findWorkbook.get().getCards().getCards();
         assertThat(cards).hasSize(2)
                 .containsExactly(secondCard, firstCard);
@@ -294,7 +295,9 @@ class WorkbookRepositoryTest extends RepositoryTest {
 
         flushAndClear();
 
-        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        Optional<Workbook> optionalWorkbook = workbookRepository.findById(workbook.getId());
+        assertTrue(optionalWorkbook.isPresent());
+        Workbook savedWorkbook = optionalWorkbook.get();
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
 
         // when
@@ -322,7 +325,9 @@ class WorkbookRepositoryTest extends RepositoryTest {
 
         flushAndClear();
 
-        Workbook savedWorkbook = workbookRepository.findById(workbook.getId()).get();
+        Optional<Workbook> optionalWorkbook = workbookRepository.findById(workbook.getId());
+        assertTrue(optionalWorkbook.isPresent());
+        Workbook savedWorkbook = optionalWorkbook.get();
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(1);
 
         // when
@@ -330,90 +335,6 @@ class WorkbookRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(savedWorkbook.getHearts().getHearts()).hasSize(0);
-    }
-
-    @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
-    void findRandomPublicWorkbooks() {
-        // given
-        saveWorkbooksWithOpenedSize(101, 0);
-
-        // when
-        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
-
-        // then
-        assertThat(workbooks).hasSize(100);
-    }
-
-    @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 비공개 문제집은 조회하지 않는다.")
-    void findRandomPublicWorkbooksIncludePrivate() {
-        // given
-        saveWorkbooksWithOpenedSize(90, 10);
-
-        // when
-        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
-
-        // then
-        assertThat(workbooks).hasSize(90);
-    }
-
-    @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공")
-    void findRandomPublicWorkbooksIncludeNonZero() {
-        // given
-        saveWorkbooksWithCard(100, 0);
-
-        // when
-        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
-
-        // then
-        assertThat(workbooks).hasSize(100);
-        for (Workbook workbook : workbooks) {
-            assertThat(workbook.cardCount()).isPositive();
-        }
-    }
-
-    @Test
-    @DisplayName("공개 문제집을 랜덤하게 100개 조회한다. - 성공, 카드의 개수가 0개인 문제집은 조회하지 않는다.")
-    void findRandomPublicWorkbooksIncludeNonZero2() {
-        // given
-        saveWorkbooksWithCard(90, 10);
-
-        // when
-        List<Workbook> workbooks = workbookRepository.findRandomPublicWorkbooks();
-
-        // then
-        assertThat(workbooks).hasSize(90);
-        for (Workbook workbook : workbooks) {
-            assertThat(workbook.cardCount()).isPositive();
-        }
-    }
-
-    private void saveWorkbooksWithOpenedSize(int publicSize, int privateSize) {
-        for (int i = 0; i < publicSize; i++) {
-            workbookRepository.save(
-                    WorkbookFactory.workbook("Java 문제집" + i, user, 1, true, Tags.empty())
-            );
-        }
-        for (int i = 0; i < privateSize; i++) {
-            workbookRepository.save(
-                    WorkbookFactory.workbook("Java 문제집" + i, user, 1, false, Tags.empty())
-            );
-        }
-    }
-
-    private void saveWorkbooksWithCard(int includeCardWorkbookSize, int excludeCardWorkbookSize) {
-        for (int i = 0; i < includeCardWorkbookSize; i++) {
-            workbookRepository.save(
-                    WorkbookFactory.workbook("Java 문제집" + i, user, 1, true, Tags.empty())
-            );
-        }
-        for (int i = 0; i < excludeCardWorkbookSize; i++) {
-            workbookRepository.save(
-                    WorkbookFactory.workbook("Java 문제집" + i, user, 0, true, Tags.empty())
-            );
-        }
     }
 
     private void flushAndClear() {

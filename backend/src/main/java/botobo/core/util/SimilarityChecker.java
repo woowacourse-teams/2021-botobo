@@ -1,6 +1,5 @@
 package botobo.core.util;
 
-import botobo.core.domain.tag.Tag;
 import botobo.core.domain.tag.dto.TagDto;
 
 import java.util.ArrayList;

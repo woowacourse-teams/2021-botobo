@@ -6,7 +6,7 @@ import botobo.core.domain.user.AppUser;
 import botobo.core.domain.user.Role;
 import botobo.core.domain.user.SocialType;
 import botobo.core.domain.user.User;
-import botobo.core.domain.user.UserFilterRepository;
+import botobo.core.domain.user.UserQueryRepository;
 import botobo.core.domain.user.UserRepository;
 import botobo.core.domain.workbook.Workbook;
 import botobo.core.dto.tag.FilterCriteria;
@@ -59,7 +59,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @MockBean
-    private UserFilterRepository userFilterRepository;
+    private UserQueryRepository userQueryRepository;
 
     @MockBean
     private FileUploader s3Uploader;
@@ -363,7 +363,7 @@ class UserServiceTest {
 
         // then
         assertThat(responses).isEmpty();
-        then(userFilterRepository)
+        then(userQueryRepository)
                 .should(never())
                 .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         clearCache();
@@ -374,7 +374,7 @@ class UserServiceTest {
     void findAllUsersByWorkbookName() {
         // given
         FilterCriteria filterCriteria = new FilterCriteria("자바");
-        given(userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
+        given(userQueryRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
                 .willReturn(List.of(userHasCard, user1, user2));
 
         // when
@@ -382,7 +382,7 @@ class UserServiceTest {
 
         // then
         assertThat(responses).hasSize(3);
-        then(userFilterRepository)
+        then(userQueryRepository)
                 .should(times(1))
                 .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         clearCache();
@@ -393,7 +393,7 @@ class UserServiceTest {
     void findAllUsersByWorkbookNameCache() {
         // given
         FilterCriteria filterCriteria = new FilterCriteria("자바");
-        given(userFilterRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
+        given(userQueryRepository.findAllByContainsWorkbookName(filterCriteria.getWorkbook()))
                 .willReturn(List.of(userHasCard, user1, user2));
 
         // when
@@ -403,7 +403,7 @@ class UserServiceTest {
 
         // then
         assertThat(responses).hasSize(3);
-        then(userFilterRepository)
+        then(userQueryRepository)
                 .should(times(1))
                 .findAllByContainsWorkbookName(filterCriteria.getWorkbook());
         clearCache();

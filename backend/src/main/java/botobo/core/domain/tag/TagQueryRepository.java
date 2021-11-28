@@ -21,7 +21,7 @@ import static botobo.core.domain.workbooktag.QWorkbookTag.workbookTag;
 
 @RequiredArgsConstructor
 @Repository
-public class TagSearchRepository {
+public class TagQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

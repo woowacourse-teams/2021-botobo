@@ -14,6 +14,7 @@ import botobo.core.dto.card.CardUpdateResponse;
 import botobo.core.dto.card.NextQuizCardsRequest;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +23,16 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class CardService extends AbstractUserService {
+public class CardService {
 
     private final CardRepository cardRepository;
     private final WorkbookRepository workbookRepository;
+    private final UserRepository userRepository;
 
     public CardService(CardRepository cardRepository, WorkbookRepository workbookRepository, UserRepository userRepository) {
-        super(userRepository);
         this.cardRepository = cardRepository;
         this.workbookRepository = workbookRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -91,5 +93,10 @@ public class CardService extends AbstractUserService {
 
     private boolean isAuthorOfCards(User user, List<Card> cards) {
         return cards.stream().allMatch(card -> card.isAuthorOf(user));
+    }
+
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
     }
 }

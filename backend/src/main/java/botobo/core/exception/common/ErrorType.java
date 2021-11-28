@@ -3,7 +3,6 @@ package botobo.core.exception.common;
 import botobo.core.exception.BotoboException;
 import botobo.core.exception.ExternalException;
 import botobo.core.exception.auth.AccessTokenRenewalException;
-import botobo.core.exception.auth.NotAdminException;
 import botobo.core.exception.auth.OauthApiFailedException;
 import botobo.core.exception.auth.TokenExpirationException;
 import botobo.core.exception.auth.TokenNotValidException;
@@ -52,7 +51,6 @@ public enum ErrorType {
     A003("A003", "작성자가 아니므로 권한이 없습니다.", NotAuthorException.class),
     A004("A004", "AccessToken을 받아오는데 실패했습니다.", OauthApiFailedException.class),
     A005("A005", "유저정보를 불러오는데 실패했습니다.", UserProfileLoadFailedException.class),
-    A006("A006", "Admin 권한이 아니기에 접근할 수 없습니다.", NotAdminException.class),
     A007("A007", "존재하지 않는 소셜 로그인 방식입니다.", SocialTypeNotFoundException.class),
     A008("A008", "액세스 토큰 재발급이 필요합니다.", AccessTokenRenewalException.class),
 
