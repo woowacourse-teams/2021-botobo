@@ -35,10 +35,8 @@ public class AppUserTest {
     void getIdExcludeAnonymousUser() {
         // given
         AppUser user = AppUser.user(1L);
-        AppUser admin = AppUser.admin(1L);
 
         // when, then
         assertThatCode(user::getId).doesNotThrowAnyException();
-        assertThatCode(admin::getId).doesNotThrowAnyException();
     }
 }

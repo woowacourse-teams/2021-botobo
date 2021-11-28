@@ -84,9 +84,6 @@ public class AuthService {
         }
         validateAccessToken(accessToken);
         Long userId = jwtTokenProvider.getIdFromPayLoad(accessToken, JwtTokenType.ACCESS_TOKEN);
-        if (userRepository.existsByIdAndRole(userId, Role.ADMIN)) {
-            return AppUser.admin(userId);
-        }
         return AppUser.user(userId);
     }
 

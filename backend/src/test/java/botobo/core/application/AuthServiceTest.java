@@ -270,38 +270,6 @@ class AuthServiceTest {
         then(refreshTokenRepository).should(times(0)).deleteById(id);
     }
 
-    @DisplayName("토큰으로 appUser를 찾는다. - 성공, 관리자가 아닌 경우")
-    @Test
-    void findAppUserByToken() {
-        // given
-        String credential = "credential";
-        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
-        given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.FALSE);
-
-        // when
-        AppUser appUser = authService.findAppUserByToken(credential);
-
-        // then
-        assertThat(appUser.getId()).isEqualTo(1L);
-        assertThat(appUser.getRole()).isEqualTo(Role.USER);
-    }
-
-    @DisplayName("토큰으로 appUser를 찾는다. - 성공, 관리자의 경우")
-    @Test
-    void findAppUserByTokenWhenAdmin() {
-        // given
-        String credential = "credential";
-        given(jwtTokenProvider.getIdFromPayLoad(credential, JwtTokenType.ACCESS_TOKEN)).willReturn(1L);
-        given(userRepository.existsByIdAndRole(1L, Role.ADMIN)).willReturn(Boolean.TRUE);
-
-        // when
-        AppUser appUser = authService.findAppUserByToken(credential);
-
-        // then
-        assertThat(appUser.getId()).isEqualTo(1L);
-        assertThat(appUser.getRole()).isEqualTo(Role.ADMIN);
-    }
-
     @DisplayName("토큰으로 appUser를 찾는다. - 토큰이 null인경우 익명의 유저 리턴")
     @Test
     void findAppUserByTokenWhenAnonymous() {

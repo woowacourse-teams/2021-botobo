@@ -30,8 +30,6 @@ public class UserService extends AbstractUserService {
 
     private final UserFilterRepository userFilterRepository;
 
-//    @Qualifier("imageS3Uploader")
-//    @Autowired
     private final FileUploader imageS3Uploader;
 
     public UserService(UserRepository userRepository,

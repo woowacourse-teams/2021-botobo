@@ -526,7 +526,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -567,7 +567,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L, 1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -608,7 +608,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
 
         given(userRepository.findById(appUser.getId())).willReturn(Optional.of(adminUser));
         given(workbookRepository.findById(anyLong())).willThrow(WorkbookNotFoundException.class);
@@ -635,7 +635,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1000L);
+        AppUser appUser = AppUser.user(1000L);
 
         given(userRepository.findById(appUser.getId())).willThrow(UserNotFoundException.class);
 
@@ -661,7 +661,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L, 2L, 3L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -708,7 +708,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(100L, 101L, 102L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")
@@ -743,7 +743,7 @@ class WorkbookServiceTest {
                         .cardIds(List.of(1L))
                         .build();
 
-        AppUser appUser = AppUser.admin(1L);
+        AppUser appUser = AppUser.user(1L);
         Workbook workbook = Workbook.builder()
                 .id(1L)
                 .name("조앤의 Java")

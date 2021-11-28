@@ -18,13 +18,6 @@ public class AppUser {
                 .build();
     }
 
-    public static AppUser admin(Long userId) {
-        return AppUser.builder()
-                .id(userId)
-                .role(Role.ADMIN)
-                .build();
-    }
-
     public static AppUser user(Long userId) {
         return AppUser.builder()
                 .id(userId)
