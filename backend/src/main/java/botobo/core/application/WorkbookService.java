@@ -20,45 +20,43 @@ import botobo.core.dto.workbook.WorkbookResponse;
 import botobo.core.dto.workbook.WorkbookUpdateRequest;
 import botobo.core.exception.card.CardNotFoundException;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import botobo.core.infrastructure.s3.FileUploader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @Slf4j
-public class WorkbookService extends AbstractUserService {
+public class WorkbookService {
 
     private final WorkbookRepository workbookRepository;
     private final WorkbookSearchRepository workbookSearchRepository;
     private final CardRepository cardRepository;
     private final TagService tagService;
     private final FileUploader fileS3Uploader;
+    private final UserRepository userRepository;
 
     public WorkbookService(WorkbookRepository workbookRepository,
                            WorkbookSearchRepository workbookSearchRepository,
-                           UserRepository userRepository,
                            CardRepository cardRepository,
                            TagService tagService,
-                           FileUploader fileS3Uploader
+                           FileUploader fileS3Uploader,
+                           UserRepository userRepository
     ) {
-        super(userRepository);
         this.workbookRepository = workbookRepository;
         this.workbookSearchRepository = workbookSearchRepository;
         this.cardRepository = cardRepository;
         this.tagService = tagService;
         this.fileS3Uploader = fileS3Uploader;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -76,9 +74,7 @@ public class WorkbookService extends AbstractUserService {
     public WorkbookResponse updateWorkbook(Long id, WorkbookUpdateRequest workbookUpdateRequest, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(id);
-
         validateAuthor(user, workbook);
-
         Tags tags = tagService.convertTags(workbookUpdateRequest.getTags());
         workbook.update(workbookUpdateRequest.toWorkbookWithTags(tags));
         workbookRepository.flush();
@@ -89,9 +85,7 @@ public class WorkbookService extends AbstractUserService {
     public void deleteWorkbook(Long id, AppUser appUser) {
         User user = findUser(appUser);
         Workbook workbook = findWorkbook(id);
-
         validateAuthor(user, workbook);
-
         workbook.delete();
     }
 
@@ -186,5 +180,10 @@ public class WorkbookService extends AbstractUserService {
             log.info("downloadWorkbook 파일을 삭제하지 못했습니다.");
         }
         return uploadFileUrl;
+    }
+
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
     }
 }

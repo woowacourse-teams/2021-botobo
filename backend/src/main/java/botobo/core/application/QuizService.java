@@ -13,6 +13,7 @@ import botobo.core.domain.workbook.WorkbookRepository;
 import botobo.core.dto.card.QuizRequest;
 import botobo.core.dto.card.QuizResponse;
 import botobo.core.exception.user.NotAuthorException;
+import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +22,17 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class QuizService extends AbstractUserService {
+public class QuizService {
     private static final int DEFAULT_QUIZ_COUNT = 10;
 
     private final WorkbookRepository workbookRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     public QuizService(WorkbookRepository workbookRepository, CardRepository cardRepository, UserRepository userRepository) {
-        super(userRepository);
         this.workbookRepository = workbookRepository;
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     public List<QuizResponse> createQuizForGuest() {
@@ -49,6 +51,11 @@ public class QuizService extends AbstractUserService {
         final Cards quiz = makeQuiz(cardRepository.findCardsByWorkbookIds(workbookIds), count)
                 .postProcess();
         return QuizResponse.cardsOf(quiz);
+    }
+
+    private User findUser(AppUser appUser) {
+        return userRepository.findById(appUser.getId())
+                .orElseThrow(UserNotFoundException::new);
     }
 
     private void validateWorkbooks(List<Long> workbookIds, User user) {
