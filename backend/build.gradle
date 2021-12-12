@@ -49,6 +49,9 @@ dependencies {
 
     // log
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-to-slf4j:2.15.0'
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
