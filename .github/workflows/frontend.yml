@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true
+          ref: ${{ github.ref }}
+          submodules: recursive
 
       - name: Set up Node.js
         uses: actions/setup-node@master
