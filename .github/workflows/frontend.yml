@@ -29,6 +29,8 @@ jobs:
           AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}'
           AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}'
         run: |
+          aws s3 rm \
+            --recursive s3:botobo
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
