@@ -33,4 +33,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            dist s3://botobo
+            frontend/dist s3://botobo
