@@ -29,7 +29,7 @@ jobs:
         with:
           args: --acl public-read --delete
         env:
-          AWS_S3_BUCKET: botobo
+          AWS_S3_BUCKET: 'botobo'
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
-          AWS_REGION: ap-northeast-2
+          AWS_REGION: 'ap-northeast-2'
