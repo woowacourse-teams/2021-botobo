@@ -25,13 +25,11 @@ jobs:
           yarn build:dev
 
       - name: deploy
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --delete
         env:
-          AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}'
-          AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}'
-        run: |
-          aws s3 rm \
-            --recursive s3:botobo
-          aws s3 cp \
-            --recursive \
-            --region ap-northeast-2 \
-            frontend/dist s3://botobo
+          AWS_S3_BUCKET: botobo
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
+          AWS_REGION: ap-northeast-2
