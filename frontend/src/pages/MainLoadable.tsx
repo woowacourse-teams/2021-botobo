@@ -12,7 +12,6 @@ import PageTemplate from './PageTemplate';
 
 const MainLoadable = () => (
   <>
-    asdl;kajskldajslkdajksl
     <HeaderSkeleton />
     <PageTemplate isScroll={true}>
       <TopContent>
