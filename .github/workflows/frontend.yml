@@ -10,7 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
           submodules: true
 
       - name: Set up Node.js
