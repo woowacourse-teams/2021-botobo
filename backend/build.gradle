@@ -114,58 +114,58 @@ test {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
     }
     useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
+//    finalizedBy 'jacocoTestReport'
 }
 
 jacoco {
     toolVersion = '0.8.5'
 }
 
-jacocoTestReport {
-    reports {
-        html.enabled true
-        xml.enabled true
-        csv.enabled false
-    }
-    finalizedBy 'jacocoTestCoverageVerification'
-}
+//jacocoTestReport {
+//    reports {
+//        html.enabled true
+//        xml.enabled true
+//        csv.enabled false
+//    }
+//    finalizedBy 'jacocoTestCoverageVerification'
+//}
 
-jacocoTestCoverageVerification {
-    def Qdomains = []
-
-    for (qPattern in '*.QA'..'*.QZ') {
-        Qdomains.add(qPattern + '*')
-    }
-
-    violationRules {
-        rule {
-            enabled = true
-            element = 'CLASS'
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            excludes = [
-                    'botobo.core.infrastructure.**',
-                    'botobo.core.exception.**',
-                    'botobo.core.dto.**',
-                    'botobo.core.DataLoader',
-                    'botobo.core.BotoboApplication',
-                    'botobo.core.config.**',
-                    'botobo.core.scheduler.**'
-            ] + Qdomains
-        }
-    }
-}
+//jacocoTestCoverageVerification {
+//    def Qdomains = []
+//
+//    for (qPattern in '*.QA'..'*.QZ') {
+//        Qdomains.add(qPattern + '*')
+//    }
+//
+//    violationRules {
+//        rule {
+//            enabled = true
+//            element = 'CLASS'
+//
+//            limit {
+//                counter = 'BRANCH'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.80
+//            }
+//
+//            limit {
+//                counter = 'LINE'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.80
+//            }
+//
+//            excludes = [
+//                    'botobo.core.infrastructure.**',
+//                    'botobo.core.exception.**',
+//                    'botobo.core.dto.**',
+//                    'botobo.core.DataLoader',
+//                    'botobo.core.BotoboApplication',
+//                    'botobo.core.config.**',
+//                    'botobo.core.scheduler.**'
+//            ] + Qdomains
+//        }
+//    }
+//}
 
 asciidoctor.doFirst {
     delete file('src/main/resources/static')
@@ -176,24 +176,24 @@ asciidoctor {
     dependsOn test
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "botobo-develop"
-        property "sonar.host.url", System.getenv('SONAR_URL')
-        property "sonar.login", System.getenv('SONAR_LOGIN')
-        property "sonar.language", "java"
-        property "sonar.binaries", "$buildDir/classes"
-        property "sonar.sources", "src/main"
-        property "sonar.tests", "src/test/java"
-        property "sonar.junit.reportsPath", "$buildDir/test-reports"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.coverage.jacoco.reportPaths", "$buildDir/jacoco/jacoco.exec"
-        property "sonar.exclusions", "**/exception/**, " +
-                "**/dto/**, " +
-                "**/DataLoader.java, " +
-                "**/BotoboApplication.java"
-    }
-}
+//sonarqube {
+//    properties {
+//        property "sonar.projectKey", "botobo-develop"
+//        property "sonar.host.url", System.getenv('SONAR_URL')
+//        property "sonar.login", System.getenv('SONAR_LOGIN')
+//        property "sonar.language", "java"
+//        property "sonar.binaries", "$buildDir/classes"
+//        property "sonar.sources", "src/main"
+//        property "sonar.tests", "src/test/java"
+//        property "sonar.junit.reportsPath", "$buildDir/test-reports"
+//        property "sonar.java.coveragePlugin", "jacoco"
+//        property "sonar.coverage.jacoco.reportPaths", "$buildDir/jacoco/jacoco.exec"
+//        property "sonar.exclusions", "**/exception/**, " +
+//                "**/dto/**, " +
+//                "**/DataLoader.java, " +
+//                "**/BotoboApplication.java"
+//    }
+//}
 
 task createDocument(type: Copy) {
     dependsOn asciidoctor
