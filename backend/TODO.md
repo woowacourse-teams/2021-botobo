@@ -2,9 +2,9 @@
 - [x] 로컬에서 돌아가는지 확인
 - [x] sonarqube 주석처리
 - [x] 레디스 ip & port 변경
-- [ ] mariadb
-  - [ ] ip & port 변경
-  - [ ] master - slave 구조 rollback
+- [x] mariadb
+  - [x] ip & port 변경
+  - [x] master - slave 구조 rollback
 - [ ] aws
   - [ ] S3에 사진 저장하던 것을 로컬에 저장하도록 변경
 - [x] application-prod.yml 스케쥴러 ip 변경
