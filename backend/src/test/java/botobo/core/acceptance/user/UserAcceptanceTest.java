@@ -25,11 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("User 인수 테스트")
 class UserAcceptanceTest extends DomainAcceptanceTest {
 
-    @Value("${aws.user-default-image}")
+    @Value("${file.user-default-image}")
     private String userDefaultImage;
 
-    @Value("${aws.cloudfront.url-format}")
-    private String cloudfrontUrlFormat;
+    @Value("${file.image.url-format}")
+    private String urlFormat;
 
     @Test
     @DisplayName("로그인 한 유저의 정보를 가져온다. - 성공")
@@ -67,11 +67,10 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
     @DisplayName("프로필 이미지를 수정한다. - 성공, multipartFile이 비어있는 경우 디폴트 유저 이미지로 대체")
     void updateWhenDefaultProfile() {
         //given
-        String defaultUserImageUrl = String.format(cloudfrontUrlFormat, userDefaultImage);
         UserInfoResponse userInfoResponse = GithubUserInfoResponse.builder()
                 .userName("socialUser")
                 .socialId("2")
-                .profileUrl(defaultUserImageUrl)
+                .profileUrl(urlFormat + userDefaultImage)
                 .build();
 
         //when
@@ -84,7 +83,7 @@ class UserAcceptanceTest extends DomainAcceptanceTest {
 
         //then
         assertThat(profileResponse.getProfileUrl()).isNotNull();
-        assertThat(profileResponse.getProfileUrl()).isEqualTo(defaultUserImageUrl);
+        assertThat(profileResponse.getProfileUrl()).isEqualTo(urlFormat + userDefaultImage);
     }
 
     @Test

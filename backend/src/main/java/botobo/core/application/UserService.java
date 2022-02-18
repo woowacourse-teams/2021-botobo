@@ -12,7 +12,7 @@ import botobo.core.dto.user.UserResponse;
 import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.s3.FileUploader;
+import botobo.core.infrastructure.file.FileUploader;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +28,15 @@ public class UserService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
-    private final FileUploader imageS3Uploader;
+    private final FileUploader imageUploader;
 
     public UserService(UserQueryRepository userQueryRepository,
                        UserRepository userRepository,
-                       FileUploader imageS3Uploader
+                       FileUploader imageUploader
     ) {
         this.userQueryRepository = userQueryRepository;
         this.userRepository = userRepository;
-        this.imageS3Uploader = imageS3Uploader;
+        this.imageUploader = imageUploader;
     }
 
     public UserResponse findById(AppUser appUser) {
@@ -55,11 +55,11 @@ public class UserService {
     public ProfileResponse updateProfile(MultipartFile multipartFile, AppUser appUser) {
         User user = findUser(appUser);
         String oldProfileUrl = user.getProfileUrl();
-        String newProfileUrl = imageS3Uploader.upload(multipartFile, user);
+        String newProfileUrl = imageUploader.upload(multipartFile, user);
 
         user.updateProfileUrl(newProfileUrl);
 
-        imageS3Uploader.deleteFromS3(oldProfileUrl);
+        imageUploader.deleteFromS3(oldProfileUrl);
         return ProfileResponse.builder()
                 .profileUrl(newProfileUrl)
                 .build();

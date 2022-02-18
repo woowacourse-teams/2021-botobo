@@ -1,4 +1,4 @@
-package botobo.core.infrastructure.s3;
+package botobo.core.infrastructure.file;
 
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
 import org.springframework.http.MediaType;

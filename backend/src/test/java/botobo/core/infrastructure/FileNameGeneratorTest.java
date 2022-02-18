@@ -1,8 +1,8 @@
 package botobo.core.infrastructure;
 
 import botobo.core.exception.user.s3.ImageExtensionNotAllowedException;
-import botobo.core.infrastructure.s3.FileNameGenerator;
-import botobo.core.infrastructure.s3.UploadFile;
+import botobo.core.infrastructure.file.FileNameGenerator;
+import botobo.core.infrastructure.file.UploadFile;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,34 +24,34 @@ class FileNameGeneratorTest {
     @ParameterizedTest
     @DisplayName("UploadFileDto를 생성한다. - 성공")
     @MethodSource("createTestFiles")
-    void generateUploadFile(MultipartFile multipartFile, String userId, String expectedContentType) {
-        UploadFile uploadFile = fileNameGenerator.generateUploadFile(multipartFile, userId);
-        assertThat(uploadFile.getFileName()).contains("users/1/").contains(getDate());
+    void generateUploadFile(MultipartFile multipartFile, String expectedContentType) {
+        UploadFile uploadFile = fileNameGenerator.generateUploadFile(multipartFile);
+        assertThat(uploadFile.getFileName()).contains(getDate());
         assertThat(uploadFile.getContentType()).isEqualTo(expectedContentType);
     }
 
     @ParameterizedTest
     @DisplayName("파일 이름을 생성한다. - 실패, 허용하지 않는 파일 확장자")
     @MethodSource("createTestFilesWithNowAllowedExtension")
-    void generateFileNameWithNotAllowedExtension(MultipartFile multipartFile, String userId) {
-        assertThatThrownBy(() -> fileNameGenerator.generateUploadFile(multipartFile, userId))
+    void generateFileNameWithNotAllowedExtension(MultipartFile multipartFile) {
+        assertThatThrownBy(() -> fileNameGenerator.generateUploadFile(multipartFile))
                 .isInstanceOf(ImageExtensionNotAllowedException.class);
     }
 
     private static Stream<Arguments> createTestFiles() {
         return Stream.of(
-                Arguments.of(FileFactory.testFile("png"), "1", "image/png"),
-                Arguments.of(FileFactory.testFile("jpg"), "1", "image/jpeg"),
-                Arguments.of(FileFactory.testFile("jpeg"), "1", "image/jpeg")
+                Arguments.of(FileFactory.testFile("png"), "image/png"),
+                Arguments.of(FileFactory.testFile("jpg"), "image/jpeg"),
+                Arguments.of(FileFactory.testFile("jpeg"), "image/jpeg")
         );
     }
 
     private static Stream<Arguments> createTestFilesWithNowAllowedExtension() {
         return Stream.of(
-                Arguments.of(FileFactory.testFile("txt"), "1"),
-                Arguments.of(FileFactory.testFile("gif"), "1"),
-                Arguments.of(FileFactory.testFile("mov"), "1"),
-                Arguments.of(FileFactory.testFile("tiff"), "1")
+                Arguments.of(FileFactory.testFile("txt")),
+                Arguments.of(FileFactory.testFile("gif")),
+                Arguments.of(FileFactory.testFile("mov")),
+                Arguments.of(FileFactory.testFile("tiff"))
         );
     }
 

@@ -43,8 +43,7 @@ public class UserController {
     public ResponseEntity<ProfileResponse> updateProfileImage(
             @RequestParam(value = "profile", required = false) MultipartFile multipartFile,
             @AuthenticationPrincipal AppUser appUser
-    )
-            throws IOException {
+    ) {
         ProfileResponse profileResponse = userService.updateProfile(multipartFile, appUser);
         return ResponseEntity.ok(profileResponse);
     }

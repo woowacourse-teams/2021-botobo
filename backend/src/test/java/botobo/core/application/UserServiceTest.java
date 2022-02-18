@@ -18,7 +18,7 @@ import botobo.core.dto.user.UserUpdateRequest;
 import botobo.core.exception.user.ProfileUpdateNotAllowedException;
 import botobo.core.exception.user.UserNameDuplicatedException;
 import botobo.core.exception.user.UserNotFoundException;
-import botobo.core.infrastructure.s3.FileUploader;
+import botobo.core.infrastructure.file.FileUploader;
 import botobo.core.utils.FileFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
@@ -54,6 +55,10 @@ class UserServiceTest {
 
     private static final String CLOUDFRONT_URL_FORMAT = "https://d1mlkr1uzdb8as.cloudfront.net/%s";
     private static final String USER_DEFAULT_IMAGE = "imagesForS3Test/botobo-default-profile.png";
+
+    @Value("${file.user-default-image}")
+    private String userDefaultImage;
+
 
     @MockBean
     private UserRepository userRepository;

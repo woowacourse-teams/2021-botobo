@@ -23,7 +23,7 @@ import botobo.core.exception.user.NotAuthorException;
 import botobo.core.exception.user.UserNotFoundException;
 import botobo.core.exception.workbook.NotOpenedWorkbookException;
 import botobo.core.exception.workbook.WorkbookNotFoundException;
-import botobo.core.infrastructure.s3.FileUploader;
+import botobo.core.infrastructure.file.FileUploader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -6,12 +6,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${file.image.directory}")
+    private String fileDirectory;
 
     @Value("${cors.allowed.origins:}")
     private String[] allowedOrigins;
@@ -35,4 +39,8 @@ public class WebConfig implements WebMvcConfigurer {
         return new SearchArgumentResolver();
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**").addResourceLocations("file:" + fileDirectory);
+    }
 }

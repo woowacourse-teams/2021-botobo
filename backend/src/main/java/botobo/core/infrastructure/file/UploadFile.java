@@ -1,4 +1,4 @@
-package botobo.core.infrastructure.s3;
+package botobo.core.infrastructure.file;
 
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;

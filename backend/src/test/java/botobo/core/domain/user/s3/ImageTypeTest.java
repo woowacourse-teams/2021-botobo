@@ -1,6 +1,6 @@
 package botobo.core.domain.user.s3;
 
-import botobo.core.infrastructure.s3.ImageType;
+import botobo.core.infrastructure.file.ImageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

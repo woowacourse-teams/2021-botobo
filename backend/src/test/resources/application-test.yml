@@ -35,3 +35,9 @@ security:
     refresh-token:
       secret-key: refreshtokentestkey
       expire-length: 2000000
+
+file:
+  image:
+    directory: src/test/resources/test_images/
+    url-format: http://127.0.0.1/
+  user-default-image: imagesForS3Test/botobo-default-profile.png
