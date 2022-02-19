@@ -24,20 +24,15 @@ jobs:
           yarn
           yarn build:dev
 
-      - name: deploy
-        uses: jakejarvis/s3-sync-action@master
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: --acl public-read --delete
-        env:
-          AWS_S3_BUCKET: 'botobo'
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
-          AWS_REGION: 'ap-northeast-2'
-          SOURCE_DIR: 'frontend/dist'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
+          aws-region: 'ap-northeast-2'
+
+      - name: deploy to S3
+        run: aws s3 sync ./frontend/dist s3://botobo --delete
 
       - name: invalidate cache Cloudfront
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: E2FZF4UGBNF81D
-          PATHS: '/*'
-        continue-on-error: true
+        run: aws cloudfront create-invalidation --distribution-id E2FZF4UGBNF81D --paths "/*"
