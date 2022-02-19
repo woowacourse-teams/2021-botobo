@@ -34,3 +34,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
           AWS_REGION: 'ap-northeast-2'
           SOURCE_DIR: 'frontend/dist'
+
+      - name: invalidate cache Cloudfront
+        uses: chetan/invalidate-cloudfront-action@master
+        env:
+          DISTRIBUTION: E2FZF4UGBNF81D
+          PATHS: '/*'
+        continue-on-error: true
