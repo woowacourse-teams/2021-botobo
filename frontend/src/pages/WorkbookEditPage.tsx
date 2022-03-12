@@ -16,7 +16,6 @@ import { useRouter, useSnackbar, useWorkbook } from '../hooks';
 import { workbookInitialState } from '../recoil/initialState';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
-import { IdParam } from '../types/idParam';
 import PageTemplate from './PageTemplate';
 
 const validateWorkbookName = (value: string) => {
@@ -28,7 +27,7 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookEditPage = () => {
-  const param: IdParam = useParams();
+  const param = useParams();
   const editedWorkbookId = Number(param.id);
 
   const { workbooks, editWorkbook } = useWorkbook();

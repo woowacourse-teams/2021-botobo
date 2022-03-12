@@ -15,7 +15,6 @@ import {
 import { PublicCardsResponse } from './../types';
 import { CardResponse } from './../types/index';
 import { publicCardsInitialState } from '../recoil/initialState';
-import { IdParam } from '../types/idParam';
 import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
 
@@ -28,7 +27,7 @@ interface PublicCardsInfo extends PublicCardsResponse {
 }
 
 const usePublicCard = () => {
-  const param: IdParam = useParams();
+  const param = useParams();
   const publicWorkbookId = Number(param.id);
 
   const setShouldWorkbookUpdateState = useSetRecoilState(

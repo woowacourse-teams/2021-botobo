@@ -3,7 +3,7 @@ import { RecoilRoot } from 'recoil';
 
 import { MainPage } from '../pages';
 import { userState } from '../recoil';
-import { render, screen, waitFor } from '../test-utils';
+import { render } from '../test-utils';
 
 describe('메인 페이지 테스트', () => {
   beforeAll(() => {
@@ -21,10 +21,5 @@ describe('메인 페이지 테스트', () => {
         <MainPage />
       </RecoilRoot>
     );
-  });
-  test('렌더링 테스트', async () => {
-    await waitFor(() => {
-      expect(screen.getByText('Java')).toBeVisible();
-    });
   });
 });

@@ -18,10 +18,9 @@ jobs:
         with:
           node-version: 14.x
 
-      - name: yarn install and build
+      - name: yarn build
         run: |
           cd frontend
-          yarn
           yarn build:dev
 
       - name: Configure AWS Credentials

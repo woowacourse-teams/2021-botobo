@@ -35,7 +35,6 @@ node_modules
 dist
 .DS_Store
 dist-server
-frontend/.yarn/**
 
 ### Log ###
 backend/logs/**
@@ -63,3 +62,12 @@ backend/src/main/resources/static/index.html
 
 ### txt files
 *.txt
+
+### yarn use zero install
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

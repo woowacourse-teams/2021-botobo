@@ -1,3 +1,11 @@
 {
-  "javascript.suggestionActions.enabled": false
+  "javascript.suggestionActions.enabled": false,
+  "eslint.nodePath": "../.yarn/sdks",
+  "prettier.prettierPath": "../.yarn/sdks/prettier/index.js",
+  "typescript.tsdk": "../.yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  }
 }
