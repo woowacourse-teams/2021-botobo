@@ -5759,7 +5759,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],\
             ["react-dom", "virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:17.0.2"],\
             ["react-refresh", "npm:0.10.0"],\
-            ["react-router", "virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:6.2.2"],\
             ["react-router-dom", "virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:5.3.0"],\
             ["recoil", "virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:0.3.1"],\
             ["regenerator-runtime", "npm:0.13.9"],\
@@ -8959,14 +8958,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tiny-invariant", "npm:1.2.0"],\
             ["tiny-warning", "npm:1.0.3"],\
             ["value-equal", "npm:1.0.1"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:5.3.0", {\
-          "packageLocation": "./.yarn/cache/history-npm-5.3.0-00136b6a63-d73c35df49.zip/node_modules/history/",\
-          "packageDependencies": [\
-            ["history", "npm:5.3.0"],\
-            ["@babel/runtime", "npm:7.17.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12835,13 +12826,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["npm:6.2.2", {\
-          "packageLocation": "./.yarn/cache/react-router-npm-6.2.2-fb4ecc23c9-1a2e7006d4.zip/node_modules/react-router/",\
-          "packageDependencies": [\
-            ["react-router", "npm:6.2.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
         ["virtual:55ff138cdbd68899234c7a23a5b8bba3615d65ec60c861228007df273c2340f5f11f6db843eee5cf58b3c266b423a0f63664a8e47aa3798dda4934108009abd0#npm:5.2.1", {\
           "packageLocation": "./.yarn/__virtual__/react-router-virtual-464bb08db7/0/cache/react-router-npm-5.2.1-ea754d7473-7daae084bf.zip/node_modules/react-router/",\
           "packageDependencies": [\
@@ -12858,20 +12842,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-is", "npm:16.13.1"],\
             ["tiny-invariant", "npm:1.2.0"],\
             ["tiny-warning", "npm:1.0.3"]\
-          ],\
-          "packagePeers": [\
-            "@types/react",\
-            "react"\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:6.2.2", {\
-          "packageLocation": "./.yarn/__virtual__/react-router-virtual-f7c3ee4ff2/0/cache/react-router-npm-6.2.2-fb4ecc23c9-1a2e7006d4.zip/node_modules/react-router/",\
-          "packageDependencies": [\
-            ["react-router", "virtual:5e44fe99d371562f3d4e32b676a88b58944542c565f9ec3915e54894b03a8e9a0c13e6dff3e4434b048ae967314e28c69ddbb0a01aab4aa77209b774a8fffeae#npm:6.2.2"],\
-            ["@types/react", "npm:17.0.40"],\
-            ["history", "npm:5.3.0"],\
-            ["react", "npm:17.0.2"]\
           ],\
           "packagePeers": [\
             "@types/react",\

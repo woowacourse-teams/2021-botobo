@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 import {
   Hashtag,
@@ -16,6 +16,7 @@ import { useRouter, useSnackbar, useWorkbook } from '../hooks';
 import { workbookInitialState } from '../recoil/initialState';
 import { Flex } from '../styles';
 import { TagResponse } from '../types';
+import { IdParam } from '../types/idParam';
 import PageTemplate from './PageTemplate';
 
 const validateWorkbookName = (value: string) => {
@@ -27,7 +28,7 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookEditPage = () => {
-  const param = useParams();
+  const param = useParams<IdParam>();
   const editedWorkbookId = Number(param.id);
 
   const { workbooks, editWorkbook } = useWorkbook();

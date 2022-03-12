@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import {
@@ -17,6 +17,7 @@ import { CardResponse } from './../types/index';
 import { publicCardsInitialState } from '../recoil/initialState';
 import useErrorHandler from './useErrorHandler';
 import useSnackbar from './useSnackbar';
+import { IdParam } from '../types/idParam';
 
 interface PublicCard extends CardResponse {
   isChecked: boolean;
@@ -27,7 +28,7 @@ interface PublicCardsInfo extends PublicCardsResponse {
 }
 
 const usePublicCard = () => {
-  const param = useParams();
+  const param = useParams<IdParam>();
   const publicWorkbookId = Number(param.id);
 
   const setShouldWorkbookUpdateState = useSetRecoilState(

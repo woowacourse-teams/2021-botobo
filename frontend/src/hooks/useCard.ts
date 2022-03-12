@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { shouldWorkbookUpdateState } from './../recoil/workbookState';
@@ -14,9 +14,10 @@ import { CardResponse, CardsResponse } from '../types';
 import useErrorHandler from './useErrorHandler';
 import useModal from './useModal';
 import useSnackbar from './useSnackbar';
+import { IdParam } from '../types/idParam';
 
 const useCard = () => {
-  const param = useParams();
+  const param = useParams<IdParam>();
   const workbookId = Number(param.id);
 
   const setShouldWorkbookUpdateState = useSetRecoilState(
