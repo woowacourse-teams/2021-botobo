@@ -29,10 +29,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
-          aws-region: 'ap-northeast-2'
+          aws-region: ${{secrets.AWS_REGION}}
 
       - name: deploy to S3
-        run: aws s3 sync ./frontend/dist s3://botobo --delete
+        run: aws s3 sync ./frontend/dist ${{secrets.S3_DEPLOY_PATH}} --delete
 
       - name: invalidate cache Cloudfront
-        run: aws cloudfront create-invalidation --distribution-id E2FZF4UGBNF81D --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id ${{secrets.INVALIDATE_CACHE_CLOUD_FRONT_DISTRIBUTION_ID}} --paths "/*"
