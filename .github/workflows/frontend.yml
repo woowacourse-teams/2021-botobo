@@ -1,0 +1,37 @@
+name: frontend-dev
+
+on:
+  push:
+    branches: [dev/*]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SUBMODULE_KEY }}
+          submodules: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 14.x
+
+      - name: yarn build
+        run: |
+          cd frontend
+          yarn build:dev
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEV_KEY_FRONT }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_DEV_SECRET_KEY_FRONT }}
+          aws-region: ${{secrets.AWS_REGION}}
+
+      - name: deploy to S3
+        run: aws s3 sync ./frontend/dist ${{secrets.S3_DEPLOY_PATH}} --delete
+
+      - name: invalidate cache Cloudfront
+        run: aws cloudfront create-invalidation --distribution-id ${{secrets.INVALIDATE_CACHE_CLOUD_FRONT_DISTRIBUTION_ID}} --paths "/*"

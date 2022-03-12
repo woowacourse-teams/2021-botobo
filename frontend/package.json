@@ -1,5 +1,5 @@
 {
-  "name": "botobo",
+  "name": "botobo-frontend",
   "version": "1.3.0",
   "author": "Team Botobo",
   "license": "MIT",
@@ -16,9 +16,11 @@
     "start-server": "node ./dist-server/index.js",
     "build-concurrently:local": "concurrently \"yarn build:local\" \"yarn build-server:local\"",
     "build-concurrently:dev": "concurrently \"yarn build:dev\" \"yarn build-server:dev\"",
-    "build-concurrently:prod": "concurrently \"yarn build:prod\" \"yarn build-server:prod\""
+    "build-concurrently:prod": "concurrently \"yarn build:prod\" \"yarn build-server:prod\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.4.0",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",

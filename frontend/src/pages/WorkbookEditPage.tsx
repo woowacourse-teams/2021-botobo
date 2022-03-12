@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 import {
   Hashtag,
@@ -28,7 +28,7 @@ const validateWorkbookName = (value: string) => {
 };
 
 const WorkbookEditPage = () => {
-  const param: IdParam = useParams();
+  const param = useParams<IdParam>();
   const editedWorkbookId = Number(param.id);
 
   const { workbooks, editWorkbook } = useWorkbook();
